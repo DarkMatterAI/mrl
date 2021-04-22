@@ -2,9 +2,13 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {}
+index = {"is_container": "00_core.ipynb",
+         "maybe_parallel": "00_core.ipynb",
+         "to_mol": "01_chem.ipynb",
+         "to_smile": "01_chem.ipynb"}
 
-modules = []
+modules = ["core.py",
+           "chem.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 

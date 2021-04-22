@@ -1,6 +1,7 @@
 {
   "mrl": {
     "Overview": "/",
-    "module name here": "core.html"
+    "Core": "core.html",
+    "Chem": "chem.html"
   }
 }

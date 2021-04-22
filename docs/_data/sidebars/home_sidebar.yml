@@ -10,8 +10,11 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: module name here
+      title: Core
       url: core.html
+    - output: web,pdf
+      title: Chem
+      url: chem.html
     output: web
     title: mrl
   output: web

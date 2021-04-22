@@ -1,24 +1,13 @@
-# Project name here
-> Summary description here.
+# Molecular Reinforcement Learning
+> Unlocking reinforcement learning for drug design
 
 
-This file will become your README and also the index of your documentation.
+MRL is an open source python library designed to unlock the potential of drug design with reinforcement learning. MRL enables fine-tuned control over chemical spaces to adapt generated compounds to the needs of any drug design project.
 
 ## Install
 
-`pip install your_project_name`
+`pip install mrl`
 
 ## How to use
 
-Fill me in please! Don't forget code examples:
-
-```
-1+1
-```
-
-
-
-
-    2
-
-
+Coming soon!
