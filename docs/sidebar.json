@@ -2,6 +2,7 @@
   "mrl": {
     "Overview": "/",
     "Core": "core.html",
-    "Chem": "chem.html"
+    "Chem": "chem.html",
+    "Templates": "templates.html"
   }
 }

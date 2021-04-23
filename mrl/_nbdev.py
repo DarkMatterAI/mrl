@@ -3,12 +3,53 @@
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"is_container": "00_core.ipynb",
+         "flatten_recursive": "00_core.ipynb",
+         "flatten_list_of_lists": "00_core.ipynb",
          "maybe_parallel": "00_core.ipynb",
          "to_mol": "01_chem.ipynb",
-         "to_smile": "01_chem.ipynb"}
+         "to_smile": "01_chem.ipynb",
+         "molwt": "01_chem.ipynb",
+         "hbd": "01_chem.ipynb",
+         "hba": "01_chem.ipynb",
+         "tpsa": "01_chem.ipynb",
+         "rotbond": "01_chem.ipynb",
+         "fsp3": "01_chem.ipynb",
+         "logp": "01_chem.ipynb",
+         "rings": "01_chem.ipynb",
+         "heteroatoms": "01_chem.ipynb",
+         "aromaticrings": "01_chem.ipynb",
+         "CatalogMatch": "01_chem.ipynb",
+         "SmartsMatch": "01_chem.ipynb",
+         "ParamsMatch": "01_chem.ipynb",
+         "PAINSMatch": "01_chem.ipynb",
+         "PAINSAMatch": "01_chem.ipynb",
+         "PAINSBMatch": "01_chem.ipynb",
+         "PAINSCMatch": "01_chem.ipynb",
+         "ZINCMatch": "01_chem.ipynb",
+         "BRENKMatch": "01_chem.ipynb",
+         "morgan_fp": "01_chem.ipynb",
+         "ECFP4": "01_chem.ipynb",
+         "ECFP6": "01_chem.ipynb",
+         "FCFP4": "01_chem.ipynb",
+         "FCFP6": "01_chem.ipynb",
+         "fp_to_array": "01_chem.ipynb",
+         "tanimoto": "01_chem.ipynb",
+         "tanimoto_rd": "01_chem.ipynb",
+         "dice": "01_chem.ipynb",
+         "dice_rd": "01_chem.ipynb",
+         "cosine": "01_chem.ipynb",
+         "cosine_rd": "01_chem.ipynb",
+         "FP": "01_chem.ipynb",
+         "get_fingerprint": "01_chem.ipynb",
+         "fingerprint_similarities": "01_chem.ipynb",
+         "fuse_on_atom_mapping": "01_chem.ipynb",
+         "fuse_on_link": "01_chem.ipynb",
+         "PropertyFunction": "03_templates.ipynb",
+         "RangeProperty": "03_templates.ipynb"}
 
 modules = ["core.py",
-           "chem.py"]
+           "chem.py",
+           "templates.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 

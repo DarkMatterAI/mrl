@@ -15,6 +15,9 @@ entries:
     - output: web,pdf
       title: Chem
       url: chem.html
+    - output: web,pdf
+      title: Templates
+      url: templates.html
     output: web
     title: mrl
   output: web
