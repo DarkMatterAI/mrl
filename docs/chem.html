@@ -501,9 +501,9 @@ Parallel execution succeeded
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Substructure-Matching">Substructure Matching<a class="anchor-link" href="#Substructure-Matching"> </a></h2><p>This class is used for substructure matching an input <code>Mol</code> against a list of SMARTS.</p>
 <p><strong>Note</strong>: Substructure matching is tricky. Be sure to verify your SMARTS before putting a large number of them into a filter.</p>
-<p><a href="/mrl/chem.html#CatalogMatch"><code>CatalogMatch</code></a> functions as a base class to match <code>Mol</code> objects against any generic catalog. <code>has_match</code> will return a single boolean value for if the <code>Mol</code> matches one of he filters in the catalog. <code>get_matches</code> will return a list of bools for all elements in the catalog.</p>
+<p><code>CatalogMatch</code> functions as a base class to match <code>Mol</code> objects against any generic catalog. <code>has_match</code> will return a single boolean value for if the <code>Mol</code> matches one of he filters in the catalog. <code>get_matches</code> will return a list of bools for all elements in the catalog.</p>
 <p><code>SMARTSMatch</code> will generate a catalog from a list of SMARTS</p>
-<p><a href="/mrl/chem.html#PAINSMatch"><code>PAINSMatch</code></a>, <a href="/mrl/chem.html#PAINSAMatch"><code>PAINSAMatch</code></a>, <a href="/mrl/chem.html#PAINSBMatch"><code>PAINSBMatch</code></a> and <a href="/mrl/chem.html#PAINSCMatch"><code>PAINSCMatch</code></a> specify different PAINS catalogs present in RDKit (see <a href="https://www.rdkit.org/docs/source/rdkit.Chem.rdfiltercatalog.html#rdkit.Chem.rdfiltercatalog.FilterCatalogParams.FilterCatalogs">here</a>)</p>
+<p><code>PAINSMatch</code>, <code>PAINSAMatch</code>, <code>PAINSBMatch</code> and <code>PAINSCMatch</code> specify different PAINS catalogs present in RDKit (see <a href="https://www.rdkit.org/docs/source/rdkit.Chem.rdfiltercatalog.html#rdkit.Chem.rdfiltercatalog.FilterCatalogParams.FilterCatalogs">here</a>)</p>
 
 </div>
 </div>
@@ -519,7 +519,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CatalogMatch" class="doc_header"><code>class</code> <code>CatalogMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L67" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CatalogMatch</code>(<strong><code>catalog</code></strong>)</p>
+<h2 id="Catalog" class="doc_header"><code>class</code> <code>Catalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L67" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Catalog</code>(<strong><code>catalog</code></strong>)</p>
 </blockquote>
 <p>Base Class for SMARTS matching</p>
 <p>Inputs: <code>catalog</code>, RDKit <code>FilterCatalog</code></p>
@@ -545,7 +545,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SmartsMatch" class="doc_header"><code>class</code> <code>SmartsMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L95" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsMatch</code>(<strong><code>smarts</code></strong>) :: <a href="/mrl/chem.html#CatalogMatch"><code>CatalogMatch</code></a></p>
+<h2 id="SmartsCatalog" class="doc_header"><code>class</code> <code>SmartsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsCatalog</code>(<strong><code>smarts</code></strong>) :: <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a></p>
 </blockquote>
 <p>Class for SMARTS matching</p>
 <p>Inputs: <code>smarts</code>, list of smarts</p>
@@ -571,9 +571,9 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ParamsMatch" class="doc_header"><code>class</code> <code>ParamsMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L115" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamsMatch</code>(<strong><code>params</code></strong>) :: <a href="/mrl/chem.html#CatalogMatch"><code>CatalogMatch</code></a></p>
+<h2 id="ParamsCatalog" class="doc_header"><code>class</code> <code>ParamsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L116" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamsCatalog</code>(<strong><code>params</code></strong>) :: <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a></p>
 </blockquote>
-<p>Generates <a href="/mrl/chem.html#CatalogMatch"><code>CatalogMatch</code></a> object from <code>params</code>, a <code>FilterCatalogParams</code> object</p>
+<p>Generates <code>CatalogMatch</code> object from <code>params</code>, a <code>FilterCatalogParams</code> object</p>
 
 </div>
 
@@ -596,7 +596,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSMatch" class="doc_header"><code>class</code> <code>PAINSMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L125" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSMatch</code>() :: <a href="/mrl/chem.html#ParamsMatch"><code>ParamsMatch</code></a></p>
+<h2 id="PAINSCatalog" class="doc_header"><code>class</code> <code>PAINSCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>Full PAINS filter matching</p>
 
@@ -621,7 +621,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSAMatch" class="doc_header"><code>class</code> <code>PAINSAMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L130" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSAMatch</code>() :: <a href="/mrl/chem.html#ParamsMatch"><code>ParamsMatch</code></a></p>
+<h2 id="PAINSACatalog" class="doc_header"><code>class</code> <code>PAINSACatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L131" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSACatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS A filter matching</p>
 
@@ -646,7 +646,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSBMatch" class="doc_header"><code>class</code> <code>PAINSBMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L135" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSBMatch</code>() :: <a href="/mrl/chem.html#ParamsMatch"><code>ParamsMatch</code></a></p>
+<h2 id="PAINSBCatalog" class="doc_header"><code>class</code> <code>PAINSBCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSBCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS B filter matching</p>
 
@@ -671,7 +671,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSCMatch" class="doc_header"><code>class</code> <code>PAINSCMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L140" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCMatch</code>() :: <a href="/mrl/chem.html#ParamsMatch"><code>ParamsMatch</code></a></p>
+<h2 id="PAINSCCatalog" class="doc_header"><code>class</code> <code>PAINSCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L141" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS C filter matching</p>
 
@@ -696,7 +696,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ZINCMatch" class="doc_header"><code>class</code> <code>ZINCMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L145" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZINCMatch</code>() :: <a href="/mrl/chem.html#ParamsMatch"><code>ParamsMatch</code></a></p>
+<h2 id="ZINCCatalog" class="doc_header"><code>class</code> <code>ZINCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L146" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZINCCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>ZINC filter matching</p>
 
@@ -721,7 +721,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BRENKMatch" class="doc_header"><code>class</code> <code>BRENKMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L150" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BRENKMatch</code>() :: <a href="/mrl/chem.html#ParamsMatch"><code>ParamsMatch</code></a></p>
+<h2 id="BRENKCatalog" class="doc_header"><code>class</code> <code>BRENKCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L151" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BRENKCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>BRENK filter matching</p>
 
@@ -757,7 +757,7 @@ Parallel execution succeeded
     <span class="s1">&#39;[#6]1:[#6]:[#7]:[#6]:[#6]:[#6]:1&#39;</span>
 <span class="p">]</span>
 
-<span class="n">sm</span> <span class="o">=</span> <span class="n">SmartsMatch</span><span class="p">(</span><span class="n">smarts</span><span class="p">)</span>
+<span class="n">sm</span> <span class="o">=</span> <span class="n">SmartsCatalog</span><span class="p">(</span><span class="n">smarts</span><span class="p">)</span>
 
 <span class="n">smiles</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;c1ccccc1&#39;</span><span class="p">,</span>
@@ -798,7 +798,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="morgan_fp" class="doc_header"><code>morgan_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L157" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>morgan_fp</code>(<strong><code>mol</code></strong>, <strong><code>radius</code></strong>=<em><code>3</code></em>, <strong><code>nbits</code></strong>=<em><code>2048</code></em>, <strong><code>use_features</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="morgan_fp" class="doc_header"><code>morgan_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L158" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>morgan_fp</code>(<strong><code>mol</code></strong>, <strong><code>radius</code></strong>=<em><code>3</code></em>, <strong><code>nbits</code></strong>=<em><code>2048</code></em>, <strong><code>use_features</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>morgan fingerprint</p>
 
@@ -823,7 +823,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ECFP4" class="doc_header"><code>ECFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L163" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP4</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="ECFP4" class="doc_header"><code>ECFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP4</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>ECFP4 Fingerprint</p>
 
@@ -848,7 +848,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ECFP6" class="doc_header"><code>ECFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L167" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP6</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="ECFP6" class="doc_header"><code>ECFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP6</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>ECFP6 Fingerprint</p>
 
@@ -873,7 +873,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FCFP4" class="doc_header"><code>FCFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP4</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="FCFP4" class="doc_header"><code>FCFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L172" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP4</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>FCFP4 Fingerprint</p>
 
@@ -898,7 +898,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FCFP6" class="doc_header"><code>FCFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP6</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="FCFP6" class="doc_header"><code>FCFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L176" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP6</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>FCFP6 Fingerprint</p>
 
@@ -923,7 +923,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_to_array" class="doc_header"><code>fp_to_array</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L179" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_to_array</code>(<strong><code>fp</code></strong>)</p>
+<h4 id="fp_to_array" class="doc_header"><code>fp_to_array</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_to_array</code>(<strong><code>fp</code></strong>)</p>
 </blockquote>
 <p>Converts RDKit <code>ExplicitBitVec</code> to numpy array</p>
 
@@ -948,7 +948,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tanimoto" class="doc_header"><code>tanimoto</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L185" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="tanimoto" class="doc_header"><code>tanimoto</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Tanimoto similarity</p>
 
@@ -973,7 +973,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tanimoto_rd" class="doc_header"><code>tanimoto_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L189" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="tanimoto_rd" class="doc_header"><code>tanimoto_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L190" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -997,7 +997,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice" class="doc_header"><code>dice</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="dice" class="doc_header"><code>dice</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L193" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Dice similarity</p>
 
@@ -1022,7 +1022,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice_rd" class="doc_header"><code>dice_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="dice_rd" class="doc_header"><code>dice_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L197" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1046,7 +1046,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cosine" class="doc_header"><code>cosine</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L199" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="cosine" class="doc_header"><code>cosine</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Cosine similarity</p>
 
@@ -1071,7 +1071,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cosine_rd" class="doc_header"><code>cosine_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="cosine_rd" class="doc_header"><code>cosine_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L204" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1113,7 +1113,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP" class="doc_header"><code>class</code> <code>FP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L208" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP</code>()</p>
+<h2 id="FP" class="doc_header"><code>class</code> <code>FP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L209" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP</code>()</p>
 </blockquote>
 <p>FP - class for manipulating molecular fingerprints</p>
 <p>fp = FP()
@@ -1140,7 +1140,7 @@ mol_fp = fp.get_fingerprint(mol, 'ECFP6')</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_fingerprint" class="doc_header"><code>get_fingerprint</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L316" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_fingerprint</code>(<strong><code>mol</code></strong>, <strong><code>fp_type</code></strong>)</p>
+<h4 id="get_fingerprint" class="doc_header"><code>get_fingerprint</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L317" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_fingerprint</code>(<strong><code>mol</code></strong>, <strong><code>fp_type</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1164,7 +1164,7 @@ mol_fp = fp.get_fingerprint(mol, 'ECFP6')</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fingerprint_similarities" class="doc_header"><code>fingerprint_similarities</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fingerprint_similarities</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>, <strong><code>metric</code></strong>)</p>
+<h4 id="fingerprint_similarities" class="doc_header"><code>fingerprint_similarities</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L321" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fingerprint_similarities</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>, <strong><code>metric</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1225,7 +1225,7 @@ mol_fp = fp.get_fingerprint(mol, 'ECFP6')</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuse_on_atom_mapping" class="doc_header"><code>fuse_on_atom_mapping</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L325" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_atom_mapping</code>(<strong><code>fragment_string</code></strong>)</p>
+<h4 id="fuse_on_atom_mapping" class="doc_header"><code>fuse_on_atom_mapping</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L326" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_atom_mapping</code>(<strong><code>fragment_string</code></strong>)</p>
 </blockquote>
 <p>Inputs: <code>fragment_string</code>, str or Chem.Mol</p>
 <p>Outputs: str</p>
@@ -1281,7 +1281,7 @@ Mappings that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuse_on_link" class="doc_header"><code>fuse_on_link</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L380" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_link</code>(<strong><code>fragment_string</code></strong>, <strong><code>links</code></strong>)</p>
+<h4 id="fuse_on_link" class="doc_header"><code>fuse_on_link</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L381" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_link</code>(<strong><code>fragment_string</code></strong>, <strong><code>links</code></strong>)</p>
 </blockquote>
 <p>Inputs: <code>fragment_string</code>, str or Chem.Mol, <code>links</code>, list of defines linkages</p>
 <p>Outputs: str</p>
