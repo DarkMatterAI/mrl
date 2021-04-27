@@ -46,338 +46,7 @@ nb_path: "nbs/03_templates.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Property-Functions">Property Functions<a class="anchor-link" href="#Property-Functions"> </a></h2><p><a href="/mrl/templates.html#PropertyFunction"><code>PropertyFunction</code></a> classes serve two basic purposes. The <code>calc_property</code> function computes some function of a <code>Mol</code> object. The <code>criteria</code> function takes the output of <code>calc_property</code> and converts it to a boolean value.</p>
-<p>Property functions and classes that use property functions follow the convention that <code>True</code> means the input <code>Mol</code> has passed the <code>criteria</code> function, while <code>False</code> means the <code>Mol</code> has failed the <code>criteria</code>.</p>
-<p>This is important to keep in mind for substructure matching. Substructure matching with <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a> classes follows return <code>True</code> when a substructure match is found. If this is the desired behavior (ie validating a desired struture is the <code>Mol</code>), use the <a href="/mrl/templates.html#SmartsMatch"><code>SmartsMatch</code></a> class as a property function. If the opposite behavior is desired (ie excluding structures that match a filter), use the <a href="/mrl/templates.html#ExclusionMatch"><code>ExclusionMatch</code></a> property function which returns <code>False</code> when matches are found and <code>True</code> when no matches are found</p>
-
-</div>
-</div>
-</div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="PropertyFunction" class="doc_header"><code>class</code> <code>PropertyFunction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PropertyFunction</code>()</p>
-</blockquote>
-<p>PropertyFunction - base class for property functions.</p>
-<p>When subclassing, define the <code>calc_property</code> and <code>criteria</code> functions</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="MolProperty" class="doc_header"><code>class</code> <code>MolProperty</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L34" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolProperty</code>(<strong><code>mol_function</code></strong>) :: <a href="/mrl/templates.html#PropertyFunction"><code>PropertyFunction</code></a></p>
-</blockquote>
-<p>MolProperty - base property class for all properties that can be computed as <code>mol_function(mol)</code></p>
-<p>ex: prop_func = MolProperty(molwt)</p>
-<p>note that the <code>criteria</code> function is not defined here</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="RangeProperty" class="doc_header"><code>class</code> <code>RangeProperty</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L50" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RangeProperty</code>(<strong><code>mol_function</code></strong>, <strong><code>min_val</code></strong>=<em><code>None</code></em>, <strong><code>max_val</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#MolProperty"><code>MolProperty</code></a></p>
-</blockquote>
-<p>RangeProperty - class for calculating properties and evaluating them within a defined range</p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> and returns a numeric value
-    <code>min_val</code> - float, None, minimum value. Ignored if None
-    <code>max_val</code> - float, None, maximum value. Ignored if None</p>
-<p>If <code>min_val</code> and <code>max_val</code> are both None, <code>criteria</code> will always return True</p>
-<p>prop_func = RangeProperty(molwt, 100, 300)
-prop_func(to_mol('O=C(C)Oc1ccccc1C(=O)O'))</p>
-<blockquote><blockquote><p>True</p>
-</blockquote>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">prop_func</span> <span class="o">=</span> <span class="n">RangeProperty</span><span class="p">(</span><span class="n">molwt</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">prop_func</span><span class="p">(</span><span class="n">to_mol</span><span class="p">(</span><span class="s1">&#39;O=C(C)Oc1ccccc1C(=O)O&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="kc">True</span>
-
-<span class="n">prop_func</span> <span class="o">=</span> <span class="n">RangeProperty</span><span class="p">(</span><span class="n">molwt</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">prop_func</span><span class="p">(</span><span class="n">to_mol</span><span class="p">(</span><span class="s1">&#39;O=C(C)Oc1ccccc1C(=O)O&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="kc">False</span>
-
-<span class="n">prop_func</span> <span class="o">=</span> <span class="n">RangeProperty</span><span class="p">(</span><span class="n">molwt</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">prop_func</span><span class="p">(</span><span class="n">to_mol</span><span class="p">(</span><span class="s1">&#39;O=C(C)Oc1ccccc1C(=O)O&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="kc">True</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="SmartsMatch" class="doc_header"><code>class</code> <code>SmartsMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsMatch</code>(<strong><code>catalog</code></strong>, <strong><code>crit</code></strong>=<em><code>'any'</code></em>) :: <a href="/mrl/templates.html#PropertyFunction"><code>PropertyFunction</code></a></p>
-</blockquote>
-<p>SmartsMatch - class for substructure matching a <code>Mol</code> against a <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a></p>
-<p>Inputs:
-    <code>catalog</code> - a subclass of <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a>
-    <code>crit</code> - str ('any', 'all'). If any, will return True if any structure in <code>catalog</code> matches the <code>Mol</code>.</p>
-<p>catalog = PAINSACatalog()
-prop_func = SmartsMatch(catalog, crit='any')
-prop_func(to_mol('O=C(Cn1cnc2c1c(=O)n(C)c(=O)n2C)N/N=C/c1c(O)ccc2c1cccc2'))</p>
-<blockquote><blockquote><p>True</p>
-</blockquote>
-</blockquote>
-<p>prop_func = SmartsMatch(catalog, crit='all')
-prop_func(to_mol('O=C(Cn1cnc2c1c(=O)n(C)c(=O)n2C)N/N=C/c1c(O)ccc2c1cccc2'))</p>
-<blockquote><blockquote><p>False</p>
-</blockquote>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="SmartsMatch.from_smarts" class="doc_header"><code>SmartsMatch.from_smarts</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L117" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SmartsMatch.from_smarts</code>(<strong><code>smarts</code></strong>, <strong><code>crit</code></strong>=<em><code>'any'</code></em>)</p>
-</blockquote>
-<p>Returns a <a href="/mrl/templates.html#SmartsMatch"><code>SmartsMatch</code></a> object with a <a href="/mrl/chem.html#SmartsCatalog"><code>SmartsCatalog</code></a> from the given <code>smarts</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="ExclusionMatch" class="doc_header"><code>class</code> <code>ExclusionMatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ExclusionMatch</code>(<strong><code>catalog</code></strong>, <strong><code>crit</code></strong>=<em><code>'any'</code></em>) :: <a href="/mrl/templates.html#SmartsMatch"><code>SmartsMatch</code></a></p>
-</blockquote>
-<p>ExclusionMatch - class for exclusion matching a <code>Mol</code> against a <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a>.
-Returns <code>False</code> when <code>Mol</code> matches one of the filters in <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a></p>
-<p>Inputs:
-    <code>catalog</code> - a subclass of <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a>
-    <code>crit</code> - str ('any', 'all'). If any, will return True if any structure in <code>catalog</code> matches the <code>Mol</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">smarts</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;[*]-[#6]1:[#6]:[#6](-[#0]):[#6]:[#6](-[*]):[#6]:1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;[*]-[#6]1:[#6]:[#6](-[*]):[#6]:[#6]:[#6]:1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;[*]-[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;[*]-[#6]1:[#6]:[#6](-[#7]-[*]):[#6]:[#6]:[#6]:1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;[#6]1:[#6]:[#7]:[#6]:[#6]:[#6]:1&#39;</span>
-<span class="p">]</span>
-
-<span class="n">smiles</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;c1ccccc1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Cc1cc(NC)ccc1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Cc1cc(NC)cnc1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Cc1cccc(NCc2ccccc2)c1&#39;</span>
-<span class="p">]</span>
-
-<span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_mol</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">smiles</span><span class="p">]</span>
-
-<span class="n">prop_func</span> <span class="o">=</span> <span class="n">SmartsMatch</span><span class="o">.</span><span class="n">from_smarts</span><span class="p">(</span><span class="n">smarts</span><span class="p">,</span> <span class="n">crit</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">prop_func</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="kc">True</span>
-
-<span class="n">catalog</span> <span class="o">=</span> <span class="n">SmartsCatalog</span><span class="p">(</span><span class="n">smarts</span><span class="p">)</span>
-<span class="n">prop_func</span> <span class="o">=</span> <span class="n">SmartsMatch</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">crit</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">prop_func</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="kc">False</span>
-
-<span class="n">prop_func</span> <span class="o">=</span> <span class="n">ExclusionMatch</span><span class="o">.</span><span class="n">from_smarts</span><span class="p">(</span><span class="n">smarts</span><span class="p">,</span> <span class="n">crit</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">prop_func</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="kc">False</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="FingerprintSimilarity" class="doc_header"><code>class</code> <code>FingerprintSimilarity</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L140" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FingerprintSimilarity</code>(<strong><code>reference_fps</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>fp_metric</code></strong>, <strong><code>crit</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#PropertyFunction"><code>PropertyFunction</code></a></p>
-</blockquote>
-<p>PropertyFunction - base class for property functions.</p>
-<p>When subclassing, define the <code>calc_property</code> and <code>criteria</code> functions</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fp_sim</span> <span class="o">=</span> <span class="n">FingerprintSimilarity</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">fp_thresh</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">fp_sim</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-<span class="n">fp_sim</span> <span class="o">=</span> <span class="n">FingerprintSimilarity</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">fp_thresh</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">fp_sim</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Score-Functions">Score Functions<a class="anchor-link" href="#Score-Functions"> </a></h2><p><a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a> classes take the results of a <a href="/mrl/templates.html#PropertyFunction"><code>PropertyFunction</code></a> (both <code>calc_property</code> and <code>criteria</code>) and return a numeric score.</p>
+<h2 id="Score-Functions">Score Functions<a class="anchor-link" href="#Score-Functions"> </a></h2><p><a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a> classes take the outputs of a filter (both <code>property_function</code> and <code>criteria_function</code>, see <a href="/mrl/templates.html#Filter"><code>Filter</code></a> for more details) and return a numeric score. For more</p>
 <p><a href="/mrl/templates.html#ConstantScore"><code>ConstantScore</code></a> returns a standard value based on if the <code>criteria_output</code> is <code>True</code> or <code>False</code>. For more sophisticated scores like those seen in MPO functions, something like <a href="/mrl/templates.html#LinearDecayScore"><code>LinearDecayScore</code></a> can be used, which returns a constant score within a certain range, but decays the score outside that range.</p>
 <p><a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a> can be subclassed with any variant that takes as input <code>property_output</code> and <code>criteria_output</code> and returns a numeric value</p>
 
@@ -395,7 +64,7 @@ Returns <code>False</code> when <code>Mol</code> matches one of the filters in <
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ScoreFunction" class="doc_header"><code>class</code> <code>ScoreFunction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L177" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScoreFunction</code>()</p>
+<h2 id="ScoreFunction" class="doc_header"><code>class</code> <code>ScoreFunction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScoreFunction</code>()</p>
 </blockquote>
 <p>Base score function</p>
 
@@ -420,7 +89,7 @@ Returns <code>False</code> when <code>Mol</code> matches one of the filters in <
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NoScore" class="doc_header"><code>class</code> <code>NoScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L182" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoScore</code>() :: <a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a></p>
+<h2 id="NoScore" class="doc_header"><code>class</code> <code>NoScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L24" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoScore</code>() :: <a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a></p>
 </blockquote>
 <p>Pass through for no score</p>
 
@@ -445,7 +114,57 @@ Returns <code>False</code> when <code>Mol</code> matches one of the filters in <
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantScore" class="doc_header"><code>class</code> <code>ConstantScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L187" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantScore</code>(<strong><code>pass_score</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a></p>
+<h2 id="WeightedPropertyScore" class="doc_header"><code>class</code> <code>WeightedPropertyScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L29" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedPropertyScore</code>(<strong><code>weight</code></strong>=<em><code>1.0</code></em>) :: <a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a></p>
+</blockquote>
+<p>Returns property score multiplied by <code>weight</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="PropertyFunctionScore" class="doc_header"><code>class</code> <code>PropertyFunctionScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L37" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PropertyFunctionScore</code>(<strong><code>function</code></strong>) :: <a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a></p>
+</blockquote>
+<p>Returns output <code>function(property_output)</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ConstantScore" class="doc_header"><code>class</code> <code>ConstantScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantScore</code>(<strong><code>pass_score</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a></p>
 </blockquote>
 <p>ConstantScore - returns <code>pass_score</code> if <code>criteria_output=True</code>, else `fail_score</p>
 
@@ -470,7 +189,7 @@ Returns <code>False</code> when <code>Mol</code> matches one of the filters in <
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LinearDecayScore" class="doc_header"><code>class</code> <code>LinearDecayScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L203" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinearDecayScore</code>(<strong><code>pass_score</code></strong>, <strong><code>low_start</code></strong>, <strong><code>low_end</code></strong>, <strong><code>high_start</code></strong>, <strong><code>high_end</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#ConstantScore"><code>ConstantScore</code></a></p>
+<h2 id="LinearDecayScore" class="doc_header"><code>class</code> <code>LinearDecayScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L61" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinearDecayScore</code>(<strong><code>pass_score</code></strong>, <strong><code>low_start</code></strong>, <strong><code>low_end</code></strong>, <strong><code>high_start</code></strong>, <strong><code>high_end</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#ConstantScore"><code>ConstantScore</code></a></p>
 </blockquote>
 <p>LinearDecayScore - score with linear decay. <code>low_start&lt;low_end&lt;high_start&lt;high_end</code></p>
 <p>Returns <code>pass_score</code> if <code>criteria_output=True</code> and
@@ -521,7 +240,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&lt;matplotlib.lines.Line2D at 0x818fdcd30&gt;]</pre>
+<pre>[&lt;matplotlib.lines.Line2D at 0x821a56358&gt;]</pre>
 </div>
 
 </div>
@@ -567,7 +286,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&lt;matplotlib.lines.Line2D at 0x819160710&gt;]</pre>
+<pre>[&lt;matplotlib.lines.Line2D at 0x821bd4f60&gt;]</pre>
 </div>
 
 </div>
@@ -592,7 +311,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Filter-Functions">Filter Functions<a class="anchor-link" href="#Filter-Functions"> </a></h2><p>Filter functions bundle a <a href="/mrl/templates.html#PropertyFunction"><code>PropertyFunction</code></a> with a <a href="/mrl/templates.html#ScoreFunction"><code>ScoreFunction</code></a>. Property functions</p>
+<h2 id="Filters">Filters<a class="anchor-link" href="#Filters"> </a></h2><p>Filters serve the function of defining some pass/fail criteria for a given molecule. This is done through the <code>property_function</code> and <code>criteria_function</code> methods. <code>property_function</code> computes some value based on the input molecule. <code>criteria_function</code> converts the output of <code>property_function</code> to a single boolean value.</p>
+<p>Filters follow the conovention that <code>True</code> means the input <code>Mol</code> has passed the <code>criteria_function</code> function, while <code>False</code> means the <code>Mol</code> has failed the <code>criteria_function</code>.</p>
+<p>Filters can optionally contain a score, which can be any of <code>(None, int, float, ScoreFunction)</code>. A score of <code>None</code> is converted to <a href="/mrl/templates.html#NoScore"><code>NoScore</code></a>, while a numeric score (int or float) is converted to <a href="/mrl/templates.html#ConstantScore"><code>ConstantScore</code></a>.</p>
 
 </div>
 </div>
@@ -608,12 +329,11 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterFunction" class="doc_header"><code>class</code> <code>FilterFunction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L293" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterFunction</code>(<strong><code>property_function</code></strong>, <strong><code>score_function</code></strong>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>)</p>
+<h2 id="Filter" class="doc_header"><code>class</code> <code>Filter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L151" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Filter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>)</p>
 </blockquote>
-<p>FilterFunction - base filter function class</p>
+<p>Filter - base filter function class</p>
 <p>Inputs:
-    <code>property_function</code> - subclass of <a href="/mrl/templates.html#PropertyFunction"><code>PropertyFunction</code></a>
-    <code>score_function</code> - one of (None, int, float, ScoreFunction), see <code>set_score</code>
+    <code>score</code> - one of (None, int, float, ScoreFunction), see <code>set_score</code>
     <code>name</code> - (str, None), filter name used for repr
     <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
 
@@ -634,6 +354,13 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/mrl/templates.html#ValidityFilter"><code>ValidityFilter</code></a> and <a href="/mrl/templates.html#SingleCompoundFilter"><code>SingleCompoundFilter</code></a> are general molecule quantity filters. Generative models may produce invalid structures or multiple compounds when a single compound is desired. These filters can be used to eliminate those outputs</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -645,9 +372,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SmartsMatch.from_smarts" class="doc_header"><code>SmartsMatch.from_smarts</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L117" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SmartsMatch.from_smarts</code>(<strong><code>smarts</code></strong>, <strong><code>crit</code></strong>=<em><code>'any'</code></em>)</p>
+<h2 id="ValidityFilter" class="doc_header"><code>class</code> <code>ValidityFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L213" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidityFilter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#Filter"><code>Filter</code></a></p>
 </blockquote>
-<p>Returns a <a href="/mrl/templates.html#SmartsMatch"><code>SmartsMatch</code></a> object with a <a href="/mrl/chem.html#SmartsCatalog"><code>SmartsCatalog</code></a> from the given <code>smarts</code></p>
+<p>ValidityFilter - checks to see if a given <code>Mol</code> is a valid compound</p>
 
 </div>
 
@@ -670,14 +397,91 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PropertyFilter" class="doc_header"><code>class</code> <code>PropertyFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L352" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PropertyFilter</code>(<strong><code>mol_function</code></strong>, <strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#FilterFunction"><code>FilterFunction</code></a></p>
+<h2 id="SingleCompoundFilter" class="doc_header"><code>class</code> <code>SingleCompoundFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L231" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SingleCompoundFilter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#Filter"><code>Filter</code></a></p>
+</blockquote>
+<p>SingleCompoundFilter - checks to see if a given <code>Mol</code> is a single compound</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">ValidityFilter</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;CC&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;cc&#39;</span><span class="p">)</span> <span class="c1"># invalid smiles</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">SingleCompoundFilter</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;CC&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;CC.CC&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>RDKit ERROR: [21:50:39] non-ring atom 0 marked aromatic
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The most common type of filter used is one that determines if a specific molecular property is within a certain range. This is implemented with the <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a> class. <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a> will work for any <code>mol_function</code> that takes in a <code>Mol</code> object and returns a numeric output. The numeric output is then compared to <code>min_val</code> and <code>max_val</code>. Unspecified bounds (ie <code>max_val=None</code>) are ignored.</p>
+<p>For convenience, a number of <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a> named after specific properties are provided</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="PropertyFilter" class="doc_header"><code>class</code> <code>PropertyFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L251" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PropertyFilter</code>(<strong><code>mol_function</code></strong>, <strong><code>min_val</code></strong>=<em><code>None</code></em>, <strong><code>max_val</code></strong>=<em><code>None</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>PropertyFilter - filters mols based on <code>mol_function</code></p>
 <p>Inputs:
     <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
+    <code>min_val</code> - (None, int, float), inclusive lower bound for filter (ignored if None)
+    <code>max_val</code> - (None, int, float), inclusive upper bound for filter (ignored if None)
+    <code>score</code> - one of (None, int, float, ScoreFunction), see <code>FilterFunction.set_score</code>
     <code>name</code> - (str, None), filter name used for repr
     <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
 
@@ -702,16 +506,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MolWtFilter" class="doc_header"><code>class</code> <code>MolWtFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L373" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolWtFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="MolWtFilter" class="doc_header"><code>class</code> <code>MolWtFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L284" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolWtFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>Molecular weight filter</p>
 
 </div>
 
@@ -734,16 +531,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HBDFilter" class="doc_header"><code>class</code> <code>HBDFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L377" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HBDFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="HBDFilter" class="doc_header"><code>class</code> <code>HBDFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L289" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HBDFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>Hydrogen bond donor filter</p>
 
 </div>
 
@@ -766,16 +556,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HBAFilter" class="doc_header"><code>class</code> <code>HBAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L381" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HBAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="HBAFilter" class="doc_header"><code>class</code> <code>HBAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HBAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>Hydrogen bond acceptor filter</p>
 
 </div>
 
@@ -798,16 +581,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TPSAPFilter" class="doc_header"><code>class</code> <code>TPSAPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L385" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TPSAPFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="TPSAPFilter" class="doc_header"><code>class</code> <code>TPSAPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TPSAPFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>TPSA filter</p>
 
 </div>
 
@@ -830,16 +606,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RotBondFilter" class="doc_header"><code>class</code> <code>RotBondFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L389" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RotBondFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="RotBondFilter" class="doc_header"><code>class</code> <code>RotBondFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L304" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RotBondFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>Rotatable bond filter</p>
 
 </div>
 
@@ -862,16 +631,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SP3Filter" class="doc_header"><code>class</code> <code>SP3Filter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L393" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SP3Filter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="SP3Filter" class="doc_header"><code>class</code> <code>SP3Filter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L309" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SP3Filter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>Fractioon sp3 filter</p>
 
 </div>
 
@@ -894,16 +656,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LogPFilter" class="doc_header"><code>class</code> <code>LogPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L397" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogPFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="LogPFilter" class="doc_header"><code>class</code> <code>LogPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L314" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogPFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>LogP filter</p>
 
 </div>
 
@@ -926,16 +681,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RingFilter" class="doc_header"><code>class</code> <code>RingFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L401" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RingFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="RingFilter" class="doc_header"><code>class</code> <code>RingFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RingFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>Ring filter</p>
 
 </div>
 
@@ -958,16 +706,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HeteroatomFilter" class="doc_header"><code>class</code> <code>HeteroatomFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L405" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HeteroatomFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="HeteroatomFilter" class="doc_header"><code>class</code> <code>HeteroatomFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L324" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HeteroatomFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>Heteroatom filter</p>
 
 </div>
 
@@ -990,16 +731,9 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AromaticRingFilter" class="doc_header"><code>class</code> <code>AromaticRingFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L409" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AromaticRingFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="AromaticRingFilter" class="doc_header"><code>class</code> <code>AromaticRingFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L329" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AromaticRingFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
-<p>PropertyFilter - filters mols based on <code>mol_function</code></p>
-<p>Inputs:
-    <code>mol_function</code> - any function that takes as input a <code>Mol</code> object and returns a single numeric value
-    <code>min_val</code> - (None, int, float), lower bound for filter (ignored if None)
-    <code>max_val</code> - (None, int, float), upper bound for filter (ignored if None)
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
-    <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+<p>Aromatic ring filter</p>
 
 </div>
 
@@ -1007,13 +741,6 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1029,14 +756,209 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StructureFilter" class="doc_header"><code>class</code> <code>StructureFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L416" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureFilter</code>(<strong><code>smarts</code></strong>, <strong><code>score</code></strong>, <strong><code>exclude</code></strong>=<em><code>True</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#FilterFunction"><code>FilterFunction</code></a></p>
+<h2 id="HeavyAtomsFilter" class="doc_header"><code>class</code> <code>HeavyAtomsFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L334" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HeavyAtomsFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+</blockquote>
+<p>Number of heavy atoms filter</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="MRFilter" class="doc_header"><code>class</code> <code>MRFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MRFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+</blockquote>
+<p>Molar refractivity of atoms filter</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ChargeFilter" class="doc_header"><code>class</code> <code>ChargeFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L344" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ChargeFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+</blockquote>
+<p>Formal charge of atoms filter</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TotalAtomFilter" class="doc_header"><code>class</code> <code>TotalAtomFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L349" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TotalAtomFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+</blockquote>
+<p>Total number of atoms filter (incudes H)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="QEDFilter" class="doc_header"><code>class</code> <code>QEDFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L354" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>QEDFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+</blockquote>
+<p>Total number of atoms filter (incudes H)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SAFilter" class="doc_header"><code>class</code> <code>SAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L359" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/templates.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+</blockquote>
+<p>SA Score fillter</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">PropertyFilter</span><span class="p">(</span><span class="n">molwt</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;O=C(C)Oc1ccccc1C(=O)O&#39;</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">PropertyFilter</span><span class="p">(</span><span class="n">molwt</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;O=C(C)Oc1ccccc1C(=O)O&#39;</span><span class="p">,</span> <span class="n">with_score</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;O=C(C)Oc1ccccc1C(=O)O&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">HeteroatomFilter</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;O=C(C)Oc1ccccc1C(=O)O&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Another common filter is based on substructure matching. Substructure filtering is typically done in a hard filter fashion used to remove compounds (ie exclude all compounds with PAINS structures).</p>
+<p>Substructure filters can also be used in a soft filter fashion to express a preference for molecular substructures. For example, if you would like (but not require) your compound to have a 3-ring scaffold system, that can be implemented through structural filtering as well.</p>
+<p>Structure filters take in a list of SMARTS to filter against (or any subclass of <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a>), as well as a <code>criteria</code> (any, all). <code>property_function</code> will return a single boolean value if <code>criteria='any'</code> (see <a href="/mrl/chem.html#Catalog.has_match"><code>Catalog.has_match</code></a>), or a list of booleans if <code>criteria='all'</code> (see <a href="/mrl/chem.html#Catalog.get_matches"><code>Catalog.get_matches</code></a>). <code>criteria_function</code> will then evaluate the <code>property_function</code> output based on <code>criteria</code>.</p>
+<p>The <code>exclude</code> parameter defines how the filter treats structure matches. Substructure matching returns <code>True</code> when a match is found. If <code>exclude=True</code>, the filter will return <code>False</code> when a match is found. If <code>exclude=False</code>, the filter will return <code>True</code> when a match is found.</p>
+<p>To make this more explicit, the <a href="/mrl/templates.html#ExclusionFilter"><code>ExclusionFilter</code></a> class always has the exclusion behavior.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="StructureFilter" class="doc_header"><code>class</code> <code>StructureFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L366" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureFilter</code>(<strong><code>smarts</code></strong>, <strong><code>exclude</code></strong>=<em><code>True</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>StructureFilter - filters mols based on structures in <code>smarts</code></p>
 <p>Inputs:
     <code>smarts</code> - (list, SmartsCatalog), list of smarts strings for filtering or <a href="/mrl/chem.html#SmartsCatalog"><code>SmartsCatalog</code></a>
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
     <code>exclude</code> - if True, filter returns <code>False</code> when a structure match is found
     <code>criteria</code> - ('any', 'all'), match criteria (match any filter, match all filters)
+    <code>score</code> - one of (None, int, float, ScoreFunction), see <code>FilterFunction.set_score</code>
     <code>name</code> - (str, None), filter name used for repr
     <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
 
@@ -1061,18 +983,106 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPFilter" class="doc_header"><code>class</code> <code>FPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L447" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPFilter</code>(<strong><code>reference_smiles</code></strong>, <strong><code>score</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>fp_metric</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#FilterFunction"><code>FilterFunction</code></a></p>
+<h2 id="ExclusionFilter" class="doc_header"><code>class</code> <code>ExclusionFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L414" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ExclusionFilter</code>(<strong><code>smarts</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#StructureFilter"><code>StructureFilter</code></a></p>
+</blockquote>
+<p>ExclusionFilter - excludes mols with substructure matches to <code>smarts</code></p>
+<p>Inputs:
+    <code>smarts</code> - (list, SmartsCatalog), list of smarts strings for filtering or <a href="/mrl/chem.html#SmartsCatalog"><code>SmartsCatalog</code></a>
+    <code>criteria</code> - ('any', 'all'), match criteria (match any filter, match all filters)
+    <code>score</code> - one of (None, int, float, ScoreFunction), see <code>FilterFunction.set_score</code>
+    <code>name</code> - (str, None), filter name used for repr
+    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">smarts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;[*]-[#6]1:[#6]:[#6](-[#0]):[#6]:[#6](-[*]):[#6]:1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;[*]-[#6]1:[#6]:[#6](-[*]):[#6]:[#6]:[#6]:1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;[*]-[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;[*]-[#6]1:[#6]:[#6](-[#7]-[*]):[#6]:[#6]:[#6]:1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;[#6]1:[#6]:[#7]:[#6]:[#6]:[#6]:1&#39;</span>
+<span class="p">]</span>
+
+<span class="n">smiles</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;c1ccccc1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Cc1cc(NC)ccc1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Cc1cc(NC)cnc1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Cc1cccc(NCc2ccccc2)c1&#39;</span>
+<span class="p">]</span>
+
+<span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_mol</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">smiles</span><span class="p">]</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">StructureFilter</span><span class="p">(</span><span class="n">smarts</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="kc">True</span>
+
+<span class="n">catalog</span> <span class="o">=</span> <span class="n">SmartsCatalog</span><span class="p">(</span><span class="n">smarts</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">StructureFilter</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="kc">False</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">StructureFilter</span><span class="p">(</span><span class="n">smarts</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="kc">False</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/mrl/templates.html#FPFilter"><code>FPFilter</code></a> allows for filtering based on fingerprint similarity. For a given molecule, a fingerpring of <code>fp_type</code> is generated and compared to <code>reference_fps</code> based on <code>fp_metric</code>. Fingerprint similarity scores greater than <code>fp_thresh</code> evaluate to <code>True</code>.</p>
+<p>See <a href="/mrl/chem.html#FP"><code>FP</code></a> for fingeprint types and similarity metrics.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="FPFilter" class="doc_header"><code>class</code> <code>FPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L435" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPFilter</code>(<strong><code>reference_fps</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>fp_metric</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/templates.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>FPFilter - filters mols based on fingerprint similarity to <code>reference_smiles</code></p>
 <p>Inputs:
     <code>reference_smiles</code> - (list), list of smiles or <code>Mol</code> objects for comparison
-    <code>score</code> - one of (None, int, float, ScoreFunction), see <a href="/mrl/templates.html#FilterFunction.set_score"><code>FilterFunction.set_score</code></a>
     <code>fp_type</code> - fingerprint function. see <a href="/mrl/chem.html#FP"><code>FP</code></a>
     <code>fp_metric</code> - fingerprint similarity metric. see <a href="/mrl/chem.html#FP"><code>FP</code></a>
     <code>criteria</code> - ('any', 'all'), match criteria (match any reference, match all references)
     <code>fp_thresh</code> - float, fingerprint similarity cutoff for defining a match
     <code>name</code> - (str, None), filter name used for repr
-    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)</p>
+    <code>fail_score</code> - (float, int), used in <code>set_score</code> if <code>score_function</code> is (int, float)
+    <code>score</code> - one of (None, int, float, ScoreFunction), see <code>FilterFunction.set_score</code></p>
 
 </div>
 
@@ -1094,35 +1104,6 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f1</span> <span class="o">=</span> <span class="n">StructureFilter</span><span class="p">(</span><span class="n">smarts</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">)</span>
-<span class="n">f2</span> <span class="o">=</span> <span class="n">PropertyFilter</span><span class="p">(</span><span class="n">heteroatoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">f3</span> <span class="o">=</span> <span class="n">FPFilter</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;ECFP6&#39;</span><span class="p">,</span> <span class="s1">&#39;tanimoto&#39;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f1</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1130,42 +1111,12 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 <div class="output_area">
 
 
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="FPFilter.from_smiles" class="doc_header"><code>FPFilter.from_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L483" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FPFilter.from_smiles</code>(<strong><code>reference_smiles</code></strong>, <strong><code>fp_type</code></strong>=<em><code>'ECFP6'</code></em>, <strong><code>fp_metric</code></strong>=<em><code>'tanimoto'</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0</code></em>)</p>
+</blockquote>
+<p>creates FPFilter from <code>reference_smiles</code></p>
+<p><code>reference_smiles</code> can be a list of smiles or a list of <code>Mols</code></p>
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[1, 0.0, 0.0, 0.0]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f2</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[0.0, 1, 1, 1]</pre>
 </div>
 
 </div>
@@ -1183,76 +1134,14 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f3</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">FPFilter</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">fp_thresh</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">FPFilter</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">fp_thresh</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">f</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[1, 1, 1, 1]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f4</span> <span class="o">=</span> <span class="n">HeteroatomFilter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f4</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">with_score</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[False, True, True, True]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -1268,113 +1157,6 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Template</span><span class="p">():</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hard_filters</span><span class="p">,</span> <span class="n">soft_filters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hard_filters</span> <span class="o">=</span> <span class="n">hard_filters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">soft_filters</span> <span class="o">=</span> <span class="n">soft_filters</span> <span class="k">if</span> <span class="n">soft_filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">hard_filters</span>
-        
-    <span class="k">def</span> <span class="nf">hf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">agg</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">):</span>
-        <span class="n">mol</span> <span class="o">=</span> <span class="n">to_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        
-        <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">filt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hard_filters</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">filt</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">with_score</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-            
-            <span class="k">if</span> <span class="n">agg</span><span class="o">==</span><span class="s1">&#39;all&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
-                <span class="k">break</span>
-                
-        <span class="k">if</span> <span class="n">agg</span><span class="o">==</span><span class="s1">&#39;all&#39;</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">agg</span><span class="o">==</span><span class="s1">&#39;any&#39;</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">outputs</span>
-            
-        <span class="k">return</span> <span class="n">output</span>
-    
-    <span class="k">def</span> <span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">):</span>
-        <span class="n">mol</span> <span class="o">=</span> <span class="n">to_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="mf">0.</span>
-        
-        <span class="k">for</span> <span class="n">filt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">soft_filters</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">+=</span> <span class="n">filt</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">with_score</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">output</span>
-    
-    <span class="k">def</span> <span class="nf">filter_and_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">):</span>
-        <span class="n">hardpass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hf</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">hardpass</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">hardpass</span>
-            
-        <span class="k">return</span> <span class="n">output</span>
-    
-    <span class="k">def</span> <span class="nf">screen_mols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mols</span><span class="p">):</span>
-        <span class="n">outputs</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_and_score</span><span class="p">,</span> <span class="n">mols</span><span class="p">)</span>
-        <span class="n">passes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">fails</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                <span class="n">fails</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">passes</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">mols</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
-                
-        <span class="k">return</span> <span class="p">[</span><span class="n">passes</span><span class="p">,</span> <span class="n">fails</span><span class="p">]</span>
-    
-    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="n">hard_filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hard_filters</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">hard_filters</span>
-        <span class="n">soft_filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">soft_filters</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">soft_filters</span>
-        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">hard_filters</span><span class="p">,</span> <span class="n">soft_filters</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">hf</span> <span class="o">=</span> <span class="s1">&#39;Hard Filter:</span><span class="se">\n\t\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hard_filters</span><span class="p">])</span>
-        <span class="n">sf</span> <span class="o">=</span> <span class="s1">&#39;Soft Filter:</span><span class="se">\n\t\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">soft_filters</span><span class="p">])</span>
-        <span class="n">rep_str</span> <span class="o">=</span> <span class="s1">&#39;Template</span><span class="se">\n\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">hf</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">sf</span>
-        <span class="k">return</span> <span class="n">rep_str</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">([</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">],</span> <span class="p">[</span><span class="n">f3</span><span class="p">,</span> <span class="n">f4</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">template</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1382,15 +1164,10 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 <div class="output_area">
 
 
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Template" class="doc_header"><code>class</code> <code>Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L499" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Template</code>(<strong><code>hard_filters</code></strong>, <strong><code>soft_filters</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
 
-<div class="output_text output_subarea output_execute_result">
-<pre>Template
-	Hard Filter:
-		Structure filter, criteria: any, exclude: True
-		heteroatoms (1, 5)
-	Soft Filter:
-		Fingerprint Filter, ECFP6, tanimoto, 4 references
-		heteroatoms (1, 5)</pre>
 </div>
 
 </div>
@@ -1404,16 +1181,55 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">template</span><span class="o">.</span><span class="n">hf</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">agg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mols</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hard_filters</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ValidityFilter</span><span class="p">(),</span>
+    <span class="n">SingleCompoundFilter</span><span class="p">(),</span>
+    <span class="n">MolWtFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
+    <span class="n">HBDFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="n">HBAFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="n">LogPFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="p">]</span>
+
+<span class="c1"># soft filters</span>
+<span class="n">soft_filters</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">TPSAPFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">RotBondFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">StructureFilter</span><span class="p">([</span><span class="s1">&#39;[*]-[#6]1:[#6]:[#6]:[#6]2:[#7]:[#6]:[#7H]:[#6]:2:[#6]:1&#39;</span><span class="p">],</span>
+                    <span class="n">exclude</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">]</span>
+
+<span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">hard_filters</span><span class="p">,</span> <span class="n">soft_filters</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">template</span><span class="o">.</span><span class="n">hf</span><span class="p">(</span><span class="s1">&#39;CC1=CN=C(C(=C1OC)C)CS(=O)C2=NC3=C(N2)C=C(C=C3)OC&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">template</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="s1">&#39;CC1=CN=C(C(=C1OC)C)CS(=O)C2=NC3=C(N2)C=C(C=C3)OC&#39;</span><span class="p">)</span><span class="o">==</span><span class="mf">3.0</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">hard_filters</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">soft_filters</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">hard_filters</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span> <span class="n">soft_filters</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+
+<span class="k">assert</span> <span class="p">(</span><span class="n">t1</span><span class="o">+</span><span class="n">t2</span><span class="p">)(</span><span class="n">mols</span><span class="p">)</span> <span class="o">==</span> <span class="n">template</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">t1</span><span class="o">+</span><span class="n">t2</span><span class="p">)(</span><span class="n">mols</span><span class="p">,</span> <span class="n">filter_type</span><span class="o">=</span><span class="s1">&#39;soft&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">template</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">filter_type</span><span class="o">=</span><span class="s1">&#39;soft&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -1421,9 +1237,11 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 <div class="output_area">
 
 
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ValidMoleculeTemplate" class="doc_header"><code>class</code> <code>ValidMoleculeTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L572" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidMoleculeTemplate</code>() :: <a href="/mrl/templates.html#Template"><code>Template</code></a></p>
+</blockquote>
+<p>Template for checking if an input is a single valid chemical structure</p>
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[[True, False], [False, True], [False, True], [False, True]]</pre>
 </div>
 
 </div>
@@ -1437,16 +1255,6 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">template</span><span class="o">.</span><span class="n">screen_mols</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1454,26 +1262,130 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 <div class="output_area">
 
 
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RuleOf5Template" class="doc_header"><code>class</code> <code>RuleOf5Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L581" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf5Template</code>() :: <a href="/mrl/templates.html#Template"><code>Template</code></a></p>
+</blockquote>
+<p>Template for Lipinski's rule of 5 (en.wikipedia.org/wiki/Lipinski%27s_rule_of_five)</p>
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[[],
- [&lt;rdkit.Chem.rdchem.Mol at 0x818d89ad0&gt;,
-  &lt;rdkit.Chem.rdchem.Mol at 0x818d71760&gt;,
-  &lt;rdkit.Chem.rdchem.Mol at 0x818d71da0&gt;,
-  &lt;rdkit.Chem.rdchem.Mol at 0x818d71710&gt;]]</pre>
 </div>
 
 </div>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="GhoseTemplate" class="doc_header"><code>class</code> <code>GhoseTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L592" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GhoseTemplate</code>() :: <a href="/mrl/templates.html#Template"><code>Template</code></a></p>
+</blockquote>
+<p>Template for Ghose filters (doi.org/10.1021/cc9800071)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="VeberTemplate" class="doc_header"><code>class</code> <code>VeberTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L603" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VeberTemplate</code>() :: <a href="/mrl/templates.html#Template"><code>Template</code></a></p>
+</blockquote>
+<p>Template for Veber filters (doi.org/10.1021/jm020017n)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="REOSTemplate" class="doc_header"><code>class</code> <code>REOSTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L612" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>REOSTemplate</code>() :: <a href="/mrl/templates.html#Template"><code>Template</code></a></p>
+</blockquote>
+<p>Template for REOS filters (10.1016/s0169-409x(02)00003-0)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RuleOf3Template" class="doc_header"><code>class</code> <code>RuleOf3Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates.py#L626" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf3Template</code>() :: <a href="/mrl/templates.html#Template"><code>Template</code></a></p>
+</blockquote>
+<p>Template for rule of 5 filter (doi.org/10.1016/S1359-6446(03)02831-9)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>subclass generic MPO templates</p>
 <p>add data filtering/storing</p>
 <p>add logging</p>
 
