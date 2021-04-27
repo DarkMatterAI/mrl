@@ -7,6 +7,7 @@ import time
 from functools import partial
 import itertools
 from collections import defaultdict
+import pickle
 
 # external
 import numpy as np

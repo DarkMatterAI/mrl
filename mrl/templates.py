@@ -267,7 +267,7 @@ class PropertyFilter(Filter):
         self.max_val = max_val
 
         if name is None:
-            name = mol_function.__name__ + f' ({min_val}, {max_val})'
+            name = mol_function.__name__
 
         super().__init__(score, name, fail_score=fail_score)
 
@@ -279,6 +279,10 @@ class PropertyFilter(Filter):
         upper_bound = (property_output<=self.max_val) if self.max_val is not None else True
         output = lower_bound and upper_bound
 
+        return output
+
+    def __repr__(self):
+        output = f'{self.name}' + f' ({self.min_val}, {self.max_val})'
         return output
 
 class MolWtFilter(PropertyFilter):
@@ -497,69 +501,189 @@ class FPFilter(Filter):
 # Cell
 
 class Template():
-    def __init__(self, hard_filters, soft_filters=None):
+    def __init__(self, hard_filters, soft_filters=[], use_lookup=True):
         self.hard_filters = hard_filters
-        self.soft_filters = soft_filters if soft_filters is not None else []
+        self.soft_filters = soft_filters
+        self.use_lookup = use_lookup
+
+        self.hard_log = pd.DataFrame(columns=['smiles']+list(range(len(self.hard_filters)))+['final'])
+        self.hard_col_names = ['smiles'] + [i.name for i in self.hard_filters] + ['final']
+        self.hard_lookup = {}
+
+        self.soft_log = pd.DataFrame(columns=['smiles']+list(range(len(self.soft_filters)))+['final'])
+        self.soft_col_names = ['smiles'] + [i.name for i in self.soft_filters] + ['final']
+        self.soft_lookup = {}
 
     def __call__(self, mols, filter_type='hard'):
-        return maybe_parallel(self.hf, mols) if filter_type=='hard' else maybe_parallel(self.sf, mols)
 
-    def hf(self, mol, agg='all'):
-        mol = to_mol(mol)
-
-        outputs = []
-        for filt in self.hard_filters:
-            result = filt(mol, with_score=False)
-            outputs.append(result)
-
-            if agg=='all' and not result:
-                break
-
-        if agg=='all':
-            output = all(outputs)
-        elif agg=='any':
-            output = any(outputs)
+        if filter_type=='hard':
+            outputs = maybe_parallel(self.hf, mols)
         else:
-            output = outputs
+            outputs = maybe_parallel(self.sf, mols)
 
-        return output
+        if is_container(mols):
+            return_outputs = [i[0] for i in outputs]
+            log_outputs = [i[1] for i in outputs if i[1]]
+        else:
+            return_outputs = outputs[0]
+            log_outputs = [outputs[1]]
+
+        self.log_data(log_outputs, filter_type=filter_type)
+
+        return return_outputs
+
+    def log_data(self, new_data, filter_type='hard'):
+
+        if filter_type=='hard':
+            new_df = pd.DataFrame(new_data, columns=self.hard_log.columns)
+            self.hard_log = self.hard_log.append(new_df)
+
+        if filter_type=='soft':
+            new_df = pd.DataFrame(new_data, columns=self.soft_log.columns)
+            self.soft_log = self.soft_log.append(new_df)
+
+        if self.use_lookup:
+            for item in new_data:
+                smile = item[0]
+                score = item[-1]
+
+                if filter_type=='hard' and not smile in self.hard_lookup.keys():
+                    self.hard_lookup[smile] = score
+
+                if filter_type=='soft' and not smile in self.soft_lookup.keys():
+                    self.soft_lookup[smile] = score
+
+    def clean_logs(self):
+        self.hard_log.drop_duplicates(subset='smiles')
+        self.hard_log.reset_index(inplace=True, drop=True)
+        self.soft_log.drop_duplicates(subset='smiles')
+        self.soft_log.reset_index(inplace=True, drop=True)
+
+    def clear_data(self):
+        self.hard_log = pd.DataFrame(columns=['smiles']+list(range(len(self.hard_filters)))+['final'])
+        self.hard_lookup = {}
+
+        self.soft_log = pd.DataFrame(columns=['smiles']+list(range(len(self.soft_filters)))+['final'])
+        self.soft_lookup = {}
+
+    def hf(self, mol, agg=True):
+        mol = to_mol(mol)
+        smile = to_smile(mol)
+
+        if self.use_lookup and smile in self.hard_lookup.keys():
+            output = self.hard_lookup[smile]
+            log_data = []
+
+        else:
+            filter_results = []
+            for filt in self.hard_filters:
+                filter_results.append(filt(mol, with_score=False))
+
+            if agg:
+                output = all(filter_results)
+                log_data = [smile]+filter_results+[output]
+
+            else:
+                output = filter_results
+                log_data = []
+
+        return output, log_data
 
     def sf(self, mol):
         mol = to_mol(mol)
-        output = 0.
+        smile = to_smile(mol)
 
-        for filt in self.soft_filters:
-            output += filt(mol, with_score=True)
-        return output
+        if self.use_lookup and smile in self.soft_lookup.keys():
+            output = self.soft_lookup[smile]
+            log_data = []
 
-    def filter_and_score(self, mol):
-        hardpass = self.hf(mol)
-        if hardpass:
-            output = self.sf(mol)
         else:
-            output = hardpass
+            filter_results = []
+            for filt in self.soft_filters:
+                filter_results.append(filt(mol, with_score=True))
 
-        return output
+            output = sum(filter_results)
+            log_data = [smile]+filter_results+[output]
+
+        return output, log_data
 
     def screen_mols(self, mols):
-        outputs = maybe_parallel(self.filter_and_score, mols)
-        passes = []
+
+        hardpasses = self.__call__(mols, filter_type='hard')
+
         fails = []
-        for i in range(len(outputs)):
-            if outputs[i] is False:
-                fails.append(mols[i])
+        remaining = []
+
+        for i in range(len(hardpasses)):
+            if hardpasses[i]:
+                remaining.append(mols[i])
             else:
-                passes.append([mols[i], outputs[i]])
+                fails.append(mols[i])
+
+        passes = []
+        if remaining:
+            softpasses = self.__call__(remaining, filter_type='soft')
+            passes = list(zip(remaining, softpasses))
 
         return [passes, fails]
 
-    def __add__(self, other):
+    def sample(self, n, log='hard'):
+        if log=='hard':
+            to_sample = self.hard_log[self.hard_log.final==True]
+            sample = to_sample.sample(n, replace=False)
+        else:
+            sample = self.soft_log.sample(n, replace=False)
+
+        return sample[['smiles', 'final']]
+
+    def sample_smiles(self, n, log='hard'):
+        return list(self.sample(n, log=log).smiles.values)
+
+    def save(self, filename, with_data=True):
+
+        if not with_data:
+            hard_log = self.hard_log
+            hard_lookup = self.hard_lookup
+
+            soft_log = self.soft_log
+            soft_lookup = self.soft_lookup
+
+            self.clear_data()
+
+        with open(filename, 'wb') as f:
+            pickle.dump(self, f)
+
+        if not with_data:
+            self.hard_log = hard_log
+            self.hard_lookup = hard_lookup
+
+            self.soft_log = soft_log
+            self.soft_lookup = soft_lookup
+
+    @classmethod
+    def from_file(cls, filename):
+        template = pickle.load(open(filename, 'rb'))
+        return template
+
+    def __add__(self, other, merge_data=True):
         hard_filters = self.hard_filters + other.hard_filters
         hard_filters = sorted(hard_filters, key=lambda x: x.priority, reverse=True)
 
         soft_filters = self.soft_filters + other.soft_filters
         soft_filters = sorted(soft_filters, key=lambda x: x.priority, reverse=True)
-        return Template(hard_filters, soft_filters)
+
+        if merge_data:
+            soft_smiles = list(self.soft_log.smiles.values) + list(other.soft_log.smiles.values)
+            soft_smiles = list(set(soft_smiles))
+
+            hard_smiles = list(self.hard_log.smiles.values) + list(other.hard_log.smiles.values)
+            hard_smiles = list(set(hard_smiles))
+
+            new_template = Template(hard_filters, soft_filters, use_lookup=self.use_lookup)
+            _ = new_template(hard_smiles, filter_type='hard')
+            _ = new_template(soft_smiles, filter_type='soft')
+
+        return new_template
 
     def __repr__(self):
         hf = 'Hard Filter:\n\t\t' + '\n\t\t'.join([i.__repr__() for i in self.hard_filters])
