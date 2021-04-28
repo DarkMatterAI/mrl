@@ -9,7 +9,6 @@ __all__ = ['ScoreFunction', 'NoScore', 'WeightedPropertyScore', 'PropertyFunctio
            'RuleOf3Template']
 
 # Cell
-# hide
 from .imports import *
 from .core import *
 from .chem import *
@@ -501,6 +500,15 @@ class FPFilter(Filter):
 # Cell
 
 class Template():
+    '''
+    Template - class for managing hard and soft filters
+
+    Inputs:
+        `hard_filters` - (list), list of `Filter` objects used for pass/fail screening
+        `soft_filters` - (list), list of `Filter` objects used for soft scoring
+        `use_lookup` - (bool), if True, filter results are stored in a lookup table. If a compound
+            is re-screened, the lookup value is returned
+    '''
     def __init__(self, hard_filters, soft_filters=[], use_lookup=True):
         self.hard_filters = hard_filters
         self.soft_filters = soft_filters
@@ -554,12 +562,14 @@ class Template():
                     self.soft_lookup[smile] = score
 
     def clean_logs(self):
+        'de-duplicate logs'
         self.hard_log.drop_duplicates(subset='smiles')
         self.hard_log.reset_index(inplace=True, drop=True)
         self.soft_log.drop_duplicates(subset='smiles')
         self.soft_log.reset_index(inplace=True, drop=True)
 
     def clear_data(self):
+        'delete logged data'
         self.hard_log = pd.DataFrame(columns=['smiles']+list(range(len(self.hard_filters)))+['final'])
         self.hard_lookup = {}
 
@@ -567,6 +577,7 @@ class Template():
         self.soft_lookup = {}
 
     def hf(self, mol, agg=True):
+        'run hard filters'
         mol = to_mol(mol)
         smile = to_smile(mol)
 
@@ -590,6 +601,7 @@ class Template():
         return output, log_data
 
     def sf(self, mol):
+        'run soft filters'
         mol = to_mol(mol)
         smile = to_smile(mol)
 
@@ -608,7 +620,7 @@ class Template():
         return output, log_data
 
     def screen_mols(self, mols):
-
+        'separate `mols` into passes and failures'
         hardpasses = self.__call__(mols, filter_type='hard')
 
         fails = []
@@ -628,6 +640,7 @@ class Template():
         return [passes, fails]
 
     def sample(self, n, log='hard'):
+        'sample logged data'
         if log=='hard':
             to_sample = self.hard_log[self.hard_log.final==True]
             sample = to_sample.sample(n, replace=False)
@@ -640,7 +653,13 @@ class Template():
         return list(self.sample(n, log=log).smiles.values)
 
     def save(self, filename, with_data=True):
+        '''
+        save - save `Template` object
 
+        Inputs
+            'filename' - str, save filename
+            `with_data` - bool, if True Template is saved with logged data
+        '''
         if not with_data:
             hard_log = self.hard_log
             hard_lookup = self.hard_lookup
@@ -662,10 +681,12 @@ class Template():
 
     @classmethod
     def from_file(cls, filename):
+        'load template from file'
         template = pickle.load(open(filename, 'rb'))
         return template
 
     def __add__(self, other, merge_data=True):
+        'merge two templates. If `merge_data`, logged data from each template is rescreened'
         hard_filters = self.hard_filters + other.hard_filters
         hard_filters = sorted(hard_filters, key=lambda x: x.priority, reverse=True)
 

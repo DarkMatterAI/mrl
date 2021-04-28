@@ -6,7 +6,7 @@ __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts'
            'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog',
            'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd',
            'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities', 'fuse_on_atom_mapping',
-           'fuse_on_link']
+           'fuse_on_link', 'add_map_nums', 'check_ring_bonds', 'StructureEnumerator']
 
 # Cell
 # hide
@@ -17,11 +17,15 @@ from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDCo
 from rdkit.Chem.FilterCatalog import *
 sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
 import sascorer
+from rdkit import RDLogger
+RDLogger.DisableLog('rdApp.*')
 
 # Cell
 def to_mol(smile_or_mol):
     if type(smile_or_mol) == str:
         mol = Chem.MolFromSmiles(smile_or_mol)
+        if mol is not None:
+            Chem.SanitizeMol(mol)
     else:
         mol = smile_or_mol
 
@@ -39,7 +43,7 @@ def to_smile(smile_or_mol):
 def to_smart(smart_or_mol):
 
     if type(smart_or_mol)==Chem.Mol:
-        smart = Chem.MolToSmiles(smart_or_mol)
+        smart = Chem.MolToSmarts(smart_or_mol)
     else:
         smart = smart_or_mol
 
@@ -463,3 +467,141 @@ def fuse_on_link(fragment_string, links):
 
     fused = to_mol('.'.join(fragments))
     return to_smile(fused)
+
+# Cell
+
+def add_map_nums(mol):
+    mol = to_mol(mol)
+
+    for i, atom in enumerate(mol.GetAtoms()):
+        atom.SetAtomMapNum(i+1)
+
+    return mol
+
+def check_ring_bonds(smile):
+    mol = to_mol(smile)
+    for atom in mol.GetAtoms():
+        if atom.GetHybridization()==Chem.rdchem.HybridizationType.SP and atom.IsInRing():
+            return False
+
+    return True
+
+class StructureEnumerator():
+    atomic_types = {
+                    'H':1,
+                    'C':6,
+                    'N':7,
+                    'O':8,
+                    'F':9,
+                    'Cl':17,
+                    'Br':35
+                    }
+
+    bond_types = {'single':Chem.rdchem.BondType.SINGLE,
+                  'double':Chem.rdchem.BondType.DOUBLE,
+                  'triple':Chem.rdchem.BondType.TRIPLE,
+                  'aromatic':Chem.rdchem.BondType.AROMATIC}
+
+    def __init__(self, smarts, atom_spec, bond_spec, max_num=1000000):
+
+        self.smarts = smarts
+        self.base_mol = Chem.MolFromSmarts(smarts)
+        self.atom_spec = atom_spec
+        self.bond_spec = bond_spec
+        self.max_num = max_num
+
+        key_list = list(atom_spec.keys()) + list(bond_spec.keys())
+        self.key_to_idx = {key_list[i] : i for i in range(len(key_list))}
+
+        self.iterator = itertools.product(*(list(atom_spec.values()) + list(bond_spec.values())))
+        self.num_combos = np.prod([len(i) for i in list(atom_spec.values()) + list(bond_spec.values())])
+
+        if self.num_combos < max_num:
+            self.combos = list(self.iterator)
+        else:
+            self.combos = []
+            for i in range(max_num):
+                self.combos.append(next(self.iterator))
+
+    def create_mols(self, max_num=None):
+        if max_num is None:
+            max_num = self.max_num
+
+        raw_smiles = maybe_parallel(self.create_mol, self.combos[:max_num])
+        clean_smiles = []
+
+        for s in raw_smiles:
+            if type(s)==str and ':' in s:
+                s = s.replace(':', '=') # convert incomplete aromatic rings to double bonds
+                m = to_mol(s)
+                if m is None:
+                    s = None
+
+            if s is not None:
+                clean_smiles.append(s)
+
+        smiles = list(set(clean_smiles))
+        return smiles
+
+    def decorate_smiles(self, smiles, num_attachments):
+        decorated = [self.decorate_smile(i, num_attachments) for i in smiles]
+        decorated = [i for i in decorated if i]
+        decorated = flatten_list_of_lists(decorated)
+        decorated = list(set(decorated))
+        return decorated
+
+    def create_mol(self, code):
+        new_mol = Chem.RWMol(self.base_mol)
+
+        for bond in new_mol.GetBonds():
+            start = bond.GetBeginAtom().GetAtomMapNum()
+            end = bond.GetEndAtom().GetAtomMapNum()
+            if (start, end) in self.key_to_idx.keys():
+                bond_id = self.bond_types[code[self.key_to_idx[(start, end)]]]
+                bond.SetBondType(bond_id)
+
+            if (end, start) in self.key_to_idx.keys():
+                bond_id = self.bond_types[code[self.key_to_idx[(end, start)]]]
+                bond.SetBondType(bond_id)
+
+        for atom in new_mol.GetAtoms():
+            map_num = atom.GetAtomMapNum()
+            if map_num in self.key_to_idx.keys():
+                atom_id = self.atomic_types[code[self.key_to_idx[map_num]]]
+                atom.SetAtomicNum(atom_id)
+            atom.ClearProp('molAtomMapNumber')
+
+        mol = new_mol.GetMol()
+
+        try:
+            Chem.SanitizeMol(mol)
+            mol = to_mol(to_smile(mol))
+            output = to_smile(mol)
+        except:
+            output = None
+
+        return output
+
+    def decorate_smile(self, smile, num_attachments):
+        mol = to_mol(smile)
+
+        to_decorate = []
+        for atom in mol.GetAtoms():
+            if atom.GetNumImplicitHs()>0:
+                to_decorate.append(atom.GetIdx())
+
+        decorated = []
+        if len(to_decorate)>=num_attachments:
+            dec_combos = list(itertools.combinations(to_decorate, num_attachments))
+
+            for dc in dec_combos:
+                new_mol = Chem.RWMol(mol)
+                for atom_id in dc:
+                    new_id = new_mol.AddAtom(Chem.Atom('*'))
+                    new_mol.AddBond(atom_id, new_id, Chem.rdchem.BondType.SINGLE)
+
+                new_mol = new_mol.GetMol()
+                Chem.SanitizeMol(new_mol)
+                decorated.append(to_smile(new_mol))
+
+        return decorated
