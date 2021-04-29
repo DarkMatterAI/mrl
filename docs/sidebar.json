@@ -1,8 +1,16 @@
 {
-  "mrl": {
-    "Overview": "/",
-    "Core": "core.html",
-    "Chem": "chem.html",
-    "Templates": "templates.html"
-  }
+    "MRL": {
+        "Overview" : "/"
+    },
+    "Core" : {
+        "Core" : "core.html"
+    },
+    "Chem" : {
+        "Chem" : "chem.html"
+    },
+    "Tempates" : {
+        "Filters" : "template.filters.html",
+        "Templates" : "template.template.html"
+    }
+    
 }
