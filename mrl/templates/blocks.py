@@ -51,7 +51,7 @@ class Block():
         if hardpass:
             score = self.template(mol, filter_type='soft')
         else:
-            score = self.template.failscore
+            score = self.template.fail_score
 
         return [hardpass, score]
 
@@ -164,7 +164,7 @@ class ConstantMolBlock(ConstantBlock):
         self.pattern = re.compile('\[(.*?)\*:(.*?)]')
         self.links = self.pattern.findall(smile)
 
-    def sample_smile(self, n):
+    def sample_smiles(self, n):
         return [self.smile]*n
 
     def __repr__(self):

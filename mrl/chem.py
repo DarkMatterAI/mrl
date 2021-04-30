@@ -7,7 +7,7 @@ __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts'
            'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd',
            'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities', 'fragment_mol', 'fragment_smile',
            'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums', 'check_ring_bonds',
-           'StructureEnumerator']
+           'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator']
 
 # Cell
 # hide
@@ -391,9 +391,20 @@ def fingerprint_similarities(fps1, fps2, metric):
 # Cell
 
 def fragment_mol(mol, max_cuts, return_mols=False):
+    'Wrapper for RDKit mol fragmentation'
     return rdMMPA.FragmentMol(mol, maxCuts=max_cuts, resultsAsMols=return_mols)
 
 def fragment_smile(smile, cuts):
+    '''
+    fragment_smile - fragment `smile` based on `cuts`
+
+    `smile` - str, smiles string to fragment
+
+    `cuts` - int, list of ints. Number of cuts to make. If list,
+     code iterates over items in `cuts` and generates fragments from each value.
+     Note that the RDKit fragmentation uses only a single cut value. So fragmenting with
+     5 cuts will not include the result of fragmenting with 4 cuts
+    '''
     mol = to_mol(smile)
     Chem.rdmolops.RemoveStereochemistry(mol)
 
@@ -430,6 +441,7 @@ def fragment_smile(smile, cuts):
     return clean_frags
 
 def fragment_smiles(smiles, cuts):
+    'fragment and deduplicate a list of smiles'
     frags = maybe_parallel(fragment_smile, smiles, cuts=cuts)
     frags = deduplicate_list(flatten_list_of_lists(frags))
     return frags
@@ -522,6 +534,7 @@ def fuse_on_link(fragment_string, links):
 # Cell
 
 def add_map_nums(mol):
+    'Adds map numbers to all atoms in `mol`'
     mol = to_mol(mol)
 
     for i, atom in enumerate(mol.GetAtoms()):
@@ -530,6 +543,7 @@ def add_map_nums(mol):
     return mol
 
 def check_ring_bonds(smile):
+    'Looks for SP hybridized atoms in rings'
     mol = to_mol(smile)
     for atom in mol.GetAtoms():
         if atom.GetHybridization()==Chem.rdchem.HybridizationType.SP and atom.IsInRing():
@@ -537,7 +551,95 @@ def check_ring_bonds(smile):
 
     return True
 
+
+def decorate_smile(smile, num_attachments):
+    '''
+    decorate_smiles - adds wildcard atoms to smile based on num_attachments.
+     If there are N atoms with at lest one implicit hydrogen, N choose num_attachments
+     combinations are generated
+    '''
+    mol = to_mol(smile)
+
+    to_decorate = []
+    for atom in mol.GetAtoms():
+        if atom.GetNumImplicitHs()>0:
+            to_decorate.append(atom.GetIdx())
+
+    decorated = []
+    if len(to_decorate)>=num_attachments:
+        dec_combos = list(itertools.combinations(to_decorate, num_attachments))
+
+        for dc in dec_combos:
+            new_mol = Chem.RWMol(mol)
+            for atom_id in dc:
+                new_id = new_mol.AddAtom(Chem.Atom('*'))
+                new_mol.AddBond(atom_id, new_id, Chem.rdchem.BondType.SINGLE)
+
+            new_mol = new_mol.GetMol()
+            Chem.SanitizeMol(new_mol)
+            decorated.append(to_smile(new_mol))
+
+    return decorated
+
+def decorate_smiles(smiles, num_attachments):
+    "Decorate all items in `smiles` and cleans results"
+    decorated = [decorate_smile(i, num_attachments) for i in smiles]
+    decorated = [i for i in decorated if i]
+    decorated = flatten_list_of_lists(decorated)
+    decorated = deduplicate_list(decorated)
+    return decorated
+
+def remove_atom(rwmol, atom_idx, add_bond=True):
+    '''
+    remove_atom - removes atom based on `atom_idx`. If `add_bond` and the removed
+     atom is connected to two other heavy atoms, a single bond is formed between neighbors
+    '''
+    atom = rwmol.GetAtomWithIdx(atom_idx)
+    bonds = atom.GetBonds()
+
+    if len(bonds)==1:
+        rwmol.RemoveAtom(atom_idx)
+    elif len(bonds)==2 and add_bond:
+        neighbors = atom.GetNeighbors()
+        n1 = neighbors[0].GetIdx()
+        n2 = neighbors[1].GetIdx()
+        rwmol.AddBond(n1, n2, order=Chem.rdchem.BondType.SINGLE)
+        rwmol.RemoveAtom(atom_idx)
+    else:
+        pass
+
+    return rwmol
+
+def generate_spec_template(mol):
+    'generates blank atom_spec and bond_spec for mol. returns blank specs and matching smarts'
+    mol = add_map_nums(mol)
+
+    atom_spec = {atom.GetAtomMapNum():[] for atom in mol.GetAtoms()}
+    bond_spec = {(bond.GetBeginAtom().GetAtomMapNum(), bond.GetEndAtom().GetAtomMapNum()):[]
+                 for bond in mol.GetBonds()}
+
+    return atom_spec, bond_spec, to_smart(mol)
+
+
 class StructureEnumerator():
+    '''
+    StructureEnumerator - class for enumerating molecular structures
+
+    Inputs:
+
+        `smarts` - str, base smarts string to enumerate
+
+        `atom_spec` - dict of the form `{atom_map_num:[allowed_atom_types]}` where elements in
+         `allowed_atom_types` match keys in `self.atom_types`
+
+        `bond_spec` - dict of the form `{(bond_start_map_num, bond_end_map_num) : [possible_bond_types]}`
+         where elements in `possible_bond_types` match keys in `self.bond_types`
+
+         `max_num` - int, max number of combinations to iterate
+
+         `substitute_bonds` - None, list. List of bond types for new bonds formed from removing atoms.
+          Bond types should match keys in `self.bond_types`. If None, all keys in `self.bond_types` are used
+    '''
     atomic_types = {
                     'H':1,
                     'C':6,
@@ -553,20 +655,28 @@ class StructureEnumerator():
                   'triple':Chem.rdchem.BondType.TRIPLE,
                   'aromatic':Chem.rdchem.BondType.AROMATIC}
 
-    def __init__(self, smarts, atom_spec, bond_spec, max_num=1000000):
+    def __init__(self, smarts, atom_spec, bond_spec, max_num=1000000, substitute_bonds=None):
 
         self.smarts = smarts
         self.base_mol = Chem.MolFromSmarts(smarts)
         self.atom_spec = atom_spec
         self.bond_spec = bond_spec
         self.max_num = max_num
+        self.clean_specs()
+
+        if substitute_bonds is not None:
+            self.substitute_bonds = substitute_bonds
+        else:
+            self.substitute_bonds = list(self.bond_types.keys())
 
         key_list = list(atom_spec.keys()) + list(bond_spec.keys())
         self.key_to_idx = {key_list[i] : i for i in range(len(key_list))}
 
+        # generate combinations based on atom_spec and bond_spec
         self.iterator = itertools.product(*(list(atom_spec.values()) + list(bond_spec.values())))
         self.num_combos = np.prod([len(i) for i in list(atom_spec.values()) + list(bond_spec.values())])
 
+        # write combinations into memory
         if self.num_combos < max_num:
             self.combos = list(self.iterator)
         else:
@@ -574,7 +684,88 @@ class StructureEnumerator():
             for i in range(max_num):
                 self.combos.append(next(self.iterator))
 
+        self.combos = [dict(zip(self.key_to_idx.keys(),i)) for i in self.combos]
+
+        # check conditions for atom removal
+        self.check_removals()
+        # update combos based on atom removal
+        self.combos = flatten_list_of_lists([self.check_combo(i) for i in self.combos])
+
+    def clean_specs(self):
+        'cleans empty entries from `atom_spec` and `bond_spec`'
+
+        atom_remove = []
+        bond_remove = []
+        for k,v in self.atom_spec.items():
+            if not v:
+                atom_remove.append(k)
+
+        for k,v in self.bond_spec.items():
+            if not v:
+                bond_remove.append(k)
+
+        for k in atom_remove:
+            self.atom_spec.pop(k)
+
+
+        for k in bond_remove:
+            self.bond_spec.pop(k)
+
+    def check_removals(self):
+        '''
+        check_removals
+
+        If atoms removals are possible in the given atom_spec, a new bond may be added.
+         If the removed atom has the form `R1-atom_to_remove-R2`, the ouput will be `R1-R2`.
+         This function determines the map numbers of the removed bonds and the added bonds
+        '''
+        self.removal_dict = {}
+
+        for map_num, values in self.atom_spec.items():
+            if -1 in values:
+                atom = [i for i in self.base_mol.GetAtoms() if i.GetAtomMapNum()==map_num][0]
+                bonds = atom.GetBonds()
+                if len(bonds)==2:
+
+                    neighbors = atom.GetNeighbors()
+                    n1 = neighbors[0].GetAtomMapNum()
+                    n2 = neighbors[1].GetAtomMapNum()
+                    new_bond = (n1,n2)
+                    removed_bonds = [(n1,map_num), (n2,map_num)]
+
+                    self.removal_dict[map_num] = {'new_bond':new_bond,
+                                                  'removed_bonds':removed_bonds}
+
+    def check_combo(self, combo):
+        '''
+        If a combination contains atom removal, the combination is updated to remove
+         deleted bonds and create a new bond
+        '''
+        c_out = []
+        for removal_num in self.removal_dict.keys():
+            if combo[removal_num]==-1:
+                removed_bonds = self.removal_dict[removal_num]['removed_bonds']
+                for rb in removed_bonds:
+                    n1, n2 = rb
+                    if (n1,n2) in combo.keys():
+                        combo.pop((n1,n2))
+                    if (n2,n1) in combo.keys():
+                        combo.pop((n2,n1))
+
+                added_bond = self.removal_dict[removal_num]['new_bond']
+                for new_bondtype in self.substitute_bonds:
+                    new_combo = combo.copy()
+                    new_combo[added_bond] = new_bondtype
+                    c_out.append(new_combo)
+
+        if not c_out:
+            c_out = [combo]
+
+        return c_out
+
+
     def create_mols(self, max_num=None):
+        "Creates `max_num` smiles strings from `self.combos` and cleans up results"
         if max_num is None:
             max_num = self.max_num
 
@@ -594,33 +785,50 @@ class StructureEnumerator():
         smiles = deduplicate_list(clean_smiles)
         return smiles
 
-    def decorate_smiles(self, smiles, num_attachments):
-        decorated = [self.decorate_smile(i, num_attachments) for i in smiles]
-        decorated = [i for i in decorated if i]
-        decorated = flatten_list_of_lists(decorated)
-        decorated = deduplicate_list(decorated)
-        return decorated
-
     def create_mol(self, code):
+        "Edits `self.base_mol` depending on `code`"
         new_mol = Chem.RWMol(self.base_mol)
 
+        atoms_to_remove = []
+        # iterate atoms
+        for atom in new_mol.GetAtoms():
+            map_num = atom.GetAtomMapNum()
+            if map_num in code.keys():
+                atom_code = code[map_num]
+                if atom_code == -1:
+                    atoms_to_remove.append(atom.GetAtomMapNum())
+                else:
+                    atom_id = self.atomic_types[atom_code]
+                    atom.SetAtomicNum(atom_id)
+
+        for map_num in atoms_to_remove:
+            atom_idx = [i.GetIdx() for i in new_mol.GetAtoms() if i.GetAtomMapNum()==map_num][0]
+            remove_atom(new_mol, atom_idx)
+
+        bonds_to_remove = []
+        # iterate bonds
         for bond in new_mol.GetBonds():
             start = bond.GetBeginAtom().GetAtomMapNum()
             end = bond.GetEndAtom().GetAtomMapNum()
-            if (start, end) in self.key_to_idx.keys():
-                bond_id = self.bond_types[code[self.key_to_idx[(start, end)]]]
-                bond.SetBondType(bond_id)
 
-            if (end, start) in self.key_to_idx.keys():
-                bond_id = self.bond_types[code[self.key_to_idx[(end, start)]]]
-                bond.SetBondType(bond_id)
+            if (start, end) in code.keys():
+                bond_code = code[(start, end)]
+            elif (end, start) in code.keys():
+                bond_code = code[(end, start)]
+            else:
+                bond_code = None
+
+            if bond_code is not None:
+                if bond_code == -1:
+                    bonds_to_remove.append((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
+                else:
+                    bond.SetBondType(self.bond_types[bond_code])
 
         for atom in new_mol.GetAtoms():
-            map_num = atom.GetAtomMapNum()
-            if map_num in self.key_to_idx.keys():
-                atom_id = self.atomic_types[code[self.key_to_idx[map_num]]]
-                atom.SetAtomicNum(atom_id)
             atom.ClearProp('molAtomMapNumber')
+
+        for to_remove in bonds_to_remove:
+            new_mol.RemoveBond(to_remove[0], to_remove[1])
 
         mol = new_mol.GetMol()
 
@@ -632,27 +840,3 @@ class StructureEnumerator():
             output = None
 
         return output
-
-    def decorate_smile(self, smile, num_attachments):
-        mol = to_mol(smile)
-
-        to_decorate = []
-        for atom in mol.GetAtoms():
-            if atom.GetNumImplicitHs()>0:
-                to_decorate.append(atom.GetIdx())
-
-        decorated = []
-        if len(to_decorate)>=num_attachments:
-            dec_combos = list(itertools.combinations(to_decorate, num_attachments))
-
-            for dc in dec_combos:
-                new_mol = Chem.RWMol(mol)
-                for atom_id in dc:
-                    new_id = new_mol.AddAtom(Chem.Atom('*'))
-                    new_mol.AddBond(atom_id, new_id, Chem.rdchem.BondType.SINGLE)
-
-                new_mol = new_mol.GetMol()
-                Chem.SanitizeMol(new_mol)
-                decorated.append(to_smile(new_mol))
-
-        return decorated

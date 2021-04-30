@@ -1597,6 +1597,7 @@ Parallel execution succeeded
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="fragment_mol" class="doc_header"><code>fragment_mol</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L393" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_mol</code>(<strong><code>mol</code></strong>, <strong><code>max_cuts</code></strong>, <strong><code>return_mols</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
+<p>Wrapper for RDKit mol fragmentation</p>
 
 </div>
 
@@ -1619,8 +1620,14 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fragment_smile" class="doc_header"><code>fragment_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L396" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smile</code>(<strong><code>smile</code></strong>, <strong><code>cuts</code></strong>)</p>
+<h4 id="fragment_smile" class="doc_header"><code>fragment_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L397" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smile</code>(<strong><code>smile</code></strong>, <strong><code>cuts</code></strong>)</p>
 </blockquote>
+<p>fragment_smile - fragment <code>smile</code> based on <code>cuts</code></p>
+<p><code>smile</code> - str, smiles string to fragment</p>
+<p><code>cuts</code> - int, list of ints. Number of cuts to make. If list,
+ code iterates over items in <code>cuts</code> and generates fragments from each value.
+ Note that the RDKit fragmentation uses only a single cut value. So fragmenting with
+ 5 cuts will not include the result of fragmenting with 4 cuts</p>
 
 </div>
 
@@ -1643,8 +1650,9 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fragment_smiles" class="doc_header"><code>fragment_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L432" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>cuts</code></strong>)</p>
+<h4 id="fragment_smiles" class="doc_header"><code>fragment_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L443" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>cuts</code></strong>)</p>
 </blockquote>
+<p>fragment and deduplicate a list of smiles</p>
 
 </div>
 
@@ -1685,7 +1693,7 @@ Parallel execution succeeded
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;*CCCCC&#39;, &#39;*CCCC&#39;, &#39;*CCCCCC&#39;, &#39;*CCCCCCC&#39;, &#39;*C&#39;, &#39;*CCC&#39;, &#39;*CC&#39;]</pre>
+<pre>[&#39;*C&#39;, &#39;*CCCCCCC&#39;, &#39;*CCC&#39;, &#39;*CCCCC&#39;, &#39;*CCCCCC&#39;, &#39;*CC&#39;, &#39;*CCCC&#39;]</pre>
 </div>
 
 </div>
@@ -1707,7 +1715,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuse_on_atom_mapping" class="doc_header"><code>fuse_on_atom_mapping</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L438" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_atom_mapping</code>(<strong><code>fragment_string</code></strong>)</p>
+<h4 id="fuse_on_atom_mapping" class="doc_header"><code>fuse_on_atom_mapping</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L450" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_atom_mapping</code>(<strong><code>fragment_string</code></strong>)</p>
 </blockquote>
 <p>Inputs: <code>fragment_string</code>, str or Chem.Mol</p>
 <p>Outputs: str</p>
@@ -1763,7 +1771,7 @@ Mappings that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuse_on_link" class="doc_header"><code>fuse_on_link</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L493" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_link</code>(<strong><code>fragment_string</code></strong>, <strong><code>links</code></strong>)</p>
+<h4 id="fuse_on_link" class="doc_header"><code>fuse_on_link</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L505" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_link</code>(<strong><code>fragment_string</code></strong>, <strong><code>links</code></strong>)</p>
 </blockquote>
 <p>Inputs: <code>fragment_string</code>, str or Chem.Mol, <code>links</code>, list of defines linkages</p>
 <p>Outputs: str</p>
@@ -1901,8 +1909,9 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_map_nums" class="doc_header"><code>add_map_nums</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L524" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_map_nums</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="add_map_nums" class="doc_header"><code>add_map_nums</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L536" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_map_nums</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
+<p>Adds map numbers to all atoms in <code>mol</code></p>
 
 </div>
 
@@ -1925,8 +1934,9 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="check_ring_bonds" class="doc_header"><code>check_ring_bonds</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L532" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_ring_bonds</code>(<strong><code>smile</code></strong>)</p>
+<h4 id="check_ring_bonds" class="doc_header"><code>check_ring_bonds</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L545" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_ring_bonds</code>(<strong><code>smile</code></strong>)</p>
 </blockquote>
+<p>Looks for SP hybridized atoms in rings</p>
 
 </div>
 
@@ -1949,8 +1959,126 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StructureEnumerator" class="doc_header"><code>class</code> <code>StructureEnumerator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L540" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureEnumerator</code>(<strong><code>smarts</code></strong>, <strong><code>atom_spec</code></strong>, <strong><code>bond_spec</code></strong>, <strong><code>max_num</code></strong>=<em><code>1000000</code></em>)</p>
+<h4 id="decorate_smile" class="doc_header"><code>decorate_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L555" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smile</code>(<strong><code>smile</code></strong>, <strong><code>num_attachments</code></strong>)</p>
 </blockquote>
+<p>decorate_smiles - adds wildcard atoms to smile based on num_attachments.
+ If there are N atoms with at lest one implicit hydrogen, N choose num_attachments
+ combinations are generated</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="decorate_smiles" class="doc_header"><code>decorate_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L584" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>num_attachments</code></strong>)</p>
+</blockquote>
+<p>Decorate all items in <code>smiles</code> and cleans results</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="remove_atom" class="doc_header"><code>remove_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L592" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>remove_atom</code>(<strong><code>rwmol</code></strong>, <strong><code>atom_idx</code></strong>, <strong><code>add_bond</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>remove_atom - removes atom based on <code>atom_idx</code>. If <code>add_bond</code> and the removed
+ atom is connected to two other heavy atoms, a single bond is formed between neighbors</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="generate_spec_template" class="doc_header"><code>generate_spec_template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L613" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_spec_template</code>(<strong><code>mol</code></strong>)</p>
+</blockquote>
+<p>generates blank atom_spec and bond_spec for mol. returns blank specs and matching smarts</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="StructureEnumerator" class="doc_header"><code>class</code> <code>StructureEnumerator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L624" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureEnumerator</code>(<strong><code>smarts</code></strong>, <strong><code>atom_spec</code></strong>, <strong><code>bond_spec</code></strong>, <strong><code>max_num</code></strong>=<em><code>1000000</code></em>, <strong><code>substitute_bonds</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>StructureEnumerator - class for enumerating molecular structures</p>
+<p>Inputs:</p>
+
+<pre><code>`smarts` - str, base smarts string to enumerate
+
+`atom_spec` - dict of the form `{atom_map_num:[allowed_atom_types]}` where elements in
+ `allowed_atom_types` match keys in `self.atom_types`
+
+`bond_spec` - dict of the form `{(bond_start_map_num, bond_end_map_num) : [possible_bond_types]}`
+ where elements in `possible_bond_types` match keys in `self.bond_types`
+
+ `max_num` - int, max number of combinations to iterate
+
+ `substitute_bonds` - None, list. List of bond types for new bonds formed from removing atoms.
+  Bond types should match keys in `self.bond_types`. If None, all keys in `self.bond_types` are used</code></pre>
 
 </div>
 
@@ -2024,6 +2152,49 @@ Links that occur once or more than 2 times are ignored</p>
 <p>Atom specifications are defined in a dictionary of the form <code>map_num : [possible_atoms]</code>. So <code>atom_spec = {2 : ['C', 'N', 'O']}</code> would denote enumerating carbon, nitrogen and oxygen at the atom defined by map number 1.</p>
 <p>Bond specifications are defined in a dictionary of the form <code>(start_map_num, end_map_num) : [possible_bond_types]</code>. So <code>bond_spec = {(1,2) : ['single', 'double']}</code>  would denote enumerating single and double bonds at the bond between the atom with map number 1 and the atom with map number 2. The code checks both <code>(start_map_num, end_map_num)</code> and <code>(end_map_num, start_map_num)</code> so the index order doesn't matter.</p>
 <p>Any atoms or bonds not included in <code>atom_spec</code> or <code>bond_spec</code> are left as-is based on the smarts definition.</p>
+<p>To make things easy, the <a href="/mrl/chem.html#generate_spec_template"><code>generate_spec_template</code></a> function creates a bank <code>atom_spec</code> and <code>bond_spec</code> from a given <code>mol</code>, along with the matching mapped smarts string.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">atom_spec</span><span class="p">,</span> <span class="n">bond_spec</span><span class="p">,</span> <span class="n">smarts</span> <span class="o">=</span> <span class="n">generate_spec_template</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">atom_spec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">bond_spec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">smarts</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{1: [], 2: [], 3: [], 4: [], 5: []}
+{(1, 2): [], (2, 3): [], (3, 4): [], (4, 5): [], (5, 1): []}
+[#6:1]1-[#6:2]-[#6:3]-[#6:4]-[#6:5]-1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>For this task, we want to enumerate <code>['C', 'N', 'O']</code> at all atom positions and <code>['aromatic','single','double']</code> at all bond positions. That gives us the following:</p>
 
 </div>
@@ -2036,21 +2207,57 @@ Links that occur once or more than 2 times are ignored</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">atom_spec</span> <span class="o">=</span> <span class="p">{</span>
-     <span class="mi">1</span><span class="p">:[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">],</span>
-     <span class="mi">2</span><span class="p">:[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">],</span>
-     <span class="mi">3</span><span class="p">:[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">],</span>
-     <span class="mi">4</span><span class="p">:[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">],</span>
-     <span class="mi">5</span><span class="p">:[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">]</span>
-    <span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">atom_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">atom_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">]</span>
+    
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">bond_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">bond_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;aromatic&#39;</span><span class="p">,</span><span class="s1">&#39;single&#39;</span><span class="p">,</span><span class="s1">&#39;double&#39;</span><span class="p">]</span>
 
-<span class="n">bond_spec</span> <span class="o">=</span> <span class="p">{</span>
-         <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">):[</span><span class="s1">&#39;aromatic&#39;</span><span class="p">,</span><span class="s1">&#39;single&#39;</span><span class="p">,</span><span class="s1">&#39;double&#39;</span><span class="p">],</span>
-         <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">):[</span><span class="s1">&#39;aromatic&#39;</span><span class="p">,</span><span class="s1">&#39;single&#39;</span><span class="p">,</span><span class="s1">&#39;double&#39;</span><span class="p">],</span>
-         <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">):[</span><span class="s1">&#39;aromatic&#39;</span><span class="p">,</span><span class="s1">&#39;single&#39;</span><span class="p">,</span><span class="s1">&#39;double&#39;</span><span class="p">],</span>
-         <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">):[</span><span class="s1">&#39;aromatic&#39;</span><span class="p">,</span><span class="s1">&#39;single&#39;</span><span class="p">,</span><span class="s1">&#39;double&#39;</span><span class="p">],</span>
-         <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">):[</span><span class="s1">&#39;aromatic&#39;</span><span class="p">,</span><span class="s1">&#39;single&#39;</span><span class="p">,</span><span class="s1">&#39;double&#39;</span><span class="p">]</span>
-<span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">atom_spec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">bond_spec</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{1: [&#39;C&#39;, &#39;N&#39;, &#39;O&#39;], 2: [&#39;C&#39;, &#39;N&#39;, &#39;O&#39;], 3: [&#39;C&#39;, &#39;N&#39;, &#39;O&#39;], 4: [&#39;C&#39;, &#39;N&#39;, &#39;O&#39;], 5: [&#39;C&#39;, &#39;N&#39;, &#39;O&#39;]}
+{(1, 2): [&#39;aromatic&#39;, &#39;single&#39;, &#39;double&#39;], (2, 3): [&#39;aromatic&#39;, &#39;single&#39;, &#39;double&#39;], (3, 4): [&#39;aromatic&#39;, &#39;single&#39;, &#39;double&#39;], (4, 5): [&#39;aromatic&#39;, &#39;single&#39;, &#39;double&#39;], (5, 1): [&#39;aromatic&#39;, &#39;single&#39;, &#39;double&#39;]}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The structure enumerator also supports atom removal and bond removal during enumeration by appending <code>-1 (int)</code> to the matching entry in the <code>atom_spec</code> or <code>bond_spec</code>.</p>
+<p>Bond removal is implemented simply. The bond is removed and that's that.</p>
+<p>Atom removal is a bit more complex. If the atom being removed is bound to only one other heavy atom, the atom is simply removed. If the atom is bound to two heavy atoms, a new bond is created between these atoms, ie <code>R1-atom_to_remove-R2 &gt;&gt; R1-R2</code>.</p>
+<p>This raises the question of what bond type to insert at the new bond. By default, the code generates versions of the coupling with single, double, triple and aromatic bonds. If you have a preference for the substitute bond types, pass a list of desired bond types to the <code>substitute_bonds</code> parameter, ie <code>substitute_bonds=['single','double']</code>. Passing <code>substitute_bonds=[-1]</code> results in no coupling, ie <code>R1-atom_to_remove-R2 &gt;&gt; R1.R2</code>.</p>
+<p>For fun, lets add a <code>-1</code> to atom map number 3 in our atom spec, which will result in the code enumerating all 4 member rings where the atom map number 3 is removed</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">atom_spec</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2091,7 +2298,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>59049</pre>
+<pre>98415</pre>
 </div>
 
 </div>
@@ -2125,7 +2332,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>244</pre>
+<pre>331</pre>
 </div>
 
 </div>
@@ -2138,7 +2345,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We sampled a space of 59049 possible combinations from our specification, and ended up with 244 unique smiles strings. Combinations that produced invalid structures were removed. The remaining structures were de-duplicated. The 244 outputs are the complete set of unique smiles that map to valid chemical structures within our specification.</p>
+<p>We sampled a space of 98415 possible combinations from our specification, and ended up with 331 unique smiles strings. Combinations that produced invalid structures were removed. The remaining structures were de-duplicated. The 331 outputs are the complete set of unique smiles that map to valid chemical structures within our specification.</p>
 <p>From here, we want to run additional filters for quality. A common flaw in enumerated structures is SP-hybridized atoms in rings, which aren't relaistic. The <a href="/mrl/chem.html#check_ring_bonds"><code>check_ring_bonds</code></a> finds these structures. We aso specificed earlier we want 3 heteroatoms or fewer in the final compounds. We filter based on these criteria</p>
 
 </div>
@@ -2171,7 +2378,40 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>89</pre>
+<pre>129</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_smiles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;C1=CCCC1&#39;</pre>
 </div>
 
 </div>
@@ -2184,7 +2424,46 @@ Links that occur once or more than 2 times are ignored</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This gives us 89 smiles that pass our criteria. Now we want to add attachment points to the smiles strings. These attachments will be added as wildcard atoms (<code>*</code>). We specified earlier we want 3 attachments on each ring. For each smiles string, the code checks to see if the molecule supports that number of attachments, defined by the number of atoms with a least 1 impicit hydrogen. If the molecule supports the attachment number, the code generates all valid attachment combinations. Compounds that cannot support the desired number of attachments are removed from the output.</p>
+<p>This gives us 129 smiles that pass our criteria. We can also see the impact of removing atom map number 3 in enumeration by looking at the number of 4 member rings vs 5 member rings</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">valid_smiles</span> <span class="k">if</span> <span class="n">heavy_atoms</span><span class="p">(</span><span class="n">to_mol</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">==</span><span class="mi">4</span><span class="p">]),</span> 
+<span class="nb">len</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">valid_smiles</span> <span class="k">if</span> <span class="n">heavy_atoms</span><span class="p">(</span><span class="n">to_mol</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">==</span><span class="mi">5</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>40 89
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we want to add attachment points to the smiles strings. These attachments will be added as wildcard atoms (<code>*</code>). We specified earlier we want 3 attachments on each ring. For each smiles string, the code checks to see if the molecule supports that number of attachments, defined by the number of atoms with a least 1 impicit hydrogen. If the molecule supports the attachment number, the code generates all valid attachment combinations. Compounds that cannot support the desired number of attachments are removed from the output.</p>
 <p>This gives us a final output of 198 attachment-decorated 5-member rings with 3 or fewer heteroatoms</p>
 
 </div>
@@ -2197,7 +2476,8 @@ Links that occur once or more than 2 times are ignored</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">decorated</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">decorate_smiles</span><span class="p">(</span><span class="n">valid_smiles</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_smiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">valid_smiles</span> <span class="k">if</span> <span class="n">heavy_atoms</span><span class="p">(</span><span class="n">to_mol</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">==</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># get only 5 member rings</span>
+<span class="n">decorated</span> <span class="o">=</span> <span class="n">decorate_smiles</span><span class="p">(</span><span class="n">valid_smiles</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="nb">len</span><span class="p">(</span><span class="n">decorated</span><span class="p">)</span>
 </pre></div>
 
@@ -2224,6 +2504,46 @@ Links that occur once or more than 2 times are ignored</p>
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">decorated</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;*C1NCN(*)N1*&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This highlights how enumeration can be used to explore a consrained chemical space. From here, the outputs need additional cleaning before being put into a dataset or used for model training.</p>
+
+</div>
+</div>
+</div>
 </div>
  
 

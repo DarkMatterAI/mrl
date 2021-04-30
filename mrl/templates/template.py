@@ -162,15 +162,20 @@ class Template():
 
         return [passes, fails]
 
-    def sample(self, n, log='hard'):
+    def sample(self, n, log='hard', seed=None):
         'sample logged data'
+
+        if seed is None:
+            seed = np.random.seed() # required to prevent identical sampling in multiprocessing
+
         if log=='hard':
             to_sample = self.hard_log[self.hard_log.final==True]
-            sample = to_sample.sample(n, replace=False)
+            sample = to_sample.sample(n, replace=False, random_state=seed).reset_index(drop=True)
         else:
-            sample = self.soft_log.sample(n, replace=False)
+            sample = self.soft_log.sample(n, replace=False, random_state=seed).reset_index(drop=True)
 
         return sample[['smiles', 'final']]
+
 
     def sample_smiles(self, n, log='hard'):
         return list(self.sample(n, log=log).smiles.values)
