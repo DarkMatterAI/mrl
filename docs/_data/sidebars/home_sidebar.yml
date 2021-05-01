@@ -30,6 +30,9 @@ entries:
     - output: web,pdf
       title: Templates
       url: template.template.html
+    - output: web,pdf
+      title: Blocks
+      url: template.blocks.html
     output: web
     title: Tempates
   output: web

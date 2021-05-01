@@ -101,7 +101,7 @@ class Template():
 
     def hf(self, mol, agg=True):
         'run hard filters'
-        mol = to_mol(mol)
+        mol = to_mol(mol) # future note - update for proteins
         smile = to_smile(mol)
 
         if self.use_lookup and smile in self.hard_lookup.keys():
@@ -125,7 +125,7 @@ class Template():
 
     def sf(self, mol):
         'run soft filters'
-        mol = to_mol(mol)
+        mol = to_mol(mol) # future note - update for proteins
         smile = to_smile(mol)
 
         if self.use_lookup and smile in self.soft_lookup.keys():

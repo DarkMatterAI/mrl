@@ -10,7 +10,8 @@
     },
     "Tempates" : {
         "Filters" : "template.filters.html",
-        "Templates" : "template.template.html"
+        "Templates" : "template.template.html",
+        "Blocks" : "template.blocks.html"
     }
     
 }

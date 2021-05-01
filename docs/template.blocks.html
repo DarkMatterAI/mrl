@@ -54,127 +54,197 @@ nb_path: "nbs/04_template.blocks.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="Block" class="doc_header"><code>class</code> <code>Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Block</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>[]</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">MolBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Block</span><span class="p">():</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="p">[]):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="n">subblocks</span><span class="p">)</span>
-        
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="n">links</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span> <span class="o">=</span> <span class="n">subblocks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sublinks</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_links</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;\[(.*?)\*:(.*?)]&#39;</span><span class="p">)</span> <span class="c1"># identifies isotope and map num</span>
-    
+        
     <span class="k">def</span> <span class="nf">update_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sublinks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">links</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">b</span><span class="o">.</span><span class="n">sublinks</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">sublinks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>
+                
+    <span class="k">def</span> <span class="nf">eval_mol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">):</span>
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">to_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="n">smile</span> <span class="o">=</span> <span class="n">to_smile</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_fragment</span><span class="p">(</span><span class="n">smile</span><span class="p">):</span>
+            <span class="n">hardpass</span><span class="p">,</span> <span class="n">hardlog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">hf</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hardpass</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">hardlog</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">match_fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">,</span> <span class="n">do_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">links</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">hardpass</span><span class="p">:</span>
+            <span class="n">score</span><span class="p">,</span> <span class="n">softlog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">fail_score</span>
+            <span class="n">softlog</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">return</span> <span class="p">[</span><span class="n">hardpass</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">hardlog</span><span class="p">,</span> <span class="n">softlog</span><span class="p">]</span>
+                
+    <span class="k">def</span> <span class="nf">match_fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
         <span class="c1"># determine if fragment matches block link pattern</span>
-        
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_num_links</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">do_map</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">links</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">links</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span>
-
-            <span class="n">pattern_matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span> <span class="c1"># find isotope/map num pairs</span>
-
-            <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">pattern_matches</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
-                <span class="n">link_match</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">link_match</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    
+    <span class="k">def</span> <span class="nf">match_fragment_recursive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
+        <span class="c1"># recursively match fragment to all subblocks</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_fragment</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">link_match</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">match_fragment_recursive</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
+                    <span class="n">output</span> <span class="o">=</span> <span class="kc">True</span>
+                    
+        <span class="k">return</span> <span class="n">output</span>
+    
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s1">&#39;hard&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># checks fragment attachments, then sends to template `load_data`</span>
+        <span class="c1"># optionally recursive</span>
+        <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
+                <span class="n">b</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
-        <span class="k">return</span> <span class="n">link_match</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">match_fragment</span><span class="p">,</span> <span class="n">fragments</span><span class="p">)</span>
+        <span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">fragments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fragments</span><span class="p">))</span> <span class="k">if</span> <span class="n">matches</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">screen_mols</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">decompose_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_string</span><span class="p">):</span>
+        <span class="c1"># decomposes a string of multiple fragments into a list of single fragments</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    
+    <span class="k">def</span> <span class="nf">join_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_list</span><span class="p">):</span>
+        <span class="c1"># joins list of fragments into single string</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    
+    <span class="k">def</span> <span class="nf">fuse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_string</span><span class="p">):</span>
+        <span class="c1"># fuses fragment string into single output</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    
+    <span class="k">def</span> <span class="nf">join_and_fuse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fuse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">join_fragments</span><span class="p">(</span><span class="n">fragment_list</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">recurse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># recursively break down fragments, route to subblocks, fuse and evaluate</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">rep_str</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;Block </span><span class="si">{self.name}</span><span class="s1">: </span><span class="si">{self.links}</span><span class="se">\n\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
+            <span class="n">rep_str</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
+                <span class="n">rep_str</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+                
+        <span class="k">return</span> <span class="n">rep_str</span>
+        
+
+<span class="k">class</span> <span class="nc">MolBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="n">subblocks</span><span class="p">)</span>
+        
+        <span class="c1"># self.links = [&#39;1*:2&#39;, &#39;1*:3&#39;]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;\[.\*:.]&#39;</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="s1">&#39;0*&#39;</span> <span class="ow">in</span> <span class="n">link</span><span class="p">,</span> <span class="s2">&quot;Do not use 0 as an isotope, RDKit automatically removes it&quot;</span>
             
-    <span class="k">def</span> <span class="nf">add_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">,</span> <span class="n">links</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">pattern_matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern_matches</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
-            <span class="c1"># already mapped</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">fragment</span>
+    <span class="k">def</span> <span class="nf">pattern_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">is_mapped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fragment</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">)):</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern_matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="kc">False</span>
+            
+        <span class="k">return</span> <span class="n">mapped</span>
+    
+    <span class="k">def</span> <span class="nf">add_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">,</span> <span class="n">links</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mapped</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
+            <span class="c1"># already mapped</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="n">fragment</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># partially mapped, something went wrong</span>
                 <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-        
+                
             <span class="k">if</span> <span class="n">links</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">links</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">)</span>
                 <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">links</span><span class="p">)</span>
                 
-            <span class="n">new_fragment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="n">link_count</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fragment</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">s</span><span class="o">==</span><span class="s1">&#39;*&#39;</span><span class="p">:</span>
-                    <span class="n">isotope</span><span class="p">,</span> <span class="n">map_num</span> <span class="o">=</span> <span class="n">links</span><span class="p">[</span><span class="n">link_count</span><span class="p">]</span>
-                    <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;[</span><span class="si">{isotope}</span><span class="s1">*:</span><span class="si">{map_num}</span><span class="s1">]&#39;</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;[</span><span class="si">{links[link_count]}</span><span class="s1">]&#39;</span>
                     <span class="n">link_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            
-                <span class="n">new_fragment</span> <span class="o">+=</span> <span class="n">s</span>
-                
-            <span class="n">output</span> <span class="o">=</span> <span class="n">new_fragment</span>
-            
-        <span class="k">return</span> <span class="n">output</span>
-    
-    <span class="k">def</span> <span class="nf">remove_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="n">current_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+                <span class="n">mapped</span> <span class="o">+=</span> <span class="n">s</span>
         
-        <span class="k">for</span> <span class="n">cm</span> <span class="ow">in</span> <span class="n">current_mapping</span><span class="p">:</span>
-            <span class="n">isotope</span><span class="p">,</span> <span class="n">map_num</span> <span class="o">=</span> <span class="n">cm</span>
-            <span class="n">fragment</span> <span class="o">=</span> <span class="n">fragment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{isotope}</span><span class="s1">*:</span><span class="si">{map_num}</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
-            
+        <span class="k">return</span> <span class="n">mapped</span>
+                
+    <span class="k">def</span> <span class="nf">remove_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">fragment</span> <span class="o">=</span> <span class="n">fragment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{match}</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">fragment</span>
     
+    <span class="k">def</span> <span class="nf">match_fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
+        
+        <span class="n">match</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">fragment</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mapped</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
+                <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+                
+            <span class="n">matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">matches</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span><span class="o">==</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">match</span>
+    
+    <span class="k">def</span> <span class="nf">load_fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fragment</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
+            <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+            <span class="n">fragpass</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fragpass</span> <span class="o">=</span> <span class="kc">False</span>
+            
+        <span class="k">return</span> <span class="p">[</span><span class="n">fragment</span><span class="p">,</span> <span class="n">fragpass</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
+                <span class="n">b</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                
+        <span class="n">fragments</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_fragment</span><span class="p">,</span> <span class="n">fragments</span><span class="p">)</span>
+        <span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fragments</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">screen_mols</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">sample_smiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s1">&#39;hard&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">sample_smiles</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
+    
     <span class="k">def</span> <span class="nf">shuffle_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="n">current_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+        <span class="n">current_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
         <span class="n">new_mapping</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">current_mapping</span><span class="p">)</span>
         <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">new_mapping</span><span class="p">)</span>
         
         <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
         <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">,</span> <span class="n">links</span><span class="o">=</span><span class="n">new_mapping</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">fragment</span>
-    
-    <span class="k">def</span> <span class="nf">check_num_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fragment</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">sample_smiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s1">&#39;hard&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">sample_smiles</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">decompose_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_string</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">fragment_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
@@ -183,12 +253,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
         <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fragment_list</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">fuse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_string</span><span class="p">):</span>
-        
         <span class="n">new_smile</span> <span class="o">=</span> <span class="n">fuse_on_atom_mapping</span><span class="p">(</span><span class="n">fragment_string</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="s1">&#39;[*&#39;</span> <span class="ow">in</span> <span class="n">new_smile</span><span class="p">:</span> <span class="c1">#lost isotope</span>
-            <span class="n">new_smile</span> <span class="o">=</span> <span class="n">new_smile</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[*&#39;</span><span class="p">,</span> <span class="s1">&#39;[0*&#39;</span><span class="p">)</span>
-            
         <span class="k">return</span> <span class="n">new_smile</span>
     
     <span class="k">def</span> <span class="nf">recurse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragments</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -227,7 +292,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
         <span class="n">joined_fragments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_fragments</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
         <span class="n">fused</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fuse_fragments</span><span class="p">(</span><span class="n">joined_fragments</span><span class="p">)</span>
 
-        <span class="n">frag_pass</span><span class="p">,</span> <span class="n">frag_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_mol</span><span class="p">(</span><span class="n">fused</span><span class="p">)</span>
+        <span class="n">frag_pass</span><span class="p">,</span> <span class="n">frag_score</span><span class="p">,</span> <span class="n">hardlog</span><span class="p">,</span> <span class="n">softlog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_mol</span><span class="p">(</span><span class="n">fused</span><span class="p">)</span>
         <span class="n">total_pass</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frag_pass</span><span class="p">)</span>
         <span class="n">total_score</span> <span class="o">+=</span> <span class="n">frag_score</span>
 
@@ -240,12 +305,15 @@ nb_path: "nbs/04_template.blocks.ipynb"
             <span class="s1">&#39;block_pass&#39;</span> <span class="p">:</span> <span class="n">frag_pass</span><span class="p">,</span>
             <span class="s1">&#39;block_score&#39;</span> <span class="p">:</span> <span class="n">frag_score</span><span class="p">,</span>
             <span class="s1">&#39;all_pass&#39;</span> <span class="p">:</span> <span class="n">total_pass</span><span class="p">,</span>
-            <span class="s1">&#39;all_score&#39;</span> <span class="p">:</span> <span class="n">total_score</span>
+            <span class="s1">&#39;all_score&#39;</span> <span class="p">:</span> <span class="n">total_score</span><span class="p">,</span>
+            <span class="s1">&#39;hardlog&#39;</span> <span class="p">:</span> <span class="n">hardlog</span><span class="p">,</span>
+            <span class="s1">&#39;softlog&#39;</span> <span class="p">:</span> <span class="n">softlog</span>
         <span class="p">}</span>
 
         <span class="n">output_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_dict</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fused</span><span class="p">,</span> <span class="n">total_pass</span><span class="p">,</span> <span class="n">total_score</span><span class="p">,</span> <span class="n">output_dicts</span>
+    
 </pre></div>
 
     </div>
@@ -266,7 +334,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L131" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
+<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -290,7 +358,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L158" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
+<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
 </blockquote>
 
 </div>
@@ -318,7 +386,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># scaffod</span>
-<span class="n">scaffold_smile</span> <span class="o">=</span> <span class="s1">&#39;c1nc2c([0*:2])cncc2cc1[0*:1]&#39;</span>
+<span class="n">scaffold_smile</span> <span class="o">=</span> <span class="s1">&#39;c1nc2c([1*:2])cncc2cc1[1*:1]&#39;</span>
 <span class="n">scaffold_block</span> <span class="o">=</span> <span class="n">ConstantMolBlock</span><span class="p">(</span><span class="n">scaffold_smile</span><span class="p">,</span> <span class="s1">&#39;scaffold&#39;</span><span class="p">)</span>
 
 <span class="c1"># R1, must have ring, be between 50-250 g/mol. must have 1 ring. ideally less thn 100-200 g/mol</span>
@@ -330,7 +398,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
                     <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
                     <span class="p">)</span>
 
-<span class="n">r1_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r1_template</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">)],</span> <span class="s1">&#39;r1&#39;</span><span class="p">)</span>
+<span class="n">r1_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r1_template</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;2*:1&#39;</span><span class="p">],</span> <span class="s1">&#39;r1&#39;</span><span class="p">)</span>
 
 
 <span class="c1"># R2, must have no rings, be between 0-200 g/mol. must have 0 rings. ideally less thn 50-150 g/mol</span>
@@ -342,7 +410,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
                     <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
                     <span class="p">)</span>
 
-<span class="n">r2_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r2_template</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">)],</span> <span class="s1">&#39;r2&#39;</span><span class="p">)</span>
+<span class="n">r2_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r2_template</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;2*:2&#39;</span><span class="p">],</span> <span class="s1">&#39;r2&#39;</span><span class="p">)</span>
 
 
 <span class="c1"># full compound, must be between 200 and 550 g/mol</span>
@@ -452,27 +520,10 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fragments</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>1    15898
-Name: 0, dtype: int64</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -486,10 +537,51 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r1_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>smiles</th>
+      <th>0</th>
+      <th>final</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -520,120 +612,7 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>smiles</th>
-      <th>final</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>CNc1nc(SCC(=O)Nc2cc(Cl)ccc2OC)nc2ccccc12</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>COc1ccc(C(=O)Oc2ccc(/C=C3\C(=N)N4OC(C)=CC4=NC3...</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Cc1sc(NC(=O)c2ccccc2)c(C(N)=O)c1C</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>COc1ccc(NCc2noc(-c3ccoc3)n2)cc1OC(F)F</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>O=C(COC(=O)c1cccc(Br)c1)c1ccc2c(c1)OCCCO2</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <td>1962</td>
-      <td>Cc1cccc(C)c1C(=O)Nc1cc(S(=O)(=O)NC2CC2)ccc1O</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>1963</td>
-      <td>C/C(=N/NC(=O)CN(c1ccccc1Br)S(C)(=O)=O)c1ccc2c(...</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>1964</td>
-      <td>CCC(=O)Nc1ccc(NC(=O)NCCc2cccs2)cc1C</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>1965</td>
-      <td>CCC(CC)(NC(=O)Cc1c(F)cccc1F)/C(N)=N/O</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>1966</td>
-      <td>CC(=O)c1ccc(NC(=O)CNC(=O)c2ccccc2C)cc1C</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-<p>1967 rows × 2 columns</p>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">subblocks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r1_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
 </pre></div>
 
     </div>
@@ -673,31 +652,31 @@ Name: 0, dtype: int64</pre>
   <tbody>
     <tr>
       <td>0</td>
-      <td>O=C(Oc1ccccc1F)[1*:1]</td>
+      <td>O=C(NC(=O)[2*:1])NC1CC1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>CN(C)c1ccc(C=NNC(=O)[1*:1])cc1</td>
-      <td>1.0</td>
-      <td>1.0</td>
+      <td>O=C(CNC(=O)C1CCCCC1)OCC(=O)[2*:1]</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>NS(=O)(=O)c1ccc([1*:1])cc1</td>
+      <td>COCc1cccc(NC(=O)N[2*:1])c1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>COc1ccc(OC(=O)[1*:1])c(C(C)=O)c1</td>
+      <td>O=CC(=Cc1ccc([N+](=O)[O-])o1)C[2*:1]</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>CSc1ccc(Cl)c([1*:1])c1</td>
+      <td>O=C(CCc1ccc(F)c(F)c1)N[2*:1]</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
@@ -709,162 +688,37 @@ Name: 0, dtype: int64</pre>
     </tr>
     <tr>
       <td>4615</td>
-      <td>O=C(OCC[1*:1])c1ccc(Cl)c(F)c1</td>
-      <td>0.0</td>
-      <td>0.0</td>
+      <td>CCC(CC)(C[NH+]1CCCCC1)[2*:1]</td>
+      <td>1.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <td>4616</td>
-      <td>CN(C)C(=O)c1cccc(NC(=O)C[1*:1])c1</td>
-      <td>0.0</td>
-      <td>0.0</td>
+      <td>O=C(NC[2*:1])C1CCCC1</td>
+      <td>1.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <td>4617</td>
-      <td>C=CCn1c([O-])c([1*:1])c(=O)[nH]c1=O</td>
+      <td>O=C(C[2*:1])NC1CCCC1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4618</td>
-      <td>O=C(CC1CCCC1)NC(=S)N[1*:1]</td>
+      <td>Oc1cccc(C[2*:1])c1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4619</td>
-      <td>CNC(=O)c1cccnc1NCC[1*:1]</td>
+      <td>O=C1CNC(=O)N1C[2*:1]</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
   </tbody>
 </table>
 <p>4620 rows × 3 columns</p>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">subblocks</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>smiles</th>
-      <th>0</th>
-      <th>final</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>CC(C)(CCO)C[1*:2]</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>CC(C)N(C(=O)C[1*:2])C(C)C</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>CCC(=C[1*:2])C[NH2+]C(C)(C)C</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>NC(=O)CCCOC(=O)[1*:2]</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>CC[N+](C)(CC)CCOC(=O)[1*:2]</td>
-      <td>0.0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <td>552</td>
-      <td>NC(=O)N[1*:2]</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td>553</td>
-      <td>CCCCNC(=O)[1*:2]</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td>554</td>
-      <td>C#CCNC(N[1*:2])=[NH+]CC</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td>555</td>
-      <td>CC(C)(C)C(=O)N[1*:2]</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td>556</td>
-      <td>CNC(=O)C[1*:2]</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-  </tbody>
-</table>
-<p>557 rows × 3 columns</p>
 </div>
 </div>
 
@@ -915,11 +769,11 @@ Name: 0, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;CCCOc1nc(-c2cnc3c(CN(CCC#N)CCC(F)(F)F)cncc3c2)ccc1N&#39;,
- &#39;CCOc1ccc(C(=O)N(C)C)cc1-c1cnc2c(SCCCNC(C)=O)cncc2c1&#39;,
- &#39;COC(=O)c1cncc2cc(N3CCCC3=O)cnc12&#39;,
- &#39;CCOC(=O)C([O-])=CC(=O)c1cncc2cc(C(=O)NCC[NH+]3CCC(C)CC3)cnc12&#39;,
- &#39;CNC(=O)c1ccc(NC(=O)Cc2cnc3c(SCC#N)cncc3c2)cc1&#39;]</pre>
+<pre>[&#39;Cc1cc(C(=O)NCc2cnc3c(N(C)CCS(C)(=O)=O)cncc3c2)sc1C#CCO&#39;,
+ &#39;Cc1ccc(C(=O)NCc2cnc3c(C(=O)N(C)CCC(C)C)cncc3c2)n1C&#39;,
+ &#39;CC(C)NC(=O)NNC(=O)c1cncc2cc(C[NH+]3CCC(CO)CC3)cnc12&#39;,
+ &#39;CCCc1noc(C[NH+](C)c2cnc3c(SCCCCCCS)cncc3c2)n1&#39;,
+ &#39;CC(C)(CBr)c1cncc2cc(CC(=O)Nc3ccc(Cl)c(C(F)(F)F)c3)cnc12&#39;]</pre>
 </div>
 
 </div>
@@ -990,6 +844,23 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frag_strings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">frag_strings</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">main_block</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">,</span> <span class="n">frag_strings</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
@@ -1007,7 +878,7 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -1022,7 +893,35 @@ Name: 0, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;NC(=O)COc1cncc2cc(NC(=O)NCCC(=O)N3CCCCCC3)cnc12&#39;</pre>
+<pre>[{&#39;block&#39;: &#39;r1&#39;,
+  &#39;fused&#39;: &#39;Cc1ccn(CCNC(=O)[2*:1])n1&#39;,
+  &#39;fragments&#39;: [&#39;Cc1ccn(CCNC(=O)[2*:1])n1&#39;],
+  &#39;block_pass&#39;: True,
+  &#39;block_score&#39;: 1.0,
+  &#39;all_pass&#39;: True,
+  &#39;all_score&#39;: 1.0,
+  &#39;hardlog&#39;: [],
+  &#39;softlog&#39;: []},
+ {&#39;block&#39;: &#39;r2&#39;,
+  &#39;fused&#39;: &#39;CC(C)O[2*:2]&#39;,
+  &#39;fragments&#39;: [&#39;CC(C)O[2*:2]&#39;],
+  &#39;block_pass&#39;: True,
+  &#39;block_score&#39;: 1.0,
+  &#39;all_pass&#39;: True,
+  &#39;all_score&#39;: 1.0,
+  &#39;hardlog&#39;: [],
+  &#39;softlog&#39;: []},
+ {&#39;block&#39;: &#39;full_molecule&#39;,
+  &#39;fused&#39;: &#39;Cc1ccn(CCNC(=O)c2cnc3c(OC(C)C)cncc3c2)n1&#39;,
+  &#39;fragments&#39;: [&#39;Cc1ccn(CCNC(=O)[2*:1])n1&#39;,
+   &#39;CC(C)O[2*:2]&#39;,
+   &#39;c1nc2c([1*:2])cncc2cc1[1*:1]&#39;],
+  &#39;block_pass&#39;: True,
+  &#39;block_score&#39;: 0,
+  &#39;all_pass&#39;: True,
+  &#39;all_score&#39;: 2.0,
+  &#39;hardlog&#39;: [&#39;Cc1ccn(CCNC(=O)c2cnc3c(OC(C)C)cncc3c2)n1&#39;, True, True],
+  &#39;softlog&#39;: [&#39;Cc1ccn(CCNC(=O)c2cnc3c(OC(C)C)cncc3c2)n1&#39;, 0]}]</pre>
 </div>
 
 </div>
@@ -1040,7 +939,208 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># one constant and one variabe</span>
+
+<span class="c1"># scaffod</span>
+<span class="n">scaffold_smile</span> <span class="o">=</span> <span class="s1">&#39;c1nc2c([1*:2])cncc2cc1[1*:1]&#39;</span>
+<span class="n">scaffold_block</span> <span class="o">=</span> <span class="n">ConstantMolBlock</span><span class="p">(</span><span class="n">scaffold_smile</span><span class="p">,</span> <span class="s1">&#39;scaffold&#39;</span><span class="p">)</span>
+
+<span class="c1"># R1 has 3 groups - constant carbonyl, variable ring, variabe ring attachment</span>
+
+<span class="n">r1_carbonyl_block</span> <span class="o">=</span> <span class="n">ConstantMolBlock</span><span class="p">(</span><span class="s1">&#39;C(O)(=O)[1*:4]&#39;</span><span class="p">,</span> <span class="s1">&#39;carbonyl&#39;</span><span class="p">)</span>
+
+<span class="n">r1_ring_substitution_tempate</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
+                                        <span class="p">[</span><span class="n">RotBondFilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span>
+                                         <span class="n">RingFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span>
+                                        <span class="p">[</span><span class="n">RotBondFilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                                        <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
+                                        <span class="p">)</span>
+
+<span class="n">r1_ring_substitution_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r1_ring_substitution_tempate</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;1*:3&#39;</span><span class="p">],</span> <span class="s1">&#39;r1 ring substitution&#39;</span><span class="p">)</span>
+
+<span class="n">r1_ring_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">RingFilter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                             <span class="n">RotBondFilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="n">RingFilter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                            <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
+                            <span class="p">)</span>
+
+<span class="n">r1_ring_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r1_ring_template</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;2*:3&#39;</span><span class="p">,</span> <span class="s1">&#39;2*:4&#39;</span><span class="p">,</span> <span class="s1">&#39;2*:2&#39;</span><span class="p">],</span> <span class="s1">&#39;r1_ring&#39;</span><span class="p">)</span>
+
+
+<span class="n">r1_full_group_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">350</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                            <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
+                            <span class="p">)</span>
+
+<span class="n">r1_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r1_full_group_template</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;2*:2&#39;</span><span class="p">],</span> <span class="s1">&#39;r1_full&#39;</span><span class="p">,</span> 
+                     <span class="n">subblocks</span><span class="o">=</span><span class="p">[</span><span class="n">r1_carbonyl_block</span><span class="p">,</span> <span class="n">r1_ring_substitution_block</span><span class="p">,</span> <span class="n">r1_ring_block</span><span class="p">])</span>
+
+
+<span class="c1"># R1, must have no rings, be between 0-200 g/mol. must have 0 rings. ideally less thn 50-150 g/mol</span>
+
+<span class="n">r2_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">)],</span>
+                        <span class="p">[</span><span class="n">RingFilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span>
+                        <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
+                        <span class="p">)</span>
+
+<span class="n">r2_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r2_template</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;2*:1&#39;</span><span class="p">],</span> <span class="s1">&#39;r2&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># full compound, must be between 200 and 550 g/mol</span>
+
+<span class="n">full_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="mi">550</span><span class="p">),</span>
+                         <span class="n">StructureFilter</span><span class="p">([</span><span class="s1">&#39;[#6](-[#8])(=[#8])-[*]&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;[#6]1:[#7]:[#6]2:[#6](-[*]):[#6]:[#7]:[#6]:[#6]:2:[#6]:[#6]:1-[*]&#39;</span>
+                             <span class="p">],</span> <span class="n">criteria</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">False</span><span class="p">)],</span>
+                        <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                        <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
+                        <span class="p">)</span>
+
+<span class="n">main_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">full_template</span><span class="p">,</span> <span class="p">[],</span> <span class="s1">&#39;full_molecule&#39;</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="p">[</span><span class="n">scaffold_block</span><span class="p">,</span> <span class="n">r1_block</span><span class="p">,</span> <span class="n">r2_block</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frag_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../chem_research/fragments.csv&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">frag_df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="sample_leaf_nodes" class="doc_header"><code>sample_leaf_nodes</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sample_leaf_nodes</code>(<strong><code>block</code></strong>, <strong><code>include_constant</code></strong>=<em><code>False</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="sample_leaf_nodes_n" class="doc_header"><code>sample_leaf_nodes_n</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sample_leaf_nodes_n</code>(<strong><code>n</code></strong>, <strong><code>block</code></strong>, <strong><code>include_constant</code></strong>=<em><code>False</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sample_leaf_nodes</span><span class="p">(</span><span class="n">main_block</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1055,7 +1155,9 @@ Name: 0, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
+<pre>[&#39;CC(C)CCN(C)C(=O)[1*:3]&#39;,
+ &#39;O=C(N[2*:2])C1CC([2*:4])CCN1[2*:3]&#39;,
+ &#39;N#CC(=Cc1cccc([N+](=O)[O-])c1)[2*:1]&#39;]</pre>
 </div>
 
 </div>
@@ -1073,7 +1175,7 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sample_leaf_nodes</span><span class="p">(</span><span class="n">main_block</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1088,7 +1190,9 @@ Name: 0, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>1.0</pre>
+<pre>[&#39;CS(=O)(=O)NC(=O)[1*:3]&#39;,
+ &#39;CC(c1ccc([2*:2])cc1)([2*:3])[2*:4]&#39;,
+ &#39;CNC(=O)n1cc([2*:1])cn1&#39;]</pre>
 </div>
 
 </div>
@@ -1106,7 +1210,41 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frags</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">sample_leaf_nodes_n</span><span class="p">,</span> <span class="p">[</span><span class="mi">500</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">main_block</span><span class="p">,</span> <span class="n">include_constant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frags</span> <span class="o">=</span> <span class="n">flatten_list_of_lists</span><span class="p">(</span><span class="n">frags</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">hard_log</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -1121,32 +1259,325 @@ Name: 0, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(&#39;NC(=O)COc1cncc2cc(NC(=O)NCCC(=O)N3CCCCCC3)cnc12&#39;,
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">main_block</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">,</span> <span class="n">frags</span><span class="p">,</span> <span class="n">cpus</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="nb">len</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">out</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(4000, 2412)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">hard_log</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CNC(=O)C=C[1*:3]&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;CC(C)(C)C(C1C(=O)CC([2*:2])([2*:3])OC1=O)[2*:4]&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;</span><span class="p">]</span>
+
+<span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">main_block</span><span class="o">.</span><span class="n">decompose_fragments</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
+<span class="n">fragments</span> <span class="o">=</span> <span class="n">flatten_list_of_lists</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">unrouted</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">sb</span> <span class="ow">in</span> <span class="n">main_block</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
+    <span class="n">routed</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unrouted</span> <span class="k">if</span> <span class="n">sb</span><span class="o">.</span><span class="n">match_fragment_recursive</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sb</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">routed</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>scaffold []
+r1_full [&#39;CNC(=O)C=C[1*:3]&#39;, &#39;CC(C)(C)C(C1C(=O)CC([2*:2])([2*:3])OC1=O)[2*:4]&#39;]
+r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BlockTree" class="doc_header"><code>class</code> <code>BlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTree</code>(<strong><code>head_block</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="MolBlockTree" class="doc_header"><code>class</code> <code>MolBlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L151" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlockTree</code>(<strong><code>head_block</code></strong>) :: <a href="/mrl/template.blocks.html#BlockTree"><code>BlockTree</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ncpus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">blocktree</span> <span class="o">=</span> <span class="n">MolBlockTree</span><span class="p">(</span><span class="n">main_block</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;SCCC[1*:3]&#39;, &#39;O=C(N[2*:2])C1CC([2*:4])CCN1[2*:3]&#39;, &#39;C1CC(C[2*:1])CC[NH2+]1&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">blocktree</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">(</span><span class="n">frags</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[[&#39;SCCC[1*:3]&#39;,
+  &#39;O=C(N[2*:2])C1CC([2*:4])CCN1[2*:3]&#39;,
+  &#39;C1CC(C[2*:1])CC[NH2+]1&#39;],
+ &#39;O=C(O)C1CCN(CCCS)C(C(=O)Nc2cncc3cc(CC4CC[NH2+]CC4)cnc23)C1&#39;,
  True,
- 1.0,
- [{&#39;block&#39;: &#39;r1&#39;,
-   &#39;fused&#39;: &#39;O=C(NCCC(=O)N1CCCCCC1)N[1*:1]&#39;,
-   &#39;fragments&#39;: [&#39;O=C(NCCC(=O)N1CCCCCC1)N[1*:1]&#39;],
-   &#39;block_pass&#39;: True,
-   &#39;block_score&#39;: 0.0,
-   &#39;all_pass&#39;: True,
-   &#39;all_score&#39;: 0.0},
-  {&#39;block&#39;: &#39;r2&#39;,
-   &#39;fused&#39;: &#39;NC(=O)CO[1*:2]&#39;,
-   &#39;fragments&#39;: [&#39;NC(=O)CO[1*:2]&#39;],
-   &#39;block_pass&#39;: True,
-   &#39;block_score&#39;: 1.0,
-   &#39;all_pass&#39;: True,
-   &#39;all_score&#39;: 1.0},
-  {&#39;block&#39;: &#39;full_molecule&#39;,
-   &#39;fused&#39;: &#39;NC(=O)COc1cncc2cc(NC(=O)NCCC(=O)N3CCCCCC3)cnc12&#39;,
-   &#39;fragments&#39;: [&#39;O=C(NCCC(=O)N1CCCCCC1)N[1*:1]&#39;,
-    &#39;NC(=O)CO[1*:2]&#39;,
-    &#39;c1nc2c([0*:2])cncc2cc1[0*:1]&#39;],
-   &#39;block_pass&#39;: True,
-   &#39;block_score&#39;: 0,
-   &#39;all_pass&#39;: True,
-   &#39;all_score&#39;: 1.0}])</pre>
+ 3.0]</pre>
 </div>
 
 </div>
@@ -1164,7 +1595,7 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">out</span> <span class="k">if</span> <span class="s1">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
 </pre></div>
 
     </div>
@@ -1179,7 +1610,7 @@ Name: 0, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[]</pre>
+<pre>2412</pre>
 </div>
 
 </div>
@@ -1197,24 +1628,7 @@ Name: 0, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fragment_string</span> <span class="o">=</span> <span class="s1">&#39;[1*:2]C(=O)NC(CO)CC(C)C.[1*:1]S(=O)(=O)NCc1ccc(O)c(C(=O)O)c1&#39;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">fuse_fragments</span><span class="p">(</span><span class="n">fragment_string</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">scaffold_block</span><span class="o">.</span><span class="n">smile</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">blocktree</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frags</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1229,211 +1643,14 @@ Name: 0, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;CC(C)CC(CO)NC(=O)c1cncc2cc(S(=O)(=O)NCc3ccc(O)c(C(=O)O)c3)cnc12&#39;</pre>
+<pre>[[&#39;SCCC[1*:3].O=C(N[2*:2])C1CC([2*:4])CCN1[2*:3].C1CC(C[2*:1])CC[NH2+]1&#39;,
+  &#39;O=C(O)C1CCN(CCCS)C(C(=O)Nc2cncc3cc(CC4CC[NH2+]CC4)cnc23)C1&#39;,
+  True,
+  3.0]]</pre>
 </div>
 
 </div>
 
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">match_fragment</span><span class="p">(</span><span class="s1">&#39;[1*:2]C(=O)NC(CO)CC(C)C&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>False</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">match_fragment_recursive</span><span class="p">(</span><span class="s1">&#39;[1*:2]C(=O)NC(CO)CC(C)C&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">main_block</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">(</span><span class="s1">&#39;[1*:2]C(=O)NC(CO)CC(C)C.[1*:1]S(=O)(=O)NCc1ccc(O)c(C(=O)O)c1&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;CC(C)CC(CO)NC(=O)c1cncc2cc(S(=O)(=O)NCc3ccc(O)c(C(=O)O)c3)cnc12&#39;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>1.0</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># df = pd.read_csv(&#39;/Users/karl/Desktop/bindingDB/filtered_ligands.smi&#39;, header=None, sep=&#39;\t&#39;)</span>
-<span class="c1"># df.columns = [&#39;smile&#39;, &#39;name&#39;]</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
 

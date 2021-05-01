@@ -102,9 +102,12 @@ index = {"is_container": "00_core.ipynb",
          "VeberTemplate": "03_template.template.ipynb",
          "REOSTemplate": "03_template.template.ipynb",
          "RuleOf3Template": "03_template.template.ipynb",
-         "Block": "04_template.blocks.ipynb",
          "ConstantBlock": "04_template.blocks.ipynb",
-         "ConstantMolBlock": "04_template.blocks.ipynb"}
+         "ConstantMolBlock": "04_template.blocks.ipynb",
+         "sample_leaf_nodes": "04_template.blocks.ipynb",
+         "sample_leaf_nodes_n": "04_template.blocks.ipynb",
+         "BlockTree": "04_template.blocks.ipynb",
+         "MolBlockTree": "04_template.blocks.ipynb"}
 
 modules = ["core.py",
            "chem.py",
