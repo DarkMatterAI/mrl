@@ -96,6 +96,7 @@ index = {"is_container": "00_core.ipynb",
          "ExclusionFilter": "02_template.filters.ipynb",
          "FPFilter": "02_template.filters.ipynb",
          "Template": "03_template.template.ipynb",
+         "BlankTemplate": "03_template.template.ipynb",
          "ValidMoleculeTemplate": "03_template.template.ipynb",
          "RuleOf5Template": "03_template.template.ipynb",
          "GhoseTemplate": "03_template.template.ipynb",
@@ -107,7 +108,9 @@ index = {"is_container": "00_core.ipynb",
          "ConstantBlock": "04_template.blocks.ipynb",
          "ConstantMolBlock": "04_template.blocks.ipynb",
          "BlockTree": "04_template.blocks.ipynb",
-         "MolBlockTree": "04_template.blocks.ipynb"}
+         "MolBlockTree": "04_template.blocks.ipynb",
+         "RGroupBlock": "04_template.blocks.ipynb",
+         "DoubleRGroupBlock": "04_template.blocks.ipynb"}
 
 modules = ["core.py",
            "chem.py",

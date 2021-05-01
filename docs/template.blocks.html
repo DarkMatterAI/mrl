@@ -44,6 +44,38 @@ nb_path: "nbs/04_template.blocks.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Tempates define a chemical space using a set of hard and soft fiters to evaluate a molecule. For greater control, we may wish to apply different templates to different parts of the molecule. With the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class and some modifications to how we represent SMILES strings, we can do this.</p>
+<h3 id="Motivating-Example:-R-group-Optimization">Motivating Example: R-group Optimization<a class="anchor-link" href="#Motivating-Example:-R-group-Optimization"> </a></h3><p>Say we have a compound of the form <code>R1-scaffold-R2</code>, where the scaffold is a defined structure. We want to run a generative screen on the two R-groups while keeping the scaffold constant. We also have preferences on the chemical structures present at each R-group. We want <code>R1</code> to contain at least 1 ring, and we want <code>R2</code> to have no rings.</p>
+<p>One way to approach this would be to build a dataset of compounds with the format <code>R1-scaffold-R2</code> where all <code>R1</code> and <code>R2</code> structures conform to our desired properties. We would then train a generative model on this dataset and run a standard generative screen. However, this runs the risk of generated compounds deviating from our desired chemotype. This means we need to create a template that enforces the <code>R1-scaffold-R2</code> chemotype with our stated constraints on <code>R1</code> and <code>R2</code>.</p>
+<p>This leads to the problem of factoring arbitrary chemical structures into our <code>R1-scaffold-R2</code>, with all sorts of nasty problems and edge cases cropping up if the model deviates from this chemotype during training. It becomes much easier to build our desired structure priors into the generation process.</p>
+<p>Rather than generating compounds of the form <code>R1-scaffold-R2</code>, we generate fragments of the form <code>*R1.*scaffold*.*R2</code>. Since our scaffold is defined, we can simplify this to generating <code>*R1.*R2</code>, which is helpful because shorter sequence spaces are easier to learn.</p>
+<p>Now we can evaluate and assemble compounds to compare them to our desired constraints. We create different templates for <code>R1</code>, <code>R2</code> and the full compound <code>R1-scaffold-R2</code>.</p>
+<p>The model generates some sequence of the form <code>*R1.*R2</code>. We split this into <code>*R1</code> and <code>*R2</code>, and evaluate each R group with their respective template. Then we add in the scaffold, fuse the fragments into the full molecule, and evaluate the full molecule template.</p>
+<p>When we generate and evauate compounds in this way, we can build in a strong guarantee that compounds passing this tiered templating process will conform to our specified chemotype.</p>
+<p>One additional detail is how we match fragments to templates. We do this by adding atom map numbers and isotope numbers to the wildcard atoms on the fragments. In SMILES strings, this means converting <code>*</code> to <code>[{isotope}*:{map number}]</code>. Fragments with the same atom map number are joined together using an acyclic bond, and the isotope numbers uniquely differentiate fragments with the same map numbers. So our framework of <code>*R1.*scaffold*.*R2</code> would be expressed as <code>[2*:1]R1.[1*:1]scaffold[1*:2].[2*:2]R2</code>. The generative mode would produce sequences of the format <code>[2*:1]R1.[2*:2]R2</code>. These signifiers of the form <code>[{isotope}*:{map number}]</code> are easily added as new tokens to the generative model's vocabulary.</p>
+<h3 id="The-Block-Class">The Block Class<a class="anchor-link" href="#The-Block-Class"> </a></h3><p>Everything needed to implement the above example is contained in the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class. Blocks are created from a <a href="/mrl/template.template.html#Template"><code>Template</code></a> and a set of links, ie <code>['[2*:1]']</code>. Blocks can also contain any number of <code>subblocks</code>, and function in a recursive fashion. When a string of fragments is passed to a block, the block looks to see if the links present on the fragment match any subblocks. If so, the fragment is first routed to the subblock and evaluated by the subblock template. Once all fragments have been screened by matching subblocks, the fragments are fused on the atom mapping pairs present, then evaluated by the template at the current block</p>
+<p>The above example, we would have four blocks in total. We would have two <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> blocks for <code>R1</code> and <code>R2</code>. We woud then have a <a href="/mrl/template.blocks.html#ConstantMolBlock"><code>ConstantMolBlock</code></a> for the pre-defined scaffold. Finally, we would have a <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> for the whole molecule that would contain the previous three blocks as subblocks. It would look something like this:</p>
+
+<pre><code>r1_template = Template(r1_hard_filters, r1_soft_filters)
+r1_links = ['[2*:1]']
+r1_block = MolBlock(r1_template, r1_links, name='r1')
+
+r2_template = Template(r2_hard_filters, r2_soft_filters)
+r2_links = ['[2*:2]']
+r2_block = MolBlock(r2_template, r2_links, name='r2')
+
+scaffold_links = ['[1*:1]', '[1*:2]']
+scaffold_block = ConstantMolBlock(scaffold_smile, name='scaffold', links=scaffold_links)
+
+full_molecule_template = Template(full_hard_filters, full_soft_filters)
+main_block = MolBlock(full_molecule_template, [], name='full_molecule', subblocks=[r1_block, r2_block, scaffold_block])</code></pre>
+<p>When a fragment of the form <code>[2*:1]R1.[2*:2]R2</code> is passed to <code>main_block</code>, it is first broken down into <code>[2*:1]R1</code> and <code>[2*:2]R2</code>. <code>[2*:1]R1</code> matches <code>r1_links</code>, so it is routed to <code>r1_block</code>. Similarly, <code>[2*:2]R2</code> is routed to <code>r2_block</code>. After being evaluated by the subblocks, <code>R1</code> and <code>R2</code> are fused with the <code>scaffold_smile</code> in <code>scaffold_block</code> to form a full molecule, which is then screened by <code>main_block</code></p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -62,8 +94,18 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Block" class="doc_header"><code>class</code> <code>Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Block</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>[]</code></em>)</p>
+<h2 id="Block" class="doc_header"><code>class</code> <code>Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Block</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>[]</code></em>)</p>
 </blockquote>
+<p>Block - base class for Blocks</p>
+<p>Inputs:</p>
+
+<pre><code>`template` - [`Template`](/mrl/template.template.html#Template) subclass
+
+`links` - list, defines links between this block and other blocks
+
+`name` - str, block name
+
+`subblocks` - list, list of [`Block`](/mrl/template.blocks.html#Block) classes nested within this block</code></pre>
 
 </div>
 
@@ -93,8 +135,12 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MolBlock" class="doc_header"><code>class</code> <code>MolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlock</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>[]</code></em>) :: <a href="/mrl/template.blocks.html#Block"><code>Block</code></a></p>
+<h2 id="MolBlock" class="doc_header"><code>class</code> <code>MolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L140" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlock</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>[]</code></em>) :: <a href="/mrl/template.blocks.html#Block"><code>Block</code></a></p>
 </blockquote>
+<p>MolBlock - <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> subclass specific to working with smiles strings. This class expects
+links between SMILES fragments to be wildcard atoms of the form <code>{isotope}*:{map_number}</code>.
+Note that '0' should not be used as an isotope number because RDKit removes '0' isotopes from
+SMILES strings automatically.</p>
 
 </div>
 
@@ -124,8 +170,40 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L275" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
+<h4 id="MolBlock.recurse_fragments" class="doc_header"><code>MolBlock.recurse_fragments</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L259" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MolBlock.recurse_fragments</code>(<strong><code>fragments</code></strong>, <strong><code>add_constant</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
+<p>recurse_fragments - recursively evlauates <code>fragments</code> against <code>self.template</code>
+and all blocks in <code>self.subblocks</code></p>
+<p>Inputs:</p>
+
+<pre><code>`fragments` - fragments to process. Can either be a single string of the form `'f1.f2.f3'`
+or a list of the form `['f1','f2','f3']`
+
+`add_constant` - bool, if True, constant sequences in any [`ConstantBlock`](/mrl/template.blocks.html#ConstantBlock) subclasses
+are added to `fragments` during evaluation. Should be `True` if constant sequences are
+missing from `fragments` or False if they are present
+
+</code></pre>
+<p>Returns:</p>
+
+<pre><code>`fused` - str, fragments fused at this stage
+
+`total_pass` - bool, True if `fragments` passed all subblock templates and `fused` passed
+`self.template`
+
+`total_score` - float, sum of scores from `self.template.soft_filters` and subblock template soft filters
+
+`output_dicts` - list, list of dictionaries holding information from this block and subblocks
+
+</code></pre>
+<p>Recurse fragments works in the following way:</p>
+
+<pre><code>1. Fragments are decomposed based on `self.decompose_fragments`
+2. Fragments are routed to subblocks if present using `self.match_fragment_recursive`
+3. Any fragments matching a subblock are first evaluated by that subblock's template
+4. If `add_constant=True`, constant sequences from any [`ConstantBlock`](/mrl/template.blocks.html#ConstantBlock) subblocks are added
+5. Fragments are joined and fused using `self.join_fragments` and `self.fuse_fragments`
+6. The fused fragments are processed by `self.eval_mol`</code></pre>
 
 </div>
 
@@ -148,8 +226,34 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L302" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
+<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L352" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
 </blockquote>
+<p>ConstantBlock - base block class for constant sequence</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L382" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>, <strong><code>links</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
+</blockquote>
+<p>ConstantMolBlock - constant block for SMILES sequence</p>
 
 </div>
 
@@ -442,33 +546,33 @@ nb_path: "nbs/04_template.blocks.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>O=C(NC(=O)[2*:1])NC1CC1</td>
+      <td>Cc1cncc(NC(=O)[2*:1])c1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>O=C(CNC(=O)C1CCCCC1)OCC(=O)[2*:1]</td>
+      <td>CCCC(=O)OCc1c(OC)cccc1O[2*:1]</td>
       <td>0.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>COCc1cccc(NC(=O)N[2*:1])c1</td>
-      <td>1.0</td>
-      <td>1.0</td>
+      <td>CCC(CC)(NC(=O)N1CCC(C)CC1)[2*:1]</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>O=CC(=Cc1ccc([N+](=O)[O-])o1)C[2*:1]</td>
-      <td>1.0</td>
-      <td>1.0</td>
+      <td>COc1ccccc1NC(=S)NCC[2*:1]</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>O=C(CCc1ccc(F)c(F)c1)N[2*:1]</td>
-      <td>1.0</td>
-      <td>1.0</td>
+      <td>Brc1cccc(CS[2*:1])c1</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <td>...</td>
@@ -478,31 +582,31 @@ nb_path: "nbs/04_template.blocks.ipynb"
     </tr>
     <tr>
       <td>4615</td>
-      <td>CCC(CC)(C[NH+]1CCCCC1)[2*:1]</td>
+      <td>O=C(Cc1nnc(=O)[nH]c1[O-])OCC[2*:1]</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4616</td>
-      <td>O=C(NC[2*:1])C1CCCC1</td>
+      <td>Brc1ccc([2*:1])cn1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4617</td>
-      <td>O=C(C[2*:1])NC1CCCC1</td>
+      <td>CC1(C)CCN(C(=O)[2*:1])C1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4618</td>
-      <td>Oc1cccc(C[2*:1])c1</td>
+      <td>COC1CCC(C[2*:1])CC1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4619</td>
-      <td>O=C1CNC(=O)N1C[2*:1]</td>
+      <td>Cc1noc(C)c1S(=O)(=O)N[2*:1]</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
@@ -559,11 +663,11 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;Cc1cc(C(=O)NCc2cnc3c(N(C)CCS(C)(=O)=O)cncc3c2)sc1C#CCO&#39;,
- &#39;Cc1ccc(C(=O)NCc2cnc3c(C(=O)N(C)CCC(C)C)cncc3c2)n1C&#39;,
- &#39;CC(C)NC(=O)NNC(=O)c1cncc2cc(C[NH+]3CCC(CO)CC3)cnc12&#39;,
- &#39;CCCc1noc(C[NH+](C)c2cnc3c(SCCCCCCS)cncc3c2)n1&#39;,
- &#39;CC(C)(CBr)c1cncc2cc(CC(=O)Nc3ccc(Cl)c(C(F)(F)F)c3)cnc12&#39;]</pre>
+<pre>[&#39;CC[NH+](CC)C(C)(C)C(=O)Cc1cncc2cc(CNC(=O)Nc3ccccc3COC)cnc12&#39;,
+ &#39;Cc1cccc(CSc2cnc3c(S(=O)(=O)C(C)C)cncc3c2)n1&#39;,
+ &#39;CN(C)C(=O)Cc1cncc2cc(C=Nc3ccc(C(=O)[O-])cc3)cnc12&#39;,
+ &#39;Cc1cc([N+](=O)[O-])cc(S(=O)(=O)Nc2cnc3c(C(C)(C)C)cncc3c2)c1C&#39;,
+ &#39;COC(=O)CCCc1cncc2cc(CNC(=O)c3nonc3C)cnc12&#39;]</pre>
 </div>
 
 </div>
@@ -684,17 +788,17 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>[{&#39;block&#39;: &#39;r1&#39;,
-  &#39;fused&#39;: &#39;Cc1ccn(CCNC(=O)[2*:1])n1&#39;,
-  &#39;fragments&#39;: [&#39;Cc1ccn(CCNC(=O)[2*:1])n1&#39;],
+  &#39;fused&#39;: &#39;COC(=O)C1(NC(=O)C[2*:1])CCSCC1&#39;,
+  &#39;fragments&#39;: [&#39;COC(=O)C1(NC(=O)C[2*:1])CCSCC1&#39;],
   &#39;block_pass&#39;: True,
-  &#39;block_score&#39;: 1.0,
+  &#39;block_score&#39;: 0.0,
   &#39;all_pass&#39;: True,
-  &#39;all_score&#39;: 1.0,
+  &#39;all_score&#39;: 0.0,
   &#39;hardlog&#39;: [],
   &#39;softlog&#39;: []},
  {&#39;block&#39;: &#39;r2&#39;,
-  &#39;fused&#39;: &#39;CC(C)O[2*:2]&#39;,
-  &#39;fragments&#39;: [&#39;CC(C)O[2*:2]&#39;],
+  &#39;fused&#39;: &#39;CC(N)=C(C#N)C(=O)C[2*:2]&#39;,
+  &#39;fragments&#39;: [&#39;CC(N)=C(C#N)C(=O)C[2*:2]&#39;],
   &#39;block_pass&#39;: True,
   &#39;block_score&#39;: 1.0,
   &#39;all_pass&#39;: True,
@@ -702,22 +806,139 @@ nb_path: "nbs/04_template.blocks.ipynb"
   &#39;hardlog&#39;: [],
   &#39;softlog&#39;: []},
  {&#39;block&#39;: &#39;full_molecule&#39;,
-  &#39;fused&#39;: &#39;Cc1ccn(CCNC(=O)c2cnc3c(OC(C)C)cncc3c2)n1&#39;,
-  &#39;fragments&#39;: [&#39;Cc1ccn(CCNC(=O)[2*:1])n1&#39;,
-   &#39;CC(C)O[2*:2]&#39;,
+  &#39;fused&#39;: &#39;COC(=O)C1(NC(=O)Cc2cnc3c(CC(=O)C(C#N)=C(C)N)cncc3c2)CCSCC1&#39;,
+  &#39;fragments&#39;: [&#39;COC(=O)C1(NC(=O)C[2*:1])CCSCC1&#39;,
+   &#39;CC(N)=C(C#N)C(=O)C[2*:2]&#39;,
    &#39;c1nc2c([1*:2])cncc2cc1[1*:1]&#39;],
   &#39;block_pass&#39;: True,
   &#39;block_score&#39;: 0,
   &#39;all_pass&#39;: True,
-  &#39;all_score&#39;: 2.0,
-  &#39;hardlog&#39;: [&#39;Cc1ccn(CCNC(=O)c2cnc3c(OC(C)C)cncc3c2)n1&#39;, True, True],
-  &#39;softlog&#39;: [&#39;Cc1ccn(CCNC(=O)c2cnc3c(OC(C)C)cncc3c2)n1&#39;, 0]}]</pre>
+  &#39;all_score&#39;: 1.0,
+  &#39;hardlog&#39;: [&#39;COC(=O)C1(NC(=O)Cc2cnc3c(CC(=O)C(C#N)=C(C)N)cncc3c2)CCSCC1&#39;,
+   True,
+   True],
+  &#39;softlog&#39;: [&#39;COC(=O)C1(NC(=O)Cc2cnc3c(CC(=O)C(C#N)=C(C)N)cncc3c2)CCSCC1&#39;,
+   0]}]</pre>
 </div>
 
 </div>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BlockTree" class="doc_header"><code>class</code> <code>BlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L410" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTree</code>(<strong><code>head_block</code></strong>)</p>
+</blockquote>
+<p>BlockTree - base class for handling nested blocks. Takes care of running fragment strings and logging outputs</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="MolBlockTree" class="doc_header"><code>class</code> <code>MolBlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L487" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlockTree</code>(<strong><code>head_block</code></strong>) :: <a href="/mrl/template.blocks.html#BlockTree"><code>BlockTree</code></a></p>
+</blockquote>
+<p>MolBlockTree - block tree designed to work with <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> classes</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RGroupBlock" class="doc_header"><code>class</code> <code>RGroupBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L537" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlock</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#MolBlockTree"><code>MolBlockTree</code></a></p>
+</blockquote>
+<p>MolBlockTree - block tree designed to work with <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> classes</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DoubleRGroupBlock" class="doc_header"><code>class</code> <code>DoubleRGroupBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L560" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlock</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#MolBlockTree"><code>MolBlockTree</code></a></p>
+</blockquote>
+<p>MolBlockTree - block tree designed to work with <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> classes</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -929,61 +1150,6 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="BlockTree" class="doc_header"><code>class</code> <code>BlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L323" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTree</code>(<strong><code>head_block</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="MolBlockTree" class="doc_header"><code>class</code> <code>MolBlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L388" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlockTree</code>(<strong><code>head_block</code></strong>) :: <a href="/mrl/template.blocks.html#BlockTree"><code>BlockTree</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -1175,15 +1341,20 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>check if template with no hard fiters returns true</p>
+<p>polish molblocktree
+add staandard bock trees for r-group, scaaffold, linker optimization
+save/load for blocks/block trees</p>
 <p>Clean up docs
 add returns between lines in docstrings for better rendering
 Make overview page for templates
 Make tutorial for enumeration (remove existing from chem notebook)
-make tutoriaal for baasic templates
+make tutorial for baasic templates
 make tutorial for intermediate templates (custom filters, etc)
 make tutorial for advanced templates (blocks)
 figure out page links in nbdev
-figure out import all</p>
+figure out import all 
+get collab working
+get google search working</p>
 <p>torch core
 models (lstm, vae, transformer)</p>
 <p>score functions</p>
