@@ -54,271 +54,30 @@ nb_path: "nbs/04_template.blocks.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Block</span><span class="p">():</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="p">[]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="n">links</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span> <span class="o">=</span> <span class="n">subblocks</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sublinks</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_links</span><span class="p">()</span>
-        
-    <span class="k">def</span> <span class="nf">update_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sublinks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">links</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">b</span><span class="o">.</span><span class="n">sublinks</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sublinks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>
-                
-    <span class="k">def</span> <span class="nf">eval_mol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">):</span>
-        <span class="n">mol</span> <span class="o">=</span> <span class="n">to_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        <span class="n">smile</span> <span class="o">=</span> <span class="n">to_smile</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_fragment</span><span class="p">(</span><span class="n">smile</span><span class="p">):</span>
-            <span class="n">hardpass</span><span class="p">,</span> <span class="n">hardlog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">hf</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">hardpass</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">hardlog</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="output_wrapper">
+<div class="output">
 
-        <span class="k">if</span> <span class="n">hardpass</span><span class="p">:</span>
-            <span class="n">score</span><span class="p">,</span> <span class="n">softlog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">fail_score</span>
-            <span class="n">softlog</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="k">return</span> <span class="p">[</span><span class="n">hardpass</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">hardlog</span><span class="p">,</span> <span class="n">softlog</span><span class="p">]</span>
-                
-    <span class="k">def</span> <span class="nf">match_fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="c1"># determine if fragment matches block link pattern</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-    
-    <span class="k">def</span> <span class="nf">match_fragment_recursive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="c1"># recursively match fragment to all subblocks</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_fragment</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">match_fragment_recursive</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
-                    <span class="n">output</span> <span class="o">=</span> <span class="kc">True</span>
-                    
-        <span class="k">return</span> <span class="n">output</span>
-    
-    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s1">&#39;hard&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># checks fragment attachments, then sends to template `load_data`</span>
-        <span class="c1"># optionally recursive</span>
-        <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-                <span class="n">b</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
-        <span class="n">matches</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">match_fragment</span><span class="p">,</span> <span class="n">fragments</span><span class="p">)</span>
-        <span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">fragments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fragments</span><span class="p">))</span> <span class="k">if</span> <span class="n">matches</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">screen_mols</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
-        
-    <span class="k">def</span> <span class="nf">decompose_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_string</span><span class="p">):</span>
-        <span class="c1"># decomposes a string of multiple fragments into a list of single fragments</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-    
-    <span class="k">def</span> <span class="nf">join_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_list</span><span class="p">):</span>
-        <span class="c1"># joins list of fragments into single string</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-    
-    <span class="k">def</span> <span class="nf">fuse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_string</span><span class="p">):</span>
-        <span class="c1"># fuses fragment string into single output</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-    
-    <span class="k">def</span> <span class="nf">join_and_fuse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fuse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">join_fragments</span><span class="p">(</span><span class="n">fragment_list</span><span class="p">))</span>
-    
-    <span class="k">def</span> <span class="nf">recurse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="c1"># recursively break down fragments, route to subblocks, fuse and evaluate</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
-        <span class="n">rep_str</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;Block </span><span class="si">{self.name}</span><span class="s1">: </span><span class="si">{self.links}</span><span class="se">\n\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
-        
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-            <span class="n">rep_str</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-                <span class="n">rep_str</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
-                
-        <span class="k">return</span> <span class="n">rep_str</span>
-        
+<div class="output_area">
 
-<span class="k">class</span> <span class="nc">MolBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="p">[]):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="n">subblocks</span><span class="p">)</span>
-        
-        <span class="c1"># self.links = [&#39;1*:2&#39;, &#39;1*:3&#39;]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;\[.\*:.]&#39;</span><span class="p">)</span>
-        
-        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="ow">not</span> <span class="s1">&#39;0*&#39;</span> <span class="ow">in</span> <span class="n">link</span><span class="p">,</span> <span class="s2">&quot;Do not use 0 as an isotope, RDKit automatically removes it&quot;</span>
-            
-    <span class="k">def</span> <span class="nf">pattern_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="n">matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">]</span>
-    
-    <span class="k">def</span> <span class="nf">is_mapped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">fragment</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">)):</span>
-            <span class="n">mapped</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">mapped</span> <span class="o">=</span> <span class="kc">False</span>
-            
-        <span class="k">return</span> <span class="n">mapped</span>
-    
-    <span class="k">def</span> <span class="nf">add_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">,</span> <span class="n">links</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mapped</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
-            <span class="c1"># already mapped</span>
-            <span class="n">mapped</span> <span class="o">=</span> <span class="n">fragment</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># partially mapped, something went wrong</span>
-                <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-                
-            <span class="k">if</span> <span class="n">links</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">links</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">)</span>
-                <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">links</span><span class="p">)</span>
-                
-            <span class="n">mapped</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-            <span class="n">link_count</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fragment</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">s</span><span class="o">==</span><span class="s1">&#39;*&#39;</span><span class="p">:</span>
-                    <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;[</span><span class="si">{links[link_count]}</span><span class="s1">]&#39;</span>
-                    <span class="n">link_count</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">mapped</span> <span class="o">+=</span> <span class="n">s</span>
-        
-        <span class="k">return</span> <span class="n">mapped</span>
-                
-    <span class="k">def</span> <span class="nf">remove_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="n">matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
-            <span class="n">fragment</span> <span class="o">=</span> <span class="n">fragment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{match}</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fragment</span>
-    
-    <span class="k">def</span> <span class="nf">match_fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        
-        <span class="n">match</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">fragment</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mapped</span><span class="p">(</span><span class="n">fragment</span><span class="p">):</span>
-                <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-                
-            <span class="n">matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">matches</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span><span class="o">==</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
-                <span class="n">match</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="k">return</span> <span class="n">match</span>
-    
-    <span class="k">def</span> <span class="nf">load_fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">fragment</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">):</span>
-            <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-            <span class="n">fragpass</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">fragpass</span> <span class="o">=</span> <span class="kc">False</span>
-            
-        <span class="k">return</span> <span class="p">[</span><span class="n">fragment</span><span class="p">,</span> <span class="n">fragpass</span><span class="p">]</span>
-    
-    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-                <span class="n">b</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                
-        <span class="n">fragments</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_fragment</span><span class="p">,</span> <span class="n">fragments</span><span class="p">)</span>
-        <span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fragments</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">screen_mols</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
-        
-    <span class="k">def</span> <span class="nf">sample_smiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s1">&#39;hard&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">sample_smiles</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">shuffle_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
-        <span class="n">current_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_match</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-        <span class="n">new_mapping</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">current_mapping</span><span class="p">)</span>
-        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">new_mapping</span><span class="p">)</span>
-        
-        <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
-        <span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_mapping</span><span class="p">(</span><span class="n">fragment</span><span class="p">,</span> <span class="n">links</span><span class="o">=</span><span class="n">new_mapping</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fragment</span>
-    
-    <span class="k">def</span> <span class="nf">decompose_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_string</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fragment_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">join_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fragment_list</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">fuse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment_string</span><span class="p">):</span>
-        <span class="n">new_smile</span> <span class="o">=</span> <span class="n">fuse_on_atom_mapping</span><span class="p">(</span><span class="n">fragment_string</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">new_smile</span>
-    
-    <span class="k">def</span> <span class="nf">recurse_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragments</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Block" class="doc_header"><code>class</code> <code>Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Block</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>[]</code></em>)</p>
+</blockquote>
 
-        <span class="n">output_dicts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">total_pass</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">total_score</span> <span class="o">=</span> <span class="mf">0.</span>
+</div>
 
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">fragments</span><span class="p">]</span>
+</div>
 
-        <span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">decompose_fragments</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fragments</span><span class="p">]</span>
-        <span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">fragments</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-            <span class="n">new_fragments</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="n">unrouted</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span> <span class="c1"># copy list</span>
-
-            <span class="k">for</span> <span class="n">sb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-                <span class="n">routed</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unrouted</span> <span class="k">if</span> <span class="n">sb</span><span class="o">.</span><span class="n">match_fragment_recursive</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
-                <span class="n">unrouted</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unrouted</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">routed</span><span class="p">]</span>
-
-                <span class="k">if</span> <span class="n">routed</span><span class="p">:</span>
-                    <span class="n">r_fused</span><span class="p">,</span> <span class="n">r_pass</span><span class="p">,</span> <span class="n">r_score</span><span class="p">,</span> <span class="n">subdicts</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">(</span><span class="n">routed</span><span class="p">)</span>
-                    <span class="n">new_fragments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_fused</span><span class="p">)</span>
-                    <span class="n">total_pass</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_pass</span><span class="p">)</span>
-                    <span class="n">total_score</span> <span class="o">+=</span> <span class="n">r_score</span>
-                    <span class="n">output_dicts</span> <span class="o">+=</span> <span class="n">subdicts</span>
-
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sb</span><span class="p">,</span> <span class="n">ConstantBlock</span><span class="p">)</span> <span class="ow">and</span> <span class="n">add_constant</span><span class="p">:</span>
-                    <span class="n">new_fragments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sb</span><span class="o">.</span><span class="n">smile</span><span class="p">)</span>
-
-            <span class="n">fragments</span> <span class="o">=</span> <span class="n">new_fragments</span> <span class="o">+</span> <span class="n">unrouted</span>
-
-        <span class="n">joined_fragments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_fragments</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
-        <span class="n">fused</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fuse_fragments</span><span class="p">(</span><span class="n">joined_fragments</span><span class="p">)</span>
-
-        <span class="n">frag_pass</span><span class="p">,</span> <span class="n">frag_score</span><span class="p">,</span> <span class="n">hardlog</span><span class="p">,</span> <span class="n">softlog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_mol</span><span class="p">(</span><span class="n">fused</span><span class="p">)</span>
-        <span class="n">total_pass</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frag_pass</span><span class="p">)</span>
-        <span class="n">total_score</span> <span class="o">+=</span> <span class="n">frag_score</span>
-
-        <span class="n">total_pass</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">total_pass</span><span class="p">)</span>
-
-        <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;block&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="s1">&#39;fused&#39;</span> <span class="p">:</span> <span class="n">fused</span><span class="p">,</span>
-            <span class="s1">&#39;fragments&#39;</span> <span class="p">:</span> <span class="n">fragments</span><span class="p">,</span>
-            <span class="s1">&#39;block_pass&#39;</span> <span class="p">:</span> <span class="n">frag_pass</span><span class="p">,</span>
-            <span class="s1">&#39;block_score&#39;</span> <span class="p">:</span> <span class="n">frag_score</span><span class="p">,</span>
-            <span class="s1">&#39;all_pass&#39;</span> <span class="p">:</span> <span class="n">total_pass</span><span class="p">,</span>
-            <span class="s1">&#39;all_score&#39;</span> <span class="p">:</span> <span class="n">total_score</span><span class="p">,</span>
-            <span class="s1">&#39;hardlog&#39;</span> <span class="p">:</span> <span class="n">hardlog</span><span class="p">,</span>
-            <span class="s1">&#39;softlog&#39;</span> <span class="p">:</span> <span class="n">softlog</span>
-        <span class="p">}</span>
-
-        <span class="n">output_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_dict</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">fused</span><span class="p">,</span> <span class="n">total_pass</span><span class="p">,</span> <span class="n">total_score</span><span class="p">,</span> <span class="n">output_dicts</span>
-    
-</pre></div>
-
-    </div>
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -334,7 +93,38 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
+<h2 id="MolBlock" class="doc_header"><code>class</code> <code>MolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlock</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>[]</code></em>) :: <a href="/mrl/template.blocks.html#Block"><code>Block</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L275" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -358,7 +148,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
+<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L302" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
 </blockquote>
 
 </div>
@@ -1081,281 +871,6 @@ nb_path: "nbs/04_template.blocks.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="sample_leaf_nodes" class="doc_header"><code>sample_leaf_nodes</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sample_leaf_nodes</code>(<strong><code>block</code></strong>, <strong><code>include_constant</code></strong>=<em><code>False</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="sample_leaf_nodes_n" class="doc_header"><code>sample_leaf_nodes_n</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sample_leaf_nodes_n</code>(<strong><code>n</code></strong>, <strong><code>block</code></strong>, <strong><code>include_constant</code></strong>=<em><code>False</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sample_leaf_nodes</span><span class="p">(</span><span class="n">main_block</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;CC(C)CCN(C)C(=O)[1*:3]&#39;,
- &#39;O=C(N[2*:2])C1CC([2*:4])CCN1[2*:3]&#39;,
- &#39;N#CC(=Cc1cccc([N+](=O)[O-])c1)[2*:1]&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sample_leaf_nodes</span><span class="p">(</span><span class="n">main_block</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;CS(=O)(=O)NC(=O)[1*:3]&#39;,
- &#39;CC(c1ccc([2*:2])cc1)([2*:3])[2*:4]&#39;,
- &#39;CNC(=O)n1cc([2*:1])cn1&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frags</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">sample_leaf_nodes_n</span><span class="p">,</span> <span class="p">[</span><span class="mi">500</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">main_block</span><span class="p">,</span> <span class="n">include_constant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frags</span> <span class="o">=</span> <span class="n">flatten_list_of_lists</span><span class="p">(</span><span class="n">frags</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">hard_log</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">main_block</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">,</span> <span class="n">frags</span><span class="p">,</span> <span class="n">cpus</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="nb">len</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">out</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(4000, 2412)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">hard_log</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -1422,7 +937,7 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BlockTree" class="doc_header"><code>class</code> <code>BlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTree</code>(<strong><code>head_block</code></strong>)</p>
+<h2 id="BlockTree" class="doc_header"><code>class</code> <code>BlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L323" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTree</code>(<strong><code>head_block</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1446,7 +961,7 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MolBlockTree" class="doc_header"><code>class</code> <code>MolBlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L151" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlockTree</code>(<strong><code>head_block</code></strong>) :: <a href="/mrl/template.blocks.html#BlockTree"><code>BlockTree</code></a></p>
+<h2 id="MolBlockTree" class="doc_header"><code>class</code> <code>MolBlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L388" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlockTree</code>(<strong><code>head_block</code></strong>) :: <a href="/mrl/template.blocks.html#BlockTree"><code>BlockTree</code></a></p>
 </blockquote>
 
 </div>
