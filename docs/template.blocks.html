@@ -46,7 +46,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Tempates define a chemical space using a set of hard and soft fiters to evaluate a molecule. For greater control, we may wish to apply different templates to different parts of the molecule. With the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class and some modifications to how we represent SMILES strings, we can do this.</p>
+<h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Tempates define a chemical space using a set of hard and soft fiters to evaluate a molecule. For greater control, we may wish to apply different templates to different parts of the molecule. With the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> and <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> classes and some modifications to how we represent SMILES strings, we can do this.</p>
 <h3 id="Motivating-Example:-R-group-Optimization">Motivating Example: R-group Optimization<a class="anchor-link" href="#Motivating-Example:-R-group-Optimization"> </a></h3><p>Say we have a compound of the form <code>R1-scaffold-R2</code>, where the scaffold is a defined structure. We want to run a generative screen on the two R-groups while keeping the scaffold constant. We also have preferences on the chemical structures present at each R-group. We want <code>R1</code> to contain at least 1 ring, and we want <code>R2</code> to have no rings.</p>
 <p>One way to approach this would be to build a dataset of compounds with the format <code>R1-scaffold-R2</code> where all <code>R1</code> and <code>R2</code> structures conform to our desired properties. We would then train a generative model on this dataset and run a standard generative screen. However, this runs the risk of generated compounds deviating from our desired chemotype. This means we need to create a template that enforces the <code>R1-scaffold-R2</code> chemotype with our stated constraints on <code>R1</code> and <code>R2</code>.</p>
 <p>This leads to the problem of factoring arbitrary chemical structures into our <code>R1-scaffold-R2</code>, with all sorts of nasty problems and edge cases cropping up if the model deviates from this chemotype during training. It becomes much easier to build our desired structure priors into the generation process.</p>
@@ -54,24 +54,48 @@ nb_path: "nbs/04_template.blocks.ipynb"
 <p>Now we can evaluate and assemble compounds to compare them to our desired constraints. We create different templates for <code>R1</code>, <code>R2</code> and the full compound <code>R1-scaffold-R2</code>.</p>
 <p>The model generates some sequence of the form <code>*R1.*R2</code>. We split this into <code>*R1</code> and <code>*R2</code>, and evaluate each R group with their respective template. Then we add in the scaffold, fuse the fragments into the full molecule, and evaluate the full molecule template.</p>
 <p>When we generate and evauate compounds in this way, we can build in a strong guarantee that compounds passing this tiered templating process will conform to our specified chemotype.</p>
-<p>One additional detail is how we match fragments to templates. We do this by adding atom map numbers and isotope numbers to the wildcard atoms on the fragments. In SMILES strings, this means converting <code>*</code> to <code>[{isotope}*:{map number}]</code>. Fragments with the same atom map number are joined together using an acyclic bond, and the isotope numbers uniquely differentiate fragments with the same map numbers. So our framework of <code>*R1.*scaffold*.*R2</code> would be expressed as <code>[2*:1]R1.[1*:1]scaffold[1*:2].[2*:2]R2</code>. The generative mode would produce sequences of the format <code>[2*:1]R1.[2*:2]R2</code>. These signifiers of the form <code>[{isotope}*:{map number}]</code> are easily added as new tokens to the generative model's vocabulary.</p>
-<h3 id="The-Block-Class">The Block Class<a class="anchor-link" href="#The-Block-Class"> </a></h3><p>Everything needed to implement the above example is contained in the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class. Blocks are created from a <a href="/mrl/template.template.html#Template"><code>Template</code></a> and a set of links, ie <code>['[2*:1]']</code>. Blocks can also contain any number of <code>subblocks</code>, and function in a recursive fashion. When a string of fragments is passed to a block, the block looks to see if the links present on the fragment match any subblocks. If so, the fragment is first routed to the subblock and evaluated by the subblock template. Once all fragments have been screened by matching subblocks, the fragments are fused on the atom mapping pairs present, then evaluated by the template at the current block</p>
-<p>The above example, we would have four blocks in total. We would have two <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> blocks for <code>R1</code> and <code>R2</code>. We woud then have a <a href="/mrl/template.blocks.html#ConstantMolBlock"><code>ConstantMolBlock</code></a> for the pre-defined scaffold. Finally, we would have a <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> for the whole molecule that would contain the previous three blocks as subblocks. It would look something like this:</p>
+<h3 id="The-Block-Class">The Block Class<a class="anchor-link" href="#The-Block-Class"> </a></h3><p>The process described above is implemented using the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class. A block is a general abstraction for a chunk of a molecule. The <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class holds a <a href="/mrl/template.template.html#Template"><code>Template</code></a> describing desired molecular properties and additional information specifying how the block links to other blocks.</p>
+<p>Blocks are assembled into a tree structure, with some blocks nested within other blocks. For the above example, we would have four blocks in total. We would have two <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> blocks for <code>R1</code> and <code>R2</code> and a <a href="/mrl/template.blocks.html#ConstantMolBlock"><code>ConstantMolBlock</code></a> for the pre-defined scaffold. The block structure would look like this:</p>
+
+<pre><code>Block tree:
+
+Block 1 - full molecule
+    Block 2 - scaffold (constant)
+    Block 3 - R1 + R1 Template
+    Block 4 - R2 + R2 Template</code></pre>
+<p>If we passed our <code>*R1.*R2</code> generated sequence to the head block, Block 1, the sequence would be broken down into fragments and routed to subblocks. <code>R1</code> would be screened against the R1 Template in Block 3. <code>R2</code> would be screened against the R2 template in Block 4. Then <code>R1</code> and <code>R2</code> would be merged with the constant scaffold in Block 2 to create the full <code>R1-scaffold-R2</code> compound. Then the full compound would be screened by the full molecule template in Block 1.</p>
+<h3 id="Fragment-Routing">Fragment Routing<a class="anchor-link" href="#Fragment-Routing"> </a></h3><p>One important detail is how fragments are routed to different blocks. If the model generates <code>*R1.*R2</code>, how do we know that <code>R1</code> should be routed to one block and <code>R2</code> should be routed to a different block? We specify block assignments using isotope and atom map numbers on the wildcard atoms.</p>
+<p>Map numbers are used to determine which atoms are fused together. If we had a fragment sequence <code>*X.*Y*.*Z</code>, we don't know how to assemble the fragments. If we add atom map numbers to get <code>[*:2]X.[*:1]Y[*:2].[*:1]Z</code>, then we can definitely assemble the sequence into <code>[*:2]X.[*:1]Y[*:2].[*:1]Z &gt;&gt; Z[*:1].[*:1]Y[*:2].[*:2]X &gt;&gt; Z-Y-X</code>.</p>
+<p>Isotope numbers are used to differentiate fragments with the same map number. Say we have a fragment sequence of <code>[*:1]X.[*:1]Y</code>, and we want <code>X</code> to be evaluated by one template and <code>Y</code> to be evaluated by another. We need a way of uniquely distinguishing one fragment from another. By adding isotopes to wildcards in addition to map numbers, ie <code>[*:1]X &gt;&gt; [1*:1]X</code>, we can uniquely match fragments to blocks.</p>
+<p>Going back to the previous example, our framework of <code>*R1.*scaffold*.*R2</code> would become <code>[2*:1]R1.[1*:1]scaffold[1*:2].[2*:2]R2</code>, and our generative model would create sequences of the form <code>[2*:1]R1.[2*:2]R2</code>. This is easilly implemented by adding new tokens to the vocabulary of our generative model.</p>
+<p>These links would be specified in the block structure:</p>
+
+<pre><code>Block tree:
+
+Block 1 - full molecule, links=[]
+    Block 2 - scaffold (constant), links=['[1*:1]', '[1*:2]']
+    Block 3 - R1 + R1 Template, links=['[2*:1]']
+    Block 4 - R2 + R2 Template, links=['[2*:2]']</code></pre>
+<p>When analyzing a fragment sequence, a block will extract the isotope/map number links of <code>{isotope}*:{map_num}</code> from each fragment. The links present in a fragment are compared to the links specified in the Block, as well as any subblocks contained within the block.</p>
+<h3 id="Fragment-Routing-Convention">Fragment Routing Convention<a class="anchor-link" href="#Fragment-Routing-Convention"> </a></h3><p>Wildcards should be expressed as <code>[{isotope}*:{map_number}]</code>. The <code>isotope</code> value sould be <code>1</code> or <code>2</code>. <code>0</code> should not be used as RDKit canonicalization removes zero isotope values from wildcards.</p>
+<h3 id="The-BlockTemplate-Class">The BlockTemplate Class<a class="anchor-link" href="#The-BlockTemplate-Class"> </a></h3><p>Once the block tree is assembled, it can be used to create a <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a>. The <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> class is a wrapper for a series of nested <code>Blocks</code> designed to behave like the <a href="/mrl/template.template.html#Template"><code>Template</code></a> class. <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> has the same <code>__call__</code> API as <a href="/mrl/template.template.html#Template"><code>Template</code></a>, and provides saving/loading functions and data logging, as well as easy access to nodes via unnested lists and dictionaries.</p>
+<h3 id="Code-Example">Code Example<a class="anchor-link" href="#Code-Example"> </a></h3><p>For the <code>R1-scaffold-R2</code> example, setting up the blocks would look something like this</p>
 
 <pre><code>r1_template = Template(r1_hard_filters, r1_soft_filters)
-r1_links = ['[2*:1]']
+r1_links = ['2*:1']
 r1_block = MolBlock(r1_template, r1_links, name='r1')
 
 r2_template = Template(r2_hard_filters, r2_soft_filters)
-r2_links = ['[2*:2]']
+r2_links = ['2*:2']
 r2_block = MolBlock(r2_template, r2_links, name='r2')
 
-scaffold_links = ['[1*:1]', '[1*:2]']
+scaffold_links = ['1*:1', '1*:2']
 scaffold_block = ConstantMolBlock(scaffold_smile, name='scaffold', links=scaffold_links)
 
 full_molecule_template = Template(full_hard_filters, full_soft_filters)
-main_block = MolBlock(full_molecule_template, [], name='full_molecule', subblocks=[r1_block, r2_block, scaffold_block])</code></pre>
-<p>When a fragment of the form <code>[2*:1]R1.[2*:2]R2</code> is passed to <code>main_block</code>, it is first broken down into <code>[2*:1]R1</code> and <code>[2*:2]R2</code>. <code>[2*:1]R1</code> matches <code>r1_links</code>, so it is routed to <code>r1_block</code>. Similarly, <code>[2*:2]R2</code> is routed to <code>r2_block</code>. After being evaluated by the subblocks, <code>R1</code> and <code>R2</code> are fused with the <code>scaffold_smile</code> in <code>scaffold_block</code> to form a full molecule, which is then screened by <code>main_block</code></p>
+main_block = MolBlock(full_molecule_template, [], name='full_molecule', subblocks=[r1_block, r2_block, scaffold_block])
+
+block_template = BlockTemplate(main_block)</code></pre>
 
 </div>
 </div>
@@ -275,50 +299,176 @@ missing from `fragments` or False if they are present
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># scaffod</span>
-<span class="n">scaffold_smile</span> <span class="o">=</span> <span class="s1">&#39;c1nc2c([1*:2])cncc2cc1[1*:1]&#39;</span>
-<span class="n">scaffold_block</span> <span class="o">=</span> <span class="n">ConstantMolBlock</span><span class="p">(</span><span class="n">scaffold_smile</span><span class="p">,</span> <span class="s1">&#39;scaffold&#39;</span><span class="p">)</span>
+<div class="output_wrapper">
+<div class="output">
 
-<span class="c1"># R1, must have ring, be between 50-250 g/mol. must have 1 ring. ideally less thn 100-200 g/mol</span>
-
-<span class="n">r1_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
-                     <span class="n">RingFilter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
-                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
-                    <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
-                    <span class="p">)</span>
-
-<span class="n">r1_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r1_template</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;2*:1&#39;</span><span class="p">],</span> <span class="s1">&#39;r1&#39;</span><span class="p">)</span>
+<div class="output_area">
 
 
-<span class="c1"># R2, must have no rings, be between 0-200 g/mol. must have 0 rings. ideally less thn 50-150 g/mol</span>
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BlockTemplate" class="doc_header"><code>class</code> <code>BlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L410" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTemplate</code>(<strong><code>head_block</code></strong>)</p>
+</blockquote>
+<p>BlockTemplate - base class for handling nested blocks. Takes care of running fragment strings and logging outputs</p>
 
-<span class="n">r2_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
-                     <span class="n">RingFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span>
-                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
-                    <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
-                    <span class="p">)</span>
+</div>
 
-<span class="n">r2_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">r2_template</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;2*:2&#39;</span><span class="p">],</span> <span class="s1">&#39;r2&#39;</span><span class="p">)</span>
+</div>
 
-
-<span class="c1"># full compound, must be between 200 and 550 g/mol</span>
-
-<span class="n">full_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">550</span><span class="p">)],</span>
-                    <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="n">main_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">full_template</span><span class="p">,</span> <span class="p">[],</span> <span class="s1">&#39;full_molecule&#39;</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="p">[</span><span class="n">scaffold_block</span><span class="p">,</span> <span class="n">r1_block</span><span class="p">,</span> <span class="n">r2_block</span><span class="p">])</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RGroupBlockTemplate" class="doc_header"><code>class</code> <code>RGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L576" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
+</blockquote>
+<p>RGroupBlockTemplate - block template for r-group screening</p>
+<p>Inputs:</p>
+
+<pre><code>`base_smile` - str, base smile to attach r-group to. Should have a single unmapped wildcard
+atom, ie `*CCCC`
+
+`rgroup_template` - [`Template`](/mrl/template.template.html#Template), template for screening r-groups
+
+`full_molecule_template` - [`Template`](/mrl/template.template.html#Template), None. Optional template for full molecule</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DoubleRGroupBlockTemplate" class="doc_header"><code>class</code> <code>DoubleRGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L612" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
+</blockquote>
+<p>DoubleRGroupBlockTemplate - block template for screening two r-groups</p>
+<p>Inputs:</p>
+
+<pre><code>`base_smile` - str, base smile to attach r-group to. Should have two mapped wildcard atoms,
+ie `'c1nc2c([1*:1])cncc2cc1[1*:2]'`. Rgroup1 will be fused to wildcard `1*:1` and Rgroup 2
+will be fused to wildcard `1*:2`
+
+`r1_template` - [`Template`](/mrl/template.template.html#Template), template for screening rgroup 1
+
+`r2_template` - [`Template`](/mrl/template.template.html#Template), template for screening rgroup 2
+
+`full_molecule_template` - [`Template`](/mrl/template.template.html#Template), None. Optional template for full molecule</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="LinkerBlockTemplate" class="doc_header"><code>class</code> <code>LinkerBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L649" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinkerBlockTemplate</code>(<strong><code>smile1</code></strong>, <strong><code>smile2</code></strong>, <strong><code>linker_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
+</blockquote>
+<p>LinkerBlockTemplate - block template for screening linkers</p>
+<p>Inputs:</p>
+
+<pre><code>`smile1` - str, left-side linker attachment. Should have a single unmapped wildcard,
+ie `*CCCC`
+
+`smile2` - str, right-side linker attachment. Should have a single unmapped wildcard,
+ie `*CCCC`
+
+`linker_template` - [`Template`](/mrl/template.template.html#Template), template for screening the linker
+
+`full_molecule_template` - [`Template`](/mrl/template.template.html#Template), None. Optional template for full molecule</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ScaffoldBlockTemplate" class="doc_header"><code>class</code> <code>ScaffoldBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L697" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaffoldBlockTemplate</code>(<strong><code>attachments</code></strong>, <strong><code>scaffold_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
+</blockquote>
+<p>ScaffoldBlockTemplate - block template for screening scaffolds or rings with multiple attachments</p>
+<p>Inputs:</p>
+
+<pre><code>`attachments` - list, list of mapped attachments. All attachments should have a single wildcard
+atom mapped following the format `[{isotope}*:{map_num}]`, ie `['[1:*1]CC', '[1:*2]CCC']`
+
+`scaffold_template` - [`Template`](/mrl/template.template.html#Template), template for screening the scaffold
+
+`full_molecule_template` - [`Template`](/mrl/template.template.html#Template), None. Optional template for full molecule</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -414,7 +564,36 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># scaffod</span>
+<span class="n">scaffold_smile</span> <span class="o">=</span> <span class="s1">&#39;c1nc2c([1*:2])cncc2cc1[1*:1]&#39;</span>
+<span class="n">scaffold_block</span> <span class="o">=</span> <span class="n">ConstantMolBlock</span><span class="p">(</span><span class="n">scaffold_smile</span><span class="p">,</span> <span class="s1">&#39;scaffold&#39;</span><span class="p">)</span>
+
+<span class="c1"># R1, must have ring, be between 50-250 g/mol. must have 1 ring. ideally less thn 100-200 g/mol</span>
+
+<span class="n">r1_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
+                     <span class="n">RingFilter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+                    <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
+                    <span class="p">)</span>
+
+<span class="c1"># R2, must have no rings, be between 0-200 g/mol. must have 0 rings. ideally less thn 50-150 g/mol</span>
+
+<span class="n">r2_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+                     <span class="n">RingFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span>
+                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                    <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span>
+                    <span class="p">)</span>
+
+<span class="c1"># full compound, must be between 200 and 550 g/mol</span>
+
+<span class="n">full_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">MolWtFilter</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">550</span><span class="p">)],</span>
+                    <span class="n">fail_score</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="n">block_template</span> <span class="o">=</span> <span class="n">DoubleRGroupBlockTemplate</span><span class="p">(</span><span class="n">scaffold_smile</span><span class="p">,</span> <span class="n">r1_template</span><span class="p">,</span> <span class="n">r2_template</span><span class="p">,</span> <span class="n">full_template</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -431,7 +610,7 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r1_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span>
 </pre></div>
 
     </div>
@@ -444,34 +623,31 @@ missing from `fragments` or False if they are present
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>smiles</th>
-      <th>0</th>
-      <th>final</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-</div>
+<div class="output_text output_subarea output_execute_result">
+<pre>Block Template
+	Block full_molecule: []
+		Template
+			Hard Filter:
+				molwt (200, 550)
+			Soft Filter:
+				
+	
+		Constant Block: c1nc2c([1*:2])cncc2cc1[1*:1]
+		Block r1: [&#39;2*:1&#39;]
+			Template
+				Hard Filter:
+					molwt (50, 250)
+					rings (1, 1)
+				Soft Filter:
+					molwt (100, 200)
+		Block r2: [&#39;2*:2&#39;]
+			Template
+				Hard Filter:
+					molwt (0, 200)
+					rings (None, 0)
+				Soft Filter:
+					molwt (50, 150)</pre>
 </div>
 
 </div>
@@ -489,7 +665,7 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -506,7 +682,24 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r1_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">node_dict</span><span class="p">[</span><span class="s1">&#39;r1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
 </pre></div>
 
     </div>
@@ -546,33 +739,33 @@ missing from `fragments` or False if they are present
   <tbody>
     <tr>
       <td>0</td>
-      <td>Cc1cncc(NC(=O)[2*:1])c1</td>
-      <td>1.0</td>
-      <td>1.0</td>
+      <td>O=C(C=Cc1cc(C(F)(F)F)ccc1Cl)N[2*:1]</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>CCCC(=O)OCc1c(OC)cccc1O[2*:1]</td>
-      <td>0.0</td>
-      <td>0.0</td>
+      <td>O=C(COC1CCCC1)N[2*:1]</td>
+      <td>1.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>CCC(CC)(NC(=O)N1CCC(C)CC1)[2*:1]</td>
+      <td>Cc1cnn([2*:1])c1</td>
       <td>0.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>COc1ccccc1NC(=S)NCC[2*:1]</td>
-      <td>0.0</td>
-      <td>0.0</td>
+      <td>Oc1ccccc1C[2*:1]</td>
+      <td>1.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>Brc1cccc(CS[2*:1])c1</td>
-      <td>0.0</td>
-      <td>0.0</td>
+      <td>c1csc(CC[2*:1])c1</td>
+      <td>1.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <td>...</td>
@@ -582,33 +775,33 @@ missing from `fragments` or False if they are present
     </tr>
     <tr>
       <td>4615</td>
-      <td>O=C(Cc1nnc(=O)[nH]c1[O-])OCC[2*:1]</td>
+      <td>NC(=O)c1ccc([2*:1])cn1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4616</td>
-      <td>Brc1ccc([2*:1])cn1</td>
+      <td>CCCCn1nnc(N)c1[2*:1]</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4617</td>
-      <td>CC1(C)CCN(C(=O)[2*:1])C1</td>
-      <td>1.0</td>
-      <td>1.0</td>
+      <td>Cc1ccnn1[2*:1]</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <td>4618</td>
-      <td>COC1CCC(C[2*:1])CC1</td>
+      <td>Fc1cccc(CO[2*:1])c1</td>
       <td>1.0</td>
       <td>1.0</td>
     </tr>
     <tr>
       <td>4619</td>
-      <td>Cc1noc(C)c1S(=O)(=O)N[2*:1]</td>
-      <td>1.0</td>
-      <td>1.0</td>
+      <td>Cc1cc(C(=O)NCCO[2*:1])ccc1[N+](=O)[O-]</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
   </tbody>
 </table>
@@ -631,7 +824,7 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frag_strings</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">sample_smiles</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">main_block</span><span class="o">.</span><span class="n">subblocks</span><span class="p">]))]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;temp.template&#39;</span><span class="p">,</span> <span class="n">with_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -648,7 +841,8 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">main_block</span><span class="o">.</span><span class="n">fuse_fragments</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">frag_strings</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frag_strings</span> <span class="o">=</span> <span class="n">block_template</span><span class="o">.</span><span class="n">sample_leaf_nodes</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">frag_strings</span>
 </pre></div>
 
     </div>
@@ -663,11 +857,16 @@ missing from `fragments` or False if they are present
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;CC[NH+](CC)C(C)(C)C(=O)Cc1cncc2cc(CNC(=O)Nc3ccccc3COC)cnc12&#39;,
- &#39;Cc1cccc(CSc2cnc3c(S(=O)(=O)C(C)C)cncc3c2)n1&#39;,
- &#39;CN(C)C(=O)Cc1cncc2cc(C=Nc3ccc(C(=O)[O-])cc3)cnc12&#39;,
- &#39;Cc1cc([N+](=O)[O-])cc(S(=O)(=O)Nc2cnc3c(C(C)(C)C)cncc3c2)c1C&#39;,
- &#39;COC(=O)CCCc1cncc2cc(CNC(=O)c3nonc3C)cnc12&#39;]</pre>
+<pre>[&#39;Cc1noc(C)c1CCCNC(=O)C(=O)N[2*:1].CCC(CC)(CCO)[2*:2]&#39;,
+ &#39;Fc1ccccc1C[2*:1].CC(C)N(C(=O)COC(=O)[2*:2])C(C)C&#39;,
+ &#39;Cc1cccc(C(=O)OC[2*:1])c1Cl.C=C(Br)[2*:2]&#39;,
+ &#39;O=C(C[2*:1])NCC(=O)c1ccccc1.C=C(C)CN(CC)C(=O)N[2*:2]&#39;,
+ &#39;CC(C)Oc1ccc(C[NH2+]C[2*:1])cc1.CCC(=O)N[2*:2]&#39;,
+ &#39;COC1CCC(CC(=O)N[2*:1])CC1.CCCNC(=O)CNC(=O)N[2*:2]&#39;,
+ &#39;CC(C)(C)c1nc(C[2*:1])cs1.CC(C)OCC(=O)N(CC(N)=O)C[2*:2]&#39;,
+ &#39;Cc1noc([2*:1])n1.NC(=O)C[2*:2]&#39;,
+ &#39;CCC(=O)N1CCC(C[2*:1])CC1.CC[NH2+]C[2*:2]&#39;,
+ &#39;CCc1[nH+]ccn1CC[2*:1].CC(C)(C)OC(=O)C[2*:2]&#39;]</pre>
 </div>
 
 </div>
@@ -685,27 +884,7 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frag_strings</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="n">frag_strings</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">sample_smiles</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">main_block</span><span class="o">.</span><span class="n">subblocks</span><span class="p">]))]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">frag_strings</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">frag_strings</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="p">(</span><span class="n">frag_strings</span><span class="p">,</span> <span class="n">filter_type</span><span class="o">=</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -720,7 +899,7 @@ missing from `fragments` or False if they are present
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(500, 500)</pre>
+<pre>[True, True, True, True, True, True, True, True, True, True]</pre>
 </div>
 
 </div>
@@ -738,41 +917,7 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frag_strings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">frag_strings</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">main_block</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">,</span> <span class="n">frag_strings</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="p">(</span><span class="n">frag_strings</span><span class="p">,</span> <span class="n">filter_type</span><span class="o">=</span><span class="s1">&#39;soft&#39;</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -787,38 +932,7 @@ missing from `fragments` or False if they are present
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[{&#39;block&#39;: &#39;r1&#39;,
-  &#39;fused&#39;: &#39;COC(=O)C1(NC(=O)C[2*:1])CCSCC1&#39;,
-  &#39;fragments&#39;: [&#39;COC(=O)C1(NC(=O)C[2*:1])CCSCC1&#39;],
-  &#39;block_pass&#39;: True,
-  &#39;block_score&#39;: 0.0,
-  &#39;all_pass&#39;: True,
-  &#39;all_score&#39;: 0.0,
-  &#39;hardlog&#39;: [],
-  &#39;softlog&#39;: []},
- {&#39;block&#39;: &#39;r2&#39;,
-  &#39;fused&#39;: &#39;CC(N)=C(C#N)C(=O)C[2*:2]&#39;,
-  &#39;fragments&#39;: [&#39;CC(N)=C(C#N)C(=O)C[2*:2]&#39;],
-  &#39;block_pass&#39;: True,
-  &#39;block_score&#39;: 1.0,
-  &#39;all_pass&#39;: True,
-  &#39;all_score&#39;: 1.0,
-  &#39;hardlog&#39;: [],
-  &#39;softlog&#39;: []},
- {&#39;block&#39;: &#39;full_molecule&#39;,
-  &#39;fused&#39;: &#39;COC(=O)C1(NC(=O)Cc2cnc3c(CC(=O)C(C#N)=C(C)N)cncc3c2)CCSCC1&#39;,
-  &#39;fragments&#39;: [&#39;COC(=O)C1(NC(=O)C[2*:1])CCSCC1&#39;,
-   &#39;CC(N)=C(C#N)C(=O)C[2*:2]&#39;,
-   &#39;c1nc2c([1*:2])cncc2cc1[1*:1]&#39;],
-  &#39;block_pass&#39;: True,
-  &#39;block_score&#39;: 0,
-  &#39;all_pass&#39;: True,
-  &#39;all_score&#39;: 1.0,
-  &#39;hardlog&#39;: [&#39;COC(=O)C1(NC(=O)Cc2cnc3c(CC(=O)C(C#N)=C(C)N)cncc3c2)CCSCC1&#39;,
-   True,
-   True],
-  &#39;softlog&#39;: [&#39;COC(=O)C1(NC(=O)Cc2cnc3c(CC(=O)C(C#N)=C(C)N)cncc3c2)CCSCC1&#39;,
-   0]}]</pre>
+<pre>[1.0, 1.0, 2.0, 2.0, 2.0, 1.0, 1.0, 1.0, 2.0, 2.0]</pre>
 </div>
 
 </div>
@@ -832,6 +946,17 @@ missing from `fragments` or False if they are present
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">block_template</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">(</span><span class="n">frag_strings</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> 
+             <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span><span class="s1">&#39;fused&#39;</span><span class="p">,</span><span class="s1">&#39;hardpass&#39;</span><span class="p">,</span><span class="s1">&#39;softscore&#39;</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -839,106 +964,111 @@ missing from `fragments` or False if they are present
 <div class="output_area">
 
 
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="BlockTree" class="doc_header"><code>class</code> <code>BlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L410" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTree</code>(<strong><code>head_block</code></strong>)</p>
-</blockquote>
-<p>BlockTree - base class for handling nested blocks. Takes care of running fragment strings and logging outputs</p>
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>fragments</th>
+      <th>fused</th>
+      <th>hardpass</th>
+      <th>softscore</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Cc1noc(C)c1CCCNC(=O)C(=O)N[2*:1].CCC(CC)(CCO)[...</td>
+      <td>CCC(CC)(CCO)c1cncc2cc(NC(=O)C(=O)NCCCc3c(C)noc...</td>
+      <td>True</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Fc1ccccc1C[2*:1].CC(C)N(C(=O)COC(=O)[2*:2])C(C)C</td>
+      <td>CC(C)N(C(=O)COC(=O)c1cncc2cc(Cc3ccccc3F)cnc12)...</td>
+      <td>True</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Cc1cccc(C(=O)OC[2*:1])c1Cl.C=C(Br)[2*:2]</td>
+      <td>C=C(Br)c1cncc2cc(COC(=O)c3cccc(C)c3Cl)cnc12</td>
+      <td>True</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>O=C(C[2*:1])NCC(=O)c1ccccc1.C=C(C)CN(CC)C(=O)N...</td>
+      <td>C=C(C)CN(CC)C(=O)Nc1cncc2cc(CC(=O)NCC(=O)c3ccc...</td>
+      <td>True</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>CC(C)Oc1ccc(C[NH2+]C[2*:1])cc1.CCC(=O)N[2*:2]</td>
+      <td>CCC(=O)Nc1cncc2cc(C[NH2+]Cc3ccc(OC(C)C)cc3)cnc12</td>
+      <td>True</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>COC1CCC(CC(=O)N[2*:1])CC1.CCCNC(=O)CNC(=O)N[2*:2]</td>
+      <td>CCCNC(=O)CNC(=O)Nc1cncc2cc(NC(=O)CC3CCC(OC)CC3...</td>
+      <td>True</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>CC(C)(C)c1nc(C[2*:1])cs1.CC(C)OCC(=O)N(CC(N)=O...</td>
+      <td>CC(C)OCC(=O)N(CC(N)=O)Cc1cncc2cc(Cc3csc(C(C)(C...</td>
+      <td>True</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Cc1noc([2*:1])n1.NC(=O)C[2*:2]</td>
+      <td>Cc1noc(-c2cnc3c(CC(N)=O)cncc3c2)n1</td>
+      <td>True</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>CCC(=O)N1CCC(C[2*:1])CC1.CC[NH2+]C[2*:2]</td>
+      <td>CC[NH2+]Cc1cncc2cc(CC3CCN(C(=O)CC)CC3)cnc12</td>
+      <td>True</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>CCc1[nH+]ccn1CC[2*:1].CC(C)(C)OC(=O)C[2*:2]</td>
+      <td>CCc1[nH+]ccn1CCc1cnc2c(CC(=O)OC(C)(C)C)cncc2c1</td>
+      <td>True</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="MolBlockTree" class="doc_header"><code>class</code> <code>MolBlockTree</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L487" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlockTree</code>(<strong><code>head_block</code></strong>) :: <a href="/mrl/template.blocks.html#BlockTree"><code>BlockTree</code></a></p>
-</blockquote>
-<p>MolBlockTree - block tree designed to work with <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> classes</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="RGroupBlock" class="doc_header"><code>class</code> <code>RGroupBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L537" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlock</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#MolBlockTree"><code>MolBlockTree</code></a></p>
-</blockquote>
-<p>MolBlockTree - block tree designed to work with <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> classes</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="DoubleRGroupBlock" class="doc_header"><code>class</code> <code>DoubleRGroupBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L560" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlock</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#MolBlockTree"><code>MolBlockTree</code></a></p>
-</blockquote>
-<p>MolBlockTree - block tree designed to work with <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> classes</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1012,6 +1142,8 @@ missing from `fragments` or False if they are present
                         <span class="p">)</span>
 
 <span class="n">main_block</span> <span class="o">=</span> <span class="n">MolBlock</span><span class="p">(</span><span class="n">full_template</span><span class="p">,</span> <span class="p">[],</span> <span class="s1">&#39;full_molecule&#39;</span><span class="p">,</span> <span class="n">subblocks</span><span class="o">=</span><span class="p">[</span><span class="n">scaffold_block</span><span class="p">,</span> <span class="n">r1_block</span><span class="p">,</span> <span class="n">r2_block</span><span class="p">])</span>
+
+<span class="n">block_template</span> <span class="o">=</span> <span class="n">BlockTemplate</span><span class="p">(</span><span class="n">main_block</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1028,167 +1160,8 @@ missing from `fragments` or False if they are present
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frag_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../chem_research/fragments.csv&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">main_block</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">frag_df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CNC(=O)C=C[1*:3]&#39;</span><span class="p">,</span>
- <span class="s1">&#39;CC(C)(C)C(C1C(=O)CC([2*:2])([2*:3])OC1=O)[2*:4]&#39;</span><span class="p">,</span>
- <span class="s1">&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;</span><span class="p">]</span>
-
-<span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">main_block</span><span class="o">.</span><span class="n">decompose_fragments</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
-<span class="n">fragments</span> <span class="o">=</span> <span class="n">flatten_list_of_lists</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">unrouted</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">sb</span> <span class="ow">in</span> <span class="n">main_block</span><span class="o">.</span><span class="n">subblocks</span><span class="p">:</span>
-    <span class="n">routed</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unrouted</span> <span class="k">if</span> <span class="n">sb</span><span class="o">.</span><span class="n">match_fragment_recursive</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">sb</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">routed</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>scaffold []
-r1_full [&#39;CNC(=O)C=C[1*:3]&#39;, &#39;CC(C)(C)C(C1C(=O)CC([2*:2])([2*:3])OC1=O)[2*:4]&#39;]
-r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ncpus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">blocktree</span> <span class="o">=</span> <span class="n">MolBlockTree</span><span class="p">(</span><span class="n">main_block</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fragments</span> <span class="o">=</span> <span class="n">fragment_smiles</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1203,7 +1176,7 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;SCCC[1*:3]&#39;, &#39;O=C(N[2*:2])C1CC([2*:4])CCN1[2*:3]&#39;, &#39;C1CC(C[2*:1])CC[NH2+]1&#39;]</pre>
+<pre>52279</pre>
 </div>
 
 </div>
@@ -1221,7 +1194,7 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">blocktree</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">(</span><span class="n">frags</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1238,7 +1211,82 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>smiles</th>
+      <th>0</th>
+      <th>final</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">block_template</span><span class="o">.</span><span class="n">live_leafs</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -1253,12 +1301,7 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[[&#39;SCCC[1*:3]&#39;,
-  &#39;O=C(N[2*:2])C1CC([2*:4])CCN1[2*:3]&#39;,
-  &#39;C1CC(C[2*:1])CC[NH2+]1&#39;],
- &#39;O=C(O)C1CCN(CCCS)C(C(=O)Nc2cncc3cc(CC4CC[NH2+]CC4)cnc23)C1&#39;,
- True,
- 3.0]</pre>
+<pre>[(434, 3), (809, 3), (5564, 3)]</pre>
 </div>
 
 </div>
@@ -1276,7 +1319,41 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">frag_strings</span> <span class="o">=</span> <span class="n">block_template</span><span class="o">.</span><span class="n">sample_leaf_nodes</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">block_template</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">(</span><span class="n">frag_strings</span><span class="p">,</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -1291,7 +1368,10 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>2412</pre>
+<pre>[&#39;CC(C)(C[NH3+])C[1*:3].Cc1nc([2*:3])nc(O[2*:4])c1[2*:2].O=C(O[2*:1])c1ccc(-n2cccn2)cc1&#39;,
+ &#39;Cc1nc(CC(C)(C)C[NH3+])nc(OC(=O)O)c1-c1cncc2cc(OC(=O)c3ccc(-n4cccn4)cc3)cnc12&#39;,
+ False,
+ 1.0]</pre>
 </div>
 
 </div>
@@ -1309,7 +1389,7 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">blocktree</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frags</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">head_block</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">soft_log</span>
 </pre></div>
 
     </div>
@@ -1322,12 +1402,101 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 <div class="output_area">
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[[&#39;SCCC[1*:3].O=C(N[2*:2])C1CC([2*:4])CCN1[2*:3].C1CC(C[2*:1])CC[NH2+]1&#39;,
-  &#39;O=C(O)C1CCN(CCCS)C(C(=O)Nc2cncc3cc(CC4CC[NH2+]CC4)cnc23)C1&#39;,
-  True,
-  3.0]]</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>smiles</th>
+      <th>0</th>
+      <th>final</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Cc1nccc(C(=O)Nc2cnc3c(-c4nn(C)c(COCC(F)(F)F)c4...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>CC(C)NC(=O)C[NH+](C)c1nn(-c2cncc3cc(Cc4nc5c(s4...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>CCC(=O)Nc1ccc(OC)c(-c2cncc3cc(Cc4noc(-c5ccccc5...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>CC(C)(C)c1nc(Cc2cnc3c(-c4cnc(OC(=O)O)c(CCC(N)=...</td>
+      <td>1.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>CC=CC1=C(c2cncc3cc(OCC(F)F)cnc23)C(=O)N(CC(=O)...</td>
+      <td>1.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>608</td>
+      <td>CCCn1c(C)nn(-c2cnc3c(-c4ncc(C)c(C(=O)O)c4COS(C...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>609</td>
+      <td>CC=C(C)C(=O)NCc1scc(C(=O)O)c1NC(=O)c1cncc2cc(-...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>610</td>
+      <td>CCNC(=O)c1sc(C(=O)O)c(-c2cncc3cc(Nc4ccc(OC)cc4...</td>
+      <td>1.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>611</td>
+      <td>CC(C)=Cc1n[nH]c(=S)n1C(C(=O)O)c1cncc2cc(C(=O)N...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>612</td>
+      <td>C=C(Br)Cc1cc(-c2cncc3cc(Cc4c(CC)noc4CC)cnc23)n...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>613 rows × 3 columns</p>
+</div>
 </div>
 
 </div>
@@ -1340,10 +1509,10 @@ r2 [&#39;CCCCN(C)c1ccc([2*:1])cc1&#39;]
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>check if template with no hard fiters returns true</p>
-<p>polish molblocktree
-add staandard bock trees for r-group, scaaffold, linker optimization
-save/load for blocks/block trees</p>
+<p>docs cleanup/tutorials for chem/templates
+move onto torch/models
+get protein model running
+come back to chem/templates, remake with protein variants. code will hopefully be simpler</p>
 <p>Clean up docs
 add returns between lines in docstrings for better rendering
 Make overview page for templates
@@ -1356,7 +1525,8 @@ figure out import all
 get collab working
 get google search working</p>
 <p>torch core
-models (lstm, vae, transformer)</p>
+models (lstm, vae, transformer)
+    work in protein stuff here</p>
 <p>score functions</p>
 <p>training loop</p>
 <p>poicy gradients</p>

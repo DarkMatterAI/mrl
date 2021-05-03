@@ -107,10 +107,11 @@ index = {"is_container": "00_core.ipynb",
          "MolBlock": "04_template.blocks.ipynb",
          "ConstantBlock": "04_template.blocks.ipynb",
          "ConstantMolBlock": "04_template.blocks.ipynb",
-         "BlockTree": "04_template.blocks.ipynb",
-         "MolBlockTree": "04_template.blocks.ipynb",
-         "RGroupBlock": "04_template.blocks.ipynb",
-         "DoubleRGroupBlock": "04_template.blocks.ipynb"}
+         "BlockTemplate": "04_template.blocks.ipynb",
+         "RGroupBlockTemplate": "04_template.blocks.ipynb",
+         "DoubleRGroupBlockTemplate": "04_template.blocks.ipynb",
+         "LinkerBlockTemplate": "04_template.blocks.ipynb",
+         "ScaffoldBlockTemplate": "04_template.blocks.ipynb"}
 
 modules = ["core.py",
            "chem.py",
