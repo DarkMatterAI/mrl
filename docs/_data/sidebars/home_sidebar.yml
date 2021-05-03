@@ -13,6 +13,15 @@ entries:
     title: MRL
   - folderitems:
     - output: web,pdf
+      title: Overview
+      url: tutorials.html
+    - output: web,pdf
+      title: Structure Enumeration
+      url: tutorials.structure_enumeration.html
+    output: web
+    title: Tutorials
+  - folderitems:
+    - output: web,pdf
       title: Core
       url: core.html
     output: web

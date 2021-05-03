@@ -2,6 +2,10 @@
     "MRL": {
         "Overview" : "/"
     },
+    "Tutorials": {
+        "Overview" : "tutorials.html",
+        "Structure Enumeration" : "tutorials.structure_enumeration.html"
+    },
     "Core" : {
         "Core" : "core.html"
     },

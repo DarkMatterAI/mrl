@@ -8,6 +8,7 @@ from functools import partial
 import itertools
 from collections import defaultdict
 import pickle
+import gc
 
 # external
 import numpy as np

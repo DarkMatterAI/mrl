@@ -10,7 +10,6 @@ __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts'
            'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator']
 
 # Cell
-# hide
 from .imports import *
 from .core import *
 from rdkit import Chem, DataStructs
@@ -23,7 +22,7 @@ RDLogger.DisableLog('rdApp.*')
 
 # Cell
 def to_mol(smile_or_mol):
-    if type(smile_or_mol) == str:
+    if (type(smile_or_mol) == str) or (type(smile_or_mol) == np.str_):
         mol = Chem.MolFromSmiles(smile_or_mol)
         if mol is not None:
             Chem.SanitizeMol(mol)
@@ -275,9 +274,9 @@ class FP():
     '''
     FP - class for manipulating molecular fingerprints
 
-    fp = FP()
+    `fp = FP()`
 
-    mol_fp = fp.get_fingerprint(mol, 'ECFP6')
+    `mol_fp = fp.get_fingerprint(mol, 'ECFP6')`
     '''
     def __init__(self):
         self.similarities = {
@@ -691,6 +690,10 @@ class StructureEnumerator():
         # update combos based on atom removal
         self.combos = flatten_list_of_lists([self.check_combo(i) for i in self.combos])
 
+    def filter_combos(self, filter_func):
+        outputs = maybe_parallel(filter_func, self.combos)
+        self.combos = [self.combos[i] for i in range(len(self.combos)) if outputs[i]]
+
     def clean_specs(self):
         'cleans empty entries from `atom_spec` and `bond_spec`'
 
@@ -764,12 +767,10 @@ class StructureEnumerator():
         return c_out
 
 
-    def create_mols(self, max_num=None):
-        "Creates `max_num` smiles strings from `self.combos` and cleans up results"
-        if max_num is None:
-            max_num = self.max_num
+    def _create_mols(self, combos):
+        "Creates smiles strings from `combos` and cleans up results"
 
-        raw_smiles = maybe_parallel(self.create_mol, self.combos[:max_num])
+        raw_smiles = maybe_parallel(self.create_mol, combos)
         clean_smiles = []
 
         for s in raw_smiles:
@@ -783,6 +784,31 @@ class StructureEnumerator():
                 clean_smiles.append(s)
 
         smiles = deduplicate_list(clean_smiles)
+        return smiles
+
+    def create_mols(self, max_num):
+        '''
+        Creates `max_num` smiles strings from `self.combos` and cleans up results.
+
+        More memory efficient for >1000000 combos
+        '''
+        if max_num is None:
+            max_num = self.max_num
+
+        return self._create_mols(self.combos[:max_num])
+
+
+    def create_mols_chunks(self, chunksize):
+        "Creates mols from `self.combos` in batches of `chunksize`"
+        combo_chunks = chunk_list(self.combos, chunksize)
+
+        smiles = []
+        for i, chunk in enumerate(combo_chunks):
+            print(i)
+            smiles_iter = self._create_mols(chunk)
+            smiles += smiles_iter
+
+        smiles = deduplicate_list(smiles)
         return smiles
 
     def create_mol(self, code):
