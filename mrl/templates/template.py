@@ -328,7 +328,7 @@ class VeberTemplate(Template):
         if hard:
             hard_filters = [
                 RotBondFilter(None, 10),
-                TPSAPFilter(none, 140)
+                TPSAFilter(none, 140)
             ]
         else:
             hard_filters = []
@@ -336,7 +336,7 @@ class VeberTemplate(Template):
         if soft:
             soft_filters = [
                 RotBondFilter(None, 10, score=1),
-                TPSAPFilter(none, 140, score=1)
+                TPSAFilter(none, 140, score=1)
             ]
         else:
             soft_filters = []

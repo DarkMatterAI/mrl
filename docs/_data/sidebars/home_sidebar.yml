@@ -18,6 +18,12 @@ entries:
     - output: web,pdf
       title: Structure Enumeration
       url: tutorials.structure_enumeration.html
+    - output: web,pdf
+      title: Templates (Beginner)
+      url: tutorials.template.beginner.html
+    - output: web,pdf
+      title: Templates (Intermediate)
+      url: tutorials.template.intermediate.html
     output: web
     title: Tutorials
   - folderitems:
@@ -33,6 +39,9 @@ entries:
     output: web
     title: Chem
   - folderitems:
+    - output: web,pdf
+      title: Overview
+      url: template.overview.html
     - output: web,pdf
       title: Filters
       url: template.filters.html

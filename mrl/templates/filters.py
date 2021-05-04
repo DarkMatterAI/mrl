@@ -2,7 +2,7 @@
 
 __all__ = ['ScoreFunction', 'NoScore', 'WeightedPropertyScore', 'PropertyFunctionScore', 'ConstantScore',
            'LinearDecayScore', 'Filter', 'ValidityFilter', 'SingleCompoundFilter', 'PropertyFilter', 'MolWtFilter',
-           'HBDFilter', 'HBAFilter', 'TPSAPFilter', 'RotBondFilter', 'SP3Filter', 'LogPFilter', 'RingFilter',
+           'HBDFilter', 'HBAFilter', 'TPSAFilter', 'RotBondFilter', 'SP3Filter', 'LogPFilter', 'RingFilter',
            'HeteroatomFilter', 'AromaticRingFilter', 'HeavyAtomsFilter', 'MRFilter', 'ChargeFilter', 'TotalAtomFilter',
            'QEDFilter', 'SAFilter', 'StructureFilter', 'ExclusionFilter', 'FPFilter']
 
@@ -155,8 +155,11 @@ class Filter():
     Filter - base filter function class
 
     Inputs:
+
         `score` - one of (None, int, float, ScoreFunction), see `set_score`
+
         `name` - (str, None), filter name used for repr
+
         `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
     '''
     def __init__(self, score=None, name=None, fail_score=0.):
@@ -255,11 +258,16 @@ class PropertyFilter(Filter):
     PropertyFilter - filters mols based on `mol_function`
 
     Inputs:
+
         `mol_function` - any function that takes as input a `Mol` object and returns a single numeric value
+
         `min_val` - (None, int, float), inclusive lower bound for filter (ignored if None)
+
         `max_val` - (None, int, float), inclusive upper bound for filter (ignored if None)
+
         `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
         `name` - (str, None), filter name used for repr
+
         `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
     '''
     def __init__(self, mol_function, min_val=None, max_val=None, score=None, fail_score=0., name=None):
@@ -302,7 +310,7 @@ class HBAFilter(PropertyFilter):
     def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
         super().__init__(hba, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
 
-class TPSAPFilter(PropertyFilter):
+class TPSAFilter(PropertyFilter):
     "TPSA filter"
     def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
         super().__init__(tpsa, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
@@ -374,11 +382,17 @@ class StructureFilter(Filter):
     StructureFilter - filters mols based on structures in `smarts`
 
     Inputs:
+
         `smarts` - (list, SmartsCatalog), list of smarts strings for filtering or `SmartsCatalog`
+
         `exclude` - if True, filter returns `False` when a structure match is found
+
         `criteria` - ('any', 'all'), match criteria (match any filter, match all filters)
+
         `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+
         `name` - (str, None), filter name used for repr
+
         `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
     '''
     def __init__(self, smarts, exclude=True, criteria='any', score=None, name=None, fail_score=0.):
@@ -422,10 +436,15 @@ class ExclusionFilter(StructureFilter):
     ExclusionFilter - excludes mols with substructure matches to `smarts`
 
     Inputs:
+
         `smarts` - (list, SmartsCatalog), list of smarts strings for filtering or `SmartsCatalog`
+
         `criteria` - ('any', 'all'), match criteria (match any filter, match all filters)
+
         `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+
         `name` - (str, None), filter name used for repr
+
         `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
     '''
     def __init__(self, smarts, criteria='any', score=None, name=None, fail_score=0.):
@@ -443,13 +462,21 @@ class FPFilter(Filter):
     FPFilter - filters mols based on fingerprint similarity to `reference_smiles`
 
     Inputs:
+
         `reference_smiles` - (list), list of smiles or `Mol` objects for comparison
+
         `fp_type` - fingerprint function. see `FP`
+
         `fp_metric` - fingerprint similarity metric. see `FP`
+
         `criteria` - ('any', 'all'), match criteria (match any reference, match all references)
+
         `fp_thresh` - float, fingerprint similarity cutoff for defining a match
+
         `name` - (str, None), filter name used for repr
+
         `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+
         `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
     '''
     def __init__(self, reference_fps, fp_type, fp_metric, criteria='any',
