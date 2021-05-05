@@ -6,7 +6,8 @@
         "Overview" : "tutorials.html",
         "Structure Enumeration" : "tutorials.structure_enumeration.html",
         "Templates (Beginner)" : "tutorials.template.beginner.html",
-        "Templates (Intermediate)" : "tutorials.template.intermediate.html"
+        "Templates (Intermediate)" : "tutorials.template.intermediate.html",
+        "Templates (Advanced)" : "tutorials.template.advanced.html"
     },
     "Core" : {
         "Core" : "core.html"

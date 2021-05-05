@@ -24,6 +24,9 @@ entries:
     - output: web,pdf
       title: Templates (Intermediate)
       url: tutorials.template.intermediate.html
+    - output: web,pdf
+      title: Templates (Advanced)
+      url: tutorials.template.advanced.html
     output: web
     title: Tutorials
   - folderitems:

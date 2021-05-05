@@ -6,8 +6,8 @@ title: Tutorial - Templates (Intermediate)
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "Basic overview of using templates"
-description: "Basic overview of using templates"
+summary: "Intermediate overview of using templates"
+description: "Intermediate overview of using templates"
 nb_path: "nbs/tutorials.template.intermediate.ipynb"
 ---
 <!--
@@ -493,6 +493,23 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If your propety or score calculation is complex, it can be easier to abstract the property calculation and score computation entirely. This can be done with the <a href="/mrl/template.filters.html#PassThroughScore"><code>PassThroughScore</code></a> class, which just returns the output of the property function.</p>
+
+<pre><code>class PassThroughScore(ScoreFunction):
+    "Pass through for no score"
+    def __call__(self, property_output, criteria_output):
+        return property_output</code></pre>
+<p>We can set up a filter using this like so</p>
+
+<pre><code>my_filter = PropertyFilter(my_property_function, min_val=None, max_val=None, name='my filter',
+                          score=PassThroughScore())</code></pre>
+<p>The above filter when used as a soft filter will simply return the output of <code>my_property_function</code>. When used as a hard filter will always return <code>True</code> since <code>min_val</code> and <code>max_val</code> are <code>None</code>.</p>
+
+</div>
+</div>
+</div>
 </div>
  
 

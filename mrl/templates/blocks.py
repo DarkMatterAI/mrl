@@ -370,7 +370,7 @@ class ConstantBlock():
         pass
 
     def sample(self, n):
-        return pd.DataFrame([self.constant, 0.]*n, columns=['smiles', 'final'])
+        return pd.DataFrame([[self.constant, 0.] for i in range(n)], columns=['smiles', 'final'])
 
     def __repr__(self):
 

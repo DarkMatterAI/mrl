@@ -147,7 +147,32 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="WeightedPropertyScore" class="doc_header"><code>class</code> <code>WeightedPropertyScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L26" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedPropertyScore</code>(<strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a></p>
+<h2 id="PassThroughScore" class="doc_header"><code>class</code> <code>PassThroughScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L26" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PassThroughScore</code>() :: <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a></p>
+</blockquote>
+<p>Pass through for no score</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="WeightedPropertyScore" class="doc_header"><code>class</code> <code>WeightedPropertyScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L31" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedPropertyScore</code>(<strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a></p>
 </blockquote>
 <p>Returns property score multiplied by <code>weight</code></p>
 
@@ -172,7 +197,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PropertyFunctionScore" class="doc_header"><code>class</code> <code>PropertyFunctionScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L39" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PropertyFunctionScore</code>(<strong><code>function</code></strong>) :: <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a></p>
+<h2 id="PropertyFunctionScore" class="doc_header"><code>class</code> <code>PropertyFunctionScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PropertyFunctionScore</code>(<strong><code>function</code></strong>) :: <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a></p>
 </blockquote>
 <p>Returns output <code>function(property_output)</code></p>
 
@@ -197,7 +222,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantScore" class="doc_header"><code>class</code> <code>ConstantScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantScore</code>(<strong><code>pass_score</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a></p>
+<h2 id="ConstantScore" class="doc_header"><code>class</code> <code>ConstantScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L52" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantScore</code>(<strong><code>pass_score</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a></p>
 </blockquote>
 <p>ConstantScore - returns <code>pass_score</code> if <code>criteria_output=True</code>, else `fail_score</p>
 
@@ -222,7 +247,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LinearDecayScore" class="doc_header"><code>class</code> <code>LinearDecayScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinearDecayScore</code>(<strong><code>pass_score</code></strong>, <strong><code>low_start</code></strong>, <strong><code>low_end</code></strong>, <strong><code>high_start</code></strong>, <strong><code>high_end</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ConstantScore"><code>ConstantScore</code></a></p>
+<h2 id="LinearDecayScore" class="doc_header"><code>class</code> <code>LinearDecayScore</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinearDecayScore</code>(<strong><code>pass_score</code></strong>, <strong><code>low_start</code></strong>, <strong><code>low_end</code></strong>, <strong><code>high_start</code></strong>, <strong><code>high_end</code></strong>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ConstantScore"><code>ConstantScore</code></a></p>
 </blockquote>
 <p>LinearDecayScore - score with linear decay. <code>low_start&lt;low_end&lt;high_start&lt;high_end</code></p>
 <p>Returns <code>pass_score</code> if <code>criteria_output=True</code> and
@@ -362,7 +387,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Filter" class="doc_header"><code>class</code> <code>Filter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L153" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Filter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>)</p>
+<h2 id="Filter" class="doc_header"><code>class</code> <code>Filter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L158" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Filter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>)</p>
 </blockquote>
 <p>Filter - base filter function class</p>
 <p>Inputs:</p>
@@ -408,7 +433,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ValidityFilter" class="doc_header"><code>class</code> <code>ValidityFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L218" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidityFilter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
+<h2 id="ValidityFilter" class="doc_header"><code>class</code> <code>ValidityFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L223" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidityFilter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>ValidityFilter - checks to see if a given <code>Mol</code> is a valid compound</p>
 
@@ -433,7 +458,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SingleCompoundFilter" class="doc_header"><code>class</code> <code>SingleCompoundFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L236" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SingleCompoundFilter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
+<h2 id="SingleCompoundFilter" class="doc_header"><code>class</code> <code>SingleCompoundFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L241" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SingleCompoundFilter</code>(<strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>SingleCompoundFilter - checks to see if a given <code>Mol</code> is a single compound</p>
 
@@ -496,7 +521,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PropertyFilter" class="doc_header"><code>class</code> <code>PropertyFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L256" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PropertyFilter</code>(<strong><code>mol_function</code></strong>, <strong><code>min_val</code></strong>=<em><code>None</code></em>, <strong><code>max_val</code></strong>=<em><code>None</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
+<h2 id="PropertyFilter" class="doc_header"><code>class</code> <code>PropertyFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L261" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PropertyFilter</code>(<strong><code>mol_function</code></strong>, <strong><code>min_val</code></strong>=<em><code>None</code></em>, <strong><code>max_val</code></strong>=<em><code>None</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>PropertyFilter - filters mols based on <code>mol_function</code></p>
 <p>Inputs:</p>
@@ -533,7 +558,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MolWtFilter" class="doc_header"><code>class</code> <code>MolWtFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L298" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolWtFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="MolWtFilter" class="doc_header"><code>class</code> <code>MolWtFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L303" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolWtFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Molecular weight filter</p>
 
@@ -558,7 +583,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HBDFilter" class="doc_header"><code>class</code> <code>HBDFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L303" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HBDFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="HBDFilter" class="doc_header"><code>class</code> <code>HBDFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L308" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HBDFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Hydrogen bond donor filter</p>
 
@@ -583,7 +608,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HBAFilter" class="doc_header"><code>class</code> <code>HBAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L308" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HBAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="HBAFilter" class="doc_header"><code>class</code> <code>HBAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L313" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HBAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Hydrogen bond acceptor filter</p>
 
@@ -608,7 +633,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TPSAFilter" class="doc_header"><code>class</code> <code>TPSAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L313" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TPSAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="TPSAFilter" class="doc_header"><code>class</code> <code>TPSAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L318" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TPSAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>TPSA filter</p>
 
@@ -633,7 +658,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RotBondFilter" class="doc_header"><code>class</code> <code>RotBondFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L318" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RotBondFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="RotBondFilter" class="doc_header"><code>class</code> <code>RotBondFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L323" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RotBondFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Rotatable bond filter</p>
 
@@ -658,7 +683,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SP3Filter" class="doc_header"><code>class</code> <code>SP3Filter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L323" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SP3Filter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="SP3Filter" class="doc_header"><code>class</code> <code>SP3Filter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L328" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SP3Filter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Fractioon sp3 filter</p>
 
@@ -683,7 +708,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LogPFilter" class="doc_header"><code>class</code> <code>LogPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L328" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogPFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="LogPFilter" class="doc_header"><code>class</code> <code>LogPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L333" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogPFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>LogP filter</p>
 
@@ -708,7 +733,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RingFilter" class="doc_header"><code>class</code> <code>RingFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L333" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RingFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="RingFilter" class="doc_header"><code>class</code> <code>RingFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L338" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RingFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Ring filter</p>
 
@@ -733,7 +758,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HeteroatomFilter" class="doc_header"><code>class</code> <code>HeteroatomFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L338" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HeteroatomFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="HeteroatomFilter" class="doc_header"><code>class</code> <code>HeteroatomFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L343" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HeteroatomFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Heteroatom filter</p>
 
@@ -758,7 +783,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AromaticRingFilter" class="doc_header"><code>class</code> <code>AromaticRingFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L343" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AromaticRingFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="AromaticRingFilter" class="doc_header"><code>class</code> <code>AromaticRingFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L348" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AromaticRingFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Aromatic ring filter</p>
 
@@ -783,7 +808,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HeavyAtomsFilter" class="doc_header"><code>class</code> <code>HeavyAtomsFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L348" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HeavyAtomsFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="HeavyAtomsFilter" class="doc_header"><code>class</code> <code>HeavyAtomsFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L353" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HeavyAtomsFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Number of heavy atoms filter</p>
 
@@ -808,7 +833,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MRFilter" class="doc_header"><code>class</code> <code>MRFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L353" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MRFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="MRFilter" class="doc_header"><code>class</code> <code>MRFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L358" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MRFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Molar refractivity of atoms filter</p>
 
@@ -833,7 +858,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ChargeFilter" class="doc_header"><code>class</code> <code>ChargeFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L358" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ChargeFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="ChargeFilter" class="doc_header"><code>class</code> <code>ChargeFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L363" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ChargeFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Formal charge of atoms filter</p>
 
@@ -858,7 +883,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TotalAtomFilter" class="doc_header"><code>class</code> <code>TotalAtomFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L363" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TotalAtomFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="TotalAtomFilter" class="doc_header"><code>class</code> <code>TotalAtomFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L368" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TotalAtomFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Total number of atoms filter (incudes H)</p>
 
@@ -883,7 +908,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="QEDFilter" class="doc_header"><code>class</code> <code>QEDFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L368" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>QEDFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="QEDFilter" class="doc_header"><code>class</code> <code>QEDFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L373" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>QEDFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>Total number of atoms filter (incudes H)</p>
 
@@ -908,7 +933,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SAFilter" class="doc_header"><code>class</code> <code>SAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L373" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+<h2 id="SAFilter" class="doc_header"><code>class</code> <code>SAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L378" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SAFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
 </blockquote>
 <p>SA Score fillter</p>
 
@@ -981,7 +1006,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StructureFilter" class="doc_header"><code>class</code> <code>StructureFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L380" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureFilter</code>(<strong><code>smarts</code></strong>, <strong><code>exclude</code></strong>=<em><code>True</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
+<h2 id="StructureFilter" class="doc_header"><code>class</code> <code>StructureFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L385" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureFilter</code>(<strong><code>smarts</code></strong>, <strong><code>exclude</code></strong>=<em><code>True</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>StructureFilter - filters mols based on structures in <code>smarts</code></p>
 <p>Inputs:</p>
@@ -1019,7 +1044,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ExclusionFilter" class="doc_header"><code>class</code> <code>ExclusionFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L434" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ExclusionFilter</code>(<strong><code>smarts</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#StructureFilter"><code>StructureFilter</code></a></p>
+<h2 id="ExclusionFilter" class="doc_header"><code>class</code> <code>ExclusionFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L439" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ExclusionFilter</code>(<strong><code>smarts</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#StructureFilter"><code>StructureFilter</code></a></p>
 </blockquote>
 <p>ExclusionFilter - excludes mols with substructure matches to <code>smarts</code></p>
 <p>Inputs:</p>
@@ -1112,7 +1137,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPFilter" class="doc_header"><code>class</code> <code>FPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L460" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPFilter</code>(<strong><code>reference_fps</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>fp_metric</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
+<h2 id="FPFilter" class="doc_header"><code>class</code> <code>FPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L465" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPFilter</code>(<strong><code>reference_fps</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>fp_metric</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>FPFilter - filters mols based on fingerprint similarity to <code>reference_smiles</code></p>
 <p>Inputs:</p>
@@ -1161,7 +1186,7 @@ and <code>fail_score</code>. Otherwise, returns <code>fail_score</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FPFilter.from_smiles" class="doc_header"><code>FPFilter.from_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L516" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FPFilter.from_smiles</code>(<strong><code>reference_smiles</code></strong>, <strong><code>fp_type</code></strong>=<em><code>'ECFP6'</code></em>, <strong><code>fp_metric</code></strong>=<em><code>'tanimoto'</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="FPFilter.from_smiles" class="doc_header"><code>FPFilter.from_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L521" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FPFilter.from_smiles</code>(<strong><code>reference_smiles</code></strong>, <strong><code>fp_type</code></strong>=<em><code>'ECFP6'</code></em>, <strong><code>fp_metric</code></strong>=<em><code>'tanimoto'</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>creates FPFilter from <code>reference_smiles</code></p>
 <p><code>reference_smiles</code> can be a list of smiles or a list of <code>Mols</code></p>
