@@ -104,7 +104,7 @@ class LSTMLM(nn.Module):
 
     def sample(self, bs, sl, temperature=1., multinomial=True):
 
-        preds = idxs = torch.tensor([vocab.stoi['bos']]*bs).long().unsqueeze(-1) # todo - cuda
+        preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))
         lps = []
 
         hiddens = self.lstm.get_new_hidden(bs)
