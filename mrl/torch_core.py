@@ -22,7 +22,12 @@ def to_device(tensor, device=None):
 
     device = torch.device(device)
 
-    return tensor.to_device(device)
+    if hasattr(tensor, 'to'):
+        output = tensor.to(device)
+    else:
+        output = [to_device(i, device) for i in tensor]
+
+    return output
 
 def set_device(device):
     os.environ['DEFAULT_GPU'] = device
