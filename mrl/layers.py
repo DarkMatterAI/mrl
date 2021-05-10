@@ -66,7 +66,7 @@ class LSTM(nn.Module):
 
         if hiddens is None:
             hiddens = self.get_new_hidden(bs)
-            hiddens = [(i[0].to(x.device), i[1].to(x.device)) for i in hiddens]
+            hiddens = to_device(hiddens, x.device)
 
         new_hiddens = []
         for i, lstm in enumerate(self.lstms):
@@ -108,7 +108,7 @@ class LSTMLM(nn.Module):
         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))
         lps = []
 
-        hiddens = self.lstm.get_new_hidden(bs)
+        hiddens = to_device(self.lstm.get_new_hidden(bs))
 
         for i in range(sl):
             x = self.embedding(idxs)
