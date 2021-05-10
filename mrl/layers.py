@@ -5,6 +5,7 @@ __all__ = ['Linear', 'LSTM', 'LSTMLM']
 # Cell
 from .imports import *
 from .torch_imports import *
+from .torch_core import *
 
 # Cell
 
