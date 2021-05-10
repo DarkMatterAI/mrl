@@ -24,7 +24,7 @@ class NoScore(ScoreFunction):
         return 0.
 
 class PassThroughScore(ScoreFunction):
-    "Pass through for no score"
+    "Pass through for property_output"
     def __call__(self, property_output, criteria_output):
         return property_output
 

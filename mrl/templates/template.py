@@ -62,42 +62,27 @@ class Template():
 
         return return_outputs
 
-    def log_data(self, new_data, filter_type='hard'):
+    def eval_mols(self, mols):
+        hardpass = self.__call__(mols, filter_type='hard')
 
-        if self.log and new_data:
-            if filter_type=='hard':
-                new_df = pd.DataFrame(new_data, columns=self.hard_log.columns)
-                self.hard_log = self.hard_log.append(new_df)
+        remaining = []
+        idxs = []
+        scores = []
+        for i, mol in enumerate(mols):
+            if hardpass[i]:
+                remaining.append(mol)
+                idxs.append(i)
+                scores.append(0)
+            else:
+                scores.append(self.fail_score)
 
-            if filter_type=='soft':
-                new_df = pd.DataFrame(new_data, columns=self.soft_log.columns)
-                self.soft_log = self.soft_log.append(new_df)
+        if remaining:
+            soft_scores = self.__call__(remaining, filter_type='soft')
+            for i, score in enumerate(soft_scores):
+                idx = idxs[i]
+                scores[idx] = score
 
-            if self.use_lookup:
-                for item in new_data:
-                    smile = item[0]
-                    score = item[-1]
-
-                    if filter_type=='hard' and not smile in self.hard_lookup.keys():
-                        self.hard_lookup[smile] = score
-
-                    if filter_type=='soft' and not smile in self.soft_lookup.keys():
-                        self.soft_lookup[smile] = score
-
-    def clean_logs(self):
-        'de-duplicate logs'
-        self.hard_log.drop_duplicates(subset='smiles')
-        self.hard_log.reset_index(inplace=True, drop=True)
-        self.soft_log.drop_duplicates(subset='smiles')
-        self.soft_log.reset_index(inplace=True, drop=True)
-
-    def clear_data(self):
-        'delete logged data'
-        self.hard_log = pd.DataFrame(columns=['smiles']+list(range(len(self.hard_filters)))+['final'])
-        self.hard_lookup = {}
-
-        self.soft_log = pd.DataFrame(columns=['smiles']+list(range(len(self.soft_filters)))+['final'])
-        self.soft_lookup = {}
+        return scores
 
     def hf(self, mol, agg=True):
         'run hard filters'
@@ -111,7 +96,10 @@ class Template():
         else:
             filter_results = []
             for filt in self.hard_filters:
-                filter_results.append(filt(mol, with_score=False))
+                try:
+                    filter_results.append(filt(mol, with_score=False))
+                except:
+                    filter_results.append(False)
 
             if agg:
                 output = all(filter_results)
@@ -161,6 +149,43 @@ class Template():
             passes = list(zip(remaining, softpasses))
 
         return [passes, fails]
+
+    def log_data(self, new_data, filter_type='hard'):
+
+        if self.log and new_data:
+            if filter_type=='hard':
+                new_df = pd.DataFrame(new_data, columns=self.hard_log.columns)
+                self.hard_log = self.hard_log.append(new_df)
+
+            if filter_type=='soft':
+                new_df = pd.DataFrame(new_data, columns=self.soft_log.columns)
+                self.soft_log = self.soft_log.append(new_df)
+
+            if self.use_lookup:
+                for item in new_data:
+                    smile = item[0]
+                    score = item[-1]
+
+                    if filter_type=='hard' and not smile in self.hard_lookup.keys():
+                        self.hard_lookup[smile] = score
+
+                    if filter_type=='soft' and not smile in self.soft_lookup.keys():
+                        self.soft_lookup[smile] = score
+
+    def clean_logs(self):
+        'de-duplicate logs'
+        self.hard_log.drop_duplicates(subset='smiles')
+        self.hard_log.reset_index(inplace=True, drop=True)
+        self.soft_log.drop_duplicates(subset='smiles')
+        self.soft_log.reset_index(inplace=True, drop=True)
+
+    def clear_data(self):
+        'delete logged data'
+        self.hard_log = pd.DataFrame(columns=['smiles']+list(range(len(self.hard_filters)))+['final'])
+        self.hard_lookup = {}
+
+        self.soft_log = pd.DataFrame(columns=['smiles']+list(range(len(self.soft_filters)))+['final'])
+        self.soft_lookup = {}
 
     def sample(self, n, log='hard', seed=None):
         'sample logged data'
