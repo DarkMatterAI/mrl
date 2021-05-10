@@ -51,21 +51,31 @@ MAPPING_REGEX = """(\[.\*:.]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|H|\[|\]|\(|\)|\.|=|
 
 # Cell
 
-def tokenize_by_character(smile):
-    return [i for i in smile]
+def tokenize_by_character(input):
+    "Splits `input` into inividual characters"
+    return [i for i in input]
 
-def tokenize_with_replacements(smile, replacement_dict):
+def tokenize_with_replacements(input, replacement_dict):
+    "Replaces substrings in `input` using `replacement_dict`, then tokenizes by character"
     for k,v in replacement_dict.items():
-        smile = smile.replace(k,v)
-    return [i for i in smile]
+        input = input.replace(k,v)
+    return [i for i in input]
 
-def regex_tokenize(smile, regex):
-    tokens = [token for token in regex.findall(smile)]
+def regex_tokenize(input, regex):
+    'Uses `regex` to tokenize `input`'
+    tokens = [token for token in regex.findall(input)]
     return tokens
 
 # Cell
 
 class Vocab():
+    '''
+    Vocab - base vocabulary class
+
+    Inputs:
+
+        `itos` - list, list of tokens in vocabulary
+    '''
     def __init__(self, itos):
         self.special_tokens = ['bos', 'eos', 'pad', 'unk']
 
@@ -74,9 +84,11 @@ class Vocab():
         self.unks = []
 
     def tokenize(self, input):
+        'Tokenize `input`'
         raise NotImplementedError
 
     def numericalize(self, input):
+        'Numericalize `input` into integers'
         output = []
         for tok in input:
             if tok in self.stoi.keys():
@@ -87,7 +99,7 @@ class Vocab():
         return output
 
     def reconstruct(self, input):
-
+        'Reconstruct `input` into a string'
         output = []
         for item in input:
             item = self.itos[item]
@@ -100,24 +112,38 @@ class Vocab():
         return ''.join(output)
 
     def update_vocab(self):
+        'Adds tokens in `self.unks` to vocabulary'
         unks = list(set(self.unks))
         self.itos += unks
         self.stoi = {self.itos[i]:i for i in range(len(self.itos))}
         self.unks = []
 
     def update_vocab_from_data(self, inputs):
+        'Tokenizes `inputs` and updates the vocabulary with any unknown tokens'
         _ = [self.numericalize(self.tokenize(i)) for i in inputs]
         self.update_vocab()
 
 
 class CharacterVocab(Vocab):
-    def tokenize(self, smile):
-        toks = tokenize_by_character(smile)
+    '''
+    CharacterVocab - tokenize by character
+    '''
+    def tokenize(self, input):
+        toks = tokenize_by_character(input)
         toks = ['bos'] + toks + ['eos']
         return toks
 
 
 class CharacterReplaceVocab(Vocab):
+    '''
+    CharacterReplaceVocab - tokenize by character with replacement
+
+    Inputs:
+
+        `itos` - list, list of tokens
+        `replace_dict` - dict, replacement dictionary of the form {multi_character_token : single_character_token}.
+        ie replace_dict={'Br':'R', 'Cl':'L'}
+    '''
     def __init__(self, itos, replace_dict):
         itos = list(itos)
         self.replace_dict = replace_dict
@@ -149,6 +175,14 @@ class CharacterReplaceVocab(Vocab):
 
 
 class RegexVocab(Vocab):
+    '''
+    RegexVocab - tokenize using `pattern`
+
+    Inputs:
+
+        `itos` - list, list of tokens
+        `pattern` - str, regex string
+    '''
     def __init__(self, itos, pattern):
         super().__init__(itos)
 
@@ -163,6 +197,7 @@ class RegexVocab(Vocab):
 # Cell
 
 def test_reconstruction(vocab, inputs):
+    "Returns all items in `inputs` that can't be correctly reconstructed using `vocab`"
     fails = []
     for item in inputs:
         recon = vocab.reconstruct(vocab.numericalize(vocab.tokenize(item)))
@@ -174,7 +209,7 @@ def test_reconstruction(vocab, inputs):
 # Cell
 
 def batch_sequences(sequences, pad_idx):
-
+    'Packs `sequences` into a dense tensor, using `pad_idx` for padding'
     max_len = max([len(i) for i in sequences])+1
     bs = len(sequences)
 
@@ -187,7 +222,10 @@ def batch_sequences(sequences, pad_idx):
 
 
 def lm_collate(batch, pad_idx, batch_first=True):
-
+    '''
+    Collate function for language models. Returns packed
+    batch for next-token prediction
+    '''
     batch_tensor = batch_sequences(batch, pad_idx)
 
     if batch_first:
@@ -199,7 +237,9 @@ def lm_collate(batch, pad_idx, batch_first=True):
     return output
 
 def sequence_prediction_collate(batch, pad_idx, batch_first=True):
-
+    '''
+    Collate function for predicting some y value from a sequence
+    '''
     batch_tensor = batch_sequences([i[0] for i in batch], pad_idx)
     y_vals = torch.stack([i[1] for i in batch])
     y_vals = y_vals.squeeze(-1)
@@ -210,10 +250,16 @@ def sequence_prediction_collate(batch, pad_idx, batch_first=True):
     return (batch_tensor, y_vals)
 
 def fp_collate(batch):
+    '''
+    Collate function for fingerprints
+    '''
     fps = torch.stack(batch)
     return fps
 
 def fp_reconstruction_collate(batch, pad_idx, batch_first=True):
+    '''
+    Collate function for predicting a sequence from a fringerprint
+    '''
     fps = torch.stack([i[0] for i in batch])
     batch_tensor = batch_sequences([i[1] for i in batch], pad_idx)
 
@@ -223,6 +269,9 @@ def fp_reconstruction_collate(batch, pad_idx, batch_first=True):
     return (fps, batch_tensor)
 
 def fp_prediction_collate(batch):
+    '''
+    Collate function for predicting some y value from a fingerprint
+    '''
     fps = torch.stack([i[0] for i in batch])
     y_vals = torch.stack([i[1] for i in batch])
     y_vals = y_vals.squeeze(-1)
@@ -231,6 +280,13 @@ def fp_prediction_collate(batch):
 # Cell
 
 class BaseDataset(Dataset):
+    '''
+    BaseDataset - base dataset
+
+    Inputs:
+
+        `collate_function` - batch collate function for the particular dataset class
+    '''
     def __init__(self, collate_function):
         self.collate_function = collate_function
 
@@ -241,6 +297,17 @@ class BaseDataset(Dataset):
                           collate_fn=self.collate_function, **dl_kwargs)
 
 class TextDataset(BaseDataset):
+    '''
+    TextDataset - base dataset for language modes
+
+    Inputs:
+
+        `smiles` - list[str], list of text sequences
+
+        `vocab` - Vocab, vocabuary for tokenization/numericaization
+
+        `collate_function` - batch collate function. If None, defauts to `lm_collate`
+    '''
     def __init__(self, smiles, vocab, collate_function=None):
         self.smiles = smiles
         self.vocab = vocab
@@ -261,6 +328,19 @@ class TextDataset(BaseDataset):
 
 
 class TextPredictionDataset(TextDataset):
+    '''
+    TextDataset - base dataset for predicting from text strings
+
+    Inputs:
+
+        `smiles` - list[str], list of text sequences
+
+        `y_vals` - list[int, float], list of paired output values
+
+        `vocab` - Vocab, vocabuary for tokenization/numericaization
+
+        `collate_function` - batch collate function. If None, defauts to `sequence_prediction_collate`
+    '''
     def __init__(self, smiles, y_vals, vocab, collate_function=None):
 
         if collate_function is None:
@@ -278,6 +358,17 @@ class TextPredictionDataset(TextDataset):
 # Cell
 
 class FPDataset(BaseDataset):
+    '''
+    FPDataset - base dataset for fingerprints
+
+    Inputs:
+
+        `smiles` - list[str], list of text sequences
+
+        `fp_function` - function to convert smiles to fingerprints
+
+        `collate_function` - batch collate function. If None, defauts to `fp_collate`
+    '''
     def __init__(self, smiles, fp_function, collate_function=None):
         if collate_function is None:
             collate_function = fp_collate
@@ -296,6 +387,19 @@ class FPDataset(BaseDataset):
         return fp
 
 class FPReconstructionDataset(FPDataset):
+    '''
+    FPDataset - base dataset for predicting smiles from fingerprints
+
+    Inputs:
+
+        `smiles` - list[str], list of text sequences
+
+        `vocab` - Vocab, vocabuary for tokenization/numericaization
+
+        `fp_function` - function to convert smiles to fingerprints
+
+        `collate_function` - batch collate function. If None, defauts to `fp_reconstruction_collate`
+    '''
     def __init__(self, smiles, vocab, fp_function, collate_function=None):
 
         if collate_function is None:
@@ -317,6 +421,19 @@ class FPReconstructionDataset(FPDataset):
         return (fp, ints)
 
 class FPPredictionDataset(FPDataset):
+    '''
+    FPDataset - base dataset for predicting y_vals from fingerprints
+
+    Inputs:
+
+        `smiles` - list[str], list of text sequences
+
+        `y_vals` - list[int, float], list of paired output values
+
+        `fp_function` - function to convert smiles to fingerprints
+
+        `collate_function` - batch collate function. If None, defauts to `fp_prediction_collate`
+    '''
     def __init__(self, smiles, y_vals, fp_function, collate_function=None):
         if collate_function is None:
             collate_function = fp_prediction_collate
