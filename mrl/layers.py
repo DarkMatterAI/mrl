@@ -136,10 +136,10 @@ class LSTMLM(nn.Module):
             return self.sample(bs, sl, temperature=temperature, multinomial=multinomial)
 
     def get_lps(self, x, y, temperature=1.):
-        x = model(x)
+        x = self.forward(x)
         x.div_(temperature)
 
         lps = F.log_softmax(x, -1)
-        lps = lps.gather(2, y.cuda().unsqueeze(-1)).squeeze(-1)
+        lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
 
         return lps
