@@ -219,7 +219,7 @@ def batch_sequences(sequences, pad_idx):
     for i,item in enumerate(sequences):
         batch_tensor[i,:item.shape[0]] = item
 
-    return to_device(batch_tensor)
+    return batch_tensor
 
 
 def lm_collate(batch, pad_idx, batch_first=True):
@@ -293,7 +293,11 @@ class BaseDataset(Dataset):
 
     def dataloader(self, bs, num_workers=-1, **dl_kwargs):
         if num_workers==-1:
-            num_workers=os.cpu_count()
+            if 'ncpus' in os.environ.keys():
+                num_workers = int(os.environ['ncpus'])
+            else:
+                num_workers=os.cpu_count()
+
         return DataLoader(self, batch_size=bs, num_workers=num_workers,
                           collate_fn=self.collate_function, **dl_kwargs)
 
