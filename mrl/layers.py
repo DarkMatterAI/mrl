@@ -102,7 +102,7 @@ class LSTMLM(nn.Module):
         x = self.head(x)
         return x
 
-    def sample(self, bs, sl, multinomial=True):
+    def sample(self, bs, sl, temperature=1., multinomial=True):
 
         preds = idxs = torch.tensor([vocab.stoi['bos']]*bs).long().unsqueeze(-1) # todo - cuda
         lps = []
@@ -113,6 +113,8 @@ class LSTMLM(nn.Module):
             x = self.embedding(idxs)
             x, hiddens = self.lstm(x, hiddens)
             x = self.head(x)
+
+            x.div_(temperature)
 
             log_probs = F.log_softmax(x, -1).squeeze(1)
             probs = log_probs.detach().exp()
@@ -128,6 +130,15 @@ class LSTMLM(nn.Module):
 
         return preds[:, 1:], torch.cat(lps,-1)
 
-    def sample_no_grad(self, bs, sl, multinomial=True):
+    def sample_no_grad(self, bs, sl, temperature=1., multinomial=True):
         with torch.no_grad():
-            return self.sample(bs, sl, multinomial=multinomial)
+            return self.sample(bs, sl, temperature=temperature, multinomial=multinomial)
+
+    def get_lps(self, x, y, temperature=1.):
+        x = model(x)
+        x.div_(temperature)
+
+        lps = F.log_softmax(x, -1)
+        lps = lps.gather(2, y.cuda().unsqueeze(-1)).squeeze(-1)
+
+        return lps

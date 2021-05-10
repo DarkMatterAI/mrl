@@ -143,10 +143,14 @@ index = {"is_container": "00_core.ipynb",
          "lm_collate": "07_dataloaders.ipynb",
          "sequence_prediction_collate": "07_dataloaders.ipynb",
          "fp_collate": "07_dataloaders.ipynb",
+         "fp_reconstruction_collate": "07_dataloaders.ipynb",
+         "fp_prediction_collate": "07_dataloaders.ipynb",
          "BaseDataset": "07_dataloaders.ipynb",
          "TextDataset": "07_dataloaders.ipynb",
          "TextPredictionDataset": "07_dataloaders.ipynb",
-         "FPDataset": "07_dataloaders.ipynb"}
+         "FPDataset": "07_dataloaders.ipynb",
+         "FPReconstructionDataset": "07_dataloaders.ipynb",
+         "FPPredictionDataset": "07_dataloaders.ipynb"}
 
 modules = ["core.py",
            "chem.py",

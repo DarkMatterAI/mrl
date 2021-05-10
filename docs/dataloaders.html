@@ -36,6 +36,49 @@ nb_path: "nbs/07_dataloaders.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tokenization">Tokenization<a class="anchor-link" href="#Tokenization"> </a></h2><p>Tokenzation defines how we break text strings (ie SMILES strings) down into subunits that are fed to the model. The standard process goes as follows:</p>
+<ol>
+<li>A tokenization process breaks a string down into tokens</li>
+<li>Tokens are mapped to integers</li>
+<li>The token integers are sent to the model</li>
+</ol>
+<p>This brings up the problem of how best to tokenize smiles. The following methods are implemented out of the box:</p>
+<h3 id="Character-Tokenization">Character Tokenization<a class="anchor-link" href="#Character-Tokenization"> </a></h3><p>Character Tokenization is when we break down SMILES by character. This is implemented with the <a href="/mrl/dataloaders.html#tokenize_by_character"><code>tokenize_by_character</code></a> function.</p>
+
+<pre><code>tokenize_by_character('CC[NH]CC')
+&gt; &gt; ['C', 'C', '[', 'N', 'H', ']', 'C', 'C']</code></pre>
+<p>This form of tokenization is quick and simple. One drawback of this approach is some characters might be overloaded. For example, <code>Br</code> is tokenized to <code>['B', 'r']</code>, leading to the <code>B</code> token meaning both boron (in the standard context) and Bromine (in the <code>Br</code> context). In practice, this isn't much of an issue. Language models are particularly adept at learning co-location of tokens.</p>
+<h3 id="Character-Tokenization-with-Replacement">Character Tokenization with Replacement<a class="anchor-link" href="#Character-Tokenization-with-Replacement"> </a></h3><p>Character tokenization with replacement is the same as character tokenization except we add a dictionary of multi-character tokens to be replaced with singel-character tokens. This dictinary has the form <code>{multi_character_token :single_character_token}</code>. Before tokenizing by character, all instances of <code>multi_character_token</code> are replaced with <code>single_character_token</code>. Character Tokenization with Replacement is implemented with the <a href="/mrl/dataloaders.html#tokenize_with_replacements"><code>tokenize_with_replacements</code></a> function.</p>
+
+<pre><code>replacement_dict = {'Br' : 'R', 'Cl' : 'L'}
+tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
+&gt; &gt; ['[', 'L', ']', 'C', 'C', '[', 'R', ']']</code></pre>
+<h3 id="Regex-Tokenization">Regex Tokenization<a class="anchor-link" href="#Regex-Tokenization"> </a></h3><p>Regex tokenization uses a regex string to decompose SMILES. This is mainly used to keep bracketed terms (ie <code>[O-]</code>) as single tokens. This method avoids character overloading by keeping all bracketed terms as individual tokens, but has issues with generating a large number of low frequency tokens. Regex tokenization is implemented with the <a href="/mrl/dataloaders.html#regex_tokenize"><code>regex_tokenize</code></a> function</p>
+
+<pre><code>SMILE_REGEX = """(\[[^\]]+]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|H|\(|\)|\.|=|#|-|\+|\\\\|\/|:|~|@|\?|&gt;|\*|\$|\%[0-9]{2}|[0-9])"""regex_tokenize('CCC[Br]', re.compile(SMILE_REGEX))
+&gt;&gt;['C', 'C', 'C', '[Br]']</code></pre>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These are regex patterns to decompose smiles into tokens</p>
+<p><a href="/mrl/dataloaders.html#SMILE_REGEX"><code>SMILE_REGEX</code></a> is based off <a href="https://github.com/pschwllr/MolecularTransformer/blob/master/README.md">this work</a>. The pattern decomposes SMILES into individual characters, but keeps <code>Cl</code>, <code>Br</code>, and any term in brackets (ie <code>[O-]</code>) intact.</p>
+<p><a href="/mrl/dataloaders.html#MAPPING_REGEX"><code>MAPPING_REGEX</code></a> is a derivative of <a href="/mrl/dataloaders.html#SMILE_REGEX"><code>SMILE_REGEX</code></a> designed to work with the mapping framework used with the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class. <a href="/mrl/dataloaders.html#MAPPING_REGEX"><code>MAPPING_REGEX</code></a> keeps <code>Cl</code>, <code>Br</code>, and any string of the form <code>[{isotope}*:{map_num}]</code> intact</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -54,7 +97,7 @@ nb_path: "nbs/07_dataloaders.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_by_character" class="doc_header"><code>tokenize_by_character</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_by_character</code>(<strong><code>smile</code></strong>)</p>
+<h4 id="tokenize_by_character" class="doc_header"><code>tokenize_by_character</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L54" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_by_character</code>(<strong><code>smile</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -78,7 +121,7 @@ nb_path: "nbs/07_dataloaders.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_with_replacements" class="doc_header"><code>tokenize_with_replacements</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L54" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_with_replacements</code>(<strong><code>smile</code></strong>, <strong><code>replacement_dict</code></strong>)</p>
+<h4 id="tokenize_with_replacements" class="doc_header"><code>tokenize_with_replacements</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_with_replacements</code>(<strong><code>smile</code></strong>, <strong><code>replacement_dict</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -102,7 +145,7 @@ nb_path: "nbs/07_dataloaders.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="regex_tokenize" class="doc_header"><code>regex_tokenize</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>regex_tokenize</code>(<strong><code>smile</code></strong>, <strong><code>regex</code></strong>)</p>
+<h4 id="regex_tokenize" class="doc_header"><code>regex_tokenize</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>regex_tokenize</code>(<strong><code>smile</code></strong>, <strong><code>regex</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -125,27 +168,29 @@ nb_path: "nbs/07_dataloaders.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-<div class="output_wrapper">
-<div class="output">
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">tokenize_by_character</span><span class="p">(</span><span class="s1">&#39;CCC[Br]&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">tokenize_with_replacements</span><span class="p">(</span><span class="s1">&#39;CCC[Br]&#39;</span><span class="p">,</span> <span class="n">HALOGEN_REPLACE</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">regex_tokenize</span><span class="p">(</span><span class="s1">&#39;CCC[Br]&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">SMILE_REGEX</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;[Br]&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">regex_tokenize</span><span class="p">(</span><span class="s1">&#39;[1*:1]CCC[Br]&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">MAPPING_REGEX</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;[1*:1]&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;Br&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">]</span>
+</pre></div>
 
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vocab" class="doc_header"><code>class</code> <code>Vocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vocab</code>(<strong><code>itos</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
+    </div>
 </div>
 </div>
 
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Vocabulary">Vocabulary<a class="anchor-link" href="#Vocabulary"> </a></h2>
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -157,31 +202,7 @@ nb_path: "nbs/07_dataloaders.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CharacterVocab" class="doc_header"><code>class</code> <code>CharacterVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterVocab</code>(<strong><code>itos</code></strong>) :: <a href="/mrl/dataloaders.html#Vocab"><code>Vocab</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="CharacterReplaceVocab" class="doc_header"><code>class</code> <code>CharacterReplaceVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L117" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterReplaceVocab</code>(<strong><code>itos</code></strong>, <strong><code>replace_dict</code></strong>) :: <a href="/mrl/dataloaders.html#Vocab"><code>Vocab</code></a></p>
+<h2 id="Vocab" class="doc_header"><code>class</code> <code>Vocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vocab</code>(<strong><code>itos</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -205,69 +226,7 @@ nb_path: "nbs/07_dataloaders.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegexVocab" class="doc_header"><code>class</code> <code>RegexVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L147" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexVocab</code>(<strong><code>itos</code></strong>, <strong><code>pattern</code></strong>) :: <a href="/mrl/dataloaders.html#Vocab"><code>Vocab</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="test_reconstruction" class="doc_header"><code>test_reconstruction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L161" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_reconstruction</code>(<strong><code>vocab</code></strong>, <strong><code>inputs</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="batch_sequences" class="doc_header"><code>batch_sequences</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L172" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>batch_sequences</code>(<strong><code>sequences</code></strong>, <strong><code>pad_idx</code></strong>)</p>
+<h2 id="CharacterVocab" class="doc_header"><code>class</code> <code>CharacterVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L113" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterVocab</code>(<strong><code>itos</code></strong>) :: <a href="/mrl/dataloaders.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 
 </div>
@@ -291,7 +250,7 @@ nb_path: "nbs/07_dataloaders.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lm_collate" class="doc_header"><code>lm_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L185" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lm_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
+<h2 id="CharacterReplaceVocab" class="doc_header"><code>class</code> <code>CharacterReplaceVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L120" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterReplaceVocab</code>(<strong><code>itos</code></strong>, <strong><code>replace_dict</code></strong>) :: <a href="/mrl/dataloaders.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 
 </div>
@@ -315,31 +274,7 @@ nb_path: "nbs/07_dataloaders.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sequence_prediction_collate" class="doc_header"><code>sequence_prediction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L197" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sequence_prediction_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_collate" class="doc_header"><code>fp_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_collate</code>(<strong><code>batch</code></strong>)</p>
+<h2 id="RegexVocab" class="doc_header"><code>class</code> <code>RegexVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L151" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexVocab</code>(<strong><code>itos</code></strong>, <strong><code>pattern</code></strong>) :: <a href="/mrl/dataloaders.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 
 </div>
@@ -370,7 +305,270 @@ nb_path: "nbs/07_dataloaders.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BaseDataset" class="doc_header"><code>class</code> <code>BaseDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L216" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
+<h4 id="test_reconstruction" class="doc_header"><code>test_reconstruction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L165" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_reconstruction</code>(<strong><code>vocab</code></strong>, <strong><code>inputs</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;files/smiles.csv&#39;</span><span class="p">)</span>
+<span class="n">smiles</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span> <span class="o">=</span> <span class="n">CharacterVocab</span><span class="p">(</span><span class="n">SMILES_CHAR_VOCAB</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">test_reconstruction</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="n">smiles</span><span class="p">)</span><span class="o">==</span><span class="p">[]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span> <span class="o">=</span> <span class="n">CharacterReplaceVocab</span><span class="p">(</span><span class="n">SMILES_CHAR_VOCAB</span><span class="p">,</span> <span class="n">HALOGEN_REPLACE</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">vocab</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="s1">&#39;CC[Br]&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;bos&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;eos&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">test_reconstruction</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="n">smiles</span><span class="p">)</span><span class="o">==</span><span class="p">[]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span> <span class="o">=</span> <span class="n">RegexVocab</span><span class="p">(</span><span class="n">SMILES_CHAR_VOCAB</span><span class="p">,</span> <span class="n">SMILE_REGEX</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">vocab</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="s1">&#39;CC[Br]&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;bos&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;[Br]&#39;</span><span class="p">,</span> <span class="s1">&#39;eos&#39;</span><span class="p">]</span>
+<span class="n">vocab</span><span class="o">.</span><span class="n">update_vocab_from_data</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">test_reconstruction</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="n">smiles</span><span class="p">)</span><span class="o">==</span><span class="p">[]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Collate-Functions">Collate Functions<a class="anchor-link" href="#Collate-Functions"> </a></h2>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="batch_sequences" class="doc_header"><code>batch_sequences</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L176" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>batch_sequences</code>(<strong><code>sequences</code></strong>, <strong><code>pad_idx</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="lm_collate" class="doc_header"><code>lm_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L189" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lm_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="sequence_prediction_collate" class="doc_header"><code>sequence_prediction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sequence_prediction_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fp_collate" class="doc_header"><code>fp_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L212" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_collate</code>(<strong><code>batch</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fp_reconstruction_collate" class="doc_header"><code>fp_reconstruction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L216" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_reconstruction_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fp_prediction_collate" class="doc_header"><code>fp_prediction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L225" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_prediction_collate</code>(<strong><code>batch</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BaseDataset" class="doc_header"><code>class</code> <code>BaseDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L233" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
 </blockquote>
 <p>An abstract class representing a :class:<code>Dataset</code>.</p>
 <p>All datasets that represent a map from keys to data samples should subclass
@@ -405,7 +603,7 @@ of :class:<code>~torch.utils.data.DataLoader</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextDataset" class="doc_header"><code>class</code> <code>TextDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L226" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
+<h2 id="TextDataset" class="doc_header"><code>class</code> <code>TextDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L243" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
 </blockquote>
 <p>An abstract class representing a :class:<code>Dataset</code>.</p>
 <p>All datasets that represent a map from keys to data samples should subclass
@@ -440,7 +638,7 @@ of :class:<code>~torch.utils.data.DataLoader</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextPredictionDataset" class="doc_header"><code>class</code> <code>TextPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L246" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a></p>
+<h2 id="TextPredictionDataset" class="doc_header"><code>class</code> <code>TextPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L263" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a></p>
 </blockquote>
 <p>An abstract class representing a :class:<code>Dataset</code>.</p>
 <p>All datasets that represent a map from keys to data samples should subclass
@@ -482,7 +680,77 @@ of :class:<code>~torch.utils.data.DataLoader</code>.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPDataset" class="doc_header"><code>class</code> <code>FPDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L263" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
+<h2 id="FPDataset" class="doc_header"><code>class</code> <code>FPDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L280" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
+</blockquote>
+<p>An abstract class representing a :class:<code>Dataset</code>.</p>
+<p>All datasets that represent a map from keys to data samples should subclass
+it. All subclasses should overwrite :meth:<code>__getitem__</code>, supporting fetching a
+data sample for a given key. Subclasses could also optionally overwrite
+:meth:<code>__len__</code>, which is expected to return the size of the dataset by many
+:class:<code>~torch.utils.data.Sampler</code> implementations and the default options
+of :class:<code>~torch.utils.data.DataLoader</code>.</p>
+<p>.. note::
+  :class:<code>~torch.utils.data.DataLoader</code> by default constructs a index
+  sampler that yields integral indices.  To make it work with a map-style
+  dataset with non-integral indices/keys, a custom sampler must be provided.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="FPReconstructionDataset" class="doc_header"><code>class</code> <code>FPReconstructionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L298" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPReconstructionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#FPDataset"><code>FPDataset</code></a></p>
+</blockquote>
+<p>An abstract class representing a :class:<code>Dataset</code>.</p>
+<p>All datasets that represent a map from keys to data samples should subclass
+it. All subclasses should overwrite :meth:<code>__getitem__</code>, supporting fetching a
+data sample for a given key. Subclasses could also optionally overwrite
+:meth:<code>__len__</code>, which is expected to return the size of the dataset by many
+:class:<code>~torch.utils.data.Sampler</code> implementations and the default options
+of :class:<code>~torch.utils.data.DataLoader</code>.</p>
+<p>.. note::
+  :class:<code>~torch.utils.data.DataLoader</code> by default constructs a index
+  sampler that yields integral indices.  To make it work with a map-style
+  dataset with non-integral indices/keys, a custom sampler must be provided.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="FPPredictionDataset" class="doc_header"><code>class</code> <code>FPPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#FPDataset"><code>FPDataset</code></a></p>
 </blockquote>
 <p>An abstract class representing a :class:<code>Dataset</code>.</p>
 <p>All datasets that represent a map from keys to data samples should subclass
@@ -1292,28 +1560,6 @@ of :class:<code>~torch.utils.data.DataLoader</code>.</p>
 
 </div>
 
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">layers</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span> <span class="n">common</span> <span class="n">layers</span>
-    
-<span class="n">models</span>
-    <span class="n">agent</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span> <span class="n">base</span> <span class="n">agent</span>
-    <span class="n">lstm</span> <span class="o">-</span> <span class="n">lstm</span> <span class="n">model</span> <span class="o">+</span> <span class="n">agent</span>
-    <span class="n">vae</span> <span class="o">-</span> <span class="n">vae</span> <span class="n">model</span> <span class="o">+</span> <span class="n">agent</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
 

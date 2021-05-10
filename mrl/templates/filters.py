@@ -521,6 +521,9 @@ class FPFilter(Filter):
     def criteria_function(self, property_output):
         property_output = property_output>=self.fp_thresh
 
+        if not is_container(property_output):
+            property_output = [property_output]
+
         if self.criteria=='any':
             output = any(property_output)
         else:

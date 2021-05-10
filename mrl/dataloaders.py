@@ -3,8 +3,9 @@
 __all__ = ['SMILES_CHAR_VOCAB', 'SPECIAL_TOKENS', 'MAPPING_TOKENS', 'HALOGEN_REPLACE', 'MAPPING_REPLACE', 'SMILE_REGEX',
            'MAPPING_REGEX', 'tokenize_by_character', 'tokenize_with_replacements', 'regex_tokenize', 'Vocab',
            'CharacterVocab', 'CharacterReplaceVocab', 'RegexVocab', 'test_reconstruction', 'batch_sequences',
-           'lm_collate', 'sequence_prediction_collate', 'fp_collate', 'BaseDataset', 'TextDataset',
-           'TextPredictionDataset', 'FPDataset']
+           'lm_collate', 'sequence_prediction_collate', 'fp_collate', 'fp_reconstruction_collate',
+           'fp_prediction_collate', 'BaseDataset', 'TextDataset', 'TextPredictionDataset', 'FPDataset',
+           'FPReconstructionDataset', 'FPPredictionDataset']
 
 # Cell
 from .imports import *
@@ -39,12 +40,14 @@ MAPPING_REPLACE = {'[1*:1]':'A',
                    '[1*:5]':'U',
                    '[2*:5]':'V'}
 
+
+# Cell
+
 SMILE_REGEX = """(\[[^\]]+]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|H|\(|\)|\.|=|
-                 #|-|\+|\\\\|\/|:|~|@|\?|>|\*|\$|\%[0-9]{2}|[0-9])"""
+                 #|-|\+|\\\\|\/|:|~|@|\?|>|#|\*|\$|\%[0-9]{2}|[0-9])"""
 
 MAPPING_REGEX = """(\[.\*:.]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|H|\[|\]|\(|\)|\.|=|
-                    #|-|\+|\\\\|\/|:|~|@|\?|>|\*|\$|\%[0-9]{2}|[0-9])"""
-
+                    #|-|\+|\\\\|\/|:|~|@|\?|>|#|\*|\$|\%[0-9]{2}|[0-9])"""
 
 # Cell
 
@@ -116,6 +119,7 @@ class CharacterVocab(Vocab):
 
 class CharacterReplaceVocab(Vocab):
     def __init__(self, itos, replace_dict):
+        itos = list(itos)
         self.replace_dict = replace_dict
         self.reverse_dict = {v:k for k,v in replace_dict.items()}
         for rep in self.reverse_dict.keys():
@@ -206,6 +210,19 @@ def sequence_prediction_collate(batch, pad_idx, batch_first=True):
     return (batch_tensor, y_vals)
 
 def fp_collate(batch):
+    fps = torch.stack(batch)
+    return fps
+
+def fp_reconstruction_collate(batch, pad_idx, batch_first=True):
+    fps = torch.stack([i[0] for i in batch])
+    batch_tensor = batch_sequences([i[1] for i in batch], pad_idx)
+
+    if not batch_first:
+        batch_tensor = batch_tensor.T
+
+    return (fps, batch_tensor)
+
+def fp_prediction_collate(batch):
     fps = torch.stack([i[0] for i in batch])
     y_vals = torch.stack([i[1] for i in batch])
     y_vals = y_vals.squeeze(-1)
@@ -261,13 +278,12 @@ class TextPredictionDataset(TextDataset):
 # Cell
 
 class FPDataset(BaseDataset):
-    def __init__(self, smiles, y_vals, fp_function, collate_function=None):
+    def __init__(self, smiles, fp_function, collate_function=None):
         if collate_function is None:
             collate_function = fp_collate
         super().__init__(collate_function)
 
         self.smiles = smiles
-        self.y_vals = y_vals
         self.fp_function = fp_function
 
     def __len__(self):
@@ -277,5 +293,41 @@ class FPDataset(BaseDataset):
         smile = self.smiles[idx]
         fp = self.fp_function(smile)
         fp = torch.FloatTensor(fp)
+        return fp
+
+class FPReconstructionDataset(FPDataset):
+    def __init__(self, smiles, vocab, fp_function, collate_function=None):
+
+        if collate_function is None:
+            collate_function = partial(fp_reconstruction_collate, pad_idx=vocab.stoi['pad'])
+
+        super().__init__(smiles, fp_function, collate_function)
+        self.vocab = vocab
+
+    def __getitem__(self, idx):
+        smile = self.smiles[idx]
+
+        fp = self.fp_function(smile)
+        fp = torch.FloatTensor(fp)
+
+        tokens = self.vocab.tokenize(smile)
+        ints = self.vocab.numericalize(tokens)
+        ints = torch.LongTensor(ints)
+
+        return (fp, ints)
+
+class FPPredictionDataset(FPDataset):
+    def __init__(self, smiles, y_vals, fp_function, collate_function=None):
+        if collate_function is None:
+            collate_function = fp_prediction_collate
+        super().__init__(smiles, fp_function, collate_function)
+
+        self.y_vals = y_vals
+
+    def __len__(self):
+        return len(self.smiles)
+
+    def __getitem__(self, idx):
+        fp = super().__getitem__(idx)
         y_val = torch.FloatTensor([self.y_vals[idx]])
         return (fp, y_val)
