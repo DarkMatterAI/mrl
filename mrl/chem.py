@@ -26,7 +26,10 @@ def to_mol(smile_or_mol):
     if (type(smile_or_mol) == str) or (type(smile_or_mol) == np.str_):
         mol = Chem.MolFromSmiles(smile_or_mol)
         if mol is not None:
-            Chem.SanitizeMol(mol)
+            try:
+                Chem.SanitizeMol(mol)
+            except:
+                mol = None
     else:
         mol = smile_or_mol
 
