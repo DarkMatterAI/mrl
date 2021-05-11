@@ -136,17 +136,19 @@ class Template():
 
         fails = []
         remaining = []
+        remaining_idxs = []
 
         for i in range(len(hardpasses)):
             if hardpasses[i]:
                 remaining.append(mols[i])
+                remaining_idxs.append(i)
             else:
                 fails.append(mols[i])
 
         passes = []
         if remaining:
             softpasses = self.__call__(remaining, filter_type='soft')
-            passes = list(zip(remaining, softpasses))
+            passes = list(zip(remaining, softpasses, remaining_idxs))
 
         return [passes, fails]
 
