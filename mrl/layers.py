@@ -50,7 +50,7 @@ class LSTM(nn.Module):
         for l in range(n_layers):
             input_size = d_embedding if l==0 else d_hidden
             output_size = d_output if l==n_layers-1 else d_hidden
-            output_size = output_size // sef.n_dir
+            output_size = output_size // self.n_dir
 
             hidden_size = (self.n_dir, 1, output_size)
             self.hidden_sizes.append(hidden_size)
