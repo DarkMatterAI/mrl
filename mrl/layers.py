@@ -529,7 +529,7 @@ class VAE(nn.Module):
         with torch.no_grad():
             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)
 
-    def get_lps(self, x, y, temperature=1. z=None):
+    def get_lps(self, x, y, temperature=1., z=None):
 
         if type(x)==list:
             x,_ = self.forward(x[0], decoder_input=x[1])
