@@ -387,7 +387,7 @@ class FP():
 
         return fps
 
-    def fingerprint_similaity(self, fps1, fps2, metric):
+    def fingerprint_similarity(self, fps1, fps2, metric):
         '''
         Computes the similarity between `fps1` and `fps2` using `metric`
 

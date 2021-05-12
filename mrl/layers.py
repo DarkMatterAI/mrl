@@ -298,21 +298,22 @@ class LSTMLM(nn.Module):
 # Cell
 
 class VAEEncoder(nn.Module):
-    def __init__(self):
+    def __init__(self, d_latent):
         super().__init__()
+        self.d_latent = d_latent
 
     def forward(self, x):
         raise NotImplementedError
 
-    def get_latent(self, mu, logvar):
-        z = torch.randn(mu.shape).to(mu.device)
+    def get_latent(self, mu, logvar, z_scale=1.):
+        z = z_scale*torch.randn(mu.shape).to(mu.device)
         z = mu + z*torch.exp(0.5*logvar)
         kl_loss = 0.5 * (logvar.exp() + mu.pow(2) - 1 - logvar).sum(1).mean()
         return z, kl_loss
 
 class VAELSTMEncoder(VAEEncoder):
     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, d_latent, dropout=0.):
-        super().__init__()
+        super().__init__(d_latent)
 
         self.embedding = nn.Embedding(d_vocab, d_embedding)
         self.lstm_encoder = LSTM(d_embedding, d_hidden, d_hidden, n_layers,
@@ -320,19 +321,19 @@ class VAELSTMEncoder(VAEEncoder):
         self.transition = nn.Linear(d_hidden*2, d_latent*2)
 
 
-    def forward(self, x):
+    def forward(self, x, z_scale=1.):
         x = self.embedding(x)
         x, hiddens = self.lstm_encoder(x)
         hidden = torch.cat(list(torch.cat(hiddens[-1], -1)), -1) # concatenate hidden/cell states of last layer
 
         mu, logvar = torch.chunk(self.transition(hidden), 2, dim=-1)
-        z, kl_loss = self.get_latent(mu, logvar)
+        z, kl_loss = self.get_latent(mu, logvar, z_scale)
 
         return z, kl_loss
 
 class VAEConvEncoder(VAEEncoder):
     def __init__(self, d_vocab, d_embedding, kernel_size, n_layers, d_latent, dropout=0.):
-        super().__init__()
+        super().__init__(d_latent)
 
         self.embedding = nn.Embedding(d_vocab, d_embedding)
 
@@ -347,20 +348,20 @@ class VAEConvEncoder(VAEEncoder):
         self.pool = nn.AdaptiveAvgPool1d(1)
         self.transition = nn.Linear(input_size, d_latent*2)
 
-    def forward(self, x):
+    def forward(self, x, z_scale=1.):
         x = self.embedding(x)
         x = x.permute(0,2,1)
         x = self.convs(x)
         x = self.pool(x).squeeze(-1)
 
         mu, logvar = torch.chunk(self.transition(x), 2, dim=-1)
-        z, kl_loss = self.get_latent(mu, logvar)
+        z, kl_loss = self.get_latent(mu, logvar, z_scale)
 
         return z, kl_loss
 
 class VAELinEncoder(VAEEncoder):
     def __init__(self, d_input, n_layers, d_latent, dropout=0.):
-        super().__init__()
+        super().__init__(d_latent)
 
         lins = []
         input_size = d_input
@@ -371,11 +372,11 @@ class VAELinEncoder(VAEEncoder):
         self.layers = nn.Sequential(*lins)
         self.transition = nn.Linear(input_size, d_latent*2)
 
-    def forward(self, x):
+    def forward(self, x, z_scale=1.):
         x = self.layers(x)
 
         mu, logvar = torch.chunk(self.transition(x), 2, dim=-1)
-        z, kl_loss = self.get_latent(mu, logvar)
+        z, kl_loss = self.get_latent(mu, logvar, z_scale)
 
         return z, kl_loss
 
@@ -405,11 +406,15 @@ class VAEDecoder(nn.Module):
 # Cell
 
 class VAE(nn.Module):
-    def __init__(self, encoder, decoder):
+    def __init__(self, encoder, decoder, prior=None, bos_idx=0):
         super().__init__()
 
         self.encoder = encoder
         self.decoder = decoder
+        if prior is None:
+            prior = Normal(torch.zeros((encoder.d_latent)), torch.ones((encoder.d_latent)))
+        self.prior = prior
+        self.bos_idx = bos_idx
 
     def forward(self, x, decoder_input=None):
         z, kl_loss = self.encoder(x)
@@ -419,3 +424,49 @@ class VAE(nn.Module):
 
         output, hiddens = self.decoder(decoder_input, z)
         return output, kl_loss
+
+    def sample(self, bs, sl, z=None, temperature=1., multinomial=True):
+
+        preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))
+        lps = []
+
+        if z is None:
+            z = to_device(self.prior.sample([bs]))
+
+        hiddens = None
+
+        for i in range(sl):
+            x, hiddens = self.decoder(idxs, z, hiddens)
+            x.div_(temperature)
+
+            log_probs = F.log_softmax(x, -1).squeeze(1)
+            probs = log_probs.detach().exp()
+
+            if multinomial:
+                idxs = torch.multinomial(probs, 1)
+            else:
+                idxs = x.argmax(-1)
+
+            lps.append(torch.gather(log_probs, 1, idxs))
+
+            preds = torch.cat([preds, idxs], -1)
+
+        return preds[:, 1:], torch.cat(lps,-1)
+
+    def sample_no_grad(self, bs, sl, z=None, temperature=1., multinomial=True):
+        with torch.no_grad():
+            return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)
+
+    def get_lps(self, x, y, temperature=1.):
+
+        if type(x)==list:
+            x,_ = self.forward(x[0], decoder_input=x[1])
+        else:
+            x,_ = self.forward(x)
+
+        x.div_(temperature)
+
+        lps = F.log_softmax(x, -1)
+        lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
+
+        return lps

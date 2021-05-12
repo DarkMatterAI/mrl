@@ -4,8 +4,8 @@ __all__ = ['SMILES_CHAR_VOCAB', 'SPECIAL_TOKENS', 'MAPPING_TOKENS', 'HALOGEN_REP
            'MAPPING_REGEX', 'tokenize_by_character', 'tokenize_with_replacements', 'regex_tokenize', 'Vocab',
            'CharacterVocab', 'CharacterReplaceVocab', 'RegexVocab', 'test_reconstruction', 'batch_sequences',
            'lm_collate', 'sequence_prediction_collate', 'fp_collate', 'fp_reconstruction_collate',
-           'fp_prediction_collate', 'BaseDataset', 'TextDataset', 'TextPredictionDataset', 'FPDataset',
-           'FPReconstructionDataset', 'FPPredictionDataset']
+           'fp_vae_reconstruction_collate', 'fp_prediction_collate', 'BaseDataset', 'TextDataset',
+           'TextPredictionDataset', 'FPDataset', 'FPReconstructionDataset', 'FPPredictionDataset']
 
 # Cell
 from .imports import *
@@ -268,6 +268,22 @@ def fp_reconstruction_collate(batch, pad_idx, batch_first=True):
         batch_tensor = batch_tensor.T
 
     return to_device((fps, batch_tensor))
+
+def fp_vae_reconstruction_collate(batch, pad_idx, batch_first=True):
+    '''
+    Collate function for predicting a sequence from a fringerprint where
+    `batch_tensor` is needed for input
+    '''
+    fps = torch.stack([i[0] for i in batch])
+    batch_tensor = batch_sequences([i[1] for i in batch], pad_idx)
+
+    if batch_first:
+        output = ((fps, batch_tensor[:,:-1]), batch_tensor[:,1:])
+    else:
+        batch_tensor = batch_tensor.T
+        output = ((fps, batch_tensor[:-1,:]), batch_tensor[1:,:])
+
+    return to_device(output)
 
 def fp_prediction_collate(batch):
     '''

@@ -567,7 +567,33 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_prediction_collate" class="doc_header"><code>fp_prediction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L272" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_prediction_collate</code>(<strong><code>batch</code></strong>)</p>
+<h4 id="fp_vae_reconstruction_collate" class="doc_header"><code>fp_vae_reconstruction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L272" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_vae_reconstruction_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>Collate function for predicting a sequence from a fringerprint where
+<code>batch_tensor</code> is needed for input</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fp_prediction_collate" class="doc_header"><code>fp_prediction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L288" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_prediction_collate</code>(<strong><code>batch</code></strong>)</p>
 </blockquote>
 <p>Collate function for predicting some y value from a fingerprint</p>
 
@@ -606,7 +632,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BaseDataset" class="doc_header"><code>class</code> <code>BaseDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L283" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
+<h2 id="BaseDataset" class="doc_header"><code>class</code> <code>BaseDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
 </blockquote>
 <p>BaseDataset - base dataset</p>
 <p>Inputs:</p>
@@ -634,7 +660,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextDataset" class="doc_header"><code>class</code> <code>TextDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L300" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
+<h2 id="TextDataset" class="doc_header"><code>class</code> <code>TextDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L320" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
 </blockquote>
 <p>TextDataset - base dataset for language modes</p>
 <p>Inputs:</p>
@@ -666,7 +692,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextPredictionDataset" class="doc_header"><code>class</code> <code>TextPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L331" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a></p>
+<h2 id="TextPredictionDataset" class="doc_header"><code>class</code> <code>TextPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L351" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a></p>
 </blockquote>
 <p>TextDataset - base dataset for predicting from text strings</p>
 <p>Inputs:</p>
@@ -707,7 +733,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPDataset" class="doc_header"><code>class</code> <code>FPDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L361" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
+<h2 id="FPDataset" class="doc_header"><code>class</code> <code>FPDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L381" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
 </blockquote>
 <p>FPDataset - base dataset for fingerprints</p>
 <p>Inputs:</p>
@@ -739,7 +765,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPReconstructionDataset" class="doc_header"><code>class</code> <code>FPReconstructionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L390" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPReconstructionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#FPDataset"><code>FPDataset</code></a></p>
+<h2 id="FPReconstructionDataset" class="doc_header"><code>class</code> <code>FPReconstructionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L410" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPReconstructionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#FPDataset"><code>FPDataset</code></a></p>
 </blockquote>
 <p>FPDataset - base dataset for predicting smiles from fingerprints</p>
 <p>Inputs:</p>
@@ -773,7 +799,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPPredictionDataset" class="doc_header"><code>class</code> <code>FPPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L424" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#FPDataset"><code>FPDataset</code></a></p>
+<h2 id="FPPredictionDataset" class="doc_header"><code>class</code> <code>FPPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L444" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#FPDataset"><code>FPDataset</code></a></p>
 </blockquote>
 <p>FPDataset - base dataset for predicting y_vals from fingerprints</p>
 <p>Inputs:</p>
@@ -817,6 +843,21 @@ batch for next-token prediction</p>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>//anaconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+  return f(*args, **kwds)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -847,6 +888,176 @@ batch for next-token prediction</p>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">FPReconstructionDataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">ECFP6</span><span class="p">,</span>
+                <span class="n">collate_function</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">fp_vae_reconstruction_collate</span><span class="p">,</span> <span class="n">pad_idx</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">stoi</span><span class="p">[</span><span class="s1">&#39;pad&#39;</span><span class="p">]))</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 1., 0.,  ..., 0., 0., 0.],
+        ...,
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[ 0, 22, 26,  ...,  2,  2,  2],
+        [ 0, 22, 27,  ...,  2,  2,  2],
+        [ 0, 22, 33,  ...,  2,  2,  2],
+        ...,
+        [ 0, 22,  4,  ...,  2,  2,  2],
+        [ 0, 22, 22,  ...,  2,  2,  2],
+        [ 0, 22, 27,  ...,  2,  2,  2]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[22, 26, 33,  ...,  2,  2,  2],
+        [22, 27, 33,  ...,  2,  2,  2],
+        [22, 33, 11,  ...,  2,  2,  2],
+        ...,
+        [22,  4, 22,  ...,  2,  2,  2],
+        [22, 22, 11,  ...,  2,  2,  2],
+        [22, 27, 33,  ...,  2,  2,  2]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>list</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
