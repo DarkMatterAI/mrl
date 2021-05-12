@@ -278,10 +278,10 @@ def fp_vae_reconstruction_collate(batch, pad_idx, batch_first=True):
     batch_tensor = batch_sequences([i[1] for i in batch], pad_idx)
 
     if batch_first:
-        output = ((fps, batch_tensor[:,:-1]), batch_tensor[:,1:])
+        output = ((batch_tensor[:,:-1], fps), batch_tensor[:,1:])
     else:
         batch_tensor = batch_tensor.T
-        output = ((fps, batch_tensor[:-1,:]), batch_tensor[1:,:])
+        output = ((batch_tensor[:-1,:], fps), batch_tensor[1:,:])
 
     return to_device(output)
 
