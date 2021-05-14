@@ -3,9 +3,9 @@
 __all__ = ['SMILES_CHAR_VOCAB', 'SPECIAL_TOKENS', 'MAPPING_TOKENS', 'HALOGEN_REPLACE', 'MAPPING_REPLACE', 'SMILE_REGEX',
            'MAPPING_REGEX', 'tokenize_by_character', 'tokenize_with_replacements', 'regex_tokenize', 'Vocab',
            'CharacterVocab', 'CharacterReplaceVocab', 'RegexVocab', 'test_reconstruction', 'batch_sequences',
-           'lm_collate', 'sequence_prediction_collate', 'fp_collate', 'fp_reconstruction_collate',
-           'fp_vae_reconstruction_collate', 'fp_prediction_collate', 'BaseDataset', 'TextDataset',
-           'TextPredictionDataset', 'FPDataset', 'FPReconstructionDataset', 'FPPredictionDataset']
+           'lm_collate', 'sequence_prediction_collate', 'vector_collate', 'vector_reconstruction_collate',
+           'vector_prediction_collate', 'BaseDataset', 'TextDataset', 'TextPredictionDataset', 'Vector_Dataset',
+           'Vec_Recon_Dataset', 'Vec_Prediction_Dataset']
 
 # Cell
 from .imports import *
@@ -250,29 +250,17 @@ def sequence_prediction_collate(batch, pad_idx, batch_first=True):
 
     return to_device((batch_tensor, y_vals))
 
-def fp_collate(batch):
+def vector_collate(batch):
     '''
-    Collate function for fingerprints
+    Collate function for vectors
     '''
     fps = torch.stack(batch)
     return to_device(fps)
 
-def fp_reconstruction_collate(batch, pad_idx, batch_first=True):
+def vector_reconstruction_collate(batch, pad_idx, batch_first=True):
     '''
-    Collate function for predicting a sequence from a fringerprint
-    '''
-    fps = torch.stack([i[0] for i in batch])
-    batch_tensor = batch_sequences([i[1] for i in batch], pad_idx)
-
-    if not batch_first:
-        batch_tensor = batch_tensor.T
-
-    return to_device((fps, batch_tensor))
-
-def fp_vae_reconstruction_collate(batch, pad_idx, batch_first=True):
-    '''
-    Collate function for predicting a sequence from a fringerprint where
-    `batch_tensor` is needed for input
+    Collate function for predicting a sequence from an input vector where
+    `batch_tensor` is needed for input (ie predict SMILES from properties)
     '''
     fps = torch.stack([i[0] for i in batch])
     batch_tensor = batch_sequences([i[1] for i in batch], pad_idx)
@@ -285,14 +273,46 @@ def fp_vae_reconstruction_collate(batch, pad_idx, batch_first=True):
 
     return to_device(output)
 
-def fp_prediction_collate(batch):
+def vector_prediction_collate(batch):
     '''
-    Collate function for predicting some y value from a fingerprint
+    Collate function for predicting some y value from a vector
     '''
     fps = torch.stack([i[0] for i in batch])
     y_vals = torch.stack([i[1] for i in batch])
     y_vals = y_vals.squeeze(-1)
     return to_device((fps, y_vals))
+
+# def fp_collate(batch):
+#     '''
+#     Collate function for fingerprints
+#     '''
+#     fps = torch.stack(batch)
+#     return to_device(fps)
+
+# def fp_reconstruction_collate(batch, pad_idx, batch_first=True):
+#     '''
+#     Collate function for predicting a sequence from a fringerprint where
+#     `batch_tensor` is needed for input
+#     '''
+#     fps = torch.stack([i[0] for i in batch])
+#     batch_tensor = batch_sequences([i[1] for i in batch], pad_idx)
+
+#     if batch_first:
+#         output = ((batch_tensor[:,:-1], fps), batch_tensor[:,1:])
+#     else:
+#         batch_tensor = batch_tensor.T
+#         output = ((batch_tensor[:-1,:], fps), batch_tensor[1:,:])
+
+#     return to_device(output)
+
+# def fp_prediction_collate(batch):
+#     '''
+#     Collate function for predicting some y value from a fingerprint
+#     '''
+#     fps = torch.stack([i[0] for i in batch])
+#     y_vals = torch.stack([i[1] for i in batch])
+#     y_vals = y_vals.squeeze(-1)
+#     return to_device((fps, y_vals))
 
 # Cell
 
@@ -316,6 +336,8 @@ class BaseDataset(Dataset):
 
         return DataLoader(self, batch_size=bs, num_workers=num_workers,
                           collate_fn=self.collate_function, **dl_kwargs)
+
+# Cell
 
 class TextDataset(BaseDataset):
     '''
@@ -347,6 +369,7 @@ class TextDataset(BaseDataset):
         ints = torch.LongTensor(ints)
         return ints
 
+# Cell
 
 class TextPredictionDataset(TextDataset):
     '''
@@ -378,38 +401,40 @@ class TextPredictionDataset(TextDataset):
 
 # Cell
 
-class FPDataset(BaseDataset):
+class Vector_Dataset(BaseDataset):
     '''
-    FPDataset - base dataset for fingerprints
+    Vector_Dataset - base dataset for molecule-derived vectors
 
     Inputs:
 
         `smiles` - list[str], list of text sequences
 
-        `fp_function` - function to convert smiles to fingerprints
+        `mol_function` - function to convert smiles to a vector
 
-        `collate_function` - batch collate function. If None, defauts to `fp_collate`
+        `collate_function` - batch collate function. If None, defauts to `vector_collate`
     '''
-    def __init__(self, smiles, fp_function, collate_function=None):
+    def __init__(self, smiles, mol_function, collate_function=None):
         if collate_function is None:
-            collate_function = fp_collate
+            collate_function = vector_collate
         super().__init__(collate_function)
 
         self.smiles = smiles
-        self.fp_function = fp_function
+        self.mol_function = mol_function
 
     def __len__(self):
         return len(self.smiles)
 
     def __getitem__(self, idx):
         smile = self.smiles[idx]
-        fp = self.fp_function(smile)
-        fp = torch.FloatTensor(fp)
-        return fp
+        vec = self.mol_function(smile)
+        vec = torch.FloatTensor(vec)
+        return vec
 
-class FPReconstructionDataset(FPDataset):
+# Cell
+
+class Vec_Recon_Dataset(Vector_Dataset):
     '''
-    FPDataset - base dataset for predicting smiles from fingerprints
+    Vec_Recon_Dataset - base dataset for predicting smiles from molecule-derived vectors
 
     Inputs:
 
@@ -417,33 +442,35 @@ class FPReconstructionDataset(FPDataset):
 
         `vocab` - Vocab, vocabuary for tokenization/numericaization
 
-        `fp_function` - function to convert smiles to fingerprints
+        `mol_function` - function to convert smiles to fingerprints
 
-        `collate_function` - batch collate function. If None, defauts to `fp_reconstruction_collate`
+        `collate_function` - batch collate function. If None, defauts to `vector_reconstruction_collate`
     '''
-    def __init__(self, smiles, vocab, fp_function, collate_function=None):
+    def __init__(self, smiles, vocab, mol_function, collate_function=None):
 
         if collate_function is None:
-            collate_function = partial(fp_reconstruction_collate, pad_idx=vocab.stoi['pad'])
+            collate_function = partial(vector_reconstruction_collate, pad_idx=vocab.stoi['pad'])
 
-        super().__init__(smiles, fp_function, collate_function)
+        super().__init__(smiles, mol_function, collate_function)
         self.vocab = vocab
 
     def __getitem__(self, idx):
         smile = self.smiles[idx]
 
-        fp = self.fp_function(smile)
-        fp = torch.FloatTensor(fp)
+        vec = self.mol_function(smile)
+        vec = torch.FloatTensor(vec)
 
         tokens = self.vocab.tokenize(smile)
         ints = self.vocab.numericalize(tokens)
         ints = torch.LongTensor(ints)
 
-        return (fp, ints)
+        return (vec, ints)
 
-class FPPredictionDataset(FPDataset):
+# Cell
+
+class Vec_Prediction_Dataset(Vector_Dataset):
     '''
-    FPDataset - base dataset for predicting y_vals from fingerprints
+    Vec_Prediction_Dataset - base dataset for predicting y_vals from molecule derived vectors
 
     Inputs:
 
@@ -451,14 +478,14 @@ class FPPredictionDataset(FPDataset):
 
         `y_vals` - list[int, float], list of paired output values
 
-        `fp_function` - function to convert smiles to fingerprints
+        `mol_function` - function to convert smiles to fingerprints
 
-        `collate_function` - batch collate function. If None, defauts to `fp_prediction_collate`
+        `collate_function` - batch collate function. If None, defauts to `vector_prediction_collate`
     '''
-    def __init__(self, smiles, y_vals, fp_function, collate_function=None):
+    def __init__(self, smiles, y_vals, mol_function, collate_function=None):
         if collate_function is None:
-            collate_function = fp_prediction_collate
-        super().__init__(smiles, fp_function, collate_function)
+            collate_function = vector_prediction_collate
+        super().__init__(smiles, mol_function, collate_function)
 
         self.y_vals = y_vals
 

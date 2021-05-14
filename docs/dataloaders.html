@@ -517,9 +517,9 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_collate" class="doc_header"><code>fp_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_collate</code>(<strong><code>batch</code></strong>)</p>
+<h4 id="vector_collate" class="doc_header"><code>vector_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>vector_collate</code>(<strong><code>batch</code></strong>)</p>
 </blockquote>
-<p>Collate function for fingerprints</p>
+<p>Collate function for vectors</p>
 
 </div>
 
@@ -542,9 +542,10 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_reconstruction_collate" class="doc_header"><code>fp_reconstruction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L260" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_reconstruction_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="vector_reconstruction_collate" class="doc_header"><code>vector_reconstruction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L260" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>vector_reconstruction_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
-<p>Collate function for predicting a sequence from a fringerprint</p>
+<p>Collate function for predicting a sequence from an input vector where
+<code>batch_tensor</code> is needed for input (ie predict SMILES from properties)</p>
 
 </div>
 
@@ -567,35 +568,9 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_vae_reconstruction_collate" class="doc_header"><code>fp_vae_reconstruction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L272" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_vae_reconstruction_collate</code>(<strong><code>batch</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="vector_prediction_collate" class="doc_header"><code>vector_prediction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L276" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>vector_prediction_collate</code>(<strong><code>batch</code></strong>)</p>
 </blockquote>
-<p>Collate function for predicting a sequence from a fringerprint where
-<code>batch_tensor</code> is needed for input</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_prediction_collate" class="doc_header"><code>fp_prediction_collate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L288" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_prediction_collate</code>(<strong><code>batch</code></strong>)</p>
-</blockquote>
-<p>Collate function for predicting some y value from a fingerprint</p>
+<p>Collate function for predicting some y value from a vector</p>
 
 </div>
 
@@ -632,7 +607,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BaseDataset" class="doc_header"><code>class</code> <code>BaseDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
+<h2 id="BaseDataset" class="doc_header"><code>class</code> <code>BaseDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
 </blockquote>
 <p>BaseDataset - base dataset</p>
 <p>Inputs:</p>
@@ -653,6 +628,22 @@ batch for next-token prediction</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Text-Datasets">Text Datasets<a class="anchor-link" href="#Text-Datasets"> </a></h2><p>Text datasets deal with tokenizing and numericalizing text data, like SMILES strings.</p>
+<p><a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a> returns numericalized SMILES for language modeling.</p>
+<p><a href="/mrl/dataloaders.html#TextPredictionDataset"><code>TextPredictionDataset</code></a> returns numericaized SMILES along with some <code>y_val</code> output value, for tasks like property prediction</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -660,7 +651,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextDataset" class="doc_header"><code>class</code> <code>TextDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L320" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
+<h2 id="TextDataset" class="doc_header"><code>class</code> <code>TextDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L342" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
 </blockquote>
 <p>TextDataset - base dataset for language modes</p>
 <p>Inputs:</p>
@@ -685,6 +676,37 @@ batch for next-token prediction</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;files/smiles.csv&#39;</span><span class="p">)</span>
+<span class="n">vocab</span> <span class="o">=</span> <span class="n">CharacterVocab</span><span class="p">(</span><span class="n">SMILES_CHAR_VOCAB</span><span class="p">)</span>
+
+<span class="n">ds</span> <span class="o">=</span> <span class="n">TextDataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
+
+<span class="k">assert</span> <span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">y</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -692,7 +714,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextPredictionDataset" class="doc_header"><code>class</code> <code>TextPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L351" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a></p>
+<h2 id="TextPredictionDataset" class="doc_header"><code>class</code> <code>TextPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L374" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a></p>
 </blockquote>
 <p>TextDataset - base dataset for predicting from text strings</p>
 <p>Inputs:</p>
@@ -725,35 +747,32 @@ batch for next-token prediction</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-<div class="output_wrapper">
-<div class="output">
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">TextPredictionDataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">vocab</span><span class="p">)</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
 
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPDataset" class="doc_header"><code>class</code> <code>FPDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L381" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
-</blockquote>
-<p>FPDataset - base dataset for fingerprints</p>
-<p>Inputs:</p>
-
-<pre><code>`smiles` - list[str], list of text sequences
-
-`fp_function` - function to convert smiles to fingerprints
-
-`collate_function` - batch collate function. If None, defauts to [`fp_collate`](/mrl/dataloaders.html#fp_collate)</code></pre>
-
-</div>
-
-</div>
-
+    </div>
 </div>
 </div>
 
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Vector-Datasets">Vector Datasets<a class="anchor-link" href="#Vector-Datasets"> </a></h2><p>Another common dataset framework is where we are dealing with vectors derived from a molecule. This could be a vector of properties, fingerprints, or any task where a molecule-derived vector is needed.</p>
+<p><a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a> is a base dataset that simply returns the molecule derived vector</p>
+<p><a href="/mrl/dataloaders.html#Vec_Recon_Dataset"><code>Vec_Recon_Dataset</code></a> returns the molecule derived vector and tokenized SMILES strings. This is used for tasks like generating compounds based on an input vector or fingerprint</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -765,52 +784,16 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPReconstructionDataset" class="doc_header"><code>class</code> <code>FPReconstructionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L410" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPReconstructionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#FPDataset"><code>FPDataset</code></a></p>
+<h2 id="Vector_Dataset" class="doc_header"><code>class</code> <code>Vector_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L404" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
 </blockquote>
-<p>FPDataset - base dataset for predicting smiles from fingerprints</p>
+<p>Vector_Dataset - base dataset for molecule-derived vectors</p>
 <p>Inputs:</p>
 
 <pre><code>`smiles` - list[str], list of text sequences
 
-`vocab` - Vocab, vocabuary for tokenization/numericaization
+`mol_function` - function to convert smiles to a vector
 
-`fp_function` - function to convert smiles to fingerprints
-
-`collate_function` - batch collate function. If None, defauts to [`fp_reconstruction_collate`](/mrl/dataloaders.html#fp_reconstruction_collate)</code></pre>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPPredictionDataset" class="doc_header"><code>class</code> <code>FPPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L444" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#FPDataset"><code>FPDataset</code></a></p>
-</blockquote>
-<p>FPDataset - base dataset for predicting y_vals from fingerprints</p>
-<p>Inputs:</p>
-
-<pre><code>`smiles` - list[str], list of text sequences
-
-`y_vals` - list[int, float], list of paired output values
-
-`fp_function` - function to convert smiles to fingerprints
-
-`collate_function` - batch collate function. If None, defauts to [`fp_prediction_collate`](/mrl/dataloaders.html#fp_prediction_collate)</code></pre>
+`collate_function` - batch collate function. If None, defauts to [`vector_collate`](/mrl/dataloaders.html#vector_collate)</code></pre>
 
 </div>
 
@@ -836,7 +819,20 @@ batch for next-token prediction</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="kn">import</span> <span class="n">ECFP6</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">smile_to_props</span><span class="p">(</span><span class="n">smile</span><span class="p">):</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">to_mol</span><span class="p">(</span><span class="n">smile</span><span class="p">)</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">molwt</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">tpsa</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+    <span class="n">n_rings</span> <span class="o">=</span> <span class="n">rings</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+    <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">heavy_atoms</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">weight</span><span class="o">/</span><span class="mi">500</span><span class="p">,</span> <span class="n">ps</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_rings</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">/</span><span class="mi">20</span><span class="p">])</span>
+
+<span class="n">ds</span> <span class="o">=</span> <span class="n">Vector_Dataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">smile_to_props</span><span class="p">)</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -864,69 +860,6 @@ batch for next-token prediction</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;files/smiles.csv&#39;</span><span class="p">)</span>
-<span class="n">vocab</span> <span class="o">=</span> <span class="n">CharacterVocab</span><span class="p">(</span><span class="n">SMILES_CHAR_VOCAB</span><span class="p">)</span>
-
-<span class="n">ds</span> <span class="o">=</span> <span class="n">TextDataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)</span>
-<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
-
-<span class="k">assert</span> <span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">y</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-<span class="n">ds</span> <span class="o">=</span> <span class="n">TextPredictionDataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">vocab</span><span class="p">)</span>
-<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
-<span class="k">assert</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-<span class="n">ds</span> <span class="o">=</span> <span class="n">FPReconstructionDataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">ECFP6</span><span class="p">)</span>
-<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">FPReconstructionDataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">ECFP6</span><span class="p">,</span>
-                <span class="n">collate_function</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">fp_vae_reconstruction_collate</span><span class="p">,</span> <span class="n">pad_idx</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">stoi</span><span class="p">[</span><span class="s1">&#39;pad&#39;</span><span class="p">]))</span>
-<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -934,54 +867,20 @@ batch for next-token prediction</p>
 <div class="output_area">
 
 
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Vec_Recon_Dataset" class="doc_header"><code>class</code> <code>Vec_Recon_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L435" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Recon_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a></p>
+</blockquote>
+<p>Vec_Recon_Dataset - base dataset for predicting smiles from molecule-derived vectors</p>
+<p>Inputs:</p>
 
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([[0., 0., 0.,  ..., 0., 0., 0.],
-        [0., 0., 0.,  ..., 0., 0., 0.],
-        [0., 1., 0.,  ..., 0., 0., 0.],
-        ...,
-        [0., 0., 0.,  ..., 0., 0., 0.],
-        [0., 0., 0.,  ..., 0., 0., 0.],
-        [0., 0., 0.,  ..., 0., 0., 0.]])</pre>
-</div>
+<pre><code>`smiles` - list[str], list of text sequences
 
-</div>
+`vocab` - Vocab, vocabuary for tokenization/numericaization
 
-</div>
-</div>
+`mol_function` - function to convert smiles to fingerprints
 
-</div>
-    {% endraw %}
+`collate_function` - batch collate function. If None, defauts to [`vector_reconstruction_collate`](/mrl/dataloaders.html#vector_reconstruction_collate)</code></pre>
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([[ 0, 22, 26,  ...,  2,  2,  2],
-        [ 0, 22, 27,  ...,  2,  2,  2],
-        [ 0, 22, 33,  ...,  2,  2,  2],
-        ...,
-        [ 0, 22,  4,  ...,  2,  2,  2],
-        [ 0, 22, 22,  ...,  2,  2,  2],
-        [ 0, 22, 27,  ...,  2,  2,  2]])</pre>
 </div>
 
 </div>
@@ -995,16 +894,34 @@ batch for next-token prediction</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">Vec_Recon_Dataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">ECFP6</span><span class="p">)</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">y</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 
     </div>
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -1012,15 +929,20 @@ batch for next-token prediction</p>
 <div class="output_area">
 
 
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Vec_Prediction_Dataset" class="doc_header"><code>class</code> <code>Vec_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L471" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a></p>
+</blockquote>
+<p>Vec_Prediction_Dataset - base dataset for predicting y_vals from molecule derived vectors</p>
+<p>Inputs:</p>
 
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([[22, 26, 33,  ...,  2,  2,  2],
-        [22, 27, 33,  ...,  2,  2,  2],
-        [22, 33, 11,  ...,  2,  2,  2],
-        ...,
-        [22,  4, 22,  ...,  2,  2,  2],
-        [22, 22, 11,  ...,  2,  2,  2],
-        [22, 27, 33,  ...,  2,  2,  2]])</pre>
+<pre><code>`smiles` - list[str], list of text sequences
+
+`y_vals` - list[int, float], list of paired output values
+
+`mol_function` - function to convert smiles to fingerprints
+
+`collate_function` - batch collate function. If None, defauts to [`vector_prediction_collate`](/mrl/dataloaders.html#vector_prediction_collate)</code></pre>
+
 </div>
 
 </div>
@@ -1034,30 +956,23 @@ batch for next-token prediction</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">Vec_Prediction_Dataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">ECFP6</span><span class="p">)</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>list</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
