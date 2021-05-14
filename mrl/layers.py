@@ -574,6 +574,9 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
             idxs, lp = x_to_preds(x, multinomial=multinomial)
 
+            lps.append(lp)
+            preds = torch.cat([preds, idxs], -1)
+
         return preds[:, 1:], torch.cat(lps,-1)
 
     def sample_no_grad(self, bs, sl, z=None, temperature=1., multinomial=True):
