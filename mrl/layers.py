@@ -221,7 +221,7 @@ class Conditional_LSTM_Block(nn.Module):
 
     def forward(self, x, z, hiddens=None):
         x = self.embedding(x)
-        x, hiddens = self.lstm(x, z)
+        x, hiddens = self.lstm(x, z, hiddens)
         x = self.head(x)
 
         return x, hiddens
@@ -240,7 +240,7 @@ class LSTM_Block(nn.Module):
 
     def forward(self, x, hiddens=None):
         x = self.embedding(x)
-        x, hiddens = self.lstm(x)
+        x, hiddens = self.lstm(x, hiddens)
         x = self.head_drop(self.head(x))
 
         return x, hiddens
@@ -260,8 +260,8 @@ class LSTM_LM(nn.Module):
         if tie_weights:
             self.block.embedding.weight = self.block.head.weight
 
-    def forward(self, x):
-        x, hiddens = self.block(x)
+    def forward(self, x, hiddens=None):
+        x, hiddens = self.block(x, hiddens)
         return x
 
     def sample(self, bs, sl, temperature=1., multinomial=True):
@@ -272,7 +272,7 @@ class LSTM_LM(nn.Module):
         hiddens = None
 
         for i in range(sl):
-            x, hiddens = self.block(idxs)
+            x, hiddens = self.block(idxs, hiddens)
             x.div_(temperature)
 
             idxs, lp = x_to_preds(x, multinomial=multinomial)
@@ -547,10 +547,10 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
         self.bos_idx = bos_idx
 
-    def forward(self, x, condition):
+    def forward(self, x, condition, hiddens=None):
         z = self.encoder(condition)
         z = self.transition(z)
-        x, hiddens = self.decoder(x, z)
+        x, hiddens = self.decoder(x, z, hiddens)
         return x
 
 
