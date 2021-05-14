@@ -569,7 +569,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
         for i in range(sl):
 
-            x, hiddens = self.decoder(x,z,hiddens)
+            x, hiddens = self.decoder(idxs,z,hiddens)
             x.div_(temperature)
 
             idxs, lp = x_to_preds(x, multinomial=multinomial)
