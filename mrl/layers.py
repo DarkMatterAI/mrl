@@ -127,7 +127,7 @@ class Conditional_LSTM(nn.Module):
             to_hidden = []
             for size in self.hidden_sizes:
                 ndir, _, dim = size
-                to_hidden.append(Linear(d_latent, ndir*dim*2, act=False, bn=False))
+                to_hidden.append(nn.Linear(d_latent, ndir*dim*2))
 
             self.to_hidden = nn.ModuleList(to_hidden)
 
