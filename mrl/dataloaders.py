@@ -282,37 +282,6 @@ def vector_prediction_collate(batch):
     y_vals = y_vals.squeeze(-1)
     return to_device((fps, y_vals))
 
-# def fp_collate(batch):
-#     '''
-#     Collate function for fingerprints
-#     '''
-#     fps = torch.stack(batch)
-#     return to_device(fps)
-
-# def fp_reconstruction_collate(batch, pad_idx, batch_first=True):
-#     '''
-#     Collate function for predicting a sequence from a fringerprint where
-#     `batch_tensor` is needed for input
-#     '''
-#     fps = torch.stack([i[0] for i in batch])
-#     batch_tensor = batch_sequences([i[1] for i in batch], pad_idx)
-
-#     if batch_first:
-#         output = ((batch_tensor[:,:-1], fps), batch_tensor[:,1:])
-#     else:
-#         batch_tensor = batch_tensor.T
-#         output = ((batch_tensor[:-1,:], fps), batch_tensor[1:,:])
-
-#     return to_device(output)
-
-# def fp_prediction_collate(batch):
-#     '''
-#     Collate function for predicting some y value from a fingerprint
-#     '''
-#     fps = torch.stack([i[0] for i in batch])
-#     y_vals = torch.stack([i[1] for i in batch])
-#     y_vals = y_vals.squeeze(-1)
-#     return to_device((fps, y_vals))
 
 # Cell
 
@@ -336,6 +305,9 @@ class BaseDataset(Dataset):
 
         return DataLoader(self, batch_size=bs, num_workers=num_workers,
                           collate_fn=self.collate_function, **dl_kwargs)
+
+    def new(self):
+        raise NotImplementedError
 
 # Cell
 
@@ -369,6 +341,9 @@ class TextDataset(BaseDataset):
         ints = torch.LongTensor(ints)
         return ints
 
+    def new(self, smiles):
+        return self.__class__(smiles, self.vocab, self.collate_function)
+
 # Cell
 
 class TextPredictionDataset(TextDataset):
@@ -398,6 +373,9 @@ class TextPredictionDataset(TextDataset):
         ints = super().__getitem__(idx)
         y_val = torch.Tensor([self.y_vals[idx]]).float()
         return (ints, y_val)
+
+    def new(self, smiles, y_vals):
+        return self.__class__(smiles, y_vals, self.vocab, self.collate_function)
 
 # Cell
 
@@ -429,6 +407,9 @@ class Vector_Dataset(BaseDataset):
         vec = self.mol_function(smile)
         vec = torch.FloatTensor(vec)
         return vec
+
+    def new(self, smiles):
+        return self.__class__(smiles, self.mol_function, self.collate_function)
 
 # Cell
 
@@ -466,6 +447,9 @@ class Vec_Recon_Dataset(Vector_Dataset):
 
         return (vec, ints)
 
+    def new(self, smiles):
+        return self.__class__(smiles, self.vocab, self.mol_function, self.collate_function)
+
 # Cell
 
 class Vec_Prediction_Dataset(Vector_Dataset):
@@ -496,3 +480,6 @@ class Vec_Prediction_Dataset(Vector_Dataset):
         fp = super().__getitem__(idx)
         y_val = torch.FloatTensor([self.y_vals[idx]])
         return (fp, y_val)
+
+    def new(self, smiles, y_vals):
+        return self.__class__(smiles, y_vals, self.mol_function, self.collate_function)
