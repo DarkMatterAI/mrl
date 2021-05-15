@@ -429,11 +429,15 @@ class VAE_Transition(nn.Module):
         self.transition = nn.Linear(d_latent, d_latent*2)
 
     def forward(self, x, z_scale=1.):
-        mu, logvar = torch.chunk(self.transition(x), 2, dim=-1)
+        mu, logvar = self.get_stats(x, z_scale)
         z = z_scale*torch.randn(mu.shape).to(mu.device)
         z = mu + z*torch.exp(0.5*logvar)
         kl_loss = 0.5 * (logvar.exp() + mu.pow(2) - 1 - logvar).sum(1).mean()
         return z, kl_loss
+
+    def get_stats(self, x, z_scale=1.):
+        mu, logvar = torch.chunk(self.transition(x), 2, dim=-1)
+        return mu, logvar
 
 class Norm_Transition(nn.Module):
     def __init__(self, d_latent, p=2):
@@ -455,7 +459,7 @@ class PT_Transition(nn.Module):
 # Cell
 
 class Encoder_Decoder(nn.Module):
-    def __init__(self, encoder, decoder, transition=None):
+    def __init__(self, encoder, decoder, transition=None, prior=None):
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
@@ -464,6 +468,12 @@ class Encoder_Decoder(nn.Module):
             transition = PT_Transition()
 
         self.transition = transition
+
+        if prior is None:
+            prior = NormalPrior(torch.zeros((encoder.d_latent)), torch.zeros((encoder.d_latent)),
+                                trainable=False)
+
+        self.prior = prior
 
     def forward(self, x, decoder_input=None):
         if decoder_input is None:
@@ -474,18 +484,16 @@ class Encoder_Decoder(nn.Module):
         output = self.decoder(decoder_input, z)
         return output
 
+    def set_prior(self, prior):
+        self.prior = prior
 
 # Cell
 
 class VAE(Encoder_Decoder):
     def __init__(self, encoder, decoder, prior=None, bos_idx=0):
         transition = VAE_Transition(encoder.d_latent)
-        super().__init__(encoder, decoder, transition)
+        super().__init__(encoder, decoder, transition, prior)
 
-        if prior is None:
-            prior = Normal(torch.zeros((encoder.d_latent)), torch.ones((encoder.d_latent)))
-
-        self.prior = prior
         self.bos_idx = bos_idx
 
     def forward(self, x, decoder_input=None):
@@ -539,8 +547,16 @@ class VAE(Encoder_Decoder):
 
         return lps
 
-    def set_prior(self, prior):
-        self.prior = prior
+    def set_prior_from_stats(self, mu, logvar, trainable=False):
+        self.prior = NormalPrior(mu, logvar, trainable)
+
+    def set_prior_from_latent(self, z, z_scale=1., trainable=False):
+        mu, logvar = self.transition.get_stats(z, z_scale)
+        self.set_prior_from_stats(mu, logvar, trainable)
+
+    def set_prior_from_encoder(self, x, z_scale=1., trainable=False):
+        z = self.encoder(x)
+        self.set_prior_from_latent(z, z_scale, trainable)
 
 # Cell
 
@@ -598,7 +614,7 @@ class MLP_VAE(VAE):
 class Conditional_LSTM_LM(Encoder_Decoder):
     def __init__(self, encoder, d_vocab, d_embedding, d_hidden, d_latent, n_layers,
                  lstm_drop=0., lin_drop=0., bidir=False,
-                 condition_hidden=True, condition_output=False, bos_idx=0):
+                 condition_hidden=True, condition_output=False, bos_idx=0, prior=None):
 
         transition = Norm_Transition(d_latent)
 
@@ -606,7 +622,11 @@ class Conditional_LSTM_LM(Encoder_Decoder):
                                 d_latent, n_layers, lstm_drop=lstm_drop, lin_drop=lin_drop,
                                 condition_hidden=condition_hidden, condition_output=condition_output)
 
-        super().__init__(encoder, decoder, transition)
+        if prior is None:
+            prior = SphericalPrior(torch.zeros((encoder.d_latent)), torch.zeros((encoder.d_latent)),
+                                trainable=False)
+
+        super().__init__(encoder, decoder, transition, prior)
 
         self.bos_idx = bos_idx
 
@@ -620,8 +640,11 @@ class Conditional_LSTM_LM(Encoder_Decoder):
     def sample(self, bs, sl, z=None, temperature=1., multinomial=True):
 
         if z is None:
-            z = to_device(torch.randn((bs, self.encoder.d_latent)))
-            z = self.transition(z)
+            if self.prior is not None:
+                z = self.prior.sample([bs])
+            else:
+                z = to_device(torch.randn((bs, self.encoder.d_latent)))
+                z = self.transition(z)
         else:
             bs = z.shape[0]
 
@@ -655,3 +678,10 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
 
         return lps
+
+    def set_prior_from_latent(self, z, logvar, trainable=False):
+        self.prior = SphericalPrior(z, logvar, trainable)
+
+    def set_prior_from_encoder(self, condition, logvar, trainable=False):
+        z = self.transition(self.encoder(x))
+        self.set_prior_from_latent(z, logvar, trainable)
