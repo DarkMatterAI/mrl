@@ -641,7 +641,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
         if z is None:
             if self.prior is not None:
-                z = self.prior.sample([bs])
+                z = to_device(self.prior.sample([bs]))
             else:
                 z = to_device(torch.randn((bs, self.encoder.d_latent)))
                 z = self.transition(z)
