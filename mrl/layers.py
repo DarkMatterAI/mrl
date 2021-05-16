@@ -435,7 +435,7 @@ class VAE_Transition(nn.Module):
         kl_loss = 0.5 * (logvar.exp() + mu.pow(2) - 1 - logvar).sum(1).mean()
         return z, kl_loss
 
-    def get_stats(self, x, z_scale=1.):
+    def get_stats(self, x):
         mu, logvar = torch.chunk(self.transition(x), 2, dim=-1)
         return mu, logvar
 
@@ -550,15 +550,15 @@ class VAE(Encoder_Decoder):
     def set_prior_from_stats(self, mu, logvar, trainable=False):
         self.prior = NormalPrior(mu, logvar, trainable)
 
-    def set_prior_from_latent(self, z, z_scale=1., trainable=False):
-        mu, logvar = self.transition.get_stats(z, z_scale)
+    def set_prior_from_latent(self, z, trainable=False):
+        mu, logvar = self.transition.get_stats(z)
         self.set_prior_from_stats(mu, logvar, trainable)
 
-    def set_prior_from_encoder(self, x, z_scale=1., trainable=False):
+    def set_prior_from_encoder(self, x, trainable=False):
         assert x.shape[0]==1, "Must set prior from a single input"
         z = self.encoder(x)
         z = z.squeeze(0)
-        self.set_prior_from_latent(z, z_scale, trainable)
+        self.set_prior_from_latent(z, trainable)
 
 # Cell
 
@@ -685,5 +685,5 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         self.prior = SphericalPrior(z, logvar, trainable)
 
     def set_prior_from_encoder(self, condition, logvar, trainable=False):
-        z = self.transition(self.encoder(x))
+        z = self.transition(self.encoder(condition))
         self.set_prior_from_latent(z, logvar, trainable)
