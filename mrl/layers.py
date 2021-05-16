@@ -114,6 +114,9 @@ class Prior(nn.Module):
     def get_dist(self):
         raise NotImplementedError
 
+    def log_prob(self, x):
+        raise NotImplementedError
+
     def sample(self, n):
         if type(n)==int:
             n = [n]
@@ -133,9 +136,13 @@ class NormalPrior(Prior):
             log_scale = nn.Parameter(log_scale)
         self.loc = loc
         self.log_scale = log_scale
+        self.trainable = trainable
 
     def get_dist(self):
         return Normal(self.loc, self.log_scale.exp())
+
+    def log_prob(self, x):
+        return -((x - loc) ** 2) / (2 * var) - log_scale - math.log(math.sqrt(2 * math.pi))
 
 class SphericalPrior(NormalPrior):
     def __init__(self, loc, log_scale, trainable=True):
