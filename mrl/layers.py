@@ -557,7 +557,7 @@ class VAE(Encoder_Decoder):
 
         if self.prior.trainable:
             prior_lps = self.prior.log_prob(z).mean(-1, keepdim=True)
-            prior_lps = torch.zeros(prior_lps.shape).float() + prior_lps - prior_lps.detach()
+            prior_lps = torch.zeros(prior_lps.shape).float().to(prior_lps.device) + prior_lps - prior_lps.detach()
             lps += prior_lps
 
         return lps
@@ -700,7 +700,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
         if self.prior.trainable:
             prior_lps = self.prior.log_prob(z).mean(-1, keepdim=True)
-            prior_lps = torch.zeros(prior_lps.shape).float() + prior_lps - prior_lps.detach()
+            prior_lps = torch.zeros(prior_lps.shape).float().to(prior_lps.device) + prior_lps - prior_lps.detach()
             lps += prior_lps
 
         return lps
