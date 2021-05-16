@@ -555,7 +555,9 @@ class VAE(Encoder_Decoder):
         self.set_prior_from_stats(mu, logvar, trainable)
 
     def set_prior_from_encoder(self, x, z_scale=1., trainable=False):
+        assert x.shape[0]==1, "Must set prior from a single input"
         z = self.encoder(x)
+        z = z.squeeze(0)
         self.set_prior_from_latent(z, z_scale, trainable)
 
 # Cell
