@@ -142,7 +142,8 @@ class NormalPrior(Prior):
         return Normal(self.loc, self.log_scale.exp())
 
     def log_prob(self, x):
-        return -((x - loc) ** 2) / (2 * var) - log_scale - math.log(math.sqrt(2 * math.pi))
+        var = self.log_scale.exp().pow(2)
+        return -((x - self.loc) ** 2) / (2 * var) - self.log_scale - math.log(math.sqrt(2 * math.pi))
 
 class SphericalPrior(NormalPrior):
     def __init__(self, loc, log_scale, trainable=True):
@@ -436,7 +437,7 @@ class VAE_Transition(nn.Module):
         self.transition = nn.Linear(d_latent, d_latent*2)
 
     def forward(self, x, z_scale=1.):
-        mu, logvar = self.get_stats(x, z_scale)
+        mu, logvar = self.get_stats(x)
         z = z_scale*torch.randn(mu.shape).to(mu.device)
         z = mu + z*torch.exp(0.5*logvar)
         kl_loss = 0.5 * (logvar.exp() + mu.pow(2) - 1 - logvar).sum(1).mean()
@@ -543,14 +544,21 @@ class VAE(Encoder_Decoder):
     def get_lps(self, x, y, temperature=1., z=None):
 
         if type(x)==list:
-            x,_ = self.forward(x[0], decoder_input=x[1])
+            z,_ = self.transition(self.encoder(x[0]))
+            x,_ = self.decoder(x[1], z)
         else:
-            x,_ = self.forward(x)
+            z,_ = self.transition(self.encoder(x))
+            x,_ = self.decoder(x,z)
 
         x.div_(temperature)
 
         lps = F.log_softmax(x, -1)
         lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
+
+        if self.prior.trainable:
+            prior_lp = self.prior.log_prob(z).mean(-1, keepdim=True)
+            prior_lp = torch.zeros(prior_lp.shape).float() + prior_lp - prior_lp.detach()
+            lps += prior_lp
 
         return lps
 
@@ -682,11 +690,18 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
     def get_lps(self, x, y, temperature=1.):
         x, c = x
-        x = self.forward(x, c)
+        z = self.transition(self.encoder(c))
+        x,_ = self.decoder(x, z)
+
         x.div_(temperature)
 
         lps = F.log_softmax(x, -1)
         lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
+
+        if self.prior.trainable:
+            prior_lps = self.prior.log_probs(z).mean(-1, keepdim=True)
+            prior_lp = torch.zeros(prior_lp.shape).float() + prior_lp - prior_lp.detach()
+            lps += prior_lps
 
         return lps
 
