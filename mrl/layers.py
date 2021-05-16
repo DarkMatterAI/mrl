@@ -685,5 +685,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         self.prior = SphericalPrior(z, logvar, trainable)
 
     def set_prior_from_encoder(self, condition, logvar, trainable=False):
+        assert condition.shape[0]==1
         z = self.transition(self.encoder(condition))
+        z = z.squeeze(0)
         self.set_prior_from_latent(z, logvar, trainable)
