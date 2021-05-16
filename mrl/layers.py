@@ -134,8 +134,12 @@ class NormalPrior(Prior):
         if trainable:
             loc = nn.Parameter(loc)
             log_scale = nn.Parameter(log_scale)
-        self.loc = loc
-        self.log_scale = log_scale
+            self.loc = loc
+            self.log_scale = log_scale
+        else:
+            self.register_buffer('loc', loc)
+            self.register_buffer('log_scale', log_scale)
+
         self.trainable = trainable
 
     def get_dist(self):
