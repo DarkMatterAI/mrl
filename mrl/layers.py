@@ -514,7 +514,7 @@ class VAE(Encoder_Decoder):
         lps = []
 
         if z is None:
-            z = to_device(self.prior.sample([bs]))
+            z = to_device(self.prior.rsample([bs]))
 
         hiddens = None
 
@@ -548,6 +548,8 @@ class VAE(Encoder_Decoder):
         return lps
 
     def set_prior_from_stats(self, mu, logvar, trainable=False):
+        mu = mu.detach()
+        logvar = logvar.detach()
         self.prior = NormalPrior(mu, logvar, trainable)
 
     def set_prior_from_latent(self, z, trainable=False):
@@ -643,7 +645,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
         if z is None:
             if self.prior is not None:
-                z = to_device(self.prior.sample([bs]))
+                z = to_device(self.prior.rsample([bs]))
             else:
                 z = to_device(torch.randn((bs, self.encoder.d_latent)))
                 z = self.transition(z)
@@ -682,6 +684,8 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         return lps
 
     def set_prior_from_latent(self, z, logvar, trainable=False):
+        z = z.detach()
+        logvar = logvar.detach()
         self.prior = SphericalPrior(z, logvar, trainable)
 
     def set_prior_from_encoder(self, condition, logvar, trainable=False):
