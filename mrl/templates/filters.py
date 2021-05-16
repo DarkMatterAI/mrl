@@ -503,7 +503,7 @@ class FPFilter(Filter):
         self.fp_metric = fp_metric
         self.array_type = self.fp._np_or_rd(reference_fps)
         self.get_fp = partial(self.fp.get_fingerprint, fp_type=self.fp_type, output_type=self.array_type)
-        self.get_similaity = partial(self.fp.fingerprint_similaity,
+        self.get_similaity = partial(self.fp.fingerprint_similarity,
                                      fps2=self.reference_fps, metric=fp_metric)
         self.criteria = criteria
         self.fp_thresh = fp_thresh
