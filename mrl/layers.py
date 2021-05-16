@@ -699,7 +699,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
 
         if self.prior.trainable:
-            prior_lps = self.prior.log_probs(z).mean(-1, keepdim=True)
+            prior_lps = self.prior.log_prob(z).mean(-1, keepdim=True)
             prior_lp = torch.zeros(prior_lp.shape).float() + prior_lp - prior_lp.detach()
             lps += prior_lps
 
