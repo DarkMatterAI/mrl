@@ -10,6 +10,7 @@ from collections import defaultdict
 import pickle
 import gc
 import math
+import copy
 
 # external
 import numpy as np

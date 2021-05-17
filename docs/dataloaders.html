@@ -592,6 +592,7 @@ batch for next-token prediction</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Datasets">Datasets<a class="anchor-link" href="#Datasets"> </a></h2><p>Datasets subclass the Pytorch <code>Dataset</code> class. MRL datasets add a collate function and the <a href="/mrl/dataloaders.html#BaseDataset.dataloader"><code>BaseDataset.dataloader</code></a> function to easily generate Pytorch dataloaders from the same class</p>
+<p>Datasets should all contain a <code>new</code> method. The purpose of <code>new</code> is to create a new dataset from new data using the same input arguments as the current dataset. This is used during generative training to process and batch generated samples to ensure they are processed and batched the same as training data</p>
 
 </div>
 </div>
@@ -607,7 +608,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BaseDataset" class="doc_header"><code>class</code> <code>BaseDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
+<h2 id="BaseDataset" class="doc_header"><code>class</code> <code>BaseDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L288" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
 </blockquote>
 <p>BaseDataset - base dataset</p>
 <p>Inputs:</p>
@@ -651,7 +652,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextDataset" class="doc_header"><code>class</code> <code>TextDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L342" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
+<h2 id="TextDataset" class="doc_header"><code>class</code> <code>TextDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L317" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
 </blockquote>
 <p>TextDataset - base dataset for language modes</p>
 <p>Inputs:</p>
@@ -694,6 +695,8 @@ batch for next-token prediction</p>
 <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
 
 <span class="k">assert</span> <span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">y</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -714,7 +717,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextPredictionDataset" class="doc_header"><code>class</code> <code>TextPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L374" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a></p>
+<h2 id="TextPredictionDataset" class="doc_header"><code>class</code> <code>TextPredictionDataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L364" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextPredictionDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#TextDataset"><code>TextDataset</code></a></p>
 </blockquote>
 <p>TextDataset - base dataset for predicting from text strings</p>
 <p>Inputs:</p>
@@ -755,6 +758,7 @@ batch for next-token prediction</p>
 <span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
 <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
 <span class="k">assert</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -784,7 +788,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vector_Dataset" class="doc_header"><code>class</code> <code>Vector_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L404" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
+<h2 id="Vector_Dataset" class="doc_header"><code>class</code> <code>Vector_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L411" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#BaseDataset"><code>BaseDataset</code></a></p>
 </blockquote>
 <p>Vector_Dataset - base dataset for molecule-derived vectors</p>
 <p>Inputs:</p>
@@ -833,6 +837,7 @@ batch for next-token prediction</p>
 <span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
 <span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -868,7 +873,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vec_Recon_Dataset" class="doc_header"><code>class</code> <code>Vec_Recon_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L435" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Recon_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a></p>
+<h2 id="Vec_Recon_Dataset" class="doc_header"><code>class</code> <code>Vec_Recon_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L457" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Recon_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a></p>
 </blockquote>
 <p>Vec_Recon_Dataset - base dataset for predicting smiles from molecule-derived vectors</p>
 <p>Inputs:</p>
@@ -910,6 +915,7 @@ batch for next-token prediction</p>
 <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span>
 <span class="k">assert</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">y</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -930,7 +936,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vec_Prediction_Dataset" class="doc_header"><code>class</code> <code>Vec_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L471" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a></p>
+<h2 id="Vec_Prediction_Dataset" class="doc_header"><code>class</code> <code>Vec_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L508" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a></p>
 </blockquote>
 <p>Vec_Prediction_Dataset - base dataset for predicting y_vals from molecule derived vectors</p>
 <p>Inputs:</p>
@@ -970,6 +976,7 @@ batch for next-token prediction</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">Vec_Prediction_Dataset</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">ECFP6</span><span class="p">)</span>
 <span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
 <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 </pre></div>
 
     </div>

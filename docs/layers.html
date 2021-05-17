@@ -312,7 +312,32 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conditional_LSTM" class="doc_header"><code>class</code> <code>Conditional_LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+<h2 id="SphericalDistribution" class="doc_header"><code>class</code> <code>SphericalDistribution</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SphericalDistribution</code>(<strong><code>loc</code></strong>, <strong><code>scale</code></strong>, <strong><code>validate_args</code></strong>=<em><code>False</code></em>) :: <code>Distribution</code></p>
+</blockquote>
+<p>Distribution is the abstract base class for probability distributions.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Prior" class="doc_header"><code>class</code> <code>Prior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Prior</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -360,7 +385,181 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM" class="doc_header"><code>class</code> <code>LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L194" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#Conditional_LSTM"><code>Conditional_LSTM</code></a></p>
+<h2 id="NormalPrior" class="doc_header"><code>class</code> <code>NormalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L131" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#Prior"><code>Prior</code></a></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SphericalPrior" class="doc_header"><code>class</code> <code>SphericalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L152" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SphericalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#NormalPrior"><code>NormalPrior</code></a></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">NormalPrior</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">64</span><span class="p">,)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">64</span><span class="p">,)),</span> <span class="n">trainable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">p</span><span class="o">.</span><span class="n">rsample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">SphericalPrior</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,)),</span> <span class="n">trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">rsample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Conditional_LSTM" class="doc_header"><code>class</code> <code>Conditional_LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L161" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="LSTM" class="doc_header"><code>class</code> <code>LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L266" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#Conditional_LSTM"><code>Conditional_LSTM</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -500,7 +699,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conditional_LSTM_Block" class="doc_header"><code>class</code> <code>Conditional_LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L209" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Conditional_LSTM_Block" class="doc_header"><code>class</code> <code>Conditional_LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L281" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -548,7 +747,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_Block" class="doc_header"><code>class</code> <code>LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L229" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="LSTM_Block" class="doc_header"><code>class</code> <code>LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L301" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -603,7 +802,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM" class="doc_header"><code>class</code> <code>LSTM_LM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L251" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>tie_weights</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="LSTM_LM" class="doc_header"><code>class</code> <code>LSTM_LM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L323" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>tie_weights</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -681,7 +880,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Encoder" class="doc_header"><code>class</code> <code>Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder</code>(<strong><code>d_latent</code></strong>) :: <code>Module</code></p>
+<h2 id="Encoder" class="doc_header"><code>class</code> <code>Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L371" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder</code>(<strong><code>d_latent</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -729,7 +928,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_Encoder" class="doc_header"><code>class</code> <code>LSTM_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L304" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
+<h2 id="LSTM_Encoder" class="doc_header"><code>class</code> <code>LSTM_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L376" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -777,7 +976,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MLP_Encoder" class="doc_header"><code>class</code> <code>MLP_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_Encoder</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
+<h2 id="MLP_Encoder" class="doc_header"><code>class</code> <code>MLP_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L391" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_Encoder</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -825,7 +1024,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv_Encoder" class="doc_header"><code>class</code> <code>Conv_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L338" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
+<h2 id="Conv_Encoder" class="doc_header"><code>class</code> <code>Conv_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L410" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -905,7 +1104,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VAE_Transition" class="doc_header"><code>class</code> <code>VAE_Transition</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L364" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VAE_Transition</code>(<strong><code>d_latent</code></strong>) :: <code>Module</code></p>
+<h2 id="VAE_Transition" class="doc_header"><code>class</code> <code>VAE_Transition</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L436" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VAE_Transition</code>(<strong><code>d_latent</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -953,7 +1152,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Norm_Transition" class="doc_header"><code>class</code> <code>Norm_Transition</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L378" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Norm_Transition</code>(<strong><code>d_latent</code></strong>, <strong><code>p</code></strong>=<em><code>2</code></em>) :: <code>Module</code></p>
+<h2 id="Norm_Transition" class="doc_header"><code>class</code> <code>Norm_Transition</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L454" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Norm_Transition</code>(<strong><code>d_latent</code></strong>, <strong><code>p</code></strong>=<em><code>2</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1001,7 +1200,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PT_Transition" class="doc_header"><code>class</code> <code>PT_Transition</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L388" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PT_Transition</code>() :: <code>Module</code></p>
+<h2 id="PT_Transition" class="doc_header"><code>class</code> <code>PT_Transition</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L464" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PT_Transition</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1075,7 +1274,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Encoder_Decoder" class="doc_header"><code>class</code> <code>Encoder_Decoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L397" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder_Decoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>, <strong><code>transition</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="Encoder_Decoder" class="doc_header"><code>class</code> <code>Encoder_Decoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L473" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder_Decoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>, <strong><code>transition</code></strong>=<em><code>None</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1130,7 +1329,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VAE" class="doc_header"><code>class</code> <code>VAE</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L420" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VAE</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>, <strong><code>prior</code></strong>=<em><code>None</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#Encoder_Decoder"><code>Encoder_Decoder</code></a></p>
+<h2 id="VAE" class="doc_header"><code>class</code> <code>VAE</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L504" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VAE</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>, <strong><code>prior</code></strong>=<em><code>None</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#Encoder_Decoder"><code>Encoder_Decoder</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1210,6 +1409,8 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <span class="n">_</span> <span class="o">=</span> <span class="n">vae</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
 
 <span class="n">_</span> <span class="o">=</span> <span class="n">vae</span><span class="o">.</span><span class="n">get_lps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+
+<span class="n">vae</span><span class="o">.</span><span class="n">set_prior_from_encoder</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
 </pre></div>
 
     </div>
@@ -1230,7 +1431,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_VAE" class="doc_header"><code>class</code> <code>LSTM_VAE</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L484" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_VAE</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>enc_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>dec_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#VAE"><code>VAE</code></a></p>
+<h2 id="LSTM_VAE" class="doc_header"><code>class</code> <code>LSTM_VAE</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L591" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_VAE</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>enc_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>dec_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#VAE"><code>VAE</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1315,7 +1516,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv_VAE" class="doc_header"><code>class</code> <code>Conv_VAE</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L500" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_VAE</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>conv_filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>conv_drops</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dec_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#VAE"><code>VAE</code></a></p>
+<h2 id="Conv_VAE" class="doc_header"><code>class</code> <code>Conv_VAE</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L607" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_VAE</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>conv_filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>conv_drops</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dec_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#VAE"><code>VAE</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1401,7 +1602,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MLP_VAE" class="doc_header"><code>class</code> <code>MLP_VAE</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L517" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_VAE</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>encoder_d_in</code></strong>, <strong><code>encoder_dims</code></strong>, <strong><code>encoder_drops</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dec_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#VAE"><code>VAE</code></a></p>
+<h2 id="MLP_VAE" class="doc_header"><code>class</code> <code>MLP_VAE</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L624" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_VAE</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>encoder_d_in</code></strong>, <strong><code>encoder_dims</code></strong>, <strong><code>encoder_drops</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dec_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#VAE"><code>VAE</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1490,7 +1691,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conditional_LSTM_LM" class="doc_header"><code>class</code> <code>Conditional_LSTM_LM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L535" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM_LM</code>(<strong><code>encoder</code></strong>, <strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>False</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>) :: <a href="/mrl/layers.html#Encoder_Decoder"><code>Encoder_Decoder</code></a></p>
+<h2 id="Conditional_LSTM_LM" class="doc_header"><code>class</code> <code>Conditional_LSTM_LM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L642" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM_LM</code>(<strong><code>encoder</code></strong>, <strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>False</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/layers.html#Encoder_Decoder"><code>Encoder_Decoder</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -1554,915 +1755,8 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <span class="n">_</span> <span class="o">=</span> <span class="n">lm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
 
 <span class="n">_</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_lps</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">condition</span><span class="p">],</span><span class="n">y</span><span class="p">)</span>
-</pre></div>
 
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, d_embedding, d_hidden, d_output, n_layers, </span>
-<span class="c1">#                  bidir=False, dropout=0., batch_first=True):</span>
-<span class="c1">#         super().__init__()</span>
-        
-<span class="c1">#         self.d_embedding = d_embedding</span>
-<span class="c1">#         self.d_hidden = d_hidden</span>
-<span class="c1">#         self.d_output = d_output</span>
-<span class="c1">#         self.n_layers = n_layers</span>
-<span class="c1">#         self.bidir = bidir</span>
-<span class="c1">#         self.n_dir = 1 if not bidir else 2</span>
-<span class="c1">#         self.batch_first = batch_first</span>
-        
-<span class="c1">#         self.lstms = []</span>
-<span class="c1">#         self.hidden_sizes = []</span>
-        
-<span class="c1">#         for l in range(n_layers):</span>
-<span class="c1">#             input_size = d_embedding if l==0 else d_hidden</span>
-<span class="c1">#             output_size = d_output if l==n_layers-1 else d_hidden</span>
-<span class="c1">#             output_size = output_size // self.n_dir</span>
-            
-<span class="c1">#             hidden_size = (self.n_dir, 1, output_size)</span>
-<span class="c1">#             self.hidden_sizes.append(hidden_size)</span>
-            
-<span class="c1">#             lstm = nn.LSTM(input_size, output_size, 1, batch_first=batch_first, </span>
-<span class="c1">#                            dropout=dropout, bidirectional=bidir)</span>
-<span class="c1">#             self.lstms.append(lstm)</span>
-            
-<span class="c1">#         self.lstms = nn.ModuleList(self.lstms)</span>
-        
-<span class="c1">#     def forward(self, x, hiddens=None):</span>
-        
-<span class="c1">#         bs = x.shape[0] if self.batch_first else x.shape[1]</span>
-        
-<span class="c1">#         if hiddens is None:</span>
-<span class="c1">#             hiddens = self.get_new_hidden(bs)</span>
-<span class="c1">#             hiddens = to_device(hiddens, x.device)</span>
-            
-<span class="c1">#         new_hiddens = []</span>
-<span class="c1">#         for i, lstm in enumerate(self.lstms):</span>
-<span class="c1">#             x, (h,c) = lstm(x, hiddens[i])</span>
-<span class="c1">#             new_hiddens.append((h.detach(), c.detach()))</span>
-            
-<span class="c1">#         return x, new_hiddens</span>
-            
-<span class="c1">#     def get_new_hidden(self, bs):</span>
-<span class="c1">#         hiddens = []</span>
-<span class="c1">#         for hs in self.hidden_sizes:</span>
-<span class="c1">#             h = torch.zeros(hs).repeat(1,bs,1)</span>
-<span class="c1">#             c = torch.zeros(hs).repeat(1,bs,1)</span>
-<span class="c1">#             hiddens.append((h,c))</span>
-        
-<span class="c1">#         return hiddens</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, d_embedding, d_hidden, d_output, d_latent, n_layers,</span>
-<span class="c1">#                  condition_hidden=True, condition_output=True,</span>
-<span class="c1">#                  bidir=False, dropout=0., batch_first=True):</span>
-<span class="c1">#         super().__init__()</span>
-        
-<span class="c1">#         self.d_embedding = d_embedding</span>
-<span class="c1">#         self.d_hidden = d_hidden</span>
-<span class="c1">#         self.d_output = d_output</span>
-<span class="c1">#         self.n_layers = n_layers</span>
-<span class="c1">#         self.bidir = bidir</span>
-<span class="c1">#         self.n_dir = 1 if not bidir else 2</span>
-<span class="c1">#         self.batch_first = batch_first</span>
-<span class="c1">#         self.condition_hidden = condition_hidden</span>
-<span class="c1">#         self.condition_output = condition_output</span>
-        
-<span class="c1">#         self.lstms = []</span>
-<span class="c1">#         self.hidden_sizes = []</span>
-        
-<span class="c1">#         for l in range(n_layers):</span>
-<span class="c1">#             if l==0:</span>
-<span class="c1">#                 input_size = d_embedding if not self.condition_output else d_embedding+d_latent</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 input_size = d_hidden</span>
-                
-<span class="c1">#             output_size = d_output if l==n_layers-1 else d_hidden</span>
-<span class="c1">#             output_size = output_size // self.n_dir</span>
-            
-<span class="c1">#             hidden_size = (self.n_dir, 1, output_size)</span>
-<span class="c1">#             self.hidden_sizes.append(hidden_size)</span>
-            
-<span class="c1">#             lstm = nn.LSTM(input_size, output_size, 1, batch_first=batch_first, </span>
-<span class="c1">#                            dropout=dropout, bidirectional=bidir)</span>
-<span class="c1">#             self.lstms.append(lstm)</span>
-            
-<span class="c1">#         self.lstms = nn.ModuleList(self.lstms)</span>
-        
-<span class="c1">#         if self.condition_hidden:</span>
-<span class="c1">#             to_hidden = []</span>
-<span class="c1">#             for size in self.hidden_sizes:</span>
-<span class="c1">#                 ndir, _, dim = size</span>
-<span class="c1">#                 to_hidden.append(Linear(d_latent, ndir*dim*2, act=False, bn=False))</span>
-                
-<span class="c1">#             self.to_hidden = nn.ModuleList(to_hidden)</span>
-        
-<span class="c1">#     def forward(self, x, z, hiddens=None):</span>
-        
-<span class="c1">#         bs = x.shape[0] if self.batch_first else x.shape[1]</span>
-<span class="c1">#         sl = x.shape[1] if self.batch_first else x.shape[0]</span>
-        
-<span class="c1">#         if self.condition_output:</span>
-<span class="c1">#             if self.batch_first:</span>
-<span class="c1">#                 z_ = z.unsqueeze(1).repeat(1,sl,1)</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 z_ = z.unsqueeze(0).repeat(sl,1,1)</span>
-                
-<span class="c1">#             x = torch.cat([x, z_], -1)</span>
-
-<span class="c1">#         if hiddens is None:</span>
-<span class="c1">#             if self.condition_hidden:</span>
-<span class="c1">#                 hiddens = self.latent_to_hidden(z)</span>
-                
-<span class="c1">#             else:</span>
-<span class="c1">#                 hiddens = self.get_new_hidden(bs)</span>
-            
-<span class="c1">#             hiddens = to_device(hiddens, x.device)</span>
-            
-<span class="c1">#         new_hiddens = []</span>
-<span class="c1">#         for i, lstm in enumerate(self.lstms):</span>
-<span class="c1">#             x, (h,c) = lstm(x, hiddens[i])</span>
-<span class="c1">#             new_hiddens.append((h.detach(), c.detach()))</span>
-            
-<span class="c1">#         return x, new_hiddens</span>
-    
-<span class="c1">#     def latent_to_hidden(self, z):</span>
-<span class="c1">#         hiddens = []</span>
-<span class="c1">#         for layer in self.to_hidden:</span>
-<span class="c1">#             h = layer(z)</span>
-<span class="c1">#             h,c = torch.chunk(h, 2, dim=-1)</span>
-<span class="c1">#             bs, _ = h.shape</span>
-<span class="c1">#             h = h.contiguous().reshape(bs, self.n_dir, -1).permute(1,0,2)</span>
-<span class="c1">#             c = c.contiguous().reshape(bs, self.n_dir, -1).permute(1,0,2)</span>
-<span class="c1">#             hiddens.append((h,c))</span>
-            
-<span class="c1">#         return hiddens</span>
-            
-<span class="c1">#     def get_new_hidden(self, bs):</span>
-<span class="c1">#         hiddens = []</span>
-<span class="c1">#         for hs in self.hidden_sizes:</span>
-<span class="c1">#             h = torch.zeros(hs).repeat(1,bs,1)</span>
-<span class="c1">#             c = torch.zeros(hs).repeat(1,bs,1)</span>
-<span class="c1">#             hiddens.append((h,c))</span>
-        
-<span class="c1">#         return hiddens</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, </span>
-<span class="c1">#                  lstm_drop=0., bos_idx=0, bidir=False):</span>
-<span class="c1">#         super().__init__()</span>
-        
-<span class="c1">#         self.embedding = nn.Embedding(d_vocab, d_embedding)</span>
-<span class="c1">#         self.lstm = LSTM(d_embedding, d_hidden, d_embedding, n_layers, bidir=bidir, dropout=lstm_drop)</span>
-<span class="c1">#         self.head = Linear(d_embedding, d_vocab, act=False, bn=False, dropout=0.)</span>
-<span class="c1">#         self.bos_idx = bos_idx</span>
-        
-<span class="c1">#     def forward(self, x):</span>
-<span class="c1">#         x = self.embedding(x)</span>
-<span class="c1">#         x, hiddens = self.lstm(x)</span>
-<span class="c1">#         self.last_hidden = hiddens</span>
-<span class="c1">#         x = self.head(x)</span>
-<span class="c1">#         return x</span>
-    
-<span class="c1">#     def sample(self, bs, sl, temperature=1., multinomial=True):</span>
-        
-<span class="c1">#         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))</span>
-<span class="c1">#         lps = []</span>
-
-<span class="c1">#         hiddens = None</span>
-        
-<span class="c1">#         for i in range(sl):</span>
-<span class="c1">#             x = self.embedding(idxs)</span>
-<span class="c1">#             x, hiddens = self.lstm(x, hiddens)</span>
-<span class="c1">#             x = self.head(x)</span>
-            
-<span class="c1">#             x.div_(temperature)</span>
-            
-<span class="c1">#             log_probs = F.log_softmax(x, -1).squeeze(1)</span>
-<span class="c1">#             probs = log_probs.detach().exp()</span>
-            
-<span class="c1">#             if multinomial:</span>
-<span class="c1">#                 idxs = torch.multinomial(probs, 1)</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 idxs = x.argmax(-1)</span>
-                
-<span class="c1">#             lps.append(torch.gather(log_probs, 1, idxs))</span>
-            
-<span class="c1">#             preds = torch.cat([preds, idxs], -1)</span>
-            
-<span class="c1">#         return preds[:, 1:], torch.cat(lps,-1)</span>
-    
-<span class="c1">#     def sample_no_grad(self, bs, sl, temperature=1., multinomial=True):</span>
-<span class="c1">#         with torch.no_grad():</span>
-<span class="c1">#             return self.sample(bs, sl, temperature=temperature, multinomial=multinomial)</span>
-        
-<span class="c1">#     def get_lps(self, x, y, temperature=1.):</span>
-<span class="c1">#         x = self.forward(x)</span>
-<span class="c1">#         x.div_(temperature)</span>
-        
-<span class="c1">#         lps = F.log_softmax(x, -1)</span>
-<span class="c1">#         lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)</span>
-        
-<span class="c1">#         return lps</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, mapping, d_latent,</span>
-<span class="c1">#                  lstm_drop=0., lin_drop=0., bos_idx=0, bidir=False,</span>
-<span class="c1">#                  condition_hidden=True, condition_output=False, norm_latent=True):</span>
-<span class="c1">#         super().__init__()</span>
-        
-<span class="c1">#         self.mapping = mapping</span>
-<span class="c1">#         self.d_latent = d_latent</span>
-        
-<span class="c1">#         self.embedding = nn.Embedding(d_vocab, d_embedding)</span>
-<span class="c1">#         self.lstm = Conditional_LSTM(d_embedding, d_hidden, d_embedding, d_latent, n_layers,</span>
-<span class="c1">#                                     condition_hidden=condition_hidden, condition_output=condition_output,</span>
-<span class="c1">#                                      bidir=bidir, dropout=lstm_drop)</span>
-        
-<span class="c1">#         self.head = Linear(d_embedding, d_vocab, act=False, bn=False, dropout=0.)</span>
-<span class="c1">#         self.bos_idx = bos_idx</span>
-<span class="c1">#         self.norm_latent = norm_latent</span>
-        
-<span class="c1">#     def forward(self, x, condition):</span>
-        
-<span class="c1">#         z = self.mapping(condition)</span>
-<span class="c1">#         if self.norm_latent:</span>
-<span class="c1">#             z = F.normalize(z, p=2, dim=-1)</span>
-        
-<span class="c1">#         x = self.embedding(x)</span>
-<span class="c1">#         x, hiddens = self.lstm(x,z)</span>
-<span class="c1">#         self.last_hidden = hiddens</span>
-<span class="c1">#         x = self.head(x)</span>
-<span class="c1">#         return x</span>
-    
-<span class="c1">#     def sample(self, bs, sl, z=None, temperature=1., multinomial=True):</span>
-        
-<span class="c1">#         if z is None:</span>
-<span class="c1">#             z = to_device(F.normalize(torch.randn((bs, self.d_latent)), p=2, dim=-1))</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             bs = z.shape[0]</span>
-        
-<span class="c1">#         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))</span>
-<span class="c1">#         lps = []</span>
-
-<span class="c1">#         hiddens = None</span>
-        
-<span class="c1">#         for i in range(sl):</span>
-<span class="c1">#             x = self.embedding(idxs)</span>
-<span class="c1">#             x, hiddens = self.lstm(x, z, hiddens)</span>
-<span class="c1">#             x = self.head(x)</span>
-            
-<span class="c1">#             x.div_(temperature)</span>
-            
-<span class="c1">#             log_probs = F.log_softmax(x, -1).squeeze(1)</span>
-<span class="c1">#             probs = log_probs.detach().exp()</span>
-            
-<span class="c1">#             if multinomial:</span>
-<span class="c1">#                 idxs = torch.multinomial(probs, 1)</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 idxs = x.argmax(-1)</span>
-                
-<span class="c1">#             lps.append(torch.gather(log_probs, 1, idxs))</span>
-            
-<span class="c1">#             preds = torch.cat([preds, idxs], -1)</span>
-            
-<span class="c1">#         return preds[:, 1:], torch.cat(lps,-1)</span>
-    
-<span class="c1">#     def sample_no_grad(self, bs, sl, z=None, temperature=1., multinomial=True):</span>
-<span class="c1">#         with torch.no_grad():</span>
-<span class="c1">#             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)</span>
-        
-<span class="c1">#     def get_lps(self, x, y, temperature=1.):</span>
-<span class="c1">#         x = self.forward(x[0], x[1])</span>
-<span class="c1">#         x.div_(temperature)</span>
-        
-<span class="c1">#         lps = F.log_softmax(x, -1)</span>
-<span class="c1">#         lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)</span>
-        
-<span class="c1">#         return lps</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, d_latent):</span>
-<span class="c1">#         super().__init__()</span>
-<span class="c1">#         self.d_latent = d_latent</span>
-        
-<span class="c1">#     def forward(self, x):</span>
-<span class="c1">#         raise NotImplementedError</span>
-        
-<span class="c1">#     def get_latent(self, mu, logvar, z_scale=1.):</span>
-<span class="c1">#         z = z_scale*torch.randn(mu.shape).to(mu.device)</span>
-<span class="c1">#         z = mu + z*torch.exp(0.5*logvar)</span>
-<span class="c1">#         kl_loss = 0.5 * (logvar.exp() + mu.pow(2) - 1 - logvar).sum(1).mean()</span>
-<span class="c1">#         return z, kl_loss</span>
-        
-<span class="c1"># class VAELSTMEncoder(VAEEncoder):</span>
-<span class="c1">#     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, d_latent, dropout=0.):</span>
-<span class="c1">#         super().__init__(d_latent)</span>
-        
-<span class="c1">#         self.embedding = nn.Embedding(d_vocab, d_embedding)</span>
-<span class="c1">#         self.lstm_encoder = LSTM(d_embedding, d_hidden, d_hidden, n_layers, </span>
-<span class="c1">#                                  bidir=True, batch_first=True, dropout=dropout)</span>
-<span class="c1">#         self.transition = nn.Linear(d_hidden*2, d_latent*2)</span>
-        
-        
-<span class="c1">#     def forward(self, x, z_scale=1.):</span>
-<span class="c1">#         x = self.embedding(x)</span>
-<span class="c1">#         x, hiddens = self.lstm_encoder(x)</span>
-<span class="c1">#         hidden = torch.cat(list(torch.cat(hiddens[-1], -1)), -1) # concatenate hidden/cell states of last layer</span>
-        
-<span class="c1">#         mu, logvar = torch.chunk(self.transition(hidden), 2, dim=-1)</span>
-<span class="c1">#         z, kl_loss = self.get_latent(mu, logvar, z_scale)</span>
-        
-<span class="c1">#         return z, kl_loss</span>
-              
-<span class="c1"># class VAEConvEncoder(VAEEncoder):</span>
-<span class="c1">#     def __init__(self, d_vocab, d_embedding, kernel_size, n_layers, d_latent, dropout=0.):</span>
-<span class="c1">#         super().__init__(d_latent)</span>
-    
-<span class="c1">#         self.embedding = nn.Embedding(d_vocab, d_embedding)</span>
-
-<span class="c1">#         convs = []</span>
-<span class="c1">#         input_size = d_embedding</span>
-<span class="c1">#         for i in range(n_layers):</span>
-<span class="c1">#             convs.append(Conv1d(input_size, input_size*2, ks=kernel_size, stride=2, </span>
-<span class="c1">#                                 act=True, bn=True, dropout=dropout))</span>
-<span class="c1">#             input_size = input_size*2</span>
-
-<span class="c1">#         self.convs = nn.Sequential(*convs)</span>
-<span class="c1">#         self.pool = nn.AdaptiveAvgPool1d(1)</span>
-<span class="c1">#         self.transition = nn.Linear(input_size, d_latent*2)</span>
-    
-<span class="c1">#     def forward(self, x, z_scale=1.):</span>
-<span class="c1">#         x = self.embedding(x)</span>
-<span class="c1">#         x = x.permute(0,2,1)</span>
-<span class="c1">#         x = self.convs(x)</span>
-<span class="c1">#         x = self.pool(x).squeeze(-1)</span>
-        
-<span class="c1">#         mu, logvar = torch.chunk(self.transition(x), 2, dim=-1)</span>
-<span class="c1">#         z, kl_loss = self.get_latent(mu, logvar, z_scale)</span>
-        
-<span class="c1">#         return z, kl_loss</span>
-              
-<span class="c1"># class VAELinEncoder(VAEEncoder):</span>
-<span class="c1">#     def __init__(self, d_input, n_layers, d_latent, dropout=0.):</span>
-<span class="c1">#         super().__init__(d_latent)</span>
-    
-<span class="c1">#         lins = []</span>
-<span class="c1">#         input_size = d_input</span>
-<span class="c1">#         for i in range(n_layers):</span>
-<span class="c1">#             lins.append(Linear(input_size, input_size//2, act=True, bn=True, dropout=dropout))</span>
-<span class="c1">#             input_size = input_size//2</span>
-            
-<span class="c1">#         self.layers = nn.Sequential(*lins)</span>
-<span class="c1">#         self.transition = nn.Linear(input_size, d_latent*2)</span>
-    
-<span class="c1">#     def forward(self, x, z_scale=1.):</span>
-<span class="c1">#         x = self.layers(x)</span>
-        
-<span class="c1">#         mu, logvar = torch.chunk(self.transition(x), 2, dim=-1)</span>
-<span class="c1">#         z, kl_loss = self.get_latent(mu, logvar, z_scale)</span>
-        
-<span class="c1">#         return z, kl_loss</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, d_latent,</span>
-<span class="c1">#                 condition_hidden=True, condition_output=True):</span>
-<span class="c1">#         super().__init__()</span>
-        
-<span class="c1">#         self.embedding = nn.Embedding(d_vocab, d_embedding)</span>
-<span class="c1">#         self.decoder = Conditional_LSTM(d_embedding, d_hidden, d_embedding, d_latent, 3, </span>
-<span class="c1">#                                     condition_hidden=condition_hidden, condition_output=condition_output, </span>
-<span class="c1">#                                     bidir=False, batch_first=True)</span>
-        
-<span class="c1">#         self.head = Linear(d_embedding, d_vocab, act=False, bn=False, dropout=0.)</span>
-        
-<span class="c1">#     def forward(self, x, z, hiddens=None):</span>
-<span class="c1">#         bs, sl = x.shape</span>
-<span class="c1">#         x = self.embedding(x)</span>
-        
-<span class="c1">#         decoded, hiddens = self.decoder(x, z, hiddens)</span>
-<span class="c1">#         output = self.head(decoded)</span>
-        
-<span class="c1">#         return output, hiddens</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, encoder, decoder, prior=None, bos_idx=0):</span>
-<span class="c1">#         super().__init__()</span>
-        
-<span class="c1">#         self.encoder = encoder</span>
-<span class="c1">#         self.decoder = decoder</span>
-<span class="c1">#         if prior is None:</span>
-<span class="c1">#             prior = Normal(torch.zeros((encoder.d_latent)), torch.ones((encoder.d_latent)))</span>
-<span class="c1">#         self.prior = prior</span>
-<span class="c1">#         self.bos_idx = bos_idx</span>
-        
-<span class="c1">#     def forward(self, x, decoder_input=None):</span>
-<span class="c1">#         z, kl_loss = self.encoder(x)</span>
-        
-<span class="c1">#         if decoder_input is None:</span>
-<span class="c1">#             decoder_input = x</span>
-            
-<span class="c1">#         output, hiddens = self.decoder(decoder_input, z)</span>
-<span class="c1">#         return output, kl_loss</span>
-    
-<span class="c1">#     def sample(self, bs, sl, z=None, temperature=1., multinomial=True):</span>
-        
-<span class="c1">#         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))</span>
-<span class="c1">#         lps = []</span>
-        
-<span class="c1">#         if z is None:</span>
-<span class="c1">#             z = to_device(self.prior.sample([bs]))</span>
-        
-<span class="c1">#         hiddens = None</span>
-        
-<span class="c1">#         for i in range(sl):</span>
-<span class="c1">#             x, hiddens = self.decoder(idxs, z, hiddens)</span>
-<span class="c1">#             x.div_(temperature)</span>
-            
-<span class="c1">#             log_probs = F.log_softmax(x, -1).squeeze(1)</span>
-<span class="c1">#             probs = log_probs.detach().exp()</span>
-            
-<span class="c1">#             if multinomial:</span>
-<span class="c1">#                 idxs = torch.multinomial(probs, 1)</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 idxs = x.argmax(-1)</span>
-                
-<span class="c1">#             lps.append(torch.gather(log_probs, 1, idxs))</span>
-            
-<span class="c1">#             preds = torch.cat([preds, idxs], -1)</span>
-            
-<span class="c1">#         return preds[:, 1:], torch.cat(lps,-1)</span>
-    
-<span class="c1">#     def sample_no_grad(self, bs, sl, z=None, temperature=1., multinomial=True):</span>
-<span class="c1">#         with torch.no_grad():</span>
-<span class="c1">#             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)</span>
-        
-<span class="c1">#     def get_lps(self, x, y, temperature=1., z=None):</span>
-
-<span class="c1">#         if type(x)==list:</span>
-<span class="c1">#             x,_ = self.forward(x[0], decoder_input=x[1])</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             x,_ = self.forward(x)</span>
-        
-<span class="c1">#         x.div_(temperature)</span>
-        
-<span class="c1">#         lps = F.log_softmax(x, -1)</span>
-<span class="c1">#         lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)</span>
-        
-<span class="c1">#         return lps</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># from mrl.chem import *</span>
-<span class="c1"># from mrl.core import *</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#                     [QEDFilter(None, None, score=PassThroughScore())], fail_score=-1.)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># x,y = ds.collate_function([ds.__getitem__(i) for i in range(len(ds))])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># decoder = VAEDecoder(len(vocab.itos), 256, 1024, 3, 512)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># x,y = ds.collate_function([ds.__getitem__(i) for i in range(len(ds))])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<span class="n">_</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
 </pre></div>
 
     </div>

@@ -526,7 +526,12 @@ class VAE(Encoder_Decoder):
         lps = []
 
         if z is None:
-            z = to_device(self.prior.rsample([bs]))
+            if self.prior is not None:
+                z = to_device(self.prior.rsample([bs]))
+            else:
+                prior = Normal(torch.zeros((self.encoder.d_latent)),
+                               torch.ones((self.encoder.d_latent)))
+                z = to_device(self.prior.rsample([bs]))
 
         hiddens = None
 

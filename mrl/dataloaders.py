@@ -309,6 +309,9 @@ class BaseDataset(Dataset):
     def new(self):
         raise NotImplementedError
 
+    def split(self, percent_valid):
+        raise NotImplementedError
+
 # Cell
 
 class TextDataset(BaseDataset):
@@ -344,6 +347,18 @@ class TextDataset(BaseDataset):
     def new(self, smiles):
         return self.__class__(smiles, self.vocab, self.collate_function)
 
+    def split(self, percent_valid):
+        smiles = np.array(self.smiles)
+        idxs = torch.randperm(len(smiles)).numpy()
+
+        smiles = smiles[idxs]
+
+        train_length = int(len(smiles)*(1-percent_valid))
+        train_ds = self.new(smiles[:train_length])
+        valid_ds = self.new(smiles[train_length:])
+
+        return (train_ds, valid_ds)
+
 # Cell
 
 class TextPredictionDataset(TextDataset):
@@ -376,6 +391,20 @@ class TextPredictionDataset(TextDataset):
 
     def new(self, smiles, y_vals):
         return self.__class__(smiles, y_vals, self.vocab, self.collate_function)
+
+    def split(self, percent_valid):
+        smiles = np.array(self.smiles)
+        y_vals = np.array(self.y_vals)
+        idxs = torch.randperm(len(smiles)).numpy()
+
+        smiles = smiles[idxs]
+        y_vals = y_vals[idxs]
+
+        train_length = int(len(smiles)*(1-percent_valid))
+        train_ds = self.new(smiles[:train_length], y_vals[:train_length])
+        valid_ds = self.new(smiles[train_length:], y_vals[:train_length])
+
+        return (train_ds, valid_ds)
 
 # Cell
 
@@ -410,6 +439,18 @@ class Vector_Dataset(BaseDataset):
 
     def new(self, smiles):
         return self.__class__(smiles, self.mol_function, self.collate_function)
+
+    def split(self, percent_valid):
+        smiles = np.array(self.smiles)
+        idxs = torch.randperm(len(smiles)).numpy()
+
+        smiles = smiles[idxs]
+
+        train_length = int(len(smiles)*(1-percent_valid))
+        train_ds = self.new(smiles[:train_length])
+        valid_ds = self.new(smiles[train_length:])
+
+        return (train_ds, valid_ds)
 
 # Cell
 
@@ -450,6 +491,18 @@ class Vec_Recon_Dataset(Vector_Dataset):
     def new(self, smiles):
         return self.__class__(smiles, self.vocab, self.mol_function, self.collate_function)
 
+    def split(self, percent_valid):
+        smiles = np.array(self.smiles)
+        idxs = torch.randperm(len(smiles)).numpy()
+
+        smiles = smiles[idxs]
+
+        train_length = int(len(smiles)*(1-percent_valid))
+        train_ds = self.new(smiles[:train_length])
+        valid_ds = self.new(smiles[train_length:])
+
+        return (train_ds, valid_ds)
+
 # Cell
 
 class Vec_Prediction_Dataset(Vector_Dataset):
@@ -483,3 +536,17 @@ class Vec_Prediction_Dataset(Vector_Dataset):
 
     def new(self, smiles, y_vals):
         return self.__class__(smiles, y_vals, self.mol_function, self.collate_function)
+
+    def split(self, percent_valid):
+        smiles = np.array(self.smiles)
+        y_vals = np.array(self.y_vals)
+        idxs = torch.randperm(len(smiles)).numpy()
+
+        smiles = smiles[idxs]
+        y_vals = y_vals[idxs]
+
+        train_length = int(len(smiles)*(1-percent_valid))
+        train_ds = self.new(smiles[:train_length], y_vals[:train_length])
+        valid_ds = self.new(smiles[train_length:], y_vals[:train_length])
+
+        return (train_ds, valid_ds)

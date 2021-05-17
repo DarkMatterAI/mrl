@@ -124,6 +124,8 @@ index = {"is_container": "00_core.ipynb",
          "set_device": "05_torch_core.ipynb",
          "USE_CUDA": "05_torch_core.ipynb",
          "x_to_preds": "05_torch_core.ipynb",
+         "average_batches": "05_torch_core.ipynb",
+         "smooth_batches": "05_torch_core.ipynb",
          "Linear": "06_layers.ipynb",
          "Conv": "06_layers.ipynb",
          "Conv1d": "06_layers.ipynb",
@@ -177,7 +179,8 @@ index = {"is_container": "00_core.ipynb",
          "TextPredictionDataset": "07_dataloaders.ipynb",
          "Vector_Dataset": "07_dataloaders.ipynb",
          "Vec_Recon_Dataset": "07_dataloaders.ipynb",
-         "Vec_Prediction_Dataset": "07_dataloaders.ipynb"}
+         "Vec_Prediction_Dataset": "07_dataloaders.ipynb",
+         "Agent": "08_agent.ipynb"}
 
 modules = ["core.py",
            "chem.py",
@@ -186,7 +189,8 @@ modules = ["core.py",
            "templates/blocks.py",
            "torch_core.py",
            "layers.py",
-           "dataloaders.py"]
+           "dataloaders.py",
+           "agent.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 
