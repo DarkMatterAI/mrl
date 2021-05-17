@@ -294,9 +294,9 @@ class Conditional_LSTM_Block(nn.Module):
     def forward(self, x, z, hiddens=None):
         x = self.embedding(x)
         x, hiddens = self.lstm(x, z, hiddens)
-        x = self.head(x)
+        output = self.head(x)
 
-        return x, hiddens
+        return output, hiddens, x
 
 class LSTM_Block(nn.Module):
     def __init__(self, d_vocab, d_embedding, d_hidden, d_output, n_layers,
@@ -313,9 +313,9 @@ class LSTM_Block(nn.Module):
     def forward(self, x, hiddens=None):
         x = self.embedding(x)
         x, hiddens = self.lstm(x, hiddens)
-        x = self.head_drop(self.head(x))
+        output = self.head_drop(self.head(x))
 
-        return x, hiddens
+        return output, hiddens, x
 
 
 # Cell
