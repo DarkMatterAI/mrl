@@ -10,8 +10,6 @@ from .torch_core import *
 
 # Cell
 
-# export
-
 class Agent():
     def __init__(self, model, vocab, loss_function, dataset, base_model=True):
         self.model = model
@@ -92,7 +90,7 @@ class Agent():
         return maybe_parallel(self.vocab.reconstruct, preds)
 
     def load_weights(self, filename, base=False):
-        state_dict = torch.load(filename, map_location=self.model.device)
+        state_dict = torch.load(filename, map_location=get_model_device(self.model))
 
         if not base:
             self.model.load_state_dict(state_dict)

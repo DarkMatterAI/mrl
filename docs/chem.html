@@ -1601,8 +1601,8 @@ Parallel execution succeeded
 <span class="n">fps</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">get_fingerprint</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">fp_type</span><span class="o">=</span><span class="s1">&#39;ECFP4&#39;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;rdkit&#39;</span><span class="p">)</span>
 <span class="n">fps_np</span> <span class="o">=</span> <span class="n">fp_to_array</span><span class="p">(</span><span class="n">fps</span><span class="p">)</span>
 
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">fingerprint_similaity</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="s1">&#39;tanimoto&#39;</span><span class="p">),</span> 
-                   <span class="n">fp</span><span class="o">.</span><span class="n">fingerprint_similaity</span><span class="p">(</span><span class="n">fps_np</span><span class="p">,</span> <span class="n">fps_np</span><span class="p">,</span> <span class="s1">&#39;tanimoto&#39;</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">fingerprint_similarity</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="s1">&#39;tanimoto&#39;</span><span class="p">),</span> 
+                   <span class="n">fp</span><span class="o">.</span><span class="n">fingerprint_similarity</span><span class="p">(</span><span class="n">fps_np</span><span class="p">,</span> <span class="n">fps_np</span><span class="p">,</span> <span class="s1">&#39;tanimoto&#39;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -1670,7 +1670,7 @@ Parallel execution succeeded
                 
 <span class="n">fp</span> <span class="o">=</span> <span class="n">MyFP</span><span class="p">()</span>
 <span class="n">fps</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">get_fingerprint</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">fp_type</span><span class="o">=</span><span class="s1">&#39;ECFP6&#39;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">)</span>
-<span class="n">fp</span><span class="o">.</span><span class="n">fingerprint_similaity</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="s1">&#39;my_metric&#39;</span><span class="p">)</span>
+<span class="n">fp</span><span class="o">.</span><span class="n">fingerprint_similarity</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="s1">&#39;my_metric&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1820,7 +1820,7 @@ Parallel execution succeeded
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;*CCC&#39;, &#39;*CC&#39;, &#39;*CCCCC&#39;, &#39;*CCCCCC&#39;, &#39;*C&#39;, &#39;*CCCC&#39;, &#39;*CCCCCCC&#39;]</pre>
+<pre>[&#39;*CCCCCCC&#39;, &#39;*CCCCC&#39;, &#39;*CCCC&#39;, &#39;*CCC&#39;, &#39;*C&#39;, &#39;*CC&#39;, &#39;*CCCCCC&#39;]</pre>
 </div>
 
 </div>
