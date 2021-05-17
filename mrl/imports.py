@@ -17,3 +17,5 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
+from fastprogress.fastprogress import master_bar, progress_bar
+from fastprogress.core import format_time

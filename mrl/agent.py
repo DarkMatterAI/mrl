@@ -10,10 +10,17 @@ from .torch_core import *
 
 # Cell
 
+# export
+
 class Agent():
-    def __init__(self, model, vocab, loss_function, dataset):
+    def __init__(self, model, vocab, loss_function, dataset, base_model=True):
         self.model = model
-        self.base_model = copy.deepcopy(model)
+
+        if base_model==True:
+            self.base_model = copy.deepcopy(model)
+        else:
+            self.base_model = base_model
+
         to_device(self.model)
         to_device(self.base_model)
 
@@ -25,6 +32,14 @@ class Agent():
     def get_opt(self, **optim_kwargs):
         return optim.Adam(self.model.parameters(), **optim_kwargs)
 
+    def one_batch(self, batch):
+        x,y = batch
+        if not type(x)==list:
+            x = [x]
+        output = self.model(*x)
+        loss = self.loss_function(output, y)
+        return loss
+
     def train_supervised(self, bs, epochs, lr, percent_valid=0.05):
 
         train_ds, valid_ds = self.dataset.split(percent_valid)
@@ -35,38 +50,36 @@ class Agent():
         scheduler = optim.lr_scheduler.OneCycleLR(self.opt, max_lr=lr,
                                                  steps_per_epoch=len(train_dl), epochs=10)
 
-        print('Epoch\tTrain\tValid')
-        for epoch in range(epochs):
+        mb = master_bar(range(epochs))
+        mb.write(['Epoch', 'Train Loss', 'Valid  Loss', 'Time'], table=True)
+        for epoch in mb:
+            start = time.time()
             train_losses = []
-            for i, batch in enumerate(train_dl):
-                x,y = batch
-                if not type(x)==list:
-                    x = [x]
 
-                output = self.model(*x)
+            for batch in progress_bar(train_dl, parent=mb):
+
+                loss = self.one_batch(batch)
+
                 self.opt.zero_grad()
-                loss = self.loss_function(output, y)
                 loss.backward()
-                opt.step()
+                self.opt.step()
                 scheduler.step()
                 train_losses.append(loss.detach().cpu())
+                mb.child.comment = f"{train_losses[-1]:.5f}"
 
             with torch.no_grad():
                 valid_losses = []
-                for i, batch in enumerate(valid_dl):
-                    x,y = batch
-                    if not type(x)==list:
-                        x = [x]
+                for batch in progress_bar(valid_dl, parent=mb):
 
-                    output = self.model(*x)
-                    loss = self.loss_function(output, y)
+                    loss = self.one_batch(batch)
                     valid_losses.append(loss.detach().cpu())
+                    mb.child.comment = f"{valid_losses[-1]:.5f}"
 
             train_loss = smooth_batches(train_losses)
             valid_loss = smooth_batches(valid_losses)
-
-            print(f'{epoch}\t{train_loss:.2f}\t{valid_loss:.2f}')
-
+            end = time.time() - start
+            mb.write([epoch, f'{train_losses[-1]:.5f}',
+                      f'{valid_losses[-1]:.5f}', f'{format_time(end)}'], table=True)
 
     def update_dataset(self, dataset):
         self.dataset = dataset
@@ -78,3 +91,22 @@ class Agent():
     def reconstruct(self, preds):
         return maybe_parallel(self.vocab.reconstruct, preds)
 
+    def load_weights(self, filename, base=False):
+        state_dict = torch.load(filename, map_location=self.model.device)
+
+        if not base:
+            self.model.load_state_dict(state_dict)
+        else:
+            if not isinstance(self.base_model, nn.Module):
+                self.base_model = copy.deepcopy(model)
+
+            self.base_model.load_state_dict(state_dict)
+
+    def save_weights(self, filename, base=False):
+
+        if base:
+            state_dict = self.base_model.state_dict()
+        else:
+            state_dict = self.model.state_dict()
+
+        torch.save(state_dict, filename)
