@@ -213,7 +213,7 @@ class GenerativeAgent(Agent):
 
         if self.base_model is not None:
             with torch.no_grad():
-                bo, blp, bglp, be = self.model.get_rl_tensors(x,y)
+                bo, blp, bglp, be = self.base_model.get_rl_tensors(x,y)
         else:
             bo, blp, bglp, be = None, None, None, None
 

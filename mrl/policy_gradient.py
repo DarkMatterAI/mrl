@@ -77,13 +77,13 @@ class TRPO(BasePolicy):
         ref_lps = model_outputs['reference_gathered_logprobs']
         mask = model_outputs['mask']
 
-        ratios = (lps - ref_lps).exp()
+        ratios = (lps - ref_lps.detach()).exp()
 
         loss1 = -(ratios*advantages*mask).sum(-1)/mask.sum(-1)
 
         kl = torch.distributions.kl.kl_divergence(
                     Categorical(logits=model_outputs['reference_logprobs']),
-                    Categorical(logits=model_outputs['model_logprobs']))
+                    Categorical(logits=model_outputs['model_logprobs'].detach()))
 
         kl = (kl*mask).sum(-1)/mask.sum(-1)
         kl = kl.mean()
