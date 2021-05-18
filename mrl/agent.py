@@ -95,6 +95,8 @@ class Agent():
         state_dict = self.base_model.state_dict()
         torch.save(state_dict, filename)
 
+# Cell
+
 class PredictiveAgent(Agent):
 
     def predict_tensor(self, x):
@@ -108,6 +110,7 @@ class PredictiveAgent(Agent):
         x,y = batch
         return self.predict_tensor(x)
 
+# Cell
 
 class GenerativeAgent(Agent):
     def __init__(self, model, vocab, loss_function, dataset,
@@ -127,6 +130,7 @@ class GenerativeAgent(Agent):
 
         self.opts = [self.opt]
         if self.value_head is not None:
+            to_device(self.value_head)
             self.value_opt = self.get_opt(self.value_head, **vopt_kwargs)
             self.opts.append(self.value_opt)
 
