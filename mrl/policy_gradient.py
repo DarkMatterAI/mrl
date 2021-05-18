@@ -226,5 +226,5 @@ class PPO(BasePolicy):
             kl = kl.cpu()
 
             error = torch.clip(kl/self.kl_target - 1, -0.2, 0.2)
-            factor = 1 + errror * lps.shape[0]/self.kl_horizon
+            factor = 1 + error * lps.shape[0]/self.kl_horizon
             self.kl_coef *= factor
