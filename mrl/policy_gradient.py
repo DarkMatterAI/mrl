@@ -223,7 +223,7 @@ class PPO(BasePolicy):
             mask = model_outputs['mask']
             kl = (lps - ref_lps).detach()
             kl = (kl*mask).sum(-1)/mask.sum(-1)
-            kl = kl.cpu()
+            kl = kl.cpu().mean()
 
             error = torch.clip(kl/self.kl_target - 1, -0.2, 0.2)
             factor = 1 + error * lps.shape[0]/self.kl_horizon
