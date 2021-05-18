@@ -181,13 +181,11 @@ class GenerativeAgent(Agent):
         lengths = mask.sum(-1)
         sl = y.shape[-1]
         smiles = self.reconstruct(y)
-        mols = to_mols(smiles)
 
         model_output['mask'] = mask
         model_output['lengths'] = lengths
         model_output['sl'] = sl
         model_output['sequences'] = smiles
-        model_output['mols'] = mols
 
         return model_output
 
