@@ -42,7 +42,7 @@ class PolicyGradient(BasePolicy):
         rewards = model_outputs['rewards_scaled']
 
         if not self.discount:
-            pg_loss = -((lps*mask).sum(-1).sum(-1)*rewards)/mask.sum(-1)
+            pg_loss = -((lps*mask).sum(-1)*rewards)/mask.sum(-1)
         else:
             rewards = self.discount_rewards(model_outputs)
             rewards = whiten(rewards)
