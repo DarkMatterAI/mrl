@@ -90,7 +90,8 @@ class TRPO(BasePolicy):
 
         loss2 = self.beta*kl
 
-        loss3 = self.eta * torch.maximum(torch.tensor(0.), kl - 2.0*self.kl_target)
+        loss3 = self.eta * torch.maximum(to_device(torch.tensor(0.)),
+                                         kl - 2.0*self.kl_target)
 
         loss1 = loss1.mean()
         loss3 = loss3.mean()
