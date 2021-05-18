@@ -26,7 +26,7 @@ class VAE(Encoder_Decoder):
         if decoder_input is None:
             decoder_input = x
 
-        output, hiddens = self.decoder(decoder_input, z)
+        output, hiddens, encoded = self.decoder(decoder_input, z)
         return output, kl_loss
 
 
@@ -46,7 +46,7 @@ class VAE(Encoder_Decoder):
         hiddens = None
 
         for i in range(sl):
-            x, hiddens = self.decoder(idxs, z, hiddens)
+            x, hiddens, encoded = self.decoder(idxs, z, hiddens)
             x.div_(temperature)
 
             idxs, lp = x_to_preds(x, multinomial=multinomial)
@@ -60,26 +60,28 @@ class VAE(Encoder_Decoder):
         with torch.no_grad():
             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)
 
-    def get_lps(self, x, y, temperature=1., z=None):
 
-        if type(x)==list:
+    def get_rl_tensors(self, x, y, temperature=1.):
+
+        if type(x) == list:
             z,_ = self.transition(self.encoder(x[0]))
-            x,_ = self.decoder(x[1], z)
+            output, hiddens, encoded = self.decoder(x[1], z)
         else:
             z,_ = self.transition(self.encoder(x))
-            x,_ = self.decoder(x,z)
+            output, hiddens, encoded = self.decoder(x, z)
 
-        x.div_(temperature)
-
-        lps = F.log_softmax(x, -1)
-        lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
+        output.div_(temperature)
+        lps = F.log_softmax(output, -1)
 
         if self.prior.trainable:
-            prior_lps = self.prior.log_prob(z).mean(-1, keepdim=True)
-            prior_lps = torch.zeros(prior_lps.shape).float().to(prior_lps.device) + prior_lps - prior_lps.detach()
-            lps += prior_lps
+            prior_lps = self.prior.log_prob(z)
+            prior_lps = prior_lps.mean(-1).unsqueeze(-1).unsqueeze(-1)
+            pass_through = torch.zeros(prior_lps.shape).float().to(prior_lps.device)
+            pass_through = pass_through + prior_lps - prior_lps.detach() # add to gradient chain
+            lps = lps + pass_through
 
-        return lps, x
+        lps_gathered = gather_lps(lps, y)
+        return output, lps, lps_gathered, encoded
 
     def set_prior_from_stats(self, mu, logvar, trainable=False):
         mu = mu.detach()

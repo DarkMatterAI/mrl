@@ -24,7 +24,7 @@ class LSTM_LM(nn.Module):
             self.block.embedding.weight = self.block.head.weight
 
     def forward(self, x, hiddens=None):
-        output, hiddens, pre_output = self.block(x, hiddens)
+        output, hiddens, encoded = self.block(x, hiddens)
         return output
 
     def sample(self, bs, sl, temperature=1., multinomial=True):
@@ -35,7 +35,7 @@ class LSTM_LM(nn.Module):
         hiddens = None
 
         for i in range(sl):
-            x, hiddens = self.block(idxs, hiddens)
+            x, hiddens, encoded = self.block(idxs, hiddens)
             x.div_(temperature)
 
             idxs, lp = x_to_preds(x, multinomial=multinomial)
@@ -49,14 +49,13 @@ class LSTM_LM(nn.Module):
         with torch.no_grad():
             return self.sample(bs, sl, temperature=temperature, multinomial=multinomial)
 
-    def get_lps(self, x, y, temperature=1.):
-        x = self.forward(x)
-        x.div_(temperature)
+    def get_rl_tensors(self, x, y, temperature=1.):
+        output, hiddens, encoded = self.block(x)
+        output.div_(temperature)
+        lps = F.log_softmax(output, -1)
+        lps_gathered = gather_lps(lps, y)
+        return output, lps, lps_gathered, encoded
 
-        lps = F.log_softmax(x, -1)
-        lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
-
-        return lps, x
 
 # Cell
 
@@ -82,7 +81,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
     def forward(self, x, condition, hiddens=None):
         z = self.encoder(condition)
         z = self.transition(z)
-        x, hiddens = self.decoder(x, z, hiddens)
+        x, hiddens, encoded = self.decoder(x, z, hiddens)
         return x
 
 
@@ -104,7 +103,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
         for i in range(sl):
 
-            x, hiddens = self.decoder(idxs,z,hiddens)
+            x, hiddens, encoded = self.decoder(idxs,z,hiddens)
             x.div_(temperature)
 
             idxs, lp = x_to_preds(x, multinomial=multinomial)
@@ -118,22 +117,22 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         with torch.no_grad():
             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)
 
-    def get_lps(self, x, y, temperature=1.):
-        x, c = x
+    def get_rl_tensors(self, x, y, temperature=1.):
+        x,c = x
         z = self.transition(self.encoder(c))
-        x,_ = self.decoder(x, z)
-
-        x.div_(temperature)
-
-        lps = F.log_softmax(x, -1)
-        lps = lps.gather(2, y.unsqueeze(-1)).squeeze(-1)
+        output, hiddens, encoded = self.decoder(x,z)
+        output.div_(temperature)
+        lps = F.log_softmax(output, -1)
 
         if self.prior.trainable:
-            prior_lps = self.prior.log_prob(z).mean(-1, keepdim=True)
-            prior_lps = torch.zeros(prior_lps.shape).float().to(prior_lps.device) + prior_lps - prior_lps.detach()
-            lps += prior_lps
+            prior_lps = self.prior.log_prob(z)
+            prior_lps = prior_lps.mean(-1).unsqueeze(-1).unsqueeze(-1)
+            pass_through = torch.zeros(prior_lps.shape).float().to(prior_lps.device)
+            pass_through = pass_through + prior_lps - prior_lps.detach() # add to gradient chain
+            lps = lps + pass_through
 
-        return lps, x
+        lps_gathered = gather_lps(lps, y)
+        return output, lps, lps_gathered, encoded
 
     def set_prior_from_latent(self, z, logvar, trainable=False):
         z = z.detach()
