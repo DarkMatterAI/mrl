@@ -31,13 +31,19 @@ class BasePolicy():
 # Cell
 
 class PolicyGradient(BasePolicy):
-    def __init__(self, discount=True, gamma=0.97):
+    def __init__(self, discount=True, gamma=0.97, ratio=False):
         super().__init__(gamma)
         self.discount = discount
+        self.ratio = ratio
 
     def __call__(self, model_outputs):
 
         lps = model_outputs['model_gathered_logprobs']
+
+        if self.ratio:
+            old_lps = model_outputs['reference_gathered_logprobs']
+            lps = (lps - old_lps.detach()).exp()
+
         mask = model_outputs['mask']
         rewards = model_outputs['rewards_scaled']
 
@@ -217,7 +223,8 @@ class PPO(BasePolicy):
             mask = model_outputs['mask']
             kl = (lps - ref_lps).detach()
             kl = (kl*mask).sum(-1)/mask.sum(-1)
+            kl = kl.cpu()
 
-            error = np.clip(kl/self.kl_target - 1, -0.2, 0.2)
+            error = torch.clip(kl/self.kl_target - 1, -0.2, 0.2)
             factor = 1 + errror * lps.shape[0]/self.kl_horizon
             self.kl_coef *= factor
