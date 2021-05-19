@@ -310,6 +310,15 @@ class BaseDataset(Dataset):
         raise NotImplementedError
 
     def split(self, percent_valid):
+
+        idxs = torch.randperm(self.__len__()).numpy()
+        train_length = int(len(smiles)*(1-percent_valid))
+        train_idxs = idxs[:train_length]
+        valid_idxs = idxs[train_length:]
+
+        return self.split_on_idxs(train_idxs, valid_idxs)
+
+    def split_on_idxs(self, train_idxs, valid_idxs):
         raise NotImplementedError
 
 # Cell
@@ -347,17 +356,12 @@ class TextDataset(BaseDataset):
     def new(self, smiles):
         return self.__class__(smiles, self.vocab, self.collate_function)
 
-    def split(self, percent_valid):
-        smiles = np.array(self.smiles)
-        idxs = torch.randperm(len(smiles)).numpy()
+    def split_on_idxs(self, train_idxs, valid_idxs):
 
-        smiles = smiles[idxs]
-
-        train_length = int(len(smiles)*(1-percent_valid))
-        train_ds = self.new(smiles[:train_length])
-        valid_ds = self.new(smiles[train_length:])
-
+        train_ds = self.new([self.smiles[i] for i in train_idxs])
+        valid_ds = self.new([self.smiles[i] for i in valid_idxs])
         return (train_ds, valid_ds)
+
 
 # Cell
 
@@ -392,19 +396,15 @@ class TextPredictionDataset(TextDataset):
     def new(self, smiles, y_vals):
         return self.__class__(smiles, y_vals, self.vocab, self.collate_function)
 
-    def split(self, percent_valid):
-        smiles = np.array(self.smiles)
-        y_vals = np.array(self.y_vals)
-        idxs = torch.randperm(len(smiles)).numpy()
+    def split_on_idxs(self, train_idxs, valid_idxs):
 
-        smiles = smiles[idxs]
-        y_vals = y_vals[idxs]
-
-        train_length = int(len(smiles)*(1-percent_valid))
-        train_ds = self.new(smiles[:train_length], y_vals[:train_length])
-        valid_ds = self.new(smiles[train_length:], y_vals[:train_length])
+        train_ds = self.new([self.smiles[i] for i in train_idxs],
+                            [self.y_vals[i] for i in train_idxs])
+        valid_ds = self.new([self.smiles[i] for i in valid_idxs],
+                            [self.y_vals[i] for i in valid_idxs])
 
         return (train_ds, valid_ds)
+
 
 # Cell
 
@@ -440,17 +440,13 @@ class Vector_Dataset(BaseDataset):
     def new(self, smiles):
         return self.__class__(smiles, self.mol_function, self.collate_function)
 
-    def split(self, percent_valid):
-        smiles = np.array(self.smiles)
-        idxs = torch.randperm(len(smiles)).numpy()
+    def split_on_idxs(self, train_idxs, valid_idxs):
 
-        smiles = smiles[idxs]
-
-        train_length = int(len(smiles)*(1-percent_valid))
-        train_ds = self.new(smiles[:train_length])
-        valid_ds = self.new(smiles[train_length:])
+        train_ds = self.new([self.smiles[i] for i in train_idxs])
+        valid_ds = self.new([self.smiles[i] for i in valid_idxs])
 
         return (train_ds, valid_ds)
+
 
 # Cell
 
@@ -491,17 +487,13 @@ class Vec_Recon_Dataset(Vector_Dataset):
     def new(self, smiles):
         return self.__class__(smiles, self.vocab, self.mol_function, self.collate_function)
 
-    def split(self, percent_valid):
-        smiles = np.array(self.smiles)
-        idxs = torch.randperm(len(smiles)).numpy()
+    def split_on_idxs(self, train_idxs, valid_idxs):
 
-        smiles = smiles[idxs]
-
-        train_length = int(len(smiles)*(1-percent_valid))
-        train_ds = self.new(smiles[:train_length])
-        valid_ds = self.new(smiles[train_length:])
+        train_ds = self.new([self.smiles[i] for i in train_idxs])
+        valid_ds = self.new([self.smiles[i] for i in valid_idxs])
 
         return (train_ds, valid_ds)
+
 
 # Cell
 
@@ -537,16 +529,12 @@ class Vec_Prediction_Dataset(Vector_Dataset):
     def new(self, smiles, y_vals):
         return self.__class__(smiles, y_vals, self.mol_function, self.collate_function)
 
-    def split(self, percent_valid):
-        smiles = np.array(self.smiles)
-        y_vals = np.array(self.y_vals)
-        idxs = torch.randperm(len(smiles)).numpy()
 
-        smiles = smiles[idxs]
-        y_vals = y_vals[idxs]
+    def split_on_idxs(self, train_idxs, valid_idxs):
 
-        train_length = int(len(smiles)*(1-percent_valid))
-        train_ds = self.new(smiles[:train_length], y_vals[:train_length])
-        valid_ds = self.new(smiles[train_length:], y_vals[:train_length])
+        train_ds = self.new([self.smiles[i] for i in train_idxs],
+                            [self.y_vals[i] for i in train_idxs])
+        valid_ds = self.new([self.smiles[i] for i in valid_idxs],
+                            [self.y_vals[i] for i in valid_idxs])
 
         return (train_ds, valid_ds)
