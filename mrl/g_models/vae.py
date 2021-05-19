@@ -29,7 +29,7 @@ class VAE(Encoder_Decoder):
         output, hiddens, encoded = self.decoder(decoder_input, z)
         return output, kl_loss
 
-    def encode(self, x, decoder_input=None)
+    def encode(self, x, decoder_input=None):
         z = self.encoder(x)
         z, kl_loss = self.transition(z)
 
