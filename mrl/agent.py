@@ -251,8 +251,9 @@ class ModelOutput(dict):
         self.__setitem__('rewards_dict', {})                   # reward function
         self.__setitem__('rewards_scaled', None)               # reward function
         self.__setitem__('trajectory_rewards', None)           # trajectory reward function
-        self.__setitem__('diff_loss', None)                    # differentiable losses
-        self.__setitem__('diff_loss_dict', {})                 # differentiable losses
-        self.__setitem__('pg_loss', None)                      # policy gradient
-        self.__setitem__('pg_dict', {})                        # policy gradient
+        self.__setitem__('losses',     {'pg_loss' : None,
+                                       'diff_loss' : None})
+        self.__setitem__('loss_dicts', {'pg_dict' : {},
+                                        'diff_dict' : {}})
+
 

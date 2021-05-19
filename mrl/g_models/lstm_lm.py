@@ -56,6 +56,9 @@ class LSTM_LM(nn.Module):
         lps_gathered = gather_lps(lps, y)
         return output, lps, lps_gathered, encoded
 
+    def swap_head(self, new_head):
+        self.block.head = new_head
+
 
 # Cell
 

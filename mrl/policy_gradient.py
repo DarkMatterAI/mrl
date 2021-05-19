@@ -54,8 +54,8 @@ class PolicyGradient(BasePolicy):
             rewards = whiten(rewards)
             pg_loss = -(lps*rewards*mask).sum(-1)/mask.sum(-1)
 
-        model_outputs['pg_loss'] = pg_loss.mean()
-        model_outputs['pg_dict'] = {'pg_rewards' : rewards}
+        model_outputs['losses']['pg_loss'] = pg_loss.mean()
+        model_outputs['loss_dicts']['pg_dict'] = {'pg_rewards' : rewards}
 
         return model_outputs
 
@@ -104,15 +104,15 @@ class TRPO(BasePolicy):
 
         pg_loss = loss1 + loss2 + loss3 + v_loss
 
-        model_outputs['pg_loss'] = pg_loss
-        model_outputs['pg_dict'] = {'pg_discounted' : discounted_rewards,
-                                    'pg_advantage' : advantages,
-                                    'ratios' : ratios.detach().cpu(),
-                                    'kl' : kl.detach().cpu(),
-                                    'loss1' : loss1.detach().cpu(),
-                                    'loss2' : loss2.detach().cpu(),
-                                    'loss3' : loss3.detach().cpu(),
-                                    'v_loss' : v_loss.detach().cpu()}
+        model_outputs['losses']['pg_loss'] = pg_loss
+        model_outputs['loss_dicts']['pg_dict'] = {'pg_discounted' : discounted_rewards,
+                                                'pg_advantage' : advantages,
+                                                'ratios' : ratios.detach().cpu(),
+                                                'kl' : kl.detach().cpu(),
+                                                'loss1' : loss1.detach().cpu(),
+                                                'loss2' : loss2.detach().cpu(),
+                                                'loss3' : loss3.detach().cpu(),
+                                                'v_loss' : v_loss.detach().cpu()}
 
         return model_outputs
 
@@ -181,8 +181,8 @@ class PPO(BasePolicy):
 
         self.update_kl(model_outputs)
 
-        model_outputs['pg_loss'] = pg_loss
-        model_outputs['pg_dict'] = {'pg_discounted' : discounted_rewards,
+        model_outputs['losses']['pg_loss'] = pg_loss
+        model_outputs['loss_dicts']['pg_dict'] = {'pg_discounted' : discounted_rewards,
                                     'pg_advantage' : advantages,
                                     'ratios' : ratios.detach().cpu(),
                                     'loss' : loss.detach().cpu(),
