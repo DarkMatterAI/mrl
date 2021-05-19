@@ -312,7 +312,8 @@ class BaseDataset(Dataset):
     def split(self, percent_valid):
 
         idxs = torch.randperm(self.__len__()).numpy()
-        train_length = int(len(smiles)*(1-percent_valid))
+        train_length = int(self.__len__()*(1-percent_valid))
+
         train_idxs = idxs[:train_length]
         valid_idxs = idxs[train_length:]
 
