@@ -27,6 +27,10 @@ class LSTM_LM(nn.Module):
         output, hiddens, encoded = self.block(x, hiddens)
         return output
 
+    def encode(self, x, hiddens=None):
+        output, hiddens, encoded = self.block(x, hiddens)
+        return encoded
+
     def sample(self, bs, sl, temperature=1., multinomial=True):
 
         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))
@@ -87,6 +91,16 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         x, hiddens, encoded = self.decoder(x, z, hiddens)
         return x
 
+    def encode(self, x, condition, hiddens=None):
+        z = self.encoder(condition)
+        z = self.transition(z)
+        x, hiddens, encoded = self.decoder(x, z, hiddens)
+        return encoded
+
+    def to_latent(self, condition):
+        z = self.encoder(condition)
+        z = self.transitioon(z)
+        return z
 
     def sample(self, bs, sl, z=None, temperature=1., multinomial=True):
 
