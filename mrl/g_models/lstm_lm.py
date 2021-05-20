@@ -53,7 +53,7 @@ class LSTM_LM(nn.Module):
         with torch.no_grad():
             return self.sample(bs, sl, temperature=temperature, multinomial=multinomial)
 
-    def get_rl_tensors(self, x, y, temperature=1.):
+    def get_rl_tensors(self, x, y, temperature=1., latent=None):
         output, hiddens, encoded = self.block(x)
         output.div_(temperature)
         lps = F.log_softmax(output, -1)
@@ -133,9 +133,11 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         with torch.no_grad():
             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)
 
-    def get_rl_tensors(self, x, y, temperature=1.):
+    def get_rl_tensors(self, x, y, temperature=1., latent=None):
         x,c = x
-        z = self.transition(self.encoder(c))
+        if latent is not None:
+            latent = self.encoder(c)
+        z = self.transition(latent)
         output, hiddens, encoded = self.decoder(x,z)
         output.div_(temperature)
         lps = F.log_softmax(output, -1)

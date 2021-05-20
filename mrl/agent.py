@@ -114,7 +114,8 @@ class PredictiveAgent(Agent):
 
 class GenerativeAgent(Agent):
     def __init__(self, model, vocab, loss_function, dataset,
-                 base_model=True, value_head=None, opt_kwargs={}, vopt_kwargs={}):
+                 base_model=True, value_head=None, latents=None,
+                 opt_kwargs={}, vopt_kwargs={}, lopt_kwargs={}):
         super().__init__(model, loss_function, dataset, opt_kwargs)
 
         if base_model==True:
@@ -126,13 +127,20 @@ class GenerativeAgent(Agent):
         to_device(self.base_model)
 
         self.vocab = vocab
+        self.temperature = temperature
         self.value_head = value_head
+        self.latents = latents
 
         self.opts = [self.opt]
         if self.value_head is not None:
             to_device(self.value_head)
             self.value_opt = self.get_opt(self.value_head, **vopt_kwargs)
             self.opts.append(self.value_opt)
+
+        if self.latents is not None:
+            to_device(self.latents)
+            self.latent_opt = self.get_opt(self.latent, **lopt_kwargs)
+            self.opts.append(self.latent_opt)
 
     def zero_grad(self):
         for opt in self.opts:
@@ -197,6 +205,7 @@ class GenerativeAgent(Agent):
     def get_model_outputs(self, model_output):
         x = model_output['x']
         y = model_output['y']
+        latent = model_output['latent']
         mo, mlp, mglp, me = self.model.get_rl_tensors(x,y)
         mprob = mlp.exp()
 
@@ -237,7 +246,6 @@ class ModelOutput(dict):
         self.__setitem__('source', [])                         # buffer/batch
         self.__setitem__('x', None)                            # buffer/batch
         self.__setitem__('y', None)                            # buffer/batch
-        self.__setitem__('y_gumbel', None)                     # buffer/batch
         self.__setitem__('mask', None)                         # buffer/batch
         self.__setitem__('lengths', None)                      # buffer/batch
         self.__setitem__('sl', None)                           # buffer/batch
@@ -245,7 +253,9 @@ class ModelOutput(dict):
         self.__setitem__('model_encoded', None)                # model
         self.__setitem__('model_logprobs', None)               # model
         self.__setitem__('model_gathered_logprobs', None)      # model
-        self.__setitem__('state_values', None)                 # value_head
+        self.__setitem__('y_gumbel', None)                     # agent
+        self.__setitem__('latent', None)                       # agent
+        self.__setitem__('state_values', None)                 # agent value_head
         self.__setitem__('reference_output', None)             # reference model
         self.__setitem__('reference_encoded', None)            # reference model
         self.__setitem__('reference_logprobs', None)           # reference model

@@ -75,13 +75,17 @@ class VAE(Encoder_Decoder):
             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)
 
 
-    def get_rl_tensors(self, x, y, temperature=1.):
+    def get_rl_tensors(self, x, y, temperature=1., latent=None):
 
         if type(x) == list:
-            z,_ = self.transition(self.encoder(x[0]))
+            if latent is None:
+                latent = self.encoder(x[0])
+            z,_ = self.transition(latent)
             output, hiddens, encoded = self.decoder(x[1], z)
         else:
-            z,_ = self.transition(self.encoder(x))
+            if latent is None:
+                latent = self.encoder(x[0])
+            z,_ = self.transition(latent)
             output, hiddens, encoded = self.decoder(x, z)
 
         output.div_(temperature)
