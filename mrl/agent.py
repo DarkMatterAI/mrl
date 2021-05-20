@@ -137,7 +137,7 @@ class GenerativeAgent(Agent):
             self.opts.append(self.value_opt)
 
         if self.latents is not None:
-            to_device(self.latents)
+            self.latents = to_device(self.latents)
             self.latents = nn.Parameter(self.latents)
             self.latent_opt = self.get_opt([self.latents], **lopt_kwargs)
             self.opts.append(self.latent_opt)

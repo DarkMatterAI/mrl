@@ -5,10 +5,11 @@ __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts'
            'rotbond', 'fsp3', 'logp', 'rings', 'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge',
            'molar_refractivity', 'aromaticrings', 'qed', 'sa_score', 'Catalog', 'SmartsCatalog', 'ParamsCatalog',
            'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog',
-           'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd',
-           'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities', 'fragment_mol', 'fragment_smile',
-           'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums', 'check_ring_bonds',
-           'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator']
+           'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd',
+           'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities',
+           'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums',
+           'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
+           'StructureEnumerator']
 
 # Cell
 from .imports import *
@@ -319,6 +320,15 @@ def FCFP4(mol):
 def FCFP6(mol):
     "FCFP6 Fingerprint"
     return morgan_fp(mol, radius=3, use_features=True)
+
+def failsafe_fp(mol, fp_function):
+    try:
+        output = fp_function(mol)
+    except:
+        base_fp = fp_to_array(fp_function(to_mol('CCC')))
+        output = np.zeros(base_fp.shape, dtype=np.int8)
+
+    return output
 
 def fp_to_array(fp):
     "Converts RDKit `ExplicitBitVec` to numpy array"

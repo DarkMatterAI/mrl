@@ -110,6 +110,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
                 z = to_device(torch.randn((bs, self.encoder.d_latent)))
                 z = self.transition(z)
         else:
+            z = self.transition(z)
             bs = z.shape[0]
 
         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))
