@@ -17,11 +17,11 @@ class Agent():
         to_device(self.model)
 
         self.dataset = dataset
-        self.opt = self.get_opt(self.model, **opt_kwargs)
+        self.opt = self.get_opt(self.model.parameters(), **opt_kwargs)
         self.loss_function = loss_function
 
-    def get_opt(self, model, **optim_kwargs):
-        return optim.Adam(model.parameters(), **optim_kwargs)
+    def get_opt(self, parameters, **optim_kwargs):
+        return optim.Adam(parameters, **optim_kwargs)
 
     def one_batch(self, batch):
         x,y = batch
@@ -133,7 +133,7 @@ class GenerativeAgent(Agent):
         self.opts = [self.opt]
         if self.value_head is not None:
             to_device(self.value_head)
-            self.value_opt = self.get_opt(self.value_head, **vopt_kwargs)
+            self.value_opt = self.get_opt(self.value_head.parameters(), **vopt_kwargs)
             self.opts.append(self.value_opt)
 
         if self.latents is not None:
