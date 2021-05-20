@@ -92,14 +92,13 @@ class Conditional_LSTM_LM(Encoder_Decoder):
         return x
 
     def encode(self, x, condition, hiddens=None):
-        z = self.encoder(condition)
-        z = self.transition(z)
+        z = self.to_latent(condition)
         x, hiddens, encoded = self.decoder(x, z, hiddens)
         return encoded
 
     def to_latent(self, condition):
         z = self.encoder(condition)
-        z = self.transitioon(z)
+        z = self.transition(z)
         return z
 
     def sample(self, bs, sl, z=None, temperature=1., multinomial=True):

@@ -41,7 +41,7 @@ class Agent():
 
         train_ds, valid_ds = self.dataset.split(percent_valid)
 
-        train_dl = train_ds.dataloader(bs)
+        train_dl = train_ds.dataloader(bs, shuffle=True)
         valid_dl = valid_ds.dataloader(bs)
 
         scheduler = optim.lr_scheduler.OneCycleLR(self.opt, max_lr=lr,
@@ -198,11 +198,13 @@ class GenerativeAgent(Agent):
         x = model_output['x']
         y = model_output['y']
         mo, mlp, mglp, me = self.model.get_rl_tensors(x,y)
+        mprob = mlp.exp()
 
         model_output['model_output'] = mo
         model_output['model_logprobs'] = mlp
         model_output['model_gathered_logprobs'] = mglp
         model_output['model_encoded'] = me
+        model_output['y_gumbel'] = y + mprob - mprob.detach()
 
         if self.value_head is not None:
             value_predictions = self.value_head(me)
@@ -235,6 +237,7 @@ class ModelOutput(dict):
         self.__setitem__('source', [])                         # buffer/batch
         self.__setitem__('x', None)                            # buffer/batch
         self.__setitem__('y', None)                            # buffer/batch
+        self.__setitem__('y_gumbel', None)                     # buffer/batch
         self.__setitem__('mask', None)                         # buffer/batch
         self.__setitem__('lengths', None)                      # buffer/batch
         self.__setitem__('sl', None)                           # buffer/batch

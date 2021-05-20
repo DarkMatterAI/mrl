@@ -130,7 +130,7 @@ def neutralize_charges(mol, reactions=None):
 
 # Cell
 
-def draw_mols(mols, mols_per_row=3, sub_img_size=(300,300)):
+def draw_mols(mols, legends=None, mols_per_row=3, sub_img_size=(300,300)):
 
     if not is_container(mols):
         mols = [mols]
@@ -138,7 +138,7 @@ def draw_mols(mols, mols_per_row=3, sub_img_size=(300,300)):
     mols_per_row = min(mols_per_row, len(mols))
 
     return Chem.Draw.MolsToGridImage(mols, molsPerRow=mols_per_row,
-                                    subImgSize=sub_img_size)
+                                    subImgSize=sub_img_size, legends=legends)
 
 # Cell
 
