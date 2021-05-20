@@ -85,6 +85,7 @@ def smooth_batches(batches, beta=0.98):
 
     return val/(1-beta**count)
 
+
 # Cell
 
 def pad_and_merge(x1, x2, pad_idx, batch_dim=0, pad_dim=1):

@@ -204,7 +204,7 @@ class GenerativeAgent(Agent):
         model_output['model_logprobs'] = mlp
         model_output['model_gathered_logprobs'] = mglp
         model_output['model_encoded'] = me
-        model_output['y_gumbel'] = y + mprob - mprob.detach()
+        model_output['y_gumbel'] = F.one_hot(y, len(self.vocab.itos)) + mprob - mprob.detach()
 
         if self.value_head is not None:
             value_predictions = self.value_head(me)
