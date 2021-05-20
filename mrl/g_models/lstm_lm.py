@@ -136,7 +136,7 @@ class Conditional_LSTM_LM(Encoder_Decoder):
 
     def get_rl_tensors(self, x, y, temperature=1., latent=None):
         x,c = x
-        if latent is not None:
+        if latent not None:
             latent = self.encoder(c)
         z = self.transition(latent)
         output, hiddens, encoded = self.decoder(x,z)
