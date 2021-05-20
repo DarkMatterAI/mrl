@@ -138,7 +138,7 @@ class GenerativeAgent(Agent):
 
         if self.latents is not None:
             to_device(self.latents)
-            self.latent_opt = self.get_opt(self.latent, **lopt_kwargs)
+            self.latent_opt = self.get_opt(self.latents, **lopt_kwargs)
             self.opts.append(self.latent_opt)
 
     def zero_grad(self):
