@@ -127,7 +127,6 @@ class GenerativeAgent(Agent):
         to_device(self.base_model)
 
         self.vocab = vocab
-        self.temperature = temperature
         self.value_head = value_head
         self.latents = latents
 
@@ -206,7 +205,7 @@ class GenerativeAgent(Agent):
         x = model_output['x']
         y = model_output['y']
         latent = model_output['latent']
-        mo, mlp, mglp, me = self.model.get_rl_tensors(x,y)
+        mo, mlp, mglp, me = self.model.get_rl_tensors(x,y,latent=latent)
         mprob = mlp.exp()
 
         model_output['model_output'] = mo
