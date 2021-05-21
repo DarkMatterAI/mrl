@@ -1040,6 +1040,7 @@ def add_atom_combi(smile, atom_types):
     }
 
     mol = to_mol(smile)
+    periodic_table = Chem.GetPeriodicTable()
 
     valid_idxs = []
     for atom in mol.GetAtoms():
