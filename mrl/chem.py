@@ -9,7 +9,7 @@ __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts'
            'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities',
            'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums',
            'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
-           'StructureEnumerator']
+           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond']
 
 # Cell
 from .imports import *
@@ -1002,3 +1002,139 @@ class StructureEnumerator():
             output = None
 
         return output
+
+# Cell
+
+def add_one_atom(inputs):
+
+    mol, source_idx, target_atom, bond_type = inputs
+    new_mol = Chem.RWMol(mol)
+
+    if not target_atom==-1:
+        target_atom = Chem.Atom(target_atom)
+        new_idx = new_mol.AddAtom(target_atom)
+        new_mol.AddBond(source_idx, new_idx, bond_type)
+
+    else:
+        new_mol.RemoveAtom(source_idx)
+
+    mol = new_mol.GetMol()
+
+    try:
+        Chem.SanitizeMol(mol)
+        mol = to_mol(to_smile(mol))
+        output = to_smile(mol)
+    except:
+        output = None
+
+    return output
+
+# Cell
+
+def add_atom_combi(smile, atom_types):
+
+    bond_to_valence = {
+        Chem.rdchem.BondType.SINGLE:1,
+        Chem.rdchem.BondType.DOUBLE:2,
+        Chem.rdchem.BondType.TRIPLE:3
+    }
+
+    mol = to_mol(smile)
+
+    valid_idxs = []
+    for atom in mol.GetAtoms():
+        imp_h = atom.GetNumImplicitHs()
+        if imp_h>0:
+            valid_idxs.append((atom.GetIdx(), imp_h))
+
+    additions = []
+    for i, (imp_h, atom_idx) in enumerate(valid_idxs):
+        for atom_type in atom_types:
+            max_valence = min(imp_h, max(list(periodic_table.GetValenceList(atom_type))))
+            for bt,bv in bond_to_valence.items():
+                if bv<=max_valence:
+                    to_add = [mol, atom_idx, atom_type, bt]
+                    additions.append(to_add)
+
+    return maybe_parallel(add_one_atom, additions)
+
+# Cell
+
+def add_bond_combi(smile, max_ring_size=8):
+
+    bond_to_valence = {
+        Chem.rdchem.BondType.SINGLE:1,
+        Chem.rdchem.BondType.DOUBLE:2,
+        Chem.rdchem.BondType.TRIPLE:3
+    }
+
+    allowed_ring_sizes = set([5,6,7,8])
+
+    bond_order = [
+        None,
+        Chem.rdchem.BondType.SINGLE,
+        Chem.rdchem.BondType.DOUBLE,
+        Chem.rdchem.BondType.TRIPLE
+    ]
+
+    bt_to_str = {Chem.rdchem.BondType.SINGLE:'single',
+                  Chem.rdchem.BondType.DOUBLE:'double',
+                  Chem.rdchem.BondType.TRIPLE:'triple'}
+
+    mol = to_mol(smile)
+
+    valid_idxs = []
+    for atom in mol.GetAtoms():
+        imp_h = atom.GetNumImplicitHs()
+        if imp_h>0:
+            valid_idxs.append((atom.GetIdx(), imp_h))
+
+    additions = []
+
+    combos = list(itertools.combinations(valid_idxs,2))
+
+    for c in combos:
+        atom1, atom2 = c
+        idx1, h1 = atom1
+        idx2, h2 = atom2
+        max_valence = min(h1, h2)
+
+        path_check = len(Chem.rdmolops.GetShortestPath(mol, idx1, idx2)) in allowed_ring_sizes
+        ring_check = not (mol.GetAtomWithIdx(idx1).IsInRing() and mol.GetAtomWithIdx(idx2).IsInRing())
+        current_bond = mol.GetBondBetweenAtoms(idx1, idx2)
+        type_check = not (type(current_bond)==Chem.rdchem.BondType.AROMATIC)
+
+        if all([ring_check, path_check, type_check]):
+            current_bond = mol.GetBondBetweenAtoms(idx1, idx2)
+            lst_idx = current_bond if current_bond is None else current_bond.GetBondType()
+            new_bonds = bond_order[bond_order.index(lst_idx)+1:]
+            for bt in new_bonds:
+                if bond_to_valence[bt]<=max_valence:
+                    to_add = [mol, idx1, idx2, bt_to_str[bt]]
+                    additions.append(to_add)
+
+    return maybe_parallel(add_one_bond, additions)
+
+
+def add_one_bond(inputs):
+
+    mol, idx1, idx2, bt = inputs
+
+    bond_types = {'single':Chem.rdchem.BondType.SINGLE,
+                  'double':Chem.rdchem.BondType.DOUBLE,
+                  'triple':Chem.rdchem.BondType.TRIPLE}
+
+    new_mol = Chem.RWMol(mol)
+
+    new_mol.AddBond(idx1, idx2, bond_types[bt])
+
+    mol = new_mol.GetMol()
+
+    try:
+        Chem.SanitizeMol(mol)
+        mol = to_mol(to_smile(mol))
+        output = to_smile(mol)
+    except:
+        output = None
+
+    return output
