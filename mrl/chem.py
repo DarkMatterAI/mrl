@@ -734,6 +734,8 @@ class StructureEnumerator():
                     'N':7,
                     'O':8,
                     'F':9,
+                    'P':15,
+                    'S':16,
                     'Cl':17,
                     'Br':35
                     }
@@ -1049,15 +1051,20 @@ def add_atom_combi(smile, atom_types):
             valid_idxs.append((atom.GetIdx(), imp_h))
 
     additions = []
-    for i, (imp_h, atom_idx) in enumerate(valid_idxs):
+    for i, (atom_idx, imp_h) in enumerate(valid_idxs):
         for atom_type in atom_types:
-            max_valence = min(imp_h, max(list(periodic_table.GetValenceList(atom_type))))
+            if atom_type in ['F', 'Cl', 'Br']:
+                type_valence = 1
+            else:
+                type_valence = max(list(periodic_table.GetValenceList(atom_type)))
+
+            max_valence = min(imp_h, type_valence)
             for bt,bv in bond_to_valence.items():
                 if bv<=max_valence:
                     to_add = [mol, atom_idx, atom_type, bt]
                     additions.append(to_add)
 
-    return maybe_parallel(add_one_atom, additions)
+    return maybe_parallel(add_one_atom, additions, cpus=0)
 
 # Cell
 
