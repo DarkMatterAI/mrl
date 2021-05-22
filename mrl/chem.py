@@ -322,19 +322,27 @@ def FCFP6(mol):
     return morgan_fp(mol, radius=3, use_features=True)
 
 def failsafe_fp(mol, fp_function):
-    try:
-        output = fp_function(mol)
-    except:
+    if mol is None:
         base_fp = fp_to_array(fp_function(to_mol('CCC')))
         output = np.zeros(base_fp.shape, dtype=np.int8)
+    else:
+        try:
+            output = fp_function(mol)
+        except:
+            base_fp = fp_to_array(fp_function(to_mol('CCC')))
+            output = np.zeros(base_fp.shape, dtype=np.int8)
 
     return output
 
 def fp_to_array(fp):
     "Converts RDKit `ExplicitBitVec` to numpy array"
-    fp = np.asarray(fp, dtype=np.int8)
 
-    return fp
+    # note `ConvertToNumpyArray` ~25x faster than `np.asarray`
+    arr = np.zeros((1,), dtype=np.int8)
+    DataStructs.ConvertToNumpyArray(fp, arr)
+#     fp = np.asarray(fp, dtype=np.int8)
+
+    return arr
 
 def tanimoto(fps1, fps2):
     'Tanimoto similarity'
