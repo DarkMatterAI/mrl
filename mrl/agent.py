@@ -216,7 +216,7 @@ class GenerativeAgent(Agent):
         lengths = mask.sum(-1)
         sl = y.shape[-1]
         trajectories = self.reconstruct_trajectory(y)
-        smils = [i[-1] for i in trajectories]
+        smiles = [i[-1] for i in trajectories]
 
         model_output['mask'] = mask
         model_output['lengths'] = lengths
