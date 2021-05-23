@@ -169,9 +169,12 @@ class GenerativeAgent(Agent):
             merge_models(self.base_value_head, self.value_head, alpha=self.base_update_rate)
 
     def reconstruct(self, preds):
+        return maybe_parallel(self.vocab.reconstruct, [i for i in preds.detach().cpu()])
+
+    def reconstruct_trajectory(self, preds):
         trajectories = maybe_parallel(self.vocab.reconstruct_trajectory, [i for i in preds.detach().cpu()])
         sequences = [i[-1] for i in trajectories]
-        return sequences, trajectories
+        return trajectories
 
     def load_weights(self, filename, base=False):
         state_dict = torch.load(filename, map_location=get_model_device(self.model))
@@ -212,7 +215,8 @@ class GenerativeAgent(Agent):
         mask = ~(y==self.vocab.stoi['pad'])
         lengths = mask.sum(-1)
         sl = y.shape[-1]
-        smiles, trajectories = self.reconstruct(y)
+        trajectories = self.reconstruct_trajectory(y)
+        smils = [i[-1] for i in trajectories]
 
         model_output['mask'] = mask
         model_output['lengths'] = lengths

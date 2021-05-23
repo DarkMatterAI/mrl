@@ -44,7 +44,7 @@ class VAE(Encoder_Decoder):
         z, kl_loss = self.transition(z)
         return z
 
-    def sample(self, bs, sl, z=None, temperature=1., multinomial=True):
+    def sample(self, bs, sl, z=None, temperature=1., multinomial=True, z_scale=1.):
 
         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))
         lps = []
@@ -80,12 +80,16 @@ class VAE(Encoder_Decoder):
         if type(x) == list:
             if latent is None:
                 latent = self.encoder(x[0])
-            z,_ = self.transition(latent)
+                z,_ = self.transition(latent)
+            else:
+                z = latent
             output, hiddens, encoded = self.decoder(x[1], z)
         else:
             if latent is None:
-                latent = self.encoder(x[0])
-            z,_ = self.transition(latent)
+                latent = self.encoder(x)
+                z,_ = self.transition(latent)
+            else:
+                z = latent
             output, hiddens, encoded = self.decoder(x, z)
 
         output.div_(temperature)
