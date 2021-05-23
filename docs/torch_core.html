@@ -191,13 +191,6 @@ nb_path: "nbs/05_torch_core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -205,31 +198,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="average_batches" class="doc_header"><code>average_batches</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_batches</code>(<strong><code>batches</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="smooth_batches" class="doc_header"><code>smooth_batches</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L77" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>smooth_batches</code>(<strong><code>batches</code></strong>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>)</p>
+<h4 id="gumbel_onehot" class="doc_header"><code>gumbel_onehot</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L64" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gumbel_onehot</code>(<strong><code>y</code></strong>, <strong><code>num_classes</code></strong>=<em><code>-1</code></em>, <strong><code>probs</code></strong>=<em><code>None</code></em>, <strong><code>log_probs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -260,7 +229,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pad_and_merge" class="doc_header"><code>pad_and_merge</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_and_merge</code>(<strong><code>x1</code></strong>, <strong><code>x2</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_dim</code></strong>=<em><code>0</code></em>, <strong><code>pad_dim</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="average_batches" class="doc_header"><code>average_batches</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L78" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_batches</code>(<strong><code>batches</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -284,31 +253,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="merge_weights" class="doc_header"><code>merge_weights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L108" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_weights</code>(<strong><code>sd1</code></strong>, <strong><code>sd2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="merge_models" class="doc_header"><code>merge_models</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L117" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_models</code>(<strong><code>model1</code></strong>, <strong><code>model2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
+<h4 id="smooth_batches" class="doc_header"><code>smooth_batches</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>smooth_batches</code>(<strong><code>batches</code></strong>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>)</p>
 </blockquote>
 
 </div>
@@ -339,7 +284,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="freeze" class="doc_header"><code>freeze</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L123" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>freeze</code>(<strong><code>module</code></strong>)</p>
+<h4 id="pad_and_merge" class="doc_header"><code>pad_and_merge</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_and_merge</code>(<strong><code>x1</code></strong>, <strong><code>x2</code></strong>, <strong><code>pad_idx</code></strong>, <strong><code>batch_dim</code></strong>=<em><code>0</code></em>, <strong><code>pad_dim</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -363,7 +308,31 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unfreeze" class="doc_header"><code>unfreeze</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L127" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unfreeze</code>(<strong><code>module</code></strong>)</p>
+<h4 id="merge_weights" class="doc_header"><code>merge_weights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_weights</code>(<strong><code>sd1</code></strong>, <strong><code>sd2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="merge_models" class="doc_header"><code>merge_models</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_models</code>(<strong><code>model1</code></strong>, <strong><code>model2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
 </blockquote>
 
 </div>
@@ -394,7 +363,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="discount_rewards" class="doc_header"><code>discount_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>discount_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>gamma</code></strong>)</p>
+<h4 id="freeze" class="doc_header"><code>freeze</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>freeze</code>(<strong><code>module</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -418,7 +387,38 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="whiten" class="doc_header"><code>whiten</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>whiten</code>(<strong><code>values</code></strong>, <strong><code>shift_mean</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="unfreeze" class="doc_header"><code>unfreeze</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L138" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unfreeze</code>(<strong><code>module</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="discount_rewards" class="doc_header"><code>discount_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>discount_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>gamma</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -442,7 +442,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="scatter_rewards" class="doc_header"><code>scatter_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L148" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>scatter_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>mask</code></strong>)</p>
+<h4 id="whiten" class="doc_header"><code>whiten</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>whiten</code>(<strong><code>values</code></strong>, <strong><code>shift_mean</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -466,7 +466,31 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="compute_advantages" class="doc_header"><code>compute_advantages</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>compute_advantages</code>(<strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>gamma</code></strong>, <strong><code>lam</code></strong>)</p>
+<h4 id="scatter_rewards" class="doc_header"><code>scatter_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>scatter_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>mask</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="compute_advantages" class="doc_header"><code>compute_advantages</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L165" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>compute_advantages</code>(<strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>gamma</code></strong>, <strong><code>lam</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -517,7 +541,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CrossEntropy" class="doc_header"><code>class</code> <code>CrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CrossEntropy</code>()</p>
+<h2 id="CrossEntropy" class="doc_header"><code>class</code> <code>CrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L184" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CrossEntropy</code>()</p>
 </blockquote>
 
 </div>
@@ -541,7 +565,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HuberLoss" class="doc_header"><code>class</code> <code>HuberLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L182" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HuberLoss</code>(<strong><code>beta</code></strong>=<em><code>1.0</code></em>)</p>
+<h2 id="HuberLoss" class="doc_header"><code>class</code> <code>HuberLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L193" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HuberLoss</code>(<strong><code>beta</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 
 </div>
@@ -565,7 +589,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MSELoss" class="doc_header"><code>class</code> <code>MSELoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L191" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MSELoss</code>()</p>
+<h2 id="MSELoss" class="doc_header"><code>class</code> <code>MSELoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L202" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MSELoss</code>()</p>
 </blockquote>
 
 </div>

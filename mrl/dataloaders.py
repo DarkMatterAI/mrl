@@ -54,7 +54,16 @@ MAPPING_REGEX = """(\[.\*:.]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|H|\[|\]|\(|\)|\.|=|
 
 def tokenize_by_character(input):
     "Splits `input` into inividual characters"
-    return [i for i in input]
+    unks = False
+    if 'unk' in input:
+        input = input.replace('unk', '_')
+        unks = True
+    tokens = [i for i in input]
+    if unks:
+        for i, item in enumerate(tokens):
+            if item=='_':
+                tokens[i] = 'unk'
+    return tokens
 
 def tokenize_with_replacements(input, replacement_dict):
     "Replaces substrings in `input` using `replacement_dict`, then tokenizes by character"
@@ -107,7 +116,7 @@ class Vocab():
             if item=='eos':
                 break
 
-            if not item=='bos':
+            if (not item=='bos') and (not item=='pad'):
                 output.append(item)
 
         return output
@@ -155,6 +164,9 @@ class CharacterReplaceVocab(Vocab):
     def __init__(self, itos, replace_dict):
         itos = list(itos)
         self.replace_dict = replace_dict
+        if not 'unk' in self.replace_dict.keys():
+            self.replace_dict['unk'] = '_'
+
         self.reverse_dict = {v:k for k,v in replace_dict.items()}
         for rep in self.reverse_dict.keys():
             if not rep in itos:
@@ -173,14 +185,13 @@ class CharacterReplaceVocab(Vocab):
             if item=='eos':
                 break
 
-            if not item=='bos':
+            if (not item=='bos') and (not item=='pad'):
                 if item in self.reverse_dict.keys():
                     item = self.reverse_dict[item]
 
                 output.append(item)
 
         return output
-
 
 class RegexVocab(Vocab):
     '''
