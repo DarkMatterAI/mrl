@@ -337,12 +337,15 @@ def failsafe_fp(mol, fp_function):
 def fp_to_array(fp):
     "Converts RDKit `ExplicitBitVec` to numpy array"
 
-    # note `ConvertToNumpyArray` ~25x faster than `np.asarray`
-    arr = np.zeros((1,), dtype=np.int8)
-    DataStructs.ConvertToNumpyArray(fp, arr)
-#     fp = np.asarray(fp, dtype=np.int8)
+    if is_container(fp):
+        return np.stack([fp_to_array(i) for i in fp])
+    else:
+        # note `ConvertToNumpyArray` ~25x faster than `np.asarray`
+        arr = np.zeros((1,), dtype=np.int8)
+        DataStructs.ConvertToNumpyArray(fp, arr)
+    #     fp = np.asarray(fp, dtype=np.int8)
 
-    return arr
+        return arr
 
 def tanimoto(fps1, fps2):
     'Tanimoto similarity'
@@ -1026,6 +1029,7 @@ def add_one_atom(inputs):
         new_mol.AddBond(source_idx, new_idx, bond_type)
 
     else:
+
         new_mol.RemoveAtom(source_idx)
 
     mol = new_mol.GetMol()
@@ -1085,7 +1089,8 @@ def add_bond_combi(smile, max_ring_size=8):
     bond_to_valence = {
         Chem.rdchem.BondType.SINGLE:1,
         Chem.rdchem.BondType.DOUBLE:2,
-        Chem.rdchem.BondType.TRIPLE:3
+        Chem.rdchem.BondType.TRIPLE:3,
+        None:0
     }
 
     allowed_ring_sizes = set([5,6,7,8])
@@ -1099,7 +1104,8 @@ def add_bond_combi(smile, max_ring_size=8):
 
     bt_to_str = {Chem.rdchem.BondType.SINGLE:'single',
                   Chem.rdchem.BondType.DOUBLE:'double',
-                  Chem.rdchem.BondType.TRIPLE:'triple'}
+                  Chem.rdchem.BondType.TRIPLE:'triple',
+                  None:None}
 
     mol = to_mol(smile)
 
@@ -1107,6 +1113,8 @@ def add_bond_combi(smile, max_ring_size=8):
     for atom in mol.GetAtoms():
         imp_h = atom.GetNumImplicitHs()
         if imp_h>0:
+            if atom.GetSymbol()=='N':
+                imp_h += 1
             valid_idxs.append((atom.GetIdx(), imp_h))
 
     additions = []
@@ -1119,34 +1127,50 @@ def add_bond_combi(smile, max_ring_size=8):
         idx2, h2 = atom2
         max_valence = min(h1, h2)
 
-        path_check = len(Chem.rdmolops.GetShortestPath(mol, idx1, idx2)) in allowed_ring_sizes
-        ring_check = not (mol.GetAtomWithIdx(idx1).IsInRing() and mol.GetAtomWithIdx(idx2).IsInRing())
         current_bond = mol.GetBondBetweenAtoms(idx1, idx2)
-        type_check = not (type(current_bond)==Chem.rdchem.BondType.AROMATIC)
 
-        if all([ring_check, path_check, type_check]):
-            current_bond = mol.GetBondBetweenAtoms(idx1, idx2)
-            lst_idx = current_bond if current_bond is None else current_bond.GetBondType()
-            new_bonds = bond_order[bond_order.index(lst_idx)+1:]
+        if current_bond is None:
+            path_check = len(Chem.rdmolops.GetShortestPath(mol, idx1, idx2)) in allowed_ring_sizes
+            ring_check = not (mol.GetAtomWithIdx(idx1).IsInRing() and mol.GetAtomWithIdx(idx2).IsInRing())
+            go_ahead = path_check and ring_check
+        else:
+            type_check = not (type(current_bond)==Chem.rdchem.BondType.AROMATIC)
+            go_ahead = type_check
+
+        if go_ahead:
+#             current_bond = mol.GetBondBetweenAtoms(idx1, idx2)
+            if current_bond is None:
+                new_bonds = bond_order[1:]
+            else:
+                new_bonds = [i for i in bond_order if not i==current_bond.GetBondType()]
             for bt in new_bonds:
                 if bond_to_valence[bt]<=max_valence:
-                    to_add = [mol, idx1, idx2, bt_to_str[bt]]
+                    to_add = [smile, idx1, idx2, bt_to_str[bt]]
                     additions.append(to_add)
 
-    return maybe_parallel(add_one_bond, additions)
+    return maybe_parallel(add_one_bond, additions, cpus=0)
 
 
 def add_one_bond(inputs):
 
-    mol, idx1, idx2, bt = inputs
+    smile, idx1, idx2, bt = inputs
+    mol = to_mol(smile)
 
     bond_types = {'single':Chem.rdchem.BondType.SINGLE,
                   'double':Chem.rdchem.BondType.DOUBLE,
                   'triple':Chem.rdchem.BondType.TRIPLE}
 
     new_mol = Chem.RWMol(mol)
+    current_bond = mol.GetBondBetweenAtoms(idx1, idx2)
 
-    new_mol.AddBond(idx1, idx2, bond_types[bt])
+    if bt is None:
+        new_mol.RemoveBond(idx1, idx2)
+    elif current_bond is None:
+        new_mol.AddBond(idx1, idx2, bond_types[bt])
+    else:
+        bond_idx = current_bond.GetIdx()
+        current_bond.SetBondType(bond_types[bt])
+        new_mol.ReplaceBond(bond_idx, current_bond)
 
     mol = new_mol.GetMol()
 
