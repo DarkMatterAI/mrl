@@ -176,7 +176,6 @@ class GenerativeAgent(Agent):
 
     def reconstruct_trajectory(self, preds):
         trajectories = maybe_parallel(self.vocab.reconstruct_trajectory, [i for i in preds.detach().cpu()])
-        sequences = [i[-1] if i else '' for i in trajectories]
         return trajectories
 
     def load_weights(self, filename, base=False):
@@ -219,7 +218,7 @@ class GenerativeAgent(Agent):
         lengths = mask.sum(-1)
         sl = y.shape[-1]
         trajectories = self.reconstruct_trajectory(y)
-        smiles = [i[-1] for i in trajectories]
+        smiles = [i[-1] if i else '' for i in trajectories]
 
         model_output['mask'] = mask
         model_output['lengths'] = lengths
