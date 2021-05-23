@@ -127,7 +127,7 @@ class TRPO(BasePolicy):
 
     def value_loss(self, values, rewards):
         if values is None:
-            v_loss = torch.tensor(0.)
+            v_loss = to_device(torch.tensor(0.))
         else:
             v_loss = self.v_coef*F.mse_loss(values, rewards)
 
@@ -136,8 +136,8 @@ class TRPO(BasePolicy):
 # Cell
 
 class PPO(BasePolicy):
-    def __init__(self, gamma, kl_coef, lam=0.95, v_coef=0.5, cliprange=0.2, ent_coef=0.01,
-                 kl_target=None, kl_horizon=None):
+    def __init__(self, gamma, kl_coef, lam=0.95, v_coef=0.5, cliprange=0.2,
+                 v_cliprange=0.2, ent_coef=0.01, kl_target=None, kl_horizon=None):
         self.gamma = gamma
         self.lam = lam
         self.ent_coef = ent_coef
@@ -146,6 +146,7 @@ class PPO(BasePolicy):
         self.kl_horizon = kl_horizon
         self.v_coef = v_coef
         self.cliprange = cliprange
+        self.v_cliprange = v_cliprange
 
     def __call__(self, model_outputs):
         discounted_rewards = self.discount_rewards(model_outputs)
@@ -154,11 +155,11 @@ class PPO(BasePolicy):
         discounted_rewards = discounted_rewards + kl_reward
 
         values = model_outputs['state_values']
+        old_values = model_outputs['old_state_values']
         advantages = self.compute_advantages(discounted_rewards, values)
         advantages = whiten(advantages)
 
-        values = model_outputs['state_values']
-        v_loss = self.value_loss(values, discounted_rewards)
+        v_loss = self.value_loss(values, old_values, discounted_rewards)
 
         lps = model_outputs['model_gathered_logprobs']
         ref_lps = model_outputs['reference_gathered_logprobs']
@@ -198,11 +199,23 @@ class PPO(BasePolicy):
         kl_reward = -self.kl_coef * kl.detach()
         return kl_reward
 
-    def value_loss(self, values, rewards):
+    def value_loss(self, values, old_values, rewards):
         if values is None:
-            v_loss = torch.tensor(0.)
+            v_loss = to_device(torch.tensor(0.))
         else:
-            v_loss = self.v_coef*F.mse_loss(values, rewards)
+
+            v_loss = F.mse_loss(values, rewards, reduction='none')
+
+            if old_values is not None:
+                min_v = old_values - self.v_cliprange
+                max_v = old_values + self.v_cliprange
+
+                values_clipped = torch.max(torch.min(values, max_v), min_v)
+                v_loss2 = F.mse_loss(values_clipped, rewards, reduction='none')
+
+                v_loss = torch.max(v_loss, v_loss2)
+
+            v_loss = self.v_coef*v_loss.mean()
 
         return v_loss
 

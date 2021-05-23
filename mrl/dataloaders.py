@@ -99,7 +99,7 @@ class Vocab():
                 self.unks.append(tok)
         return output
 
-    def reconstruct(self, input):
+    def _reconstruct(self, input):
         'Reconstruct `input` into a string'
         output = []
         for item in input:
@@ -110,7 +110,14 @@ class Vocab():
             if not item=='bos':
                 output.append(item)
 
-        return ''.join(output)
+        return output
+
+    def reconstruct(self, input):
+        return ''.join(self._reconstruct(input))
+
+    def reconstruct_trajectory(self, input):
+        tokens = self._reconstruct(input)
+        return [''.join(tokens[:i]) for i in range(1,len(tokens)+1)]
 
     def update_vocab(self):
         'Adds tokens in `self.unks` to vocabulary'
@@ -159,7 +166,7 @@ class CharacterReplaceVocab(Vocab):
         toks = ['bos'] + toks + ['eos']
         return toks
 
-    def reconstruct(self, input):
+    def _reconstruct(self, input):
         output = []
         for item in input:
             item = self.itos[item]
@@ -172,7 +179,7 @@ class CharacterReplaceVocab(Vocab):
 
                 output.append(item)
 
-        return ''.join(output)
+        return output
 
 
 class RegexVocab(Vocab):

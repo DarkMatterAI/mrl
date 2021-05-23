@@ -113,29 +113,40 @@ class PredictiveAgent(Agent):
 # Cell
 
 class GenerativeAgent(Agent):
-    def __init__(self, model, vocab, loss_function, dataset,
+    def __init__(self, model, vocab, loss_function, dataset, base_update_rate=0.99,
                  base_model=True, value_head=None, latents=None,
                  opt_kwargs={}, vopt_kwargs={}, lopt_kwargs={}):
         super().__init__(model, loss_function, dataset, opt_kwargs)
 
+
+        self.opts = [self.opt]
+        self.set_models(base_model, value_head, latents,
+                        vopt_kwargs, lopt_kwargs)
+
+        self.vocab = vocab
+        self.base_update_rate = base_update_rate
+
+
+    def set_models(self, base_model, value_head, latents,
+                   vopt_kwargs, lopt_kwargs):
+
         if base_model==True:
-            self.base_model = copy.deepcopy(model)
+            self.base_model = copy.deepcopy(self.model)
         else:
             self.base_model = base_model
 
-        to_device(self.model)
         to_device(self.base_model)
 
-        self.vocab = vocab
         self.value_head = value_head
-        self.latents = latents
-
-        self.opts = [self.opt]
         if self.value_head is not None:
+            self.base_value_head = copy.deepcopy(self.value_head)
             to_device(self.value_head)
+            to_device(self.base_value_head)
+
             self.value_opt = self.get_opt(self.value_head.parameters(), **vopt_kwargs)
             self.opts.append(self.value_opt)
 
+        self.latents = latents
         if self.latents is not None:
             self.latents = to_device(self.latents)
             self.latents = nn.Parameter(self.latents)
@@ -150,8 +161,17 @@ class GenerativeAgent(Agent):
         for opt in self.opts:
             opt.step()
 
+    def update_base_models(self):
+        if type(self.base_model)==type(self.model):
+            merge_models(self.base_model, self.model, alpha=self.base_update_rate)
+
+        if self.value_head is not None:
+            merge_models(self.base_value_head, self.value_head, alpha=self.base_update_rate)
+
     def reconstruct(self, preds):
-        return maybe_parallel(self.vocab.reconstruct, [i for i in preds.detach().cpu()])
+        trajectories = maybe_parallel(self.vocab.reconstruct_trajectory, [i for i in preds.detach().cpu()])
+        sequences = [i[-1] for i in trajectories]
+        return sequences, trajectories
 
     def load_weights(self, filename, base=False):
         state_dict = torch.load(filename, map_location=get_model_device(self.model))
@@ -192,12 +212,13 @@ class GenerativeAgent(Agent):
         mask = ~(y==self.vocab.stoi['pad'])
         lengths = mask.sum(-1)
         sl = y.shape[-1]
-        smiles = self.reconstruct(y)
+        smiles, trajectories = self.reconstruct(y)
 
         model_output['mask'] = mask
         model_output['lengths'] = lengths
         model_output['sl'] = sl
         model_output['sequences'] = smiles
+        model_output['sequence_trajectories'] = trajectories
 
         return model_output
 
@@ -217,10 +238,14 @@ class GenerativeAgent(Agent):
 
         if self.value_head is not None:
             value_predictions = self.value_head(me)
+            with torch.no_grad():
+                base_value_predictions = self.base_value_head(me)
         else:
             value_predictions = None
+            base_value_predictions = None
 
         model_output['state_values'] = value_predictions
+        model_output['old_state_values'] = base_value_predictions
 
         if self.base_model is not None:
             with torch.no_grad():
@@ -242,6 +267,7 @@ class ModelOutput(dict):
         super().__init__()
 
         self.__setitem__('sequences', [])                      # buffer/batch
+        self.__setitem__('sequence_trajectories', [])          # buffer/batch
         self.__setitem__('mols', [])                           # buffer/batch
         self.__setitem__('source', [])                         # buffer/batch
         self.__setitem__('x', None)                            # buffer/batch
@@ -256,6 +282,7 @@ class ModelOutput(dict):
         self.__setitem__('y_gumbel', None)                     # agent
         self.__setitem__('latent', None)                       # agent
         self.__setitem__('state_values', None)                 # agent value_head
+        self.__setitem__('old_state_values', None)             # agent base_value_head
         self.__setitem__('reference_output', None)             # reference model
         self.__setitem__('reference_encoded', None)            # reference model
         self.__setitem__('reference_logprobs', None)           # reference model
