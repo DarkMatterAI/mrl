@@ -113,8 +113,8 @@ class PredictiveAgent(Agent):
 # Cell
 
 class GenerativeAgent(Agent):
-    def __init__(self, model, vocab, loss_function, dataset, base_update_rate=0.99,
-                 base_model=True, value_head=None, latents=None,
+    def __init__(self, model, vocab, loss_function, dataset, base_update=0.99,
+                 v_update=0.95, base_model=True, value_head=None, latents=None,
                  opt_kwargs={}, vopt_kwargs={}, lopt_kwargs={}):
         super().__init__(model, loss_function, dataset, opt_kwargs)
 
@@ -124,7 +124,8 @@ class GenerativeAgent(Agent):
                         vopt_kwargs, lopt_kwargs)
 
         self.vocab = vocab
-        self.base_update_rate = base_update_rate
+        self.base_update = base_update
+        self.v_update = v_update
 
 
     def set_models(self, base_model, value_head, latents,
@@ -163,17 +164,19 @@ class GenerativeAgent(Agent):
 
     def update_base_models(self):
         if type(self.base_model)==type(self.model):
-            merge_models(self.base_model, self.model, alpha=self.base_update_rate)
+            if self.base_update < 1:
+                merge_models(self.base_model, self.model, alpha=self.base_update)
 
         if self.value_head is not None:
-            merge_models(self.base_value_head, self.value_head, alpha=self.base_update_rate)
+            if self.v_update < 1:
+                merge_models(self.base_value_head, self.value_head, alpha=self.v_update)
 
     def reconstruct(self, preds):
         return maybe_parallel(self.vocab.reconstruct, [i for i in preds.detach().cpu()])
 
     def reconstruct_trajectory(self, preds):
         trajectories = maybe_parallel(self.vocab.reconstruct_trajectory, [i for i in preds.detach().cpu()])
-        sequences = [i[-1] for i in trajectories]
+        sequences = [i[-1] if i else '' for i in trajectories]
         return trajectories
 
     def load_weights(self, filename, base=False):
