@@ -211,6 +211,7 @@ class GenerativeAgent(BaselineAgent):
                          base_model=base_model, value_head=value_head,
                          opt_kwargs=opt_kwargs, vopt_kwargs=vopt_kwargs)
 
+        self.vocab = vocab
         self.set_latent(latents, lopt_kwargs)
 
     def set_latent(self, latents, lopt_kwargs):
