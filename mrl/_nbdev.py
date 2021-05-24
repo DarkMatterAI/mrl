@@ -211,7 +211,14 @@ index = {"is_container": "00_core.ipynb",
          "BasePolicy": "11_policy_gradients.ipynb",
          "PolicyGradient": "11_policy_gradients.ipynb",
          "TRPO": "11_policy_gradients.ipynb",
-         "PPO": "11_policy_gradients.ipynb"}
+         "PPO": "11_policy_gradients.ipynb",
+         "Reward": "12_reward.ipynb",
+         "trajectory_wrapper": "12_reward.ipynb",
+         "RewardModule": "12_reward.ipynb",
+         "MolReward": "12_reward.ipynb",
+         "MLReward": "12_reward.ipynb",
+         "FPModelReward": "12_reward.ipynb",
+         "SequenceModelReward": "12_reward.ipynb"}
 
 modules = ["core.py",
            "chem.py",
@@ -224,7 +231,8 @@ modules = ["core.py",
            "agent.py",
            "g_models/lstm_lm.py",
            "g_models/vae.py",
-           "policy_gradient.py"]
+           "policy_gradient.py",
+           "reward.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 
