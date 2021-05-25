@@ -327,8 +327,9 @@ class BaseDataset(Dataset):
     def new(self):
         raise NotImplementedError
 
-    def split(self, percent_valid):
+    def split(self, percent_valid, seed=0):
 
+        torch.manual_seed(seed)
         idxs = torch.randperm(self.__len__()).numpy()
         train_length = int(self.__len__()*(1-percent_valid))
 

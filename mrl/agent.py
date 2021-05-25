@@ -92,7 +92,7 @@ class Agent():
 
     def save_weights(self, filename):
 
-        state_dict = self.base_model.state_dict()
+        state_dict = self.model.state_dict()
         torch.save(state_dict, filename)
 
 # Cell
