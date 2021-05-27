@@ -31,7 +31,7 @@ class LSTM_LM(nn.Module):
         output, hiddens, encoded = self.block(x, hiddens)
         return encoded
 
-    def sample(self, bs, sl, temperature=1., multinomial=True):
+    def sample(self, bs, sl, z=None, temperature=1., multinomial=True):
 
         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))
         lps = []
@@ -49,7 +49,7 @@ class LSTM_LM(nn.Module):
 
         return preds[:, 1:], torch.cat(lps,-1)
 
-    def sample_no_grad(self, bs, sl, temperature=1., multinomial=True):
+    def sample_no_grad(self, bs, sl, z=None, temperature=1., multinomial=True):
         with torch.no_grad():
             return self.sample(bs, sl, temperature=temperature, multinomial=multinomial)
 
