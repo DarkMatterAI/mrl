@@ -15,12 +15,9 @@ class BasePolicy():
     def __init__(self, gamma=1.):
         self.gamma = gamma
 
-    def discount_rewards(self, model_outputs):
-        rewards = model_outputs['rewards_scaled']
-        mask = model_outputs['mask']
+    def discount_rewards(self, rewards, mask, traj_rewards):
         rewards = scatter_rewards(rewards, mask)
 
-        traj_rewards = model_outputs['trajectory_rewards']
         if traj_rewards is not None:
             rewards += traj_rewards
 
@@ -36,28 +33,34 @@ class PolicyGradient(BasePolicy):
         self.discount = discount
         self.ratio = ratio
 
-    def __call__(self, model_outputs):
-
-        lps = model_outputs['model_gathered_logprobs']
-
+    def __call__(self, lps, mask, rewards, ref_lps=None, traj_rewards=None):
         if self.ratio:
-            old_lps = model_outputs['reference_gathered_logprobs']
-            lps = (lps - old_lps.detach()).exp()
-
-        mask = model_outputs['mask']
-        rewards = model_outputs['rewards_scaled']
+            lps = (lps - ref_lps.detach()).exp()
 
         if not self.discount:
             pg_loss = -((lps*mask).sum(-1)*rewards)/mask.sum(-1)
+
         else:
-            rewards = self.discount_rewards(model_outputs)
+            rewards = self.discount_rewards(rewards, mask, traj_rewards)
             rewards = whiten(rewards)
             pg_loss = -(lps*rewards*mask).sum(-1)/mask.sum(-1)
 
-        model_outputs['losses']['pg_loss'] = pg_loss.mean()
-        model_outputs['loss_dicts']['pg_dict'] = {'pg_rewards' : rewards}
+        pg_dict = {'loss':loss.detach().cpu(), 'rewards':rewards.detach().cpu()}
 
-        return model_outputs
+        return pg_loss.mean(), pg_dict
+
+    def from_batch_state(self, batch_state):
+        lps = batch_state.model_gathered_logprobs
+        ref_lps = batch_state.reference_gathered_logprobs
+        mask = batch_state.mask
+        rewards = batch_state.rewards_scaled
+        traj_rewards = batch_state.trajectory_rewards
+
+        loss, pg_dict = self(lps, mask, rewards, ref_lps, traj_rewards)
+        batch_state.losses.append(loss)
+        batch_state.pg_losses = loss
+        batch_state.pg_dict = pg_dict
+
 
 # Cell
 
@@ -70,30 +73,25 @@ class TRPO(BasePolicy):
         self.kl_target = kl_target
         self.v_coef = v_coef
 
-    def __call__(self, model_outputs):
-        discounted_rewards = self.discount_rewards(model_outputs)
+    def __call__(self, lps_g, ref_lps_g, lps, ref_lps, mask,
+                 rewards, values, traj_rewards=None):
 
-        values = model_outputs['state_values']
+        discounted_rewards = self.discount_rewards(rewards, mask, traj_rewards)
         advantages = self.compute_advantages(discounted_rewards, values)
         advantages = whiten(advantages)
 
         v_loss = self.value_loss(values, discounted_rewards)
 
-        lps = model_outputs['model_gathered_logprobs']
-        ref_lps = model_outputs['reference_gathered_logprobs']
-        mask = model_outputs['mask']
-
-        ratios = (lps - ref_lps.detach()).exp()
+        ratios = (lps_g - ref_lps_g.detach()).exp()
 
         loss1 = -(ratios*advantages*mask).sum(-1)/mask.sum(-1)
 
         kl = torch.distributions.kl.kl_divergence(
-                    Categorical(logits=model_outputs['reference_logprobs']),
-                    Categorical(logits=model_outputs['model_logprobs'].detach()))
+                    Categorical(logits=ref_lps),
+                    Categorical(logits=lps))
 
         kl = (kl*mask).sum(-1)/mask.sum(-1)
         kl = kl.mean()
-
         loss2 = self.beta*kl
 
         loss3 = self.eta * torch.maximum(to_device(torch.tensor(0.)),
@@ -104,17 +102,35 @@ class TRPO(BasePolicy):
 
         pg_loss = loss1 + loss2 + loss3 + v_loss
 
-        model_outputs['losses']['pg_loss'] = pg_loss
-        model_outputs['loss_dicts']['pg_dict'] = {'pg_discounted' : discounted_rewards,
-                                                'pg_advantage' : advantages,
-                                                'ratios' : ratios.detach().cpu(),
-                                                'kl' : kl.detach().cpu(),
-                                                'loss1' : loss1.detach().cpu(),
-                                                'loss2' : loss2.detach().cpu(),
-                                                'loss3' : loss3.detach().cpu(),
-                                                'v_loss' : v_loss.detach().cpu()}
+        pg_dict = {'pg_discounted' : discounted_rewards,
+                    'pg_advantage' : advantages,
+                    'ratios' : ratios.detach().cpu(),
+                    'kl' : kl.detach().cpu(),
+                    'loss1' : loss1.detach().cpu(),
+                    'loss2' : loss2.detach().cpu(),
+                    'loss3' : loss3.detach().cpu(),
+                    'v_loss' : v_loss.detach().cpu()}
 
-        return model_outputs
+        return pg_loss, pg_dict
+
+    def from_batch_state(self, batch_state):
+        lps_g = batch_state.model_gathered_logprobs
+        ref_lps_g = batch_state.reference_gathered_logprobs
+
+        lps = batch_state.model_logprobs
+        ref_lps = batch_state.reference_logprobs
+
+        mask = batch_state.mask
+        rewards = batch_state.rewards_scaled
+        traj_rewards = batch_state.trajectory_rewards
+
+        values = batch_state.state_values
+
+        loss, pg_dict = self(lps_g, ref_lps_g, lps, ref_lps, mask,
+                             rewards, values, traj_rewards)
+        batch_state.losses.append(loss)
+        batch_state.pg_losses = loss
+        batch_state.pg_dict = pg_dict
 
     def compute_advantages(self, rewards, values):
 
@@ -148,22 +164,17 @@ class PPO(BasePolicy):
         self.cliprange = cliprange
         self.v_cliprange = v_cliprange
 
-    def __call__(self, model_outputs):
-        discounted_rewards = self.discount_rewards(model_outputs)
+    def __call__(self, lps, ref_lps, mask,
+                 rewards, values, ref_values, traj_rewards=None):
 
-        kl_reward = self.compute_kl_reward(model_outputs)
+        discounted_rewards = self.discount_rewards(rewards, mask, traj_rewards)
+        kl_reward = self.compute_kl_reward(lps, ref_lps)
+
         discounted_rewards = discounted_rewards + kl_reward
-
-        values = model_outputs['state_values']
-        old_values = model_outputs['old_state_values']
         advantages = self.compute_advantages(discounted_rewards, values)
         advantages = whiten(advantages)
 
-        v_loss = self.value_loss(values, old_values, discounted_rewards)
-
-        lps = model_outputs['model_gathered_logprobs']
-        ref_lps = model_outputs['reference_gathered_logprobs']
-        mask = model_outputs['mask']
+        v_loss = self.value_loss(values, ref_values, discounted_rewards)
 
         ratios = (lps - ref_lps).exp()
         ratios_clipped = torch.clamp(ratios, 1.0-self.cliprange, 1.0+self.cliprange)
@@ -180,21 +191,36 @@ class PPO(BasePolicy):
 
         pg_loss = loss + v_loss - self.ent_coef*entropy
 
-        self.update_kl(model_outputs)
+        self.update_kl(lps, ref_lps, mask)
 
-        model_outputs['losses']['pg_loss'] = pg_loss
-        model_outputs['loss_dicts']['pg_dict'] = {'pg_discounted' : discounted_rewards,
-                                    'pg_advantage' : advantages,
-                                    'ratios' : ratios.detach().cpu(),
-                                    'loss' : loss.detach().cpu(),
-                                    'v_loss' : v_loss.detach().cpu(),
-                                    'entropy' : entropy.detach().cpu()}
+        pg_dict = {'pg_discounted' : discounted_rewards,
+                    'pg_advantage' : advantages,
+                    'ratios' : ratios.detach().cpu(),
+                    'loss' : loss.detach().cpu(),
+                    'v_loss' : v_loss.detach().cpu(),
+                    'entropy' : entropy.detach().cpu()}
 
-        return model_outputs
+        return pg_loss, pg_dict
 
-    def compute_kl_reward(self, model_outputs):
-        lps = model_outputs['model_gathered_logprobs']
-        ref_lps = model_outputs['reference_gathered_logprobs']
+    def from_batch_state(self, batch_state):
+        lps = batch_state.model_gathered_logprobs
+        ref_lps = batch_state.reference_gathered_logprobs
+
+
+        mask = batch_state.mask
+        rewards = batch_state.rewards_scaled
+        traj_rewards = batch_state.trajectory_rewards
+
+        values = batch_state.state_values
+        ref_values = batch_state.ref_state_values
+
+        loss, pg_dict = self(lps, ref_lps, mask, rewards,
+                             values, ref_values, traj_rewards)
+        batch_state.losses.append(loss)
+        batch_state.pg_losses = loss
+        batch_state.pg_dict = pg_dict
+
+    def compute_kl_reward(self, lps, ref_lps):
         kl = lps - ref_lps
         kl_reward = -self.kl_coef * kl.detach()
         return kl_reward
@@ -228,12 +254,9 @@ class PPO(BasePolicy):
 
         return advantages
 
-    def update_kl(self, model_outputs):
+    def update_kl(self, lps, ref_lps, mask):
 
         if (self.kl_target is not None) and (self.kl_horizon is not None):
-            lps = model_outputs['model_gathered_logprobs']
-            ref_lps = model_outputs['reference_gathered_logprobs']
-            mask = model_outputs['mask']
             kl = (lps - ref_lps).detach()
             kl = (kl*mask).sum(-1)/mask.sum(-1)
             kl = kl.cpu().mean()
