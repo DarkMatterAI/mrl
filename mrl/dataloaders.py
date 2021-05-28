@@ -3,9 +3,10 @@
 __all__ = ['SMILES_CHAR_VOCAB', 'SPECIAL_TOKENS', 'MAPPING_TOKENS', 'HALOGEN_REPLACE', 'MAPPING_REPLACE', 'SMILE_REGEX',
            'MAPPING_REGEX', 'tokenize_by_character', 'tokenize_with_replacements', 'regex_tokenize', 'Vocab',
            'CharacterVocab', 'CharacterReplaceVocab', 'RegexVocab', 'test_reconstruction', 'batch_sequences',
-           'lm_collate', 'sequence_prediction_collate', 'vector_collate', 'vector_reconstruction_collate',
-           'vector_prediction_collate', 'BaseDataset', 'TextDataset', 'TextPredictionDataset', 'Vector_Dataset',
-           'Vec_Recon_Dataset', 'Vec_Prediction_Dataset']
+           'lm_collate', 'seq_to_seq_collate', 'sequence_prediction_collate', 'vector_collate',
+           'vector_reconstruction_collate', 'vector_prediction_collate', 'BaseDataset', 'TextDataset',
+           'TextToTextDataset', 'TextPredictionDataset', 'Vector_Dataset', 'Vec_Recon_Dataset', 'Vec2Text_Dataset',
+           'Vec_Prediction_Dataset']
 
 # Cell
 from .imports import *
@@ -255,6 +256,22 @@ def lm_collate(batch, pad_idx, batch_first=True):
 
     return to_device(output)
 
+def seq_to_seq_collate(batch, pad_idx, batch_first=True):
+    '''
+    Collate function for seq2seq models
+    '''
+    x_tensor = batch_sequences([i[0] for i in batch], pad_idx)
+    y_tensor = batch_sequences([i[1] for i in batch], pad_idx)
+
+    if batch_first:
+        output = (x_tensor[:,:-1], y_tensor[:,1:])
+    else:
+        x_tensor = x_tensor.T
+        y_tensor = y_tensor.T
+        output = (x_tensor[:-1,:], y_tensor[1:,:])
+
+    return to_device(output)
+
 def sequence_prediction_collate(batch, pad_idx, batch_first=True):
     '''
     Collate function for predicting some y value from a sequence
@@ -385,6 +402,55 @@ class TextDataset(BaseDataset):
 
 # Cell
 
+class TextToTextDataset(BaseDataset):
+    '''
+    TextToTextDataset - base dataset for sequence to sequence models
+
+    Inputs:
+
+        `in_smiles` - list[str], list of input text sequences
+
+        `out_smiles` - list[str], list of output text sequences
+
+        `vocab` - Vocab, vocabuary for tokenization/numericaization
+
+        `collate_function` - batch collate function. If None, defauts to `seq_to_seq_collate`
+    '''
+    def __init__(self, in_smiles, out_smiles, vocab, collate_function=None):
+        self.in_smiles = in_smiles
+        self.out_smiles = out_smiles
+        self.vocab = vocab
+        if collate_function is None:
+            collate_function = partial(seq_to_seq_collate, pad_idx=self.vocab.stoi['pad'])
+
+        super().__init__(collate_function)
+
+    def __len__(self):
+        return len(self.smiles)
+
+    def __getitem__(self, idx):
+        in_smile = self.in_smiles[idx]
+        out_smile = self.out_smiles[idx]
+        in_tokens = self.vocab.tokenize(in_smile)
+        out_tokens = self.vocab.tokenize(out_smile)
+        in_ints = torch.LongTensor(self.vocab.numericalize(in_tokens))
+        out_ints = torch.LongTensor(self.vocab.numericalize(out_tokens))
+        return (in_ints, out_ints)
+
+    def new(self, in_smiles, out_smiles):
+        return self.__class__(in_smiles, out_smiles, self.vocab, self.collate_function)
+
+    def split_on_idxs(self, train_idxs, valid_idxs):
+
+        train_ds = self.new([self.in_smiles[i] for i in train_idxs],
+                            [self.out_smiles[i] for i in train_idxs])
+        valid_ds = self.new([self.in_smiles[i] for i in valid_idxs],
+                            [self.out_smiles[i] for i in valid_idxs])
+        return (train_ds, valid_ds)
+
+
+# Cell
+
 class TextPredictionDataset(TextDataset):
     '''
     TextDataset - base dataset for predicting from text strings
@@ -499,6 +565,59 @@ class Vec_Recon_Dataset(Vector_Dataset):
         vec = torch.FloatTensor(vec)
 
         tokens = self.vocab.tokenize(smile)
+        ints = self.vocab.numericalize(tokens)
+        ints = torch.LongTensor(ints)
+
+        return (vec, ints)
+
+    def new(self, smiles):
+        return self.__class__(smiles, self.vocab, self.mol_function, self.collate_function)
+
+    def split_on_idxs(self, train_idxs, valid_idxs):
+
+        train_ds = self.new([self.smiles[i] for i in train_idxs])
+        valid_ds = self.new([self.smiles[i] for i in valid_idxs])
+
+        return (train_ds, valid_ds)
+
+
+# Cell
+
+class Vec2Text_Dataset(Vector_Dataset):
+    '''
+    Vec2Text_Recon_Dataset - base dataset for predicting smiles from molecule-derived vectors
+
+    Inputs:
+
+        `in_smiles` - list[str], list of input text sequences
+
+        `out_smiles` - list[str], list of input text sequences
+
+        `vocab` - Vocab, vocabuary for tokenization/numericaization
+
+        `mol_function` - function to convert smiles to fingerprints
+
+        `collate_function` - batch collate function. If None, defauts to `vector_reconstruction_collate`
+    '''
+    def __init__(self, in_smiles, out_smiles, vocab, mol_function, collate_function=None):
+
+        if collate_function is None:
+            collate_function = partial(vector_reconstruction_collate, pad_idx=vocab.stoi['pad'])
+
+        super().__init__(in_smiles, mol_function, collate_function)
+
+        self.in_smiles = in_smiles
+        self.out_smiles = out_smiles
+        self.vocab = vocab
+
+    def __getitem__(self, idx):
+        in_smile = self.in_smiles[idx]
+
+        vec = self.mol_function(in_smile)
+        vec = torch.FloatTensor(vec)
+
+        out_smile = self.out_smiles[idx]
+        tokens = self.vocab.tokenize(out_smile)
         ints = self.vocab.numericalize(tokens)
         ints = torch.LongTensor(ints)
 
