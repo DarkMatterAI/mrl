@@ -45,7 +45,7 @@ class PolicyGradient(BasePolicy):
             rewards = whiten(rewards)
             pg_loss = -(lps*rewards*mask).sum(-1)/mask.sum(-1)
 
-        pg_dict = {'loss':loss.detach().cpu(), 'rewards':rewards.detach().cpu()}
+        pg_dict = {'loss':pg_loss.detach().cpu(), 'rewards':rewards.detach().cpu()}
 
         return pg_loss.mean(), pg_dict
 
@@ -57,9 +57,7 @@ class PolicyGradient(BasePolicy):
         traj_rewards = batch_state.trajectory_rewards
 
         loss, pg_dict = self(lps, mask, rewards, ref_lps, traj_rewards)
-        batch_state.losses.append(loss)
-        batch_state.pg_losses = loss
-        batch_state.pg_dict = pg_dict
+        return loss, pg_dict
 
 
 # Cell
@@ -128,9 +126,7 @@ class TRPO(BasePolicy):
 
         loss, pg_dict = self(lps_g, ref_lps_g, lps, ref_lps, mask,
                              rewards, values, traj_rewards)
-        batch_state.losses.append(loss)
-        batch_state.pg_losses = loss
-        batch_state.pg_dict = pg_dict
+        return loss, pg_dict
 
     def compute_advantages(self, rewards, values):
 
@@ -216,9 +212,8 @@ class PPO(BasePolicy):
 
         loss, pg_dict = self(lps, ref_lps, mask, rewards,
                              values, ref_values, traj_rewards)
-        batch_state.losses.append(loss)
-        batch_state.pg_losses = loss
-        batch_state.pg_dict = pg_dict
+
+        return loss, pg_dict
 
     def compute_kl_reward(self, lps, ref_lps):
         kl = lps - ref_lps
