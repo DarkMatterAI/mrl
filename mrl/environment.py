@@ -40,6 +40,7 @@ class BatchStats(Callback):
         self.rewards = []
         self.metric_vals = ['iterations', 'diversity',
                             'valid', 'rewards']
+        self.report = 1
 
     def before_train(self):
         if self.pbar is None:
@@ -53,24 +54,25 @@ class BatchStats(Callback):
 
     def after_batch(self):
         outputs = []
-        for metric in self.metric_vals:
-            v = getattr(self, metric)
-            if type(v)==list:
-                val = v[-1]
+        if self.iterations%self.report==0:
+            for metric in self.metric_vals:
+                v = getattr(self, metric)
+                if type(v)==list:
+                    val = v[-1]
+                else:
+                    val = v
+
+                if type(val)==int:
+                    val = f'{val}'
+                else:
+                    val = f'{val:.2f}'
+
+                outputs.append(val)
+
+            if self.pbar is None:
+                print('\t'.join(outputs))
             else:
-                val = v
-
-            if type(val)==int:
-                val = f'{val}'
-            else:
-                val = f'{val:.2f}'
-
-            outputs.append(val)
-
-        if self.pbar is None:
-            print('\t'.join(outputs))
-        else:
-            self.pbar.write(outputs, table=True)
+                self.pbar.write(outputs, table=True)
 
         self.iterations += 1
 
@@ -270,14 +272,16 @@ class Environment():
         loss.backward()
         self('step')
 
-    def fit(self, bs, sl, iters, buffer_size):
+    def fit(self, bs, sl, iters, buffer_size, report):
         self.bs = bs
         self.sl = sl
         self.buffer_size = buffer_size
-        mb = master_bar(range(iters))
+        self.report = report
+        mb = master_bar(range(1))
         self.batch_stats.pbar = mb
+        self.batch_stats.report = report
         self('before_train')
-        for step in mb:
+        for step in progress_bar(range(iters), parent=mb):
             self.build_buffer()
             self.sample_batch()
             self('get_model_outputs')
