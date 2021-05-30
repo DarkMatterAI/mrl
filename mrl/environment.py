@@ -371,7 +371,7 @@ class ModelSampler(Sampler):
 
             if self.latent:
                 latents = self.agent.latents
-                latent_idxs = torch.randint(0, latents.shape[0]-1, bs)
+                latent_idxs = torch.randint(0, latents.shape[0]-1, (bs,))
                 sample_latents = latents[latent_idxs]
             else:
                 sample_latents=None
@@ -500,6 +500,14 @@ class GenAgentCallback(AgentCallback):
         self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
         self.batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
 
+    def subset_tensor(self, x, mask):
+        if type(x)==list:
+            x = [i[mask] for i in x]
+        else:
+            x = x[mask]
+
+        return x
+
     def get_model_outputs(self):
 
         x = self.batch_state.x
@@ -514,12 +522,14 @@ class GenAgentCallback(AgentCallback):
                 latent_sources.append(latent_source)
                 latent_mask = torch.tensor([i==latent_source for i in sources]).bool()
                 latents = self.agent.latents[latent_idxs]
-                out = self.agent.model.get_rl_tensors(x[latent_mask], y[latent_mask],
-                                                      latents=latents)
+                out = self.agent.model.get_rl_tensors(self.subset_tensor(x, latent_mask),
+                                                      self.subset_tensor(y, latent_mask),
+                                                      latent=latents)
                 output_tensors.append(out)
 
             non_latent_mask = torch.tensor([not i in latent_sources for i in sources]).bool()
-            out = self.agent.model.get_rl_tensors(x[non_latent_mask], y[non_latent_mask])
+            out = self.agent.model.get_rl_tensors(self.subset_tensor(x, non_latent_mask),
+                                                  self.subset_tensor(y, non_latent_mask))
             output_tensors.append(out)
 
             mo = torch.cat([i[0] for i in output_tensors], 0)
