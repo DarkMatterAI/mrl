@@ -485,17 +485,19 @@ class GenAgentCallback(AgentCallback):
 
         batch_ds = self.agent.dataset.new(self.batch_state.samples)
         batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
+        bs = len(batch)
         x,y = batch
 
         self.batch_state.x = x
         self.batch_state.y = y
+        self.batch_state.bs = bs
         mask = ~(y==self.agent.vocab.stoi['pad'])
         self.batch_state.mask = mask
         self.batch_state.lengths = mask.sum(-1)
         self.batch_state.sl = y.shape[-1]
         self.batch_state.sequence_trajectories = self.agent.reconstruct_trajectory(y)
-        self.batch_state.rewards = to_device(torch.zeros(x.shape[0]))
-        self.batch_state.rewards_scaled = to_device(torch.zeros(x.shape[0]))
+        self.batch_state.rewards = to_device(torch.zeros(bs))
+        self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
         self.batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
 
     def get_model_outputs(self):
