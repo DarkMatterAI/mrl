@@ -530,9 +530,10 @@ class GenAgentCallback(AgentCallback):
                 output_tensors.append(out)
 
             non_latent_mask = torch.tensor([not i in latent_sources for i in sources]).bool()
-            out = self.agent.model.get_rl_tensors(self.subset_tensor(x, non_latent_mask),
-                                                  self.subset_tensor(y, non_latent_mask))
-            output_tensors.append(out)
+            if non_latent_mask.sum()>0:
+                out = self.agent.model.get_rl_tensors(self.subset_tensor(x, non_latent_mask),
+                                                      self.subset_tensor(y, non_latent_mask))
+                output_tensors.append(out)
 
             mo = torch.cat([i[0] for i in output_tensors], 0)
             mlp = torch.cat([i[1] for i in output_tensors], 0)
