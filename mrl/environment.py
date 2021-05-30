@@ -373,7 +373,6 @@ class ModelSampler(Sampler):
                 latents = self.agent.latents
                 latent_idxs = torch.randint(0, latents.shape[0]-1, bs)
                 sample_latents = latents[latent_idxs]
-                self.batch_state.latent_data.append([self.name, latent_idxs])
             else:
                 sample_latents=None
 
@@ -384,8 +383,34 @@ class ModelSampler(Sampler):
             valid = np.array([to_mol(i) is not None for i in sequences])
             getattr(env.batch_stats, f"{self.name}_diversity").append(diversity)
             getattr(env.batch_stats, f"{self.name}_valid").append(valid.mean())
+
+            hps = env.template_cb.get_hps(sequences)
+            sequences = list(np.array(sequences)[hps])
+
+            if sample_latents is not None:
+                latent_idxs = latent_idxs[hps]
+                self.batch_state.latent_data.append([self.name, latent_idxs])
+
             self.batch_state.samples += sequences
             self.batch_state.sources += [self.name]*len(sequences)
+
+#             if self.latent:
+#                 latents = self.agent.latents
+#                 latent_idxs = torch.randint(0, latents.shape[0]-1, bs)
+#                 sample_latents = latents[latent_idxs]
+#                 self.batch_state.latent_data.append([self.name, latent_idxs])
+#             else:
+#                 sample_latents=None
+
+
+#             preds, _ = self.model.sample_no_grad(bs, env.sl, z=sample_latents, multinomial=True)
+#             sequences = self.agent.reconstruct(preds)
+#             diversity = len(set(sequences))/len(sequences)
+#             valid = np.array([to_mol(i) is not None for i in sequences])
+#             getattr(env.batch_stats, f"{self.name}_diversity").append(diversity)
+#             getattr(env.batch_stats, f"{self.name}_valid").append(valid.mean())
+#             self.batch_state.samples += sequences
+#             self.batch_state.sources += [self.name]*len(sequences)
 
 
 # Cell
@@ -411,13 +436,20 @@ class TemplateCallback(Callback):
         state.template_passes = hps
         state.rewards += to_device(torch.from_numpy(rewards).float())
 
-    def filter_sequences(self, sequences):
+    def get_hps(self, sequences):
         if self.template is not None:
-            hp = np.array(self.template(sequences))
-            sequences = np.array(sequences)[hp]
-            sequences = list(sequences)
+            hps = np.array(self.template(sequences))
+        else:
+            hps = np.array([True]*len(sequences))
 
+        return hps
+
+    def filter_sequences(self, sequences):
+
+        hps = self.get_hps(sequences)
+        sequences = list(np.array(sequences)[hps])
         return sequences
+
 
 # Cell
 
