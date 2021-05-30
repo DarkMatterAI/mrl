@@ -485,7 +485,7 @@ class GenAgentCallback(AgentCallback):
 
         batch_ds = self.agent.dataset.new(self.batch_state.samples)
         batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
-        bs = len(batch)
+        bs = len(batch_ds)
         x,y = batch
 
         self.batch_state.x = x
