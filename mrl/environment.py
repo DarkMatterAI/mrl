@@ -281,14 +281,15 @@ class Environment():
         self.batch_stats.pbar = mb
         self.batch_stats.report = report
         self('before_train')
-        for step in progress_bar(range(iters), parent=mb):
-            self.build_buffer()
-            self.sample_batch()
-            self('get_model_outputs')
-            self.compute_reward()
-            self.compute_loss()
-            self('after_batch')
-        self('after_train')
+        for _ in mb:
+            for step in progress_bar(range(iters), parent=mb):
+                self.build_buffer()
+                self.sample_batch()
+                self('get_model_outputs')
+                self.compute_reward()
+                self.compute_loss()
+                self('after_batch')
+            self('after_train')
 
 
 # Cell
