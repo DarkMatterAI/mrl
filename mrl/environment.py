@@ -119,9 +119,10 @@ class Buffer(Callback):
 
     def sample_batch(self):
         bs = int(self.environment.bs * self.p_total)
-        sample = self.sample(bs)
-        self.batch_state.samples += sample
-        self.batch_state.sources += ['buffer']*len(sample)
+        if bs>0:
+            sample = self.sample(bs)
+            self.batch_state.samples += sample
+            self.batch_state.sources += ['buffer']*len(sample)
 
 # Cell
 
