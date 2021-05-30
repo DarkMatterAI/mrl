@@ -38,8 +38,9 @@ class BatchStats(Callback):
         self.diversity = []
         self.valid = []
         self.rewards = []
+        self.mean_reward = []
         self.metric_vals = ['iterations', 'diversity',
-                            'valid', 'rewards']
+                            'valid', 'rewards', 'mean_reward']
         self.report = 1
 
     def before_train(self):
@@ -187,6 +188,7 @@ class Event():
         self.after_compute_reward = 'after_compute_reward'
         self.compute_loss = 'compute_loss'
         self.zero_grad = 'zero_grad'
+        self.before_step = 'before_step'
         self.step = 'step'
         self.after_batch = 'after_batch'
         self.after_train = 'after_train'
@@ -263,6 +265,7 @@ class Environment():
         rewards_scaled = rewards - self.mean_reward
         self.batch_state.rewards_scaled = rewards_scaled
         self.batch_stats.rewards.append(rewards.mean().detach().cpu().numpy())
+        self.batch_stats.mean_reward.append(self.mean_reward.detach().cpu().numpy())
         self('after_compute_reward')
 
     def compute_loss(self):
@@ -270,6 +273,7 @@ class Environment():
         loss = self.batch_state.loss
         self('zero_grad')
         loss.backward()
+        self('before_step')
         self('step')
 
     def fit(self, bs, sl, iters, buffer_size, report):
@@ -425,6 +429,9 @@ class AgentCallback(Callback):
 
     def zero_grad(self):
         self.agent.zero_grad()
+
+    def before_step(self):
+        nn.utils.clip_grad_norm_(self.agent.model.parameters(), 1.)
 
     def step(self):
         self.agent.step()
