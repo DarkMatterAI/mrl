@@ -115,7 +115,8 @@ class Buffer(Callback):
         return batch
 
     def after_build_buffer(self):
-        self.buffer = self.environment.template_cb.filter_sequences(self.buffer)
+        if self.buffer:
+            self.buffer = self.environment.template_cb.filter_sequences(self.buffer)
 
     def sample_batch(self):
         bs = int(self.environment.bs * self.p_total)
@@ -238,7 +239,7 @@ class Environment():
             self.register_cb(cb)
 
     def build_buffer(self):
-        if len(self.buffer) < self.bs:
+        if (len(self.buffer) < self.bs) and (self.buffer_size>0):
             self('build_buffer')
             self('after_build_buffer')
 
