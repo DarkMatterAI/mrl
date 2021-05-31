@@ -437,6 +437,10 @@ class TemplateCallback(Callback):
         self.template = template
         self.name = 'template'
 
+    def setup(self):
+        bs = self.environment.batch_stats
+        bs.add_metric(self.name)
+
     def compute_reward(self):
         env = self.environment
         state = env.batch_state
@@ -449,6 +453,7 @@ class TemplateCallback(Callback):
             hps = np.array([0.]*len(state.samples))
 
         state.template_rewards = rewards
+        getattr(self.environment.batch_stats, self.name).append(rewards.mean())
         state.template_passes = hps
         state.rewards += to_device(torch.from_numpy(rewards).float())
 
