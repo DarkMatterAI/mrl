@@ -15,7 +15,7 @@ from .agent import *
 # Cell
 
 class Callback():
-    def __init__(self, name='callback', order=1000):
+    def __init__(self, name='callback', order=10):
         self.order=order
         self.name = name
 
@@ -31,7 +31,7 @@ class Callback():
 
 class BatchStats(Callback):
     def __init__(self):
-        super().__init__(name='stats', order=0)
+        super().__init__(name='stats', order=100)
 
         self.pbar = None
         self.iterations = 0
@@ -66,7 +66,7 @@ class BatchStats(Callback):
                 if type(val)==int:
                     val = f'{val}'
                 else:
-                    val = f'{val:.2f}'
+                    val = f'{val:.4f}'
 
                 outputs.append(val)
 
@@ -301,22 +301,20 @@ class Environment():
 # Cell
 
 class Sampler(Callback):
-    def __init__(self, name, p_buffer=0., p_batch=0.):
+    def __init__(self, name, p_buffer=0., p_batch=0., track=True):
         super().__init__()
         self.name = name
         self.p_buffer = p_buffer
         self.p_batch = p_batch
+        self.track = track
 
     def setup(self):
-        if self.p_batch>0.:
+        if self.p_batch>0. and self.track:
             bs = self.environment.batch_stats
             bs.add_metric(f'{self.name}_diversity')
             bs.add_metric(f'{self.name}_valid')
             bs.add_metric(f'{self.name}_rewards')
-#             setattr(bs, f'{self.name}_diversity', [])
-#             setattr(bs, f'{self.name}_valid', [])
-#             setattr(bs, f'{self.name}_rewards', [])
-#             setattr(bs, f'{self.name}_new', [])
+            bs.add_metric(f'{self.name}_new')
 
     def build_buffer(self):
         pass
@@ -325,7 +323,7 @@ class Sampler(Callback):
         pass
 
     def after_compute_reward(self):
-        if self.p_batch>0:
+        if self.p_batch>0. and self.track:
             state = self.environment.batch_state
             stats = self.environment.batch_stats
             rewards = state.rewards.detach().cpu().numpy()
@@ -335,10 +333,24 @@ class Sampler(Callback):
             else:
                 getattr(stats, f'{self.name}_rewards').append(0.)
 
+    def after_sample(self):
+        if self.p_batch > 0. and self.track:
+            stats = self.environment.batch_stats
+            state = self.environment.batch_state
+            samples = np.array(state.samples)
+            sources = np.array(state.sources)
+
+            samples = samples[sources==self.name]
+            buffer = self.environment.buffer
+            used = set(buffer.used_buffer)
+            novel = [i for i in samples if not i in used]
+            percent_novel = len(novel)/len(samples)
+
+            getattr(stats, f'{self.name}_new').append(percent_novel)
 
 class ModelSampler(Sampler):
-    def __init__(self, agent, model, name, p_buffer, p_batch, genbatch, latent=False):
-        super().__init__(name, p_buffer, p_batch)
+    def __init__(self, agent, model, name, p_buffer, p_batch, genbatch, latent=False, track=True):
+        super().__init__(name, p_buffer, p_batch, track)
         self.agent = agent
         self.model = model
         self.genbatch = genbatch
@@ -383,8 +395,10 @@ class ModelSampler(Sampler):
             sequences = self.agent.reconstruct(preds)
             diversity = len(set(sequences))/len(sequences)
             valid = np.array([to_mol(i) is not None for i in sequences])
-            getattr(env.batch_stats, f"{self.name}_diversity").append(diversity)
-            getattr(env.batch_stats, f"{self.name}_valid").append(valid.mean())
+
+            if self.track:
+                getattr(env.batch_stats, f"{self.name}_diversity").append(diversity)
+                getattr(env.batch_stats, f"{self.name}_valid").append(valid.mean())
 
             hps = env.template_cb.get_hps(sequences)
             sequences = list(np.array(sequences)[hps])
