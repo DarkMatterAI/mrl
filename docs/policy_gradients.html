@@ -78,7 +78,7 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L33" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 
 </div>
@@ -109,7 +109,7 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L64" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 
 </div>
@@ -140,7 +140,7 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L138" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L150" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 
 </div>
@@ -167,26 +167,67 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]),</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, gamma=1.):</span>
+<span class="c1">#         self.gamma = gamma</span>
+
+<span class="c1">#     def discount_rewards(self, model_outputs):</span>
+<span class="c1">#         rewards = model_outputs[&#39;rewards_scaled&#39;]</span>
+<span class="c1">#         mask = model_outputs[&#39;mask&#39;]</span>
+<span class="c1">#         rewards = scatter_rewards(rewards, mask)</span>
+
+<span class="c1">#         traj_rewards = model_outputs[&#39;trajectory_rewards&#39;]</span>
+<span class="c1">#         if traj_rewards is not None:</span>
+<span class="c1">#             rewards += traj_rewards</span>
+
+<span class="c1">#         discounted = discount_rewards(rewards, self.gamma)</span>
+
+<span class="c1">#         return discounted</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([9., 9., 9.])</pre>
 </div>
+    {% endraw %}
 
-</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, discount=True, gamma=0.97, ratio=False):</span>
+<span class="c1">#         super().__init__(gamma)</span>
+<span class="c1">#         self.discount = discount</span>
+<span class="c1">#         self.ratio = ratio</span>
+
+<span class="c1">#     def __call__(self, model_outputs):</span>
+
+<span class="c1">#         lps = model_outputs[&#39;model_gathered_logprobs&#39;]</span>
+        
+<span class="c1">#         if self.ratio:</span>
+<span class="c1">#             old_lps = model_outputs[&#39;reference_gathered_logprobs&#39;]</span>
+<span class="c1">#             lps = (lps - old_lps.detach()).exp()</span>
+        
+<span class="c1">#         mask = model_outputs[&#39;mask&#39;]</span>
+<span class="c1">#         rewards = model_outputs[&#39;rewards_scaled&#39;]</span>
+
+<span class="c1">#         if not self.discount:</span>
+<span class="c1">#             pg_loss = -((lps*mask).sum(-1)*rewards)/mask.sum(-1)</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             rewards = self.discount_rewards(model_outputs)</span>
+<span class="c1">#             rewards = whiten(rewards)</span>
+<span class="c1">#             pg_loss = -(lps*rewards*mask).sum(-1)/mask.sum(-1)</span>
+
+<span class="c1">#         model_outputs[&#39;losses&#39;][&#39;pg_loss&#39;] = pg_loss.mean()</span>
+<span class="c1">#         model_outputs[&#39;loss_dicts&#39;][&#39;pg_dict&#39;] = {&#39;pg_rewards&#39; : rewards}</span>
+        
+<span class="c1">#         return model_outputs</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -200,7 +241,198 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, gamma, kl_target, beta=1., eta=50, lam=0.95, v_coef=0.5):</span>
+<span class="c1">#         self.gamma = gamma</span>
+<span class="c1">#         self.beta = beta</span>
+<span class="c1">#         self.eta = eta</span>
+<span class="c1">#         self.lam = lam</span>
+<span class="c1">#         self.kl_target = kl_target</span>
+<span class="c1">#         self.v_coef = v_coef</span>
+
+<span class="c1">#     def __call__(self, model_outputs):</span>
+<span class="c1">#         discounted_rewards = self.discount_rewards(model_outputs)</span>
+
+<span class="c1">#         values = model_outputs[&#39;state_values&#39;]</span>
+<span class="c1">#         advantages = self.compute_advantages(discounted_rewards, values)</span>
+<span class="c1">#         advantages = whiten(advantages)</span>
+
+<span class="c1">#         v_loss = self.value_loss(values, discounted_rewards)</span>
+
+<span class="c1">#         lps = model_outputs[&#39;model_gathered_logprobs&#39;]</span>
+<span class="c1">#         ref_lps = model_outputs[&#39;reference_gathered_logprobs&#39;]</span>
+<span class="c1">#         mask = model_outputs[&#39;mask&#39;]</span>
+
+<span class="c1">#         ratios = (lps - ref_lps.detach()).exp()</span>
+
+<span class="c1">#         loss1 = -(ratios*advantages*mask).sum(-1)/mask.sum(-1)</span>
+
+<span class="c1">#         kl = torch.distributions.kl.kl_divergence(</span>
+<span class="c1">#                     Categorical(logits=model_outputs[&#39;reference_logprobs&#39;]),</span>
+<span class="c1">#                     Categorical(logits=model_outputs[&#39;model_logprobs&#39;].detach()))</span>
+
+<span class="c1">#         kl = (kl*mask).sum(-1)/mask.sum(-1)</span>
+<span class="c1">#         kl = kl.mean()</span>
+
+<span class="c1">#         loss2 = self.beta*kl</span>
+
+<span class="c1">#         loss3 = self.eta * torch.maximum(to_device(torch.tensor(0.)), </span>
+<span class="c1">#                                          kl - 2.0*self.kl_target)</span>
+        
+<span class="c1">#         loss1 = loss1.mean()</span>
+<span class="c1">#         loss3 = loss3.mean()</span>
+
+<span class="c1">#         pg_loss = loss1 + loss2 + loss3 + v_loss</span>
+
+<span class="c1">#         model_outputs[&#39;losses&#39;][&#39;pg_loss&#39;] = pg_loss</span>
+<span class="c1">#         model_outputs[&#39;loss_dicts&#39;][&#39;pg_dict&#39;] = {&#39;pg_discounted&#39; : discounted_rewards,</span>
+<span class="c1">#                                                 &#39;pg_advantage&#39; : advantages,</span>
+<span class="c1">#                                                 &#39;ratios&#39; : ratios.detach().cpu(),</span>
+<span class="c1">#                                                 &#39;kl&#39; : kl.detach().cpu(),</span>
+<span class="c1">#                                                 &#39;loss1&#39; : loss1.detach().cpu(),</span>
+<span class="c1">#                                                 &#39;loss2&#39; : loss2.detach().cpu(),</span>
+<span class="c1">#                                                 &#39;loss3&#39; : loss3.detach().cpu(),</span>
+<span class="c1">#                                                 &#39;v_loss&#39; : v_loss.detach().cpu()}</span>
+
+<span class="c1">#         return model_outputs</span>
+
+<span class="c1">#     def compute_advantages(self, rewards, values):</span>
+
+<span class="c1">#         if values is None:</span>
+<span class="c1">#             advantages = rewards</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             advantages = compute_advantages(rewards, values.detach(), self.gamma, self.lam)</span>
+
+<span class="c1">#         return advantages</span>
+
+<span class="c1">#     def value_loss(self, values, rewards):</span>
+<span class="c1">#         if values is None:</span>
+<span class="c1">#             v_loss = to_device(torch.tensor(0.))</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             v_loss = self.v_coef*F.mse_loss(values, rewards)</span>
+
+<span class="c1">#         return v_loss</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __init__(self, gamma, kl_coef, lam=0.95, v_coef=0.5, cliprange=0.2, </span>
+<span class="c1">#                  v_cliprange=0.2, ent_coef=0.01, kl_target=None, kl_horizon=None):</span>
+<span class="c1">#         self.gamma = gamma</span>
+<span class="c1">#         self.lam = lam</span>
+<span class="c1">#         self.ent_coef = ent_coef</span>
+<span class="c1">#         self.kl_coef = kl_coef</span>
+<span class="c1">#         self.kl_target = kl_target</span>
+<span class="c1">#         self.kl_horizon = kl_horizon</span>
+<span class="c1">#         self.v_coef = v_coef</span>
+<span class="c1">#         self.cliprange = cliprange</span>
+<span class="c1">#         self.v_cliprange = v_cliprange</span>
+    
+<span class="c1">#     def __call__(self, model_outputs):</span>
+<span class="c1">#         discounted_rewards = self.discount_rewards(model_outputs)</span>
+        
+<span class="c1">#         kl_reward = self.compute_kl_reward(model_outputs)</span>
+<span class="c1">#         discounted_rewards = discounted_rewards + kl_reward</span>
+        
+<span class="c1">#         values = model_outputs[&#39;state_values&#39;]</span>
+<span class="c1">#         old_values = model_outputs[&#39;old_state_values&#39;]</span>
+<span class="c1">#         advantages = self.compute_advantages(discounted_rewards, values)</span>
+<span class="c1">#         advantages = whiten(advantages)</span>
+        
+<span class="c1">#         v_loss = self.value_loss(values, old_values, discounted_rewards)</span>
+        
+<span class="c1">#         lps = model_outputs[&#39;model_gathered_logprobs&#39;]</span>
+<span class="c1">#         ref_lps = model_outputs[&#39;reference_gathered_logprobs&#39;]</span>
+<span class="c1">#         mask = model_outputs[&#39;mask&#39;]</span>
+
+<span class="c1">#         ratios = (lps - ref_lps).exp()</span>
+<span class="c1">#         ratios_clipped = torch.clamp(ratios, 1.0-self.cliprange, 1.0+self.cliprange)</span>
+        
+<span class="c1">#         loss1 = -(ratios*advantages)</span>
+<span class="c1">#         loss2 = -(ratios_clipped*advantages)</span>
+        
+<span class="c1">#         loss = torch.maximum(loss1, loss2)</span>
+<span class="c1">#         loss = (loss*mask).sum(-1)/mask.sum(-1)</span>
+        
+<span class="c1">#         entropy = Categorical(lps).entropy().mean()</span>
+        
+<span class="c1">#         loss = loss.mean()</span>
+        
+<span class="c1">#         pg_loss = loss + v_loss - self.ent_coef*entropy</span>
+        
+<span class="c1">#         self.update_kl(model_outputs)</span>
+        
+<span class="c1">#         model_outputs[&#39;losses&#39;][&#39;pg_loss&#39;] = pg_loss</span>
+<span class="c1">#         model_outputs[&#39;loss_dicts&#39;][&#39;pg_dict&#39;] = {&#39;pg_discounted&#39; : discounted_rewards,</span>
+<span class="c1">#                                     &#39;pg_advantage&#39; : advantages,</span>
+<span class="c1">#                                     &#39;ratios&#39; : ratios.detach().cpu(),</span>
+<span class="c1">#                                     &#39;loss&#39; : loss.detach().cpu(),</span>
+<span class="c1">#                                     &#39;v_loss&#39; : v_loss.detach().cpu(),</span>
+<span class="c1">#                                     &#39;entropy&#39; : entropy.detach().cpu()}</span>
+        
+<span class="c1">#         return model_outputs</span>
+            
+<span class="c1">#     def compute_kl_reward(self, model_outputs):</span>
+<span class="c1">#         lps = model_outputs[&#39;model_gathered_logprobs&#39;]</span>
+<span class="c1">#         ref_lps = model_outputs[&#39;reference_gathered_logprobs&#39;]</span>
+<span class="c1">#         kl = lps - ref_lps</span>
+<span class="c1">#         kl_reward = -self.kl_coef * kl.detach()</span>
+<span class="c1">#         return kl_reward</span>
+    
+<span class="c1">#     def value_loss(self, values, old_values, rewards):</span>
+<span class="c1">#         if values is None:</span>
+<span class="c1">#             v_loss = to_device(torch.tensor(0.))</span>
+<span class="c1">#         else:</span>
+            
+<span class="c1">#             v_loss = F.mse_loss(values, rewards, reduction=&#39;none&#39;)</span>
+            
+<span class="c1">#             if old_values is not None:</span>
+<span class="c1">#                 min_v = old_values - self.v_cliprange</span>
+<span class="c1">#                 max_v = old_values + self.v_cliprange</span>
+                
+<span class="c1">#                 values_clipped = torch.max(torch.min(values, max_v), min_v)</span>
+<span class="c1">#                 v_loss2 = F.mse_loss(values_clipped, rewards, reduction=&#39;none&#39;)</span>
+                
+<span class="c1">#                 v_loss = torch.max(v_loss, v_loss2)</span>
+            
+<span class="c1">#             v_loss = self.v_coef*v_loss.mean()</span>
+            
+<span class="c1">#         return v_loss</span>
+    
+<span class="c1">#     def compute_advantages(self, rewards, values):</span>
+        
+<span class="c1">#         if values is None:</span>
+<span class="c1">#             advantages = rewards</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             advantages = compute_advantages(rewards, values.detach(), self.gamma, self.lam)</span>
+            
+<span class="c1">#         return advantages</span>
+    
+<span class="c1">#     def update_kl(self, model_outputs):</span>
+        
+<span class="c1">#         if (self.kl_target is not None) and (self.kl_horizon is not None):</span>
+<span class="c1">#             lps = model_outputs[&#39;model_gathered_logprobs&#39;]</span>
+<span class="c1">#             ref_lps = model_outputs[&#39;reference_gathered_logprobs&#39;]</span>
+<span class="c1">#             mask = model_outputs[&#39;mask&#39;]</span>
+<span class="c1">#             kl = (lps - ref_lps).detach()</span>
+<span class="c1">#             kl = (kl*mask).sum(-1)/mask.sum(-1)</span>
+<span class="c1">#             kl = kl.cpu().mean()</span>
+            
+<span class="c1">#             error = torch.clip(kl/self.kl_target - 1, -0.2, 0.2)</span>
+<span class="c1">#             factor = 1 + error * lps.shape[0]/self.kl_horizon</span>
+<span class="c1">#             self.kl_coef *= factor</span>
+    
 </pre></div>
 
     </div>
