@@ -110,7 +110,7 @@ nb_path: "nbs/12_environment.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Buffer" class="doc_header"><code>class</code> <code>Buffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Buffer</code>(<strong><code>p_total</code></strong>, <strong><code>max_size</code></strong>=<em><code>1000000</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
+<h2 id="Buffer" class="doc_header"><code>class</code> <code>Buffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L83" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Buffer</code>(<strong><code>p_total</code></strong>, <strong><code>max_size</code></strong>=<em><code>1000000</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -141,40 +141,7 @@ nb_path: "nbs/12_environment.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SettrDict" class="doc_header"><code>class</code> <code>SettrDict</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L130" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SettrDict</code>() :: <code>dict</code></p>
-</blockquote>
-<p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-    (key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-    d = {}
-    for k, v in iterable:
-        d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-    in the keyword argument list.  For example:  dict(one=1, two=2)</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="BatchState" class="doc_header"><code>class</code> <code>BatchState</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L146" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchState</code>() :: <a href="/mrl/environment.html#SettrDict"><code>SettrDict</code></a></p>
+<h2 id="SettrDict" class="doc_header"><code>class</code> <code>SettrDict</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L133" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SettrDict</code>() :: <code>dict</code></p>
 </blockquote>
 <p>dict() -&gt; new empty dictionary
 dict(mapping) -&gt; new dictionary initialized from a mapping object's
@@ -200,6 +167,39 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BatchState" class="doc_header"><code>class</code> <code>BatchState</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L149" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchState</code>() :: <a href="/mrl/environment.html#SettrDict"><code>SettrDict</code></a></p>
+</blockquote>
+<p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+    (key, value) pairs
+dict(iterable) -&gt; new dictionary initialized as if via:
+    d = {}
+    for k, v in iterable:
+        d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+    in the keyword argument list.  For example:  dict(one=1, two=2)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 </div>
     {% endraw %}
 
@@ -214,7 +214,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Event" class="doc_header"><code>class</code> <code>Event</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L179" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Event</code>()</p>
+<h2 id="Event" class="doc_header"><code>class</code> <code>Event</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L182" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Event</code>()</p>
 </blockquote>
 
 </div>
@@ -245,7 +245,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Environment" class="doc_header"><code>class</code> <code>Environment</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L200" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Environment</code>(<strong><code>agent_cb</code></strong>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>samplers</code></strong>=<em><code>[]</code></em>, <strong><code>reward_cbs</code></strong>=<em><code>[]</code></em>, <strong><code>loss_cbs</code></strong>=<em><code>[]</code></em>, <strong><code>cbs</code></strong>=<em><code>[]</code></em>, <strong><code>buffer_p_batch</code></strong>=<em><code>None</code></em>, <strong><code>reward_decay</code></strong>=<em><code>0.9</code></em>)</p>
+<h2 id="Environment" class="doc_header"><code>class</code> <code>Environment</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L203" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Environment</code>(<strong><code>agent_cb</code></strong>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>samplers</code></strong>=<em><code>[]</code></em>, <strong><code>reward_cbs</code></strong>=<em><code>[]</code></em>, <strong><code>loss_cbs</code></strong>=<em><code>[]</code></em>, <strong><code>cbs</code></strong>=<em><code>[]</code></em>, <strong><code>buffer_p_batch</code></strong>=<em><code>None</code></em>, <strong><code>reward_decay</code></strong>=<em><code>0.9</code></em>)</p>
 </blockquote>
 
 </div>
@@ -276,7 +276,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Sampler" class="doc_header"><code>class</code> <code>Sampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L303" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sampler</code>(<strong><code>name</code></strong>, <strong><code>p_buffer</code></strong>=<em><code>0.0</code></em>, <strong><code>p_batch</code></strong>=<em><code>0.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
+<h2 id="Sampler" class="doc_header"><code>class</code> <code>Sampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L306" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sampler</code>(<strong><code>name</code></strong>, <strong><code>p_buffer</code></strong>=<em><code>0.0</code></em>, <strong><code>p_batch</code></strong>=<em><code>0.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -300,38 +300,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ModelSampler" class="doc_header"><code>class</code> <code>ModelSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L351" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelSampler</code>(<strong><code>agent</code></strong>, <strong><code>model</code></strong>, <strong><code>name</code></strong>, <strong><code>p_buffer</code></strong>, <strong><code>p_batch</code></strong>, <strong><code>genbatch</code></strong>, <strong><code>latent</code></strong>=<em><code>False</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/environment.html#Sampler"><code>Sampler</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="TemplateCallback" class="doc_header"><code>class</code> <code>TemplateCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L434" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemplateCallback</code>(<strong><code>template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
+<h2 id="ModelSampler" class="doc_header"><code>class</code> <code>ModelSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L354" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelSampler</code>(<strong><code>agent</code></strong>, <strong><code>model</code></strong>, <strong><code>name</code></strong>, <strong><code>p_buffer</code></strong>, <strong><code>p_batch</code></strong>, <strong><code>genbatch</code></strong>, <strong><code>latent</code></strong>=<em><code>False</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/environment.html#Sampler"><code>Sampler</code></a></p>
 </blockquote>
 
 </div>
@@ -362,31 +331,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AgentCallback" class="doc_header"><code>class</code> <code>AgentCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L477" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AgentCallback</code>(<strong><code>agent</code></strong>, <strong><code>name</code></strong>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="GenAgentCallback" class="doc_header"><code>class</code> <code>GenAgentCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L500" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GenAgentCallback</code>(<strong><code>agent</code></strong>, <strong><code>name</code></strong>, <strong><code>contrastive</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/environment.html#AgentCallback"><code>AgentCallback</code></a></p>
+<h2 id="TemplateCallback" class="doc_header"><code>class</code> <code>TemplateCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L437" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemplateCallback</code>(<strong><code>template</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -417,7 +362,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RewardCallback" class="doc_header"><code>class</code> <code>RewardCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L599" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RewardCallback</code>(<strong><code>reward_function</code></strong>, <strong><code>name</code></strong>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
+<h2 id="AgentCallback" class="doc_header"><code>class</code> <code>AgentCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L480" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AgentCallback</code>(<strong><code>agent</code></strong>, <strong><code>name</code></strong>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -441,7 +386,62 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LossCallback" class="doc_header"><code>class</code> <code>LossCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L618" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LossCallback</code>(<strong><code>loss_function</code></strong>, <strong><code>name</code></strong>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
+<h2 id="GenAgentCallback" class="doc_header"><code>class</code> <code>GenAgentCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L503" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GenAgentCallback</code>(<strong><code>agent</code></strong>, <strong><code>name</code></strong>, <strong><code>contrastive</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/environment.html#AgentCallback"><code>AgentCallback</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RewardCallback" class="doc_header"><code>class</code> <code>RewardCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L602" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RewardCallback</code>(<strong><code>reward_function</code></strong>, <strong><code>name</code></strong>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="LossCallback" class="doc_header"><code>class</code> <code>LossCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L621" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LossCallback</code>(<strong><code>loss_function</code></strong>, <strong><code>name</code></strong>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>) :: <a href="/mrl/environment.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
