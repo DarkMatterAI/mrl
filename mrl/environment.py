@@ -53,6 +53,9 @@ class BatchStats(Callback):
         setattr(self, name, [])
         self.metric_vals.append(name)
 
+    def add_log(self, name):
+        pass
+
     def after_batch(self):
         outputs = []
         if self.iterations%self.report==0:
