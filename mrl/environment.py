@@ -50,10 +50,11 @@ class Log(Callback):
         self.report = 1
 
     def before_train(self):
+        cols = ['iterations'] + list(self.metrics.keys())
         if self.pbar is None:
-            print('\t'.join([key for key in self.metrics.keys()]))
+            print('\t'.join(cols))
         else:
-            self.pbar.write(list(self.metrics.keys()), table=True)
+            self.pbar.write(cols, table=True)
 
     def add_metric(self, name):
         self.metrics[name]
