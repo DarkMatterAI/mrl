@@ -89,16 +89,16 @@ class TRPO(BasePolicy):
                     Categorical(logits=lps))
 
         kl = (kl*mask).sum(-1)/mask.sum(-1)
-        kl = kl.mean()
+#         kl = kl.mean()
         loss2 = self.beta*kl
 
         loss3 = self.eta * torch.maximum(to_device(torch.tensor(0.)),
                                          kl - 2.0*self.kl_target)
 
-        loss1 = loss1.mean()
-        loss3 = loss3.mean()
+#         loss1 = loss1.mean()
+#         loss3 = loss3.mean()
 
-        pg_loss = loss1 + loss2 + loss3 + v_loss
+        pg_loss = loss1.mean() + loss2.mean() + loss3.mean() + v_loss
 
         pg_dict = {'pg_discounted' : discounted_rewards,
                     'pg_advantage' : advantages,
@@ -181,11 +181,11 @@ class PPO(BasePolicy):
         loss = torch.maximum(loss1, loss2)
         loss = (loss*mask).sum(-1)/mask.sum(-1)
 
-        entropy = Categorical(lps).entropy().mean()
+        entropy = Categorical(lps).entropy() #.mean()
 
-        loss = loss.mean()
+#         loss = loss.mean()
 
-        pg_loss = loss + v_loss - self.ent_coef*entropy
+        pg_loss = loss.mean() + v_loss - self.ent_coef*entropy.mean()
 
         self.update_kl(lps, ref_lps, mask)
 

@@ -72,7 +72,10 @@ class Log(Callback):
         batch_state = env.batch_state
 
         for key in self.log.keys():
-            self.log[key].append(batch_state[key])
+            items = batch_state[key]
+            if isinstance(items, torch.Tensor):
+                items = items.detach().cpu().numpy()
+            self.log[key].append(items)
 
     def report_batch(self):
         outputs = [f'{self.iterations}']
@@ -492,15 +495,17 @@ class ModelSampler(Sampler):
 # Cell
 
 class TemplateCallback(Callback):
-    def __init__(self, template=None):
+    def __init__(self, template=None, track=True):
         super().__init__(order=-1)
         self.template = template
+        self.track = track
         self.name = 'template'
 
     def setup(self):
-        log = self.environment.log
-        log.add_metric(self.name)
-        log.add_log(self.name)
+        if self.track:
+            log = self.environment.log
+            log.add_metric(self.name)
+            log.add_log(self.name)
 
     def compute_reward(self):
         env = self.environment
@@ -515,7 +520,9 @@ class TemplateCallback(Callback):
 
         state.template = rewards
 
-        env.log.update_metric(self.name, rewards.mean())
+        if self.track:
+            env.log.update_metric(self.name, rewards.mean())
+
         state.template_passes = hps
         state.rewards += to_device(torch.from_numpy(rewards).float())
 
@@ -659,38 +666,49 @@ class GenAgentCallback(AgentCallback):
 # Cell
 
 class RewardCallback(Callback):
-    def __init__(self, reward_function, name, weight=1.):
+    def __init__(self, reward_function, name, weight=1., track=True):
         super().__init__(order=1)
         self.name = name
         self.reward_function = reward_function
         self.weight = weight
+        self.track = track
 
     def setup(self):
-        log = self.environment.log
-        log.add_metric(self.name)
-        log.add_log(self.name)
+        if self.track:
+            log = self.environment.log
+            log.add_metric(self.name)
+            log.add_log(self.name)
 
     def compute_reward(self):
         rewards, reward_dict = self.reward_function.from_batch_state(self.batch_state)
-        self.environment.log.update_metric(self.name, rewards.mean().detach().cpu().numpy())
+
+        if self.track:
+            self.environment.log.update_metric(self.name, rewards.mean().detach().cpu().numpy())
+
         rewards = rewards * self.weight
         self.batch_state.rewards += rewards
         self.batch_state[self.name] = reward_dict
 
 class LossCallback(Callback):
-    def __init__(self, loss_function, name, weight=1.):
+    def __init__(self, loss_function, name, weight=1., track=True):
         super().__init__(order=1)
         self.name = name
         self.loss_function = loss_function
         self.weight = weight
+        self.track = track
 
     def setup(self):
-        log = self.environment.log
-        log.add_metric(self.name)
+        if self.track:
+            log = self.environment.log
+            log.add_metric(self.name)
+            log.add_log(self.name)
 
     def compute_loss(self):
         loss, loss_dict = self.loss_function.from_batch_state(self.batch_state)
-        self.environment.log.update_metric(self.name, loss.mean().detach().cpu().numpy())
+
+        if self.track:
+            self.environment.log.update_metric(self.name, loss.mean().detach().cpu().numpy())
+
         loss = loss * self.weight
         self.batch_state.loss += loss
         self.batch_state[self.name] = loss_dict
