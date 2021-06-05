@@ -48,6 +48,7 @@ class Log(Callback):
         self.log['rewards_scaled']
 
         self.report = 1
+        self.do_log = True
 
     def before_train(self):
         cols = ['iterations'] + list(self.metrics.keys())
@@ -63,20 +64,19 @@ class Log(Callback):
         self.log[name]
 
     def update_metric(self, name, value):
-        self.metrics[name].append(value)
-
-    def update_log(self, name, value):
-        self.log[name].append(value)
+        if self.do_log:
+            self.metrics[name].append(value)
 
     def update_log(self):
-        env = self.environment
-        batch_state = env.batch_state
+        if self.do_log:
+            env = self.environment
+            batch_state = env.batch_state
 
-        for key in self.log.keys():
-            items = batch_state[key]
-            if isinstance(items, torch.Tensor):
-                items = items.detach().cpu().numpy()
-            self.log[key].append(items)
+            for key in self.log.keys():
+                items = batch_state[key]
+                if isinstance(items, torch.Tensor):
+                    items = items.detach().cpu().numpy()
+                self.log[key].append(items)
 
     def report_batch(self):
         outputs = [f'{self.iterations}']
@@ -103,56 +103,6 @@ class Log(Callback):
         self.update_log()
         self.report_batch()
 
-# class BatchStats(Callback):
-#     def __init__(self):
-#         super().__init__(name='stats', order=100)
-
-#         self.pbar = None
-#         self.iterations = 0
-#         self.diversity = []
-#         self.valid = []
-#         self.rewards = []
-#         self.mean_reward = []
-#         self.metric_vals = ['iterations', 'diversity',
-#                             'valid', 'rewards', 'mean_reward']
-#         self.report = 1
-
-#     def before_train(self):
-#         if self.pbar is None:
-#             print('\t'.join([key for key in self.metric_vals]))
-#         else:
-#             self.pbar.write(self.metric_vals, table=True)
-
-#     def add_metric(self, name):
-#         setattr(self, name, [])
-#         self.metric_vals.append(name)
-
-#     def add_log(self, name):
-#         pass
-
-#     def after_batch(self):
-#         outputs = []
-#         if self.iterations%self.report==0:
-#             for metric in self.metric_vals:
-#                 v = getattr(self, metric)
-#                 if type(v)==list:
-#                     val = v[-1]
-#                 else:
-#                     val = v
-
-#                 if type(val)==int:
-#                     val = f'{val}'
-#                 else:
-#                     val = f'{val:.4f}'
-
-#                 outputs.append(val)
-
-#             if self.pbar is None:
-#                 print('\t'.join(outputs))
-#             else:
-#                 self.pbar.write(outputs, table=True)
-
-#         self.iterations += 1
 
 class Buffer(Callback):
     def __init__(self, p_total, max_size=1000000):
@@ -326,13 +276,7 @@ class Environment():
             cb.batch_state = self.batch_state
         self('before_batch')
         self('sample_batch')
-        sequences = self.batch_state.samples
 
-        diversity = len(set(sequences))/len(sequences)
-        valid = len([i for i in sequences if to_mol(i) is not None])/len(sequences)
-
-        self.log.update_metric('diversity', diversity)
-        self.log.update_metric('valid', valid)
         self('after_sample')
 
     def compute_reward(self):
@@ -496,11 +440,12 @@ class ModelSampler(Sampler):
 # Cell
 
 class TemplateCallback(Callback):
-    def __init__(self, template=None, track=True):
+    def __init__(self, template=None, track=True, prefilter=True):
         super().__init__(order=-1)
         self.template = template
         self.track = track
         self.name = 'template'
+        self.prefilter = prefilter
 
     def setup(self):
         if self.track:
@@ -537,24 +482,26 @@ class TemplateCallback(Callback):
 
     def filter_sequences(self, sequences):
 
-        hps = self.get_hps(sequences)
-        sequences = list(np.array(sequences)[hps])
+        if self.prefilter:
+            hps = self.get_hps(sequences)
+            sequences = list(np.array(sequences)[hps])
         return sequences
 
 
 # Cell
 
 class AgentCallback(Callback):
-    def __init__(self, agent, name):
+    def __init__(self, agent, name, clip=1.):
         super().__init__()
         self.agent = agent
         self.name = name
+        self.clip = clip
 
     def zero_grad(self):
         self.agent.zero_grad()
 
     def before_step(self):
-        nn.utils.clip_grad_norm_(self.agent.model.parameters(), 1.)
+        nn.utils.clip_grad_norm_(self.agent.model.parameters(), self.clip)
 
     def step(self):
         self.agent.step()
@@ -574,7 +521,9 @@ class GenAgentCallback(AgentCallback):
 
     def after_sample(self):
 
-        batch_ds = self.agent.dataset.new(self.batch_state.samples)
+        env = sef.environment
+        sequences = self.batch_state.samples
+        batch_ds = self.agent.dataset.new(sequences)
         batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
         bs = len(batch_ds)
         x,y = batch
@@ -590,6 +539,12 @@ class GenAgentCallback(AgentCallback):
         self.batch_state.rewards = to_device(torch.zeros(bs))
         self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
         self.batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
+
+        diversity = len(set(sequences))/len(sequences)
+        valid = len([i for i in sequences if to_mol(i) is not None])/len(sequences)
+
+        env.log.update_metric('diversity', diversity)
+        env.log.update_metric('valid', valid)
 
     def subset_tensor(self, x, mask):
         if type(x)==list:
