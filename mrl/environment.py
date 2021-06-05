@@ -525,7 +525,7 @@ class GenAgentCallback(AgentCallback):
 
     def after_sample(self):
 
-        env = sef.environment
+        env = self.environment
         sequences = self.batch_state.samples
         batch_ds = self.agent.dataset.new(sequences)
         batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
