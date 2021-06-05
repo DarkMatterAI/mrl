@@ -375,12 +375,14 @@ class Sampler(Callback):
             log.update_metric(f'{self.name}_new', percent_novel)
 
 class ModelSampler(Sampler):
-    def __init__(self, agent, model, name, p_buffer, p_batch, genbatch, latent=False, track=True):
+    def __init__(self, agent, model, name, p_buffer, p_batch, genbatch, latent=False, track=True,
+                temperature=1.):
         super().__init__(name, p_buffer, p_batch, track)
         self.agent = agent
         self.model = model
         self.genbatch = genbatch
         self.latent = latent if self.agent.latents is not None else False
+        self.temperature = temperature
 
     def build_buffer(self):
         env = self.environment
@@ -392,7 +394,8 @@ class ModelSampler(Sampler):
             for batch in range(int(np.ceil(bs/self.genbatch))):
                 current_bs = min(self.genbatch, to_generate)
 
-                preds, _ = self.model.sample_no_grad(current_bs, env.sl, multinomial=True)
+                preds, _ = self.model.sample_no_grad(current_bs, env.sl, multinomial=True,
+                                                     temperature=self.temperature)
                 sequences = self.agent.reconstruct(preds)
                 sequences = list(set(sequences))
                 sequences = [i for i in sequences if to_mol(i) is not None]
@@ -417,7 +420,8 @@ class ModelSampler(Sampler):
                 sample_latents=None
 
 
-            preds, _ = self.model.sample_no_grad(bs, env.sl, z=sample_latents, multinomial=True)
+            preds, _ = self.model.sample_no_grad(bs, env.sl, z=sample_latents, multinomial=True,
+                                                temperature=self.temperature)
             sequences = self.agent.reconstruct(preds)
             diversity = len(set(sequences))/len(sequences)
             valid = np.array([to_mol(i) is not None for i in sequences])
