@@ -558,13 +558,7 @@ class GenAgentCallback(AgentCallback):
 
         return x
 
-    def get_model_outputs(self):
-
-        x = self.batch_state.x
-        y = self.batch_state.y
-        sources = self.batch_state.sources
-        latent_info = self.batch_state.latent_data
-
+    def get_rl_tensors(self, model, x, y, latent_info, sources):
         if latent_info:
             latent_sources = []
             output_tensors = []
@@ -579,7 +573,7 @@ class GenAgentCallback(AgentCallback):
 
             non_latent_mask = torch.tensor([not i in latent_sources for i in sources]).bool()
             if non_latent_mask.sum()>0:
-                out = self.agent.model.get_rl_tensors(self.subset_tensor(x, non_latent_mask),
+                out = model.get_rl_tensors(self.subset_tensor(x, non_latent_mask),
                                                       self.subset_tensor(y, non_latent_mask))
                 output_tensors.append(out)
 
@@ -589,8 +583,44 @@ class GenAgentCallback(AgentCallback):
             me = torch.cat([i[3] for i in output_tensors], 0)
 
         else:
-            mo, mlp, mglp, me = self.agent.model.get_rl_tensors(x,y)
+            mo, mlp, mglp, me = model.get_rl_tensors(x,y)
 
+        return mo, mlp, mglp, me
+
+    def get_model_outputs(self):
+
+        x = self.batch_state.x
+        y = self.batch_state.y
+        sources = self.batch_state.sources
+        latent_info = self.batch_state.latent_data
+
+#         if latent_info:
+#             latent_sources = []
+#             output_tensors = []
+#             for (latent_source, latent_idxs) in latent_info:
+#                 latent_sources.append(latent_source)
+#                 latent_mask = torch.tensor([i==latent_source for i in sources]).bool()
+#                 latents = self.agent.latents[latent_idxs]
+#                 out = self.agent.model.get_rl_tensors(self.subset_tensor(x, latent_mask),
+#                                                       self.subset_tensor(y, latent_mask),
+#                                                       latent=latents)
+#                 output_tensors.append(out)
+
+#             non_latent_mask = torch.tensor([not i in latent_sources for i in sources]).bool()
+#             if non_latent_mask.sum()>0:
+#                 out = self.agent.model.get_rl_tensors(self.subset_tensor(x, non_latent_mask),
+#                                                       self.subset_tensor(y, non_latent_mask))
+#                 output_tensors.append(out)
+
+#             mo = torch.cat([i[0] for i in output_tensors], 0)
+#             mlp = torch.cat([i[1] for i in output_tensors], 0)
+#             mglp = torch.cat([i[2] for i in output_tensors], 0)
+#             me = torch.cat([i[3] for i in output_tensors], 0)
+
+#         else:
+#             mo, mlp, mglp, me = self.agent.model.get_rl_tensors(x,y)
+
+        mo, mlp, mglp, me = self.get_rl_tensors(self.agent.model, x, y, latent_info, sources)
         mprob = mlp.exp()
 
         self.batch_state.model_output = mo
@@ -612,7 +642,8 @@ class GenAgentCallback(AgentCallback):
 
         if self.agent.base_model is not None:
             with torch.no_grad():
-                bo, blp, bglp, be = self.agent.base_model.get_rl_tensors(x,y)
+#                 bo, blp, bglp, be = self.agent.base_model.get_rl_tensors(x,y)
+                bo, blp, bglp, be = self.get_rl_tensors(self.agent.base_model, x, y, latent_info, sources)
         else:
             bo, blp, bglp, be = None, None, None, None
 
