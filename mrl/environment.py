@@ -519,8 +519,17 @@ class AgentCallback(Callback):
         self.agent.step()
 
     def after_sample(self):
-        # convert samples to tensors
-        pass
+        env = self.environment
+        sequences = self.batch_state.samples
+        batch_ds = self.agent.dataset.new(sequences)
+        self.batch_state.rewards = to_device(torch.zeros(bs))
+        self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
+
+        diversity = len(set(sequences))/len(sequences)
+        valid = len([i for i in sequences if to_mol(i) is not None])/len(sequences)
+
+        env.log.update_metric('diversity', diversity)
+        env.log.update_metric('valid', valid)
 
     def get_model_outputs(self):
         # get relevant model outputs
