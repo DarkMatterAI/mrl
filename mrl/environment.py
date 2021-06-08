@@ -136,10 +136,17 @@ class Buffer(Callback):
         for idx in sorted(idxs, reverse=True):
             self.buffer.pop(idx)
 
-        self.used_buffer += batch
-        self.used_buffer = self.used_buffer[-self.max_size:]
-
         return batch
+
+    def after_sample(self):
+        samples = self.batch_state.samples
+        self.used_buffer += samples
+
+        if self.environment.log.iterations%40 == 0:
+            self.used_buffer = list(set(self.used_buffer))
+
+            if len(self.used_buffer)>self.max_size:
+                self.used_buffer = self.used_buffer[-self.max_size:]
 
     def after_build_buffer(self):
         if self.buffer:
