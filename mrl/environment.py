@@ -378,9 +378,9 @@ class Sampler(Callback):
             sources = np.array(state.sources)
 
             samples = samples[sources==self.name]
-#             buffer = self.environment.buffer
-#             used = set(buffer.used_buffer)
-            used = set(self.environment.log.log['samples'])
+            buffer = self.environment.buffer
+            used = set(buffer.used_buffer)
+#             used = set(self.environment.log.log['samples'])
             novel = [i for i in samples if not i in used]
             percent_novel = len(novel)/len(samples)
 
