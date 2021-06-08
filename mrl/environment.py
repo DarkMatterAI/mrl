@@ -374,8 +374,9 @@ class Sampler(Callback):
             sources = np.array(state.sources)
 
             samples = samples[sources==self.name]
-            buffer = self.environment.buffer
-            used = set(buffer.used_buffer)
+#             buffer = self.environment.buffer
+#             used = set(buffer.used_buffer)
+            used = set(self.environment.log.log['samples'])
             novel = [i for i in samples if not i in used]
             percent_novel = len(novel)/len(samples)
 
@@ -519,11 +520,11 @@ class AgentCallback(Callback):
 
     def after_sample(self):
         # convert samples to tensors
-        raise NotImplementedError
+        pass
 
     def get_model_outputs(self):
         # get relevant model outputs
-        raise NotImplementedError
+        pass
 
 class GenAgentCallback(AgentCallback):
     def __init__(self, agent, name, contrastive=False):
@@ -601,32 +602,6 @@ class GenAgentCallback(AgentCallback):
         y = self.batch_state.y
         sources = self.batch_state.sources
         latent_info = self.batch_state.latent_data
-
-#         if latent_info:
-#             latent_sources = []
-#             output_tensors = []
-#             for (latent_source, latent_idxs) in latent_info:
-#                 latent_sources.append(latent_source)
-#                 latent_mask = torch.tensor([i==latent_source for i in sources]).bool()
-#                 latents = self.agent.latents[latent_idxs]
-#                 out = self.agent.model.get_rl_tensors(self.subset_tensor(x, latent_mask),
-#                                                       self.subset_tensor(y, latent_mask),
-#                                                       latent=latents)
-#                 output_tensors.append(out)
-
-#             non_latent_mask = torch.tensor([not i in latent_sources for i in sources]).bool()
-#             if non_latent_mask.sum()>0:
-#                 out = self.agent.model.get_rl_tensors(self.subset_tensor(x, non_latent_mask),
-#                                                       self.subset_tensor(y, non_latent_mask))
-#                 output_tensors.append(out)
-
-#             mo = torch.cat([i[0] for i in output_tensors], 0)
-#             mlp = torch.cat([i[1] for i in output_tensors], 0)
-#             mglp = torch.cat([i[2] for i in output_tensors], 0)
-#             me = torch.cat([i[3] for i in output_tensors], 0)
-
-#         else:
-#             mo, mlp, mglp, me = self.agent.model.get_rl_tensors(x,y)
 
         mo, mlp, mglp, me = self.get_rl_tensors(self.agent.model, x, y, latent_info, sources)
         mprob = mlp.exp()
