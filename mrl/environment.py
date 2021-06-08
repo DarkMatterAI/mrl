@@ -307,7 +307,11 @@ class Environment():
         self('compute_loss')
         loss = self.batch_state.loss
         self('zero_grad')
-        loss.backward()
+        try:
+            loss.backward()
+        except:
+            # possibly no loss
+            pass
         self('before_step')
         self('step')
 
