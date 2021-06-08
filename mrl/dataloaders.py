@@ -254,7 +254,7 @@ def lm_collate(batch, pad_idx, batch_first=True):
         batch_tensor = batch_tensor.T
         output = (batch_tensor[:-1,:], batch_tensor[1:,:])
 
-    return to_device(output)
+    return output
 
 def seq_to_seq_collate(batch, pad_idx, batch_first=True):
     '''
@@ -270,7 +270,7 @@ def seq_to_seq_collate(batch, pad_idx, batch_first=True):
         y_tensor = y_tensor.T
         output = (x_tensor[:-1,:], y_tensor[1:,:])
 
-    return to_device(output)
+    return output
 
 def sequence_prediction_collate(batch, pad_idx, batch_first=True):
     '''
@@ -283,14 +283,14 @@ def sequence_prediction_collate(batch, pad_idx, batch_first=True):
     if not batch_first:
         batch_tensor = batch_tensor.T
 
-    return to_device((batch_tensor, y_vals))
+    return (batch_tensor, y_vals)
 
 def vector_collate(batch):
     '''
     Collate function for vectors
     '''
     fps = torch.stack(batch)
-    return to_device(fps)
+    return fps
 
 def vector_reconstruction_collate(batch, pad_idx, batch_first=True):
     '''
@@ -306,7 +306,7 @@ def vector_reconstruction_collate(batch, pad_idx, batch_first=True):
         batch_tensor = batch_tensor.T
         output = ((batch_tensor[:-1,:], fps), batch_tensor[1:,:])
 
-    return to_device(output)
+    return output
 
 def vector_prediction_collate(batch):
     '''
@@ -315,7 +315,7 @@ def vector_prediction_collate(batch):
     fps = torch.stack([i[0] for i in batch])
     y_vals = torch.stack([i[1] for i in batch])
     y_vals = y_vals.squeeze(-1)
-    return to_device((fps, y_vals))
+    return (fps, y_vals)
 
 
 # Cell

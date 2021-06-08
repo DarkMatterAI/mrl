@@ -529,6 +529,7 @@ class GenAgentCallback(AgentCallback):
         sequences = self.batch_state.samples
         batch_ds = self.agent.dataset.new(sequences)
         batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
+        batch = to_device(batch)
         bs = len(batch_ds)
         x,y = batch
 

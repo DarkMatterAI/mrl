@@ -149,11 +149,29 @@ def discount_rewards(rewards, gamma):
 
     return discounted[:,:-1]
 
-def whiten(values, shift_mean=True):
-    mean, var = torch.mean(values), torch.var(values)
+# def whiten(values, shift_mean=True):
+#     mean, var = torch.mean(values), torch.var(values)
+#     whitened = (values - mean) * torch.rsqrt(var + 1e-8)
+#     if not shift_mean:
+#         whitened += mean
+#     return whitened
+
+def whiten(values, shift_mean=True, mask=None):
+    if mask is None:
+        mean = values.mean()
+        var = values.var()
+    else:
+        mean = (values*mask).sum()/mask.sum()
+        var = ((values-mean)*mask).pow(2).sum()/(mask.sum()-1)
+
     whitened = (values - mean) * torch.rsqrt(var + 1e-8)
+
     if not shift_mean:
         whitened += mean
+
+    if mask is not None:
+        whitened = whitened*mask
+
     return whitened
 
 def scatter_rewards(rewards, mask):

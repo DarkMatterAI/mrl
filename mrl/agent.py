@@ -24,6 +24,7 @@ class Agent():
         return optim.Adam(parameters, **optim_kwargs)
 
     def one_batch(self, batch):
+        batch = to_device(batch)
         x,y = batch
         if not type(x)==list:
             x = [x]
@@ -108,6 +109,7 @@ class PredictiveAgent(Agent):
     def predict_data(self, data):
         ds = self.dataset.new(data, [0 for i in data])
         batch = ds.collate_function([ds[i] for i in range(len(ds))])
+        batch = to_device(batch)
         x,y = batch
         return self.predict_tensor(x)
 
@@ -307,6 +309,7 @@ class CriticAgent(BaselineAgent):
     def predict_data(self, data):
         ds = self.dataset.new(data, [0 for i in data])
         batch = ds.collate_function([ds[i] for i in range(len(ds))])
+        batch = to_device(batch)
         x,y = batch
         return self.predict_tensor(x)
 

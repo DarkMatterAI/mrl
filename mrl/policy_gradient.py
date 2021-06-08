@@ -42,7 +42,7 @@ class PolicyGradient(BasePolicy):
 
         else:
             rewards = self.discount_rewards(rewards, mask, traj_rewards)
-            rewards = whiten(rewards)
+            rewards = whiten(rewards, mask=mask)
             pg_loss = -(lps*rewards*mask).sum(-1)/mask.sum(-1)
 
         pg_dict = {'loss':pg_loss.detach().cpu(), 'rewards':rewards.detach().cpu()}
@@ -76,7 +76,7 @@ class TRPO(BasePolicy):
 
         discounted_rewards = self.discount_rewards(rewards, mask, traj_rewards)
         advantages = self.compute_advantages(discounted_rewards, values)
-        advantages = whiten(advantages)
+        advantages = whiten(advantages, mask=mask)
 
         v_loss = self.value_loss(values, discounted_rewards)
 
@@ -168,7 +168,7 @@ class PPO(BasePolicy):
 
         discounted_rewards = discounted_rewards + kl_reward
         advantages = self.compute_advantages(discounted_rewards, values)
-        advantages = whiten(advantages)
+        advantages = whiten(advantages, mask=mask)
 
         v_loss = self.value_loss(values, ref_values, discounted_rewards)
 
