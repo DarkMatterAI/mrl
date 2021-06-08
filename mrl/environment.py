@@ -521,7 +521,7 @@ class AgentCallback(Callback):
     def after_sample(self):
         env = self.environment
         sequences = self.batch_state.samples
-        batch_ds = self.agent.dataset.new(sequences)
+        bs = len(sequences)
         self.batch_state.rewards = to_device(torch.zeros(bs))
         self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
 
