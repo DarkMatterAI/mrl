@@ -37,7 +37,7 @@ class Log(Callback):
         self.iterations = 0
         self.metrics = defaultdict(list)
         self.metrics['rewards']
-        self.metrics['mean_reward']
+#         self.metrics['mean_reward']
         self.metrics['valid']
         self.metrics['diversity']
 
@@ -49,6 +49,7 @@ class Log(Callback):
 
         self.report = 1
         self.do_log = True
+        self.unique_samples = set()
 
     def before_train(self):
         cols = ['iterations'] + list(self.metrics.keys())
@@ -71,6 +72,8 @@ class Log(Callback):
         if self.do_log:
             env = self.environment
             batch_state = env.batch_state
+            samples = batch_state.samples
+            self.unique_samples.update(set(samples))
 
             for key in self.log.keys():
                 items = batch_state[key]
@@ -247,7 +250,7 @@ class Environment():
         self.buffer = Buffer(buffer_p_batch)
         self.batch_state = BatchState()
         self.log = Log()
-        self.mean_reward = None
+#         self.mean_reward = None
         self.reward_decay = reward_decay
 
         all_cbs = [self.agent_cb] + [self.template_cb] + self.samplers + self.reward_cbs
@@ -290,16 +293,17 @@ class Environment():
         self('compute_reward')
         rewards = self.batch_state.rewards
 
-        if self.mean_reward is None:
-            self.mean_reward = rewards.mean()
-        else:
-            self.mean_reward = (1-self.reward_decay)*rewards.mean() + self.reward_decay*self.mean_reward
+#         if self.mean_reward is None:
+#             self.mean_reward = rewards.mean()
+#         else:
+#             self.mean_reward = (1-self.reward_decay)*rewards.mean() + self.reward_decay*self.mean_reward
 
-        rewards_scaled = rewards - self.mean_reward
-        self.batch_state.rewards_scaled = rewards_scaled
+#         rewards_scaled = (rewards - rewards.mean()) / (rewards.std() + 1e-8)
+# #         rewards_scaled = rewards - self.mean_reward
+#         self.batch_state.rewards_scaled = rewards_scaled
 
         self.log.update_metric('rewards', rewards.mean().detach().cpu().numpy())
-        self.log.update_metric('mean_reward', self.mean_reward.detach().cpu().numpy())
+#         self.log.update_metric('mean_reward', self.mean_reward.detach().cpu().numpy())
 
         self('after_compute_reward')
 
@@ -378,9 +382,7 @@ class Sampler(Callback):
             sources = np.array(state.sources)
 
             samples = samples[sources==self.name]
-            buffer = self.environment.buffer
-            used = set(buffer.used_buffer)
-#             used = set(self.environment.log.log['samples'])
+            used = log.unique_samples
             novel = [i for i in samples if not i in used]
             percent_novel = len(novel)/len(samples)
 

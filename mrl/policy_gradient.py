@@ -28,10 +28,12 @@ class BasePolicy():
 # Cell
 
 class PolicyGradient(BasePolicy):
-    def __init__(self, discount=True, gamma=0.97, ratio=False):
+    def __init__(self, discount=True, gamma=0.97, ratio=False, scale_rewards=True):
         super().__init__(gamma)
         self.discount = discount
         self.ratio = ratio
+        self.scale_rewards = scale_rewards
+        self.mean_reward = None
 
     def __call__(self, lps, mask, rewards, ref_lps=None, traj_rewards=None):
         if self.ratio:
@@ -53,7 +55,17 @@ class PolicyGradient(BasePolicy):
         lps = batch_state.model_gathered_logprobs
         ref_lps = batch_state.reference_gathered_logprobs
         mask = batch_state.mask
-        rewards = batch_state.rewards_scaled
+
+        rewards = batch_state.rewards
+
+        if self.scale_rewards:
+            if self.mean_reward is None:
+                self.mean_reward = rewards.mean()
+            else:
+                self.mean_reward = (1-self.gamma)*rewards.mean() + self.gamma*self.mean_reward
+
+            rewards = rewards - self.mean_reward
+
         traj_rewards = batch_state.trajectory_rewards
 
         loss, pg_dict = self(lps, mask, rewards, ref_lps, traj_rewards)
@@ -63,13 +75,16 @@ class PolicyGradient(BasePolicy):
 # Cell
 
 class TRPO(BasePolicy):
-    def __init__(self, gamma, kl_target, beta=1., eta=50, lam=0.95, v_coef=0.5):
+    def __init__(self, gamma, kl_target, beta=1., eta=50, lam=0.95,
+                 v_coef=0.5, scale_rewards=True):
         self.gamma = gamma
         self.beta = beta
         self.eta = eta
         self.lam = lam
         self.kl_target = kl_target
         self.v_coef = v_coef
+        self.scale_rewards = scale_rewards
+        self.mean_reward = None
 
     def __call__(self, lps_g, ref_lps_g, lps, ref_lps, mask,
                  rewards, values, traj_rewards=None):
@@ -119,7 +134,16 @@ class TRPO(BasePolicy):
         ref_lps = batch_state.reference_logprobs
 
         mask = batch_state.mask
-        rewards = batch_state.rewards_scaled
+        rewards = batch_state.rewards
+
+        if self.scale_rewards:
+            if self.mean_reward is None:
+                self.mean_reward = rewards.mean()
+            else:
+                self.mean_reward = (1-self.gamma)*rewards.mean() + self.gamma*self.mean_reward
+
+            rewards = rewards - self.mean_reward
+
         traj_rewards = batch_state.trajectory_rewards
 
         values = batch_state.state_values
@@ -149,7 +173,8 @@ class TRPO(BasePolicy):
 
 class PPO(BasePolicy):
     def __init__(self, gamma, kl_coef, lam=0.95, v_coef=0.5, cliprange=0.2,
-                 v_cliprange=0.2, ent_coef=0.01, kl_target=None, kl_horizon=None):
+                 v_cliprange=0.2, ent_coef=0.01, kl_target=None,
+                 kl_horizon=None, scale_rewards=True):
         self.gamma = gamma
         self.lam = lam
         self.ent_coef = ent_coef
@@ -159,6 +184,8 @@ class PPO(BasePolicy):
         self.v_coef = v_coef
         self.cliprange = cliprange
         self.v_cliprange = v_cliprange
+        self.scale_rewards = scale_rewards
+        self.mean_reward = None
 
     def __call__(self, lps, ref_lps, mask,
                  rewards, values, ref_values, traj_rewards=None):
@@ -204,7 +231,16 @@ class PPO(BasePolicy):
 
 
         mask = batch_state.mask
-        rewards = batch_state.rewards_scaled
+        rewards = batch_state.rewards
+
+        if self.scale_rewards:
+            if self.mean_reward is None:
+                self.mean_reward = rewards.mean()
+            else:
+                self.mean_reward = (1-self.gamma)*rewards.mean() + self.gamma*self.mean_reward
+
+            rewards = rewards - self.mean_reward
+
         traj_rewards = batch_state.trajectory_rewards
 
         values = batch_state.state_values
