@@ -18,7 +18,7 @@ if USE_CUDA:
 
 def get_device():
     if torch.cuda.is_available():
-        device = int(os.environ.get('DEFAULT_GPU') or 0)
+        device = int(os.environ.get('DEFAULT_GPU') or torch.cuda.current_device())
     else:
         device='cpu'
 

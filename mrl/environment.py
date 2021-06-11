@@ -143,6 +143,8 @@ class Buffer(Callback):
 
     def after_sample(self):
         samples = self.batch_state.samples
+        samples = self.environment.template_cb.standardize(samples)
+        self.batch_state.samples = samples
         self.used_buffer += samples
 
         if self.environment.log.iterations%40 == 0:
@@ -152,8 +154,11 @@ class Buffer(Callback):
                 self.used_buffer = self.used_buffer[-self.max_size:]
 
     def after_build_buffer(self):
+        template = self.environment.template_cb
         if self.buffer:
-            self.buffer = self.environment.template_cb.filter_sequences(self.buffer)
+            self.buffer = template.standardize(self.buffer)
+            self.buffer = list(set(self.buffer))
+            self.buffer = template.filter_sequences(self.buffer)
 
     def sample_batch(self):
         bs = int(self.environment.bs * self.p_total)
@@ -293,17 +298,7 @@ class Environment():
         self('compute_reward')
         rewards = self.batch_state.rewards
 
-#         if self.mean_reward is None:
-#             self.mean_reward = rewards.mean()
-#         else:
-#             self.mean_reward = (1-self.reward_decay)*rewards.mean() + self.reward_decay*self.mean_reward
-
-#         rewards_scaled = (rewards - rewards.mean()) / (rewards.std() + 1e-8)
-# #         rewards_scaled = rewards - self.mean_reward
-#         self.batch_state.rewards_scaled = rewards_scaled
-
         self.log.update_metric('rewards', rewards.mean().detach().cpu().numpy())
-#         self.log.update_metric('mean_reward', self.mean_reward.detach().cpu().numpy())
 
         self('after_compute_reward')
 
@@ -437,6 +432,7 @@ class ModelSampler(Sampler):
             preds, _ = self.model.sample_no_grad(bs, env.sl, z=sample_latents, multinomial=True,
                                                 temperature=self.temperature)
             sequences = self.agent.reconstruct(preds)
+            sequences = env.template_cb.standardize(sequences)
             diversity = len(set(sequences))/len(sequences)
             valid = np.array([to_mol(i) is not None for i in sequences])
 
@@ -505,12 +501,18 @@ class TemplateCallback(Callback):
             sequences = list(np.array(sequences)[hps])
         return sequences
 
+    def standardize(self, sequences):
+        if self.template is not None:
+            sequences = self.template.standardize(sequences)
+
+        return sequences
+
 
 # Cell
 
 class AgentCallback(Callback):
     def __init__(self, agent, name, clip=1.):
-        super().__init__()
+        super().__init__(order=20)
         self.agent = agent
         self.name = name
         self.clip = clip

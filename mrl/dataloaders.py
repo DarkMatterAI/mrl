@@ -17,10 +17,10 @@ from .torch_core import *
 
 SMILES_CHAR_VOCAB = ['#', '(', ')', '+', '-', '/', '0',
                  '1', '2', '3', '4', '5', '6', '7',
-                 '8', '=', '@', 'B', 'C', 'F', 'H',
+                 '8', '9', '=', '@', 'B', 'C', 'F', 'H',
                  'I', 'N', 'O', 'P', 'S', '[', '\\',
                  ']', 'c', 'i', 'l', 'n', 'o', 'r', 's',
-                 '*', ':']
+                 '*', ':', '.', 'a', 'K', 'e']
 
 
 SPECIAL_TOKENS = ['bos', 'eos', 'pad', 'unk']
@@ -92,7 +92,7 @@ class Vocab():
 
         self.itos = self.special_tokens + [i for i in itos if not i in self.special_tokens]
         self.stoi = {self.itos[i]:i for i in range(len(self.itos))}
-        self.unks = []
+        self.unks = set()
 
     def tokenize(self, input):
         'Tokenize `input`'
@@ -106,7 +106,7 @@ class Vocab():
                 output.append(self.stoi[tok])
             else:
                 output.append(self.stoi['unk'])
-                self.unks.append(tok)
+                self.unks.add(tok)
         return output
 
     def _reconstruct(self, input):
@@ -131,10 +131,10 @@ class Vocab():
 
     def update_vocab(self):
         'Adds tokens in `self.unks` to vocabulary'
-        unks = list(set(self.unks))
+        unks = list(self.unks)
         self.itos += unks
         self.stoi = {self.itos[i]:i for i in range(len(self.itos))}
-        self.unks = []
+        self.unks = set()
 
     def update_vocab_from_data(self, inputs):
         'Tokenizes `inputs` and updates the vocabulary with any unknown tokens'

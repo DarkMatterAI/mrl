@@ -322,15 +322,15 @@ def FCFP6(mol):
     return morgan_fp(mol, radius=3, use_features=True)
 
 def failsafe_fp(mol, fp_function):
+    'Returns vector of zeros if failure'
     if mol is None:
-        base_fp = fp_to_array(fp_function(to_mol('CCC')))
-        output = np.zeros(base_fp.shape, dtype=np.int8)
-    else:
-        try:
-            output = fp_function(mol)
-        except:
-            base_fp = fp_to_array(fp_function(to_mol('CCC')))
-            output = np.zeros(base_fp.shape, dtype=np.int8)
+        mol = to_mol('')
+
+    try:
+        output = fp_function(mol)
+    except:
+        mol = to_mol('')
+        output = fp_function(mol)
 
     return output
 
