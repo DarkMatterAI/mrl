@@ -208,9 +208,7 @@ class PPO(BasePolicy):
         loss = torch.maximum(loss1, loss2)
         loss = (loss*mask).sum(-1)/mask.sum(-1)
 
-        entropy = Categorical(lps).entropy() #.mean()
-
-#         loss = loss.mean()
+        entropy = Categorical(lps).entropy()
 
         pg_loss = loss.mean() + v_loss - self.ent_coef*entropy.mean()
 

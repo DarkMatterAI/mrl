@@ -3,7 +3,7 @@
 __all__ = ['get_device', 'to_device', 'set_device', 'get_model_device', 'USE_CUDA', 'x_to_preds', 'gather_lps',
            'gumbel_onehot', 'average_batches', 'smooth_batches', 'pad_and_merge', 'merge_weights', 'merge_models',
            'freeze', 'unfreeze', 'discount_rewards', 'whiten', 'scatter_rewards', 'compute_advantages', 'CrossEntropy',
-           'HuberLoss', 'MSELoss']
+           'HuberLoss', 'MSELoss', 'pca']
 
 # Cell
 from .imports import *
@@ -18,7 +18,7 @@ if USE_CUDA:
 
 def get_device():
     if torch.cuda.is_available():
-        device = int(os.environ.get('DEFAULT_GPU') or torch.cuda.current_device())
+        device = torch.cuda.current_device()
     else:
         device='cpu'
 
@@ -39,7 +39,7 @@ def to_device(tensor, device=None):
     return output
 
 def set_device(device):
-    os.environ['DEFAULT_GPU'] = device
+    torch.cuda.set_device(device)
 
 def get_model_device(model):
     return next(model.parameters()).device
@@ -224,3 +224,10 @@ class MSELoss():
     def __call__(self, output, target):
         output = output.squeeze(-1)
         return self.loss(output, target)
+
+# Cell
+
+def pca(x, k=2):
+    x = x-torch.mean(x,0)
+    U,S,V = torch.svd(x.t())
+    return torch.mm(x,U[:,:k])

@@ -487,6 +487,7 @@ def fingerprint_similarities(fps1, fps2, metric):
     fp = FP()
     return fp.fingerprint_similarity(fps1, fps2, metric)
 
+
 # Cell
 
 def fragment_mol(mol, max_cuts, return_mols=False):

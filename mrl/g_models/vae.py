@@ -44,6 +44,13 @@ class VAE(Encoder_Decoder):
         z, kl_loss = self.transition(z)
         return z
 
+    def x_to_latent(self, x):
+        if type(x)==list:
+            x = x[0]
+        z = self.encoder(x)
+        z,_ = self.transition(z)
+        return z
+
     def sample(self, bs, sl, z=None, temperature=1., multinomial=True, z_scale=1.):
 
         preds = idxs = to_device(torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1))
