@@ -431,7 +431,9 @@ class VAE_Transition(nn.Module):
         self.d_latent = d_latent
         self.transition = nn.Linear(d_latent, d_latent*2)
 
-    def forward(self, x, z_scale=1.):
+    def forward(self, x, z_scale=None):
+        if z_scale is None:
+            z_scale = 1.
         mu, logvar = self.get_stats(x)
         z = z_scale*torch.randn(mu.shape).to(mu.device)
         z = mu + z*torch.exp(0.5*logvar)

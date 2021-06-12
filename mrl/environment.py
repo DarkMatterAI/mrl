@@ -48,7 +48,7 @@ class Log(Callback):
         self.log['samples']
         self.log['sources']
         self.log['rewards']
-        self.log['rewards_scaled']
+#         self.log['rewards_scaled']
 
         self.report = 1
         self.do_log = True
@@ -195,7 +195,7 @@ class BatchState(SettrDict):
         self.samples = []
         self.sources = []
         self.rewards = to_device(torch.tensor(0.))
-        self.rewards_scaled = to_device(torch.tensor(0.))
+#         self.rewards_scaled = to_device(torch.tensor(0.))
         self.trajectory_rewards = to_device(torch.tensor(0.))
         self.loss = to_device(torch.tensor(0.))
         self.latent_data = []
@@ -243,10 +243,10 @@ class Event():
 # Cell
 
 class Environment():
-    def __init__(self, agent_cb, template=None, samplers=[], reward_cbs=[], loss_cbs=[], cbs=[],
+    def __init__(self, agent_cb, template_cb=None, samplers=[], reward_cbs=[], loss_cbs=[], cbs=[],
                 buffer_p_batch=None, reward_decay=0.9):
         self.agent_cb = agent_cb
-        self.template_cb = TemplateCallback(template)
+        self.template_cb = template_cb
         self.samplers = samplers
         self.reward_cbs = reward_cbs
         self.loss_cbs = loss_cbs
@@ -283,6 +283,19 @@ class Environment():
         for cb in cbs:
             self.register_cb(cb)
 
+    def remove_cb(self, cb):
+        cb.environment = None
+        cb.batch_state = None
+        if hasattr(self, cb.name):
+            delattr(self, cb.name)
+
+        if cb in self.cbs:
+            self.cbs.remove(cb)
+
+    def remove_cbs(self, cbs):
+        for cb in cbs:
+            self.remove_cb(ccb)
+
     def build_buffer(self):
         if (len(self.buffer) < self.bs) and (self.buffer_size>0):
             self('build_buffer')
@@ -317,7 +330,8 @@ class Environment():
         self('before_step')
         self('step')
 
-    def fit(self, bs, sl, iters, buffer_size, report):
+    def fit(self, bs, sl, iters, buffer_size, report, cbs=[]):
+        self.register_cbs(cbs)
         self.bs = bs
         self.sl = sl
         self.buffer_size = buffer_size
@@ -334,7 +348,9 @@ class Environment():
                 self.compute_reward()
                 self.compute_loss()
                 self('after_batch')
-            self('after_train')
+
+        self('after_train')
+        self.remove_cbs(cbs)
 
 
 # Cell
@@ -376,10 +392,11 @@ class Sampler(Callback):
         if self.p_batch > 0. and self.track:
             log = self.environment.log
             state = self.environment.batch_state
-            samples = np.array(state.samples)
-            sources = np.array(state.sources)
+            samples = state.samples
+            sources = np.array(state.sources)==self.name
 
-            samples = samples[sources==self.name]
+            samples = [samples[i] for i in range(len(samples)) if sources[i]]
+#             samples = samples[sources==self.name]
             used = log.unique_samples
             novel = [i for i in samples if not i in used]
             percent_novel = len(novel)/len(samples)
@@ -482,7 +499,7 @@ class TemplateCallback(Callback):
             rewards = np.array([0.]*len(state.samples))
             hps = np.array([0.]*len(state.samples))
 
-        state.template = rewards
+        state[self.name] = rewards
 
         if self.track:
             env.log.update_metric(self.name, rewards.mean())
@@ -517,11 +534,21 @@ class ContrastiveTemplate(TemplateCallback):
         super().__init__(template=template, weight=weight, track=track, prefilter=prefilter)
         self.similarity_function = similarity_function
 
+    def setup(self):
+        if self.track:
+            log = self.environment.log
+            log.add_metric(self.name)
+            log.add_metric(self.name+'_temp')
+            log.add_metric(self.name+'_sim')
+            log.add_log(self.name)
+            log.add_log(self.name+'_temp')
+            log.add_log(self.name+'_sim')
+
     def compute_reward(self):
         env = self.environment
         state = env.batch_state
         source_samples = state.source_samples
-        samples = state.samples
+        samples = state.target_samples
 
         if template is not None:
             source_rewards = np.array(self.template.eval_mols(source_samples))
@@ -532,19 +559,29 @@ class ContrastiveTemplate(TemplateCallback):
             hps = source_hps * target_hps
             rewards = target_rewards - source_rewards
             sims = self.similarity_function(source_samples, samples)
-            rewards = rewards + sims
+            rewards = rewards
 
         else:
             rewards = np.array([0.]*len(state.samples))
+            sims = np.array([0.]*len(state.samples))
             hps = np.array([0.]*len(state.samples))
 
         state.template = rewards
 
+        full_rewards = rewards + sims
+
         if self.track:
-            env.log.update_metric(self.name, rewards.mean())
+            env.log.update_metric(self.name, full_rewards.mean())
+            env.log.update_metric(self.name+'_temp', rewards.mean())
+            env.log.update_metric(self.name+'_sim', sims.mean())
+
+        state[self.name] = full_rewards
+        state[self.name+'_temp'] = rewards
+        state[self.name+'_sim'] = sims
 
         state.template_passes = hps
-        state.rewards += to_device(torch.from_numpy(self.weight*rewards).float())
+        state.rewards += to_device(torch.from_numpy(self.weight*full_rewards).float())
+
 
 
 # Cell
@@ -570,7 +607,7 @@ class AgentCallback(Callback):
         sequences = self.batch_state.samples
         bs = len(sequences)
         self.batch_state.rewards = to_device(torch.zeros(bs))
-        self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
+#         self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
 
         diversity = len(set(sequences))/len(sequences)
         valid = len([i for i in sequences if to_mol(i) is not None])/len(sequences)
@@ -599,14 +636,20 @@ class GenAgentCallback(AgentCallback):
 
         if self.contrastive:
             z = self.agent.model.x_to_latent(x)
-            preds, _ = self.agent.model.sample_no_grad(z.shape[0], int(x.shape[1]*1.5), z=z)
+            preds, _ = self.agent.model.sample_no_grad(z.shape[0], env.sl, z=z)
             new_sequences = self.agent.reconstruct(preds)
             batch_ds = self.agent.dataset.new(new_sequences)
             batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
             batch = to_device(batch)
-            _,y = batch
+
+            old_x = x
+            old_y = x
+
+            x,y = batch
+            x = [x[0], old_x[1]]
             self.batch_state.source_samples = sequences
-            self.batch_state.samples = new_sequences
+            self.batch_state.target_samples = new_sequences
+            self.batch_state.samples = [(sequences[i], new_sequences[i]) for i in range(len(sequences))]
 
         self.batch_state.x = x
         self.batch_state.y = y
@@ -617,7 +660,7 @@ class GenAgentCallback(AgentCallback):
         self.batch_state.sl = y.shape[-1]
         self.batch_state.sequence_trajectories = self.agent.reconstruct_trajectory(y)
         self.batch_state.rewards = to_device(torch.zeros(bs))
-        self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
+#         self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
         self.batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
 
         diversity = len(set(sequences))/len(sequences)

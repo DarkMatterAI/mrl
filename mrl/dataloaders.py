@@ -623,13 +623,16 @@ class Vec2Text_Dataset(Vector_Dataset):
 
         return (vec, ints)
 
-    def new(self, smiles):
-        return self.__class__(smiles, self.vocab, self.mol_function, self.collate_function)
+    def new(self, in_smiles, out_smiles):
+        return self.__class__(in_smiles, out_smiles, self.vocab,
+                              self.mol_function, self.collate_function)
 
     def split_on_idxs(self, train_idxs, valid_idxs):
 
-        train_ds = self.new([self.smiles[i] for i in train_idxs])
-        valid_ds = self.new([self.smiles[i] for i in valid_idxs])
+        train_ds = self.new([self.in_smiles[i] for i in train_idxs],
+                            [self.out_smiles[i] for i in train_idxs])
+        valid_ds = self.new([self.in_smiles[i] for i in valid_idxs],
+                            [self.out_smiles[i] for i in valid_idxs])
 
         return (train_ds, valid_ds)
 

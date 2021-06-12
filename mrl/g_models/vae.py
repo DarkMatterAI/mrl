@@ -17,11 +17,12 @@ class VAE(Encoder_Decoder):
         super().__init__(encoder, decoder, transition, prior)
 
         self.bos_idx = bos_idx
+        self.z_scale = 1.
 
     def forward(self, x, decoder_input=None):
 
         z = self.encoder(x)
-        z, kl_loss = self.transition(z)
+        z, kl_loss = self.transition(z, self.z_scale)
 
         if decoder_input is None:
             decoder_input = x
@@ -31,7 +32,7 @@ class VAE(Encoder_Decoder):
 
     def encode(self, x, decoder_input=None):
         z = self.encoder(x)
-        z, kl_loss = self.transition(z)
+        z, kl_loss = self.transition(z, self.z_scale)
 
         if decoder_input is None:
             decoder_input = x
@@ -41,14 +42,14 @@ class VAE(Encoder_Decoder):
 
     def to_latent(self, x):
         z = self.encoder(x)
-        z, kl_loss = self.transition(z)
+        z, kl_loss = self.transition(z, self.z_scale)
         return z
 
     def x_to_latent(self, x):
         if type(x)==list:
             x = x[0]
         z = self.encoder(x)
-        z,_ = self.transition(z)
+        z,_ = self.transition(z, self.z_scale)
         return z
 
     def sample(self, bs, sl, z=None, temperature=1., multinomial=True, z_scale=1.):
@@ -87,14 +88,14 @@ class VAE(Encoder_Decoder):
         if type(x) == list:
             if latent is None:
                 latent = self.encoder(x[0])
-                z,_ = self.transition(latent)
+                z,_ = self.transition(latent, self.z_scale)
             else:
                 z = latent
             output, hiddens, encoded = self.decoder(x[1], z)
         else:
             if latent is None:
                 latent = self.encoder(x)
-                z,_ = self.transition(latent)
+                z,_ = self.transition(latent, self.z_scale)
             else:
                 z = latent
             output, hiddens, encoded = self.decoder(x, z)
