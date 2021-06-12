@@ -195,28 +195,9 @@ class BatchState(SettrDict):
         self.samples = []
         self.sources = []
         self.rewards = to_device(torch.tensor(0.))
-#         self.rewards_scaled = to_device(torch.tensor(0.))
         self.trajectory_rewards = to_device(torch.tensor(0.))
         self.loss = to_device(torch.tensor(0.))
         self.latent_data = []
-
-#         self.sequence_trajectories = []
-#         self.x = None
-#         self.y = None
-#         self.mask = None
-#         self.sl = None
-#         self.model_output = None
-#         self.model_encoded = None
-#         self.model_logprobs = None
-#         self.model_gathered_logprobs = None
-#         self.y_gumbel = None
-#         self.vhead_values = None
-#         self.old_vhead_values = None
-#         self.ref_output = None
-#         self.ref_encoded = None
-#         self.ref_logprobs = None
-#         self.ref_gathered_logprobs = None
-#         self.trajectory_rewards = None
 
 
 # Cell
@@ -405,13 +386,14 @@ class Sampler(Callback):
 
 class ModelSampler(Sampler):
     def __init__(self, agent, model, name, p_buffer, p_batch, genbatch, latent=False, track=True,
-                temperature=1.):
+                temperature=1., contrastive=False):
         super().__init__(name, p_buffer, p_batch, track)
         self.agent = agent
         self.model = model
         self.genbatch = genbatch
         self.latent = latent if self.agent.latents is not None else False
         self.temperature = temperature
+        self.contrastive = contrastive
 
     def build_buffer(self):
         env = self.environment
@@ -582,6 +564,18 @@ class ContrastiveTemplate(TemplateCallback):
         state.template_passes = hps
         state.rewards += to_device(torch.from_numpy(self.weight*full_rewards).float())
 
+    def get_hps(self, sequences):
+        if self.template is not None:
+            s_hps = np.array(self.template([i[0] for i in sequences]))
+            t_hps = np.array(self.template([i[1] for i in sequences]))
+            hps = s_hps * t_hps
+            hps = np.array(self.template(sequences))
+        else:
+            hps = np.array([True]*len(sequences))
+
+        return hps
+
+
 
 
 # Cell
@@ -660,7 +654,6 @@ class GenAgentCallback(AgentCallback):
         self.batch_state.sl = y.shape[-1]
         self.batch_state.sequence_trajectories = self.agent.reconstruct_trajectory(y)
         self.batch_state.rewards = to_device(torch.zeros(bs))
-#         self.batch_state.rewards_scaled = to_device(torch.zeros(bs))
         self.batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
 
         diversity = len(set(sequences))/len(sequences)
