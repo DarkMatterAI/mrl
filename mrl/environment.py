@@ -144,8 +144,10 @@ class Buffer(Callback):
         return batch
 
     def after_sample(self):
+        template_cb = self.environment.template_cb
         samples = self.batch_state.samples
-        samples = self.environment.template_cb.standardize(samples)
+        samples = template_cb.standardize(samples)
+#         samples = template_cb.filter_sequences(samples)
         self.batch_state.samples = samples
         self.used_buffer += samples
 
@@ -242,6 +244,7 @@ class Environment():
 
         all_cbs = [self.agent_cb] + [self.template_cb] + self.samplers + self.reward_cbs
         all_cbs += self.loss_cbs + cbs + [self.buffer] + [self.log]
+        all_cbs = sorted(all_cbs, key=lambda x: x.order)
 
         self.register_cbs(all_cbs)
         self('setup')
@@ -391,8 +394,9 @@ class ModelSampler(Sampler):
                                                      temperature=self.temperature)
                 sequences = self.agent.reconstruct(preds)
                 sequences = list(set(sequences))
-                valid = env.template_cb.validate(sequences)
-                sequences = [sequences[i] for i in range(len(sequences)) if valid[i]]
+                sequences = env.template_cb.filter_sequences(sequences)
+#                 valid = env.template_cb.validate(sequences)
+#                 sequences = [sequences[i] for i in range(len(sequences)) if valid[i]]
                 outputs += sequences
                 outputs = list(set(outputs))
                 to_generate = bs - len(outputs)
@@ -418,14 +422,16 @@ class ModelSampler(Sampler):
             preds, _ = self.model.sample_no_grad(bs, env.sl, z=sample_latents, multinomial=True,
                                                 temperature=self.temperature)
             sequences = self.agent.reconstruct(preds)
+
+            env.batch_state[f'{self.name}_raw'] = sequences
+
+            valid = env.template_cb.filter_sequences(sequences, return_array=True)
+
             diversity = len(set(sequences))/len(sequences)
-            valid = env.template_cb.validate(sequences)
 
             if self.track:
                 env.log.update_metric(f"{self.name}_diversity", diversity)
                 env.log.update_metric(f"{self.name}_valid", valid.mean())
-
-            env.batch_state[f'{self.name}_raw'] = sequences
 
             sequences = [sequences[i] for i in range(len(sequences)) if valid[i]]
 
@@ -500,9 +506,9 @@ class ContrastiveSampler(Sampler):
         new_sequences = self.agent.reconstruct(preds)
 
         outputs = [(sequences[i], new_sequences[i]) for i in range(len(sequences))]
-        valid = env.template_cb.validate(outputs)
         env.batch_state[f'{self.name}_raw_contrastive'] = outputs
-        outputs = [outputs[i] for i in range(len(outputs)) if valid[i]]
+
+        outputs = env.template_cb.filter_sequences(outputs)
 
         return outputs
 
@@ -563,12 +569,25 @@ class TemplateCallback(Callback):
 
         return hps
 
-    def filter_sequences(self, sequences):
-
+    def filter_sequences(self, sequences, return_array=False):
         if self.prefilter:
-            hps = self.get_hps(sequences)
-            sequences = [sequences[i] for i in range(len(sequences)) if hps[i]]
-        return sequences
+            passes = self.get_hps(sequences)
+        else:
+            passes = self.validate(sequences)
+
+        if return_array:
+            output = passes
+        else:
+            output  = [sequences[i] for i in range(len(sequences)) if passes[i]]
+        return output
+
+#         if self.prefilter:
+#             hps = self.get_hps(sequences)
+#             sequences = [sequences[i] for i in range(len(sequences)) if hps[i]]
+#         else:
+#             valid = self.validate(sequences)
+#             sequences  = [sequences[i] for i in range(len(sequences)) if valid[i]]
+#         return sequences
 
     def standardize(self, sequences):
         if self.template is not None:
@@ -614,27 +633,27 @@ class ContrastiveTemplate(TemplateCallback):
 
             hps = self.get_hps(samples)
             rewards = target_rewards - source_rewards
-            sims = self.similarity_function(source_samples, target_samples)
+            sim_scores = self.similarity_function.score(source_samples, target_samples)
             rewards = rewards
 
         else:
             rewards = np.array([0.]*len(state.samples))
-            sims = np.array([0.]*len(state.samples))
+            sim_scores = np.array([0.]*len(state.samples))
             hps = np.array([0.]*len(state.samples))
 
         state.template = rewards
-        state.template_sim = sims
+        state.template_sim = sim_scores
 
-        full_rewards = rewards + sims
+        full_rewards = rewards + sim_scores
 
         if self.track:
             env.log.update_metric(self.name, full_rewards.mean())
             env.log.update_metric(self.name+'_temp', rewards.mean())
-            env.log.update_metric(self.name+'_sim', sims.mean())
+            env.log.update_metric(self.name+'_sim', sim_scores.mean())
 
         state[self.name] = full_rewards
         state[self.name+'_temp'] = rewards
-        state[self.name+'_sim'] = sims
+        state[self.name+'_sim'] = sim_scores
 
         state.template_passes = hps
         state.rewards += to_device(torch.from_numpy(self.weight*full_rewards).float())
@@ -652,9 +671,12 @@ class ContrastiveTemplate(TemplateCallback):
         if type(sequences[0])==str:
             hps = super().get_hps(sequences)
         else:
-            s_hps = super().get_hps([i[0] for i in sequences])
-            t_hps = super().get_hps([i[1] for i in sequences])
-            hps = s_hps*t_hps
+            source_sequences = [i[0] for i in sequences]
+            target_sequences = [i[1] for i in sequences]
+            s_hps = super().get_hps(source_sequences)
+            t_hps = super().get_hps(target_sequences)
+            sim_bools = self.similarity_function.bools(source_sequences, target_sequences)
+            hps = s_hps*t_hps*sim_bools
 
         return hps
 
@@ -710,7 +732,6 @@ class GenAgentCallback(AgentCallback):
         self.contrastive = contrastive
 
     def after_sample(self):
-
         env = self.environment
         sequences = self.batch_state.samples
 
@@ -729,7 +750,6 @@ class GenAgentCallback(AgentCallback):
         self.batch_state.mask = mask
         self.batch_state.lengths = mask.sum(-1)
         self.batch_state.sl = y.shape[-1]
-        self.batch_state.sequence_trajectories = self.agent.reconstruct_trajectory(y)
         self.batch_state.rewards = to_device(torch.zeros(bs))
         self.batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
 
