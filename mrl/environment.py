@@ -40,8 +40,6 @@ class Log(Callback):
         self.iterations = 0
         self.metrics = defaultdict(list)
         self.metrics['rewards']
-        self.metrics['valid']
-        self.metrics['diversity']
 
         self.log = defaultdict(list)
         self.log['samples']
@@ -133,6 +131,12 @@ class Buffer(Callback):
             else:
                 self.buffer[place_idx-1] = item
 
+    def setup(self):
+        log = self.environment.log
+        log.add_metric(f'diversity')
+        log.add_metric(f'valid')
+        log.add_metric(f'bs')
+
     def sample(self, n):
 
         idxs = np.random.choice(np.arange(len(self.buffer)), min(n, len(self.buffer)),
@@ -150,23 +154,25 @@ class Buffer(Callback):
         samples = template_cb.standardize(samples)
         valids = template_cb.filter_sequences(samples, return_array=True)
 
-        filtered_samples = [samples[i] for i in range(len(samples)) if valids[i]]
-        filtered_sources = [sources[i] for i in range(len(sources)) if valids[i]]
-        filtered_latent_data = {}
+        if valids.sum()<1.:
+            filtered_samples = [samples[i] for i in range(len(samples)) if valids[i]]
+            filtered_sources = [sources[i] for i in range(len(sources)) if valids[i]]
+            filtered_latent_data = {}
 
-        for source,latent_idxs in self.batch_state.latent_data.items():
-            valid_subset = valids[sources==source]
-            latent_filtered = latent_idxs[valid_subset]
-            filtered_latent_data[source] = latent_filtered
+            for source,latent_idxs in self.batch_state.latent_data.items():
+                valid_subset = valids[sources==source]
+                latent_filtered = latent_idxs[valid_subset]
+                filtered_latent_data[source] = latent_filtered
 
-        self.batch_state.samples = filtered_samples
-        self.batch_state.sources = filtered_sources
-        self.batch_state.latent_data = filtered_latent_data
-        self.used_buffer += samples
+            self.batch_state.samples = filtered_samples
+            self.batch_state.sources = filtered_sources
+            self.batch_state.latent_data = filtered_latent_data
+            self.used_buffer += samples
 
-        diversity = len(set(filtered_samples))/len(filtered_samples)
+        diversity = len(set(self.batch_state.samples))/len(self.batch_state.samples)
         self.environment.log.update_metric('diversity', diversity)
         self.environment.log.update_metric('valid', valids.mean())
+        self.environment.log.update_metric('bs', len(self.batch_state.samples))
 
         if self.environment.log.iterations%40 == 0:
             self.used_buffer = list(set(self.used_buffer))
@@ -507,16 +513,24 @@ class ContrastiveSampler(Sampler):
         env = self.environment
         pairs = [(i,'') for i in sequences]
         batch_ds = self.agent.dataset.new(pairs)
-        batch_dl = batch_ds.dataloader(self.bs, shuffle=False)
 
-        new_sequences = []
+        batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
+        batch = to_device(batch)
+        x,_ = batch
+        z = self.output_model.x_to_latent(x)
+        preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
+        new_sequences = self.agent.reconstruct(preds)
 
-        for i, batch in enumerate(batch_dl):
-            batch = to_device(batch)
-            x,_ = batch
-            z = self.output_model.x_to_latent(x)
-            preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
-            new_sequences += self.agent.reconstruct(preds)
+#         batch_dl = batch_ds.dataloader(self.bs, shuffle=False)
+
+#         new_sequences = []
+
+#         for i, batch in enumerate(batch_dl):
+#             batch = to_device(batch)
+#             x,_ = batch
+#             z = self.output_model.x_to_latent(x)
+#             preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
+#             new_sequences += self.agent.reconstruct(preds)
 
         outputs = [(sequences[i], new_sequences[i]) for i in range(len(sequences))]
         env.batch_state[f'{self.name}_raw_contrastive'] = outputs
@@ -1149,14 +1163,13 @@ class LogEnumerator(Sampler):
         return outputs
 
 class DatasetSampler(Sampler):
-    def __init__(self, n_samples, samples, name):
-        super().__init__(name, 0., 0.)
-        self.n_samples = n_samples
-        self.samples = samples
+    def __init__(self, data, buffer_size, name):
+        super().__init__(name, buffer_size, 0.)
+        self.data = data
 
     def _build_buffer(self):
-        idxs = np.random.randint(0, len(self.samples), self.n_samples)
-        samples = [self.samples[i] for i in idxs]
+        idxs = np.random.randint(0, len(self.data), self.buffer_size)
+        samples = [self.data[i] for i in idxs]
         return samples
 
 class NoveltyBonus(Callback):

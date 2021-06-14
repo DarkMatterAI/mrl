@@ -27,8 +27,11 @@ class Template():
 
         `fail_score` - (float), placeholder score for compounds that fail to pass hard filters
 
+        `cpus` - (int, None), number of CPUs to use. If None, defaults to `os.environ['ncpus']`
+
     '''
-    def __init__(self, hard_filters, soft_filters=[], log=True, use_lookup=True, fail_score=0.):
+    def __init__(self, hard_filters, soft_filters=[], log=True, use_lookup=True, fail_score=0.,
+                cpus=None):
         self.hard_filters = hard_filters
         self.soft_filters = soft_filters
         self.log = log
@@ -42,13 +45,14 @@ class Template():
         self.soft_log = pd.DataFrame(columns=['smiles']+list(range(len(self.soft_filters)))+['final'])
         self.soft_col_names = ['smiles'] + [i.name for i in self.soft_filters] + ['final']
         self.soft_lookup = {}
+        self.cpus = cpus
 
     def __call__(self, mols, filter_type='hard'):
 
         if filter_type=='hard':
-            outputs = maybe_parallel(self.hf, mols)
+            outputs = maybe_parallel(self.hf, mols, cpus=self.cpus)
         else:
-            outputs = maybe_parallel(self.sf, mols)
+            outputs = maybe_parallel(self.sf, mols, cpus=self.cpus)
 
         if is_container(mols):
             return_outputs = [i[0] for i in outputs]
@@ -186,9 +190,9 @@ class Template():
 
     def clean_logs(self):
         'de-duplicate logs'
-        self.hard_log.drop_duplicates(subset='smiles')
+        self.hard_log.drop_duplicates(subset='smiles', inplace=True)
         self.hard_log.reset_index(inplace=True, drop=True)
-        self.soft_log.drop_duplicates(subset='smiles')
+        self.soft_log.drop_duplicates(subset='smiles', inplace=True)
         self.soft_log.reset_index(inplace=True, drop=True)
 
     def clear_data(self):
