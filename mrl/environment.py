@@ -146,10 +146,27 @@ class Buffer(Callback):
     def after_sample(self):
         template_cb = self.environment.template_cb
         samples = self.batch_state.samples
+        sources = np.array(self.batch_state.sources)
         samples = template_cb.standardize(samples)
-#         samples = template_cb.filter_sequences(samples)
-        self.batch_state.samples = samples
+        valids = template_cb.filter_sequences(samples, return_array=True)
+
+        filtered_samples = [samples[i] for i in range(len(samples)) if valids[i]]
+        filtered_sources = [sources[i] for i in range(len(sources)) if valids[i]]
+        filtered_latent_data = {}
+
+        for source,latent_idxs in self.batch_state.latent_data.items():
+            valid_subset = valids[sources==source]
+            latent_filtered = latent_idxs[valid_subset]
+            filtered_latent_data[source] = latent_filtered
+
+        self.batch_state.samples = filtered_samples
+        self.batch_state.sources = filtered_sources
+        self.batch_state.latent_data = filtered_latent_data
         self.used_buffer += samples
+
+        diversity = len(set(filtered_samples))/len(filtered_samples)
+        self.environment.log.update_metric('diversity', diversity)
+        self.environment.log.update_metric('valid', valids.mean())
 
         if self.environment.log.iterations%40 == 0:
             self.used_buffer = list(set(self.used_buffer))
@@ -196,7 +213,6 @@ class BatchState(SettrDict):
         self.samples = []
         self.sources = []
         self.rewards = to_device(torch.tensor(0.))
-        self.trajectory_rewards = to_device(torch.tensor(0.))
         self.loss = to_device(torch.tensor(0.))
         self.latent_data = {}
 
@@ -423,18 +439,7 @@ class ModelSampler(Sampler):
 
             env.batch_state[f'{self.name}_raw'] = sequences
 
-            valid = env.template_cb.filter_sequences(sequences, return_array=True)
-
-            diversity = len(set(sequences))/len(sequences)
-
-            if self.track:
-                env.log.update_metric(f"{self.name}_diversity", diversity)
-                env.log.update_metric(f"{self.name}_valid", valid.mean())
-
-            sequences = [sequences[i] for i in range(len(sequences)) if valid[i]]
-
             if sample_latents is not None:
-                latent_idxs = latent_idxs[valid]
                 env.batch_state.latent_data[self.name] = latent_idxs
 
         return sequences
@@ -445,6 +450,7 @@ class ModelSampler(Sampler):
             log = self.environment.log
             rewards = state.rewards.detach().cpu().numpy()
             sources = np.array(state.sources)
+
             if self.name in sources:
                 log.update_metric(f'{self.name}_rewards', rewards[sources==self.name].mean())
             else:
@@ -458,20 +464,27 @@ class ModelSampler(Sampler):
             sources = np.array(state.sources)==self.name
 
             samples = [samples[i] for i in range(len(samples)) if sources[i]]
+
+            diversity = len(set(samples))/len(samples)
+            valid = len(samples)/len(state[f'{self.name}_raw'])
+
             used = log.unique_samples
             novel = [i for i in samples if not i in used]
             percent_novel = len(novel)/len(samples)
             log.update_metric(f'{self.name}_new', percent_novel)
+            log.update_metric(f"{self.name}_diversity", diversity)
+            log.update_metric(f"{self.name}_valid", valid)
 
 
 class ContrastiveSampler(Sampler):
-    def __init__(self, base_sampler, agent, output_model):
+    def __init__(self, base_sampler, agent, output_model, bs):
         super().__init__(base_sampler.name, base_sampler.buffer_size,
                          base_sampler.p_batch, base_sampler.track)
 
         self.base_sampler = base_sampler
         self.agent = agent
         self.output_model = output_model
+        self.bs = bs
 
     def __call__(self, event_name):
 
@@ -494,19 +507,19 @@ class ContrastiveSampler(Sampler):
         env = self.environment
         pairs = [(i,'') for i in sequences]
         batch_ds = self.agent.dataset.new(pairs)
-        batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
-        batch = to_device(batch)
-        bs = len(batch_ds)
-        x,_ = batch
+        batch_dl = batch_ds.dataloader(self.bs, shuffle=False)
 
-        z = self.output_model.x_to_latent(x)
-        preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
-        new_sequences = self.agent.reconstruct(preds)
+        new_sequences = []
+
+        for i, batch in enumerate(batch_dl):
+            batch = to_device(batch)
+            x,_ = batch
+            z = self.output_model.x_to_latent(x)
+            preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
+            new_sequences += self.agent.reconstruct(preds)
 
         outputs = [(sequences[i], new_sequences[i]) for i in range(len(sequences))]
         env.batch_state[f'{self.name}_raw_contrastive'] = outputs
-
-        outputs = env.template_cb.filter_sequences(outputs)
 
         return outputs
 
@@ -704,13 +717,8 @@ class AgentCallback(Callback):
         sequences = self.batch_state.samples
         diversity = len(set(sequences))/len(sequences)
 
-        valid = env.template_cb.validate(sequences)
-
         bs = len(sequences)
         self.batch_state.rewards = to_device(torch.zeros(bs))
-
-        env.log.update_metric('diversity', diversity)
-        env.log.update_metric('valid', valid.mean())
 
     def get_model_outputs(self):
         # get relevant model outputs
@@ -724,8 +732,6 @@ class GenAgentCallback(AgentCallback):
     def after_sample(self):
         env = self.environment
         sequences = self.batch_state.samples
-
-        valid = env.template_cb.validate(sequences)
 
         batch_ds = self.agent.dataset.new(sequences)
         batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
@@ -742,11 +748,6 @@ class GenAgentCallback(AgentCallback):
         self.batch_state.sl = y.shape[-1]
         self.batch_state.rewards = to_device(torch.zeros(bs))
         self.batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
-
-        diversity = len(set(sequences))/len(sequences)
-
-        env.log.update_metric('diversity', diversity)
-        env.log.update_metric('valid', valid.mean())
 
     def subset_tensor(self, x, mask):
         if type(x)==list:
