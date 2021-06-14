@@ -395,8 +395,6 @@ class ModelSampler(Sampler):
                 sequences = self.agent.reconstruct(preds)
                 sequences = list(set(sequences))
                 sequences = env.template_cb.filter_sequences(sequences)
-#                 valid = env.template_cb.validate(sequences)
-#                 sequences = [sequences[i] for i in range(len(sequences)) if valid[i]]
                 outputs += sequences
                 outputs = list(set(outputs))
                 to_generate = bs - len(outputs)
@@ -438,7 +436,6 @@ class ModelSampler(Sampler):
             if sample_latents is not None:
                 latent_idxs = latent_idxs[valid]
                 env.batch_state.latent_data[self.name] = latent_idxs
-#                 env.batch_state.latent_data.append([self.name, latent_idxs])
 
         return sequences
 
@@ -581,14 +578,6 @@ class TemplateCallback(Callback):
         else:
             output  = [sequences[i] for i in range(len(sequences)) if passes[i]]
         return output
-
-#         if self.prefilter:
-#             hps = self.get_hps(sequences)
-#             sequences = [sequences[i] for i in range(len(sequences)) if hps[i]]
-#         else:
-#             valid = self.validate(sequences)
-#             sequences  = [sequences[i] for i in range(len(sequences)) if valid[i]]
-#         return sequences
 
     def standardize(self, sequences):
         if self.template is not None:
