@@ -63,7 +63,14 @@ class Template():
         return return_outputs
 
     def standardize(self, smiles):
-        return [to_smile(to_mol(i)) for i in smiles]
+        mols = to_mols(smiles)
+        smiles = to_smiles(mols)
+        return smiles
+
+    def validate(self, smiles):
+        mols = to_mols(smiles)
+
+        return [i is not None for i in mols]
 
     def eval_mols(self, mols):
         hardpass = self.__call__(mols, filter_type='hard')
