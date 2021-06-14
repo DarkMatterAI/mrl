@@ -198,7 +198,7 @@ class BatchState(SettrDict):
         self.rewards = to_device(torch.tensor(0.))
         self.trajectory_rewards = to_device(torch.tensor(0.))
         self.loss = to_device(torch.tensor(0.))
-        self.latent_data = []
+        self.latent_data = {}
 
 
 # Cell
@@ -437,7 +437,8 @@ class ModelSampler(Sampler):
 
             if sample_latents is not None:
                 latent_idxs = latent_idxs[valid]
-                env.batch_state.latent_data.append([self.name, latent_idxs])
+                env.batch_state.latent_data[self.name] = latent_idxs
+#                 env.batch_state.latent_data.append([self.name, latent_idxs])
 
         return sequences
 
@@ -770,7 +771,7 @@ class GenAgentCallback(AgentCallback):
         if latent_info:
             latent_sources = []
             output_tensors = []
-            for (latent_source, latent_idxs) in latent_info:
+            for (latent_source, latent_idxs) in latent_info.items():
                 latent_sources.append(latent_source)
                 latent_mask = torch.tensor([i==latent_source for i in sources]).bool()
                 latents = self.agent.latents[latent_idxs]
@@ -1152,7 +1153,7 @@ class LogEnumerator(Sampler):
             for s in samples:
                 new_smiles = add_atom_combi(s, self.atom_types) + add_bond_combi(s)
                 new_smiles = [i for i in new_smiles if i is not None]
-                new_smiles = [i for i in smiles if not '.' in i]
+                new_smiles = [i for i in new_smiles if not '.' in i]
                 outputs += new_smiles
 
         return outputs
