@@ -3,8 +3,7 @@
 __all__ = ['Callback', 'Log', 'Buffer', 'SettrDict', 'BatchState', 'Event', 'Environment', 'Sampler', 'ModelSampler',
            'ContrastiveSampler', 'TemplateCallback', 'ContrastiveTemplate', 'AgentCallback', 'GenAgentCallback',
            'RewardCallback', 'LossCallback', 'PriorLoss', 'HistoricPriorLoss', 'UpdateBaselineCB', 'StatsCallback',
-           'Rollback', 'RetrainRollback', 'SupevisedCB', 'LogSampler', 'LogEnumerator', 'DatasetSampler',
-           'NoveltyBonus', 'log_to_df']
+           'Rollback', 'RetrainRollback', 'SupevisedCB', 'LogSampler', 'LogEnumerator', 'DatasetSampler', 'log_to_df']
 
 # Cell
 
@@ -256,7 +255,7 @@ class Environment():
     def __init__(self, agent_cb, template_cb=None, samplers=[], reward_cbs=[], loss_cbs=[], cbs=[],
                 buffer_p_batch=None, reward_decay=0.9):
         self.agent_cb = agent_cb
-        self.template_cb = template_cb
+        self.template_cb = template_cb if template_cb is not None else TemplateCallback()
         self.samplers = samplers
         self.reward_cbs = reward_cbs
         self.loss_cbs = loss_cbs
@@ -609,11 +608,10 @@ class TemplateCallback(Callback):
 
         if self.template is not None:
             rewards = np.array(self.template.eval_mols(state.samples))
-            hps = np.array(self.template(state.samples))
         else:
             rewards = np.array([0.]*len(state.samples))
-            hps = np.array([0.]*len(state.samples))
 
+        hps = self.get_hps(state.samples)
         state[self.name] = rewards
 
         if self.track:
@@ -681,12 +679,12 @@ class ContrastiveTemplate(TemplateCallback):
         samples = state.samples
         source_samples = [i[0] for i in samples]
         target_samples = [i[1] for i in samples]
+        hps = self.get_hps(samples)
 
         if template is not None:
             source_rewards = np.array(self.template.eval_mols(source_samples))
             target_rewards = np.array(self.template.eval_mols(target_samples))
 
-            hps = self.get_hps(samples)
             rewards = target_rewards - source_rewards
             if self.max_score is not None:
                 rewards = rewards / (self.max_score-source_rewards)
@@ -697,7 +695,6 @@ class ContrastiveTemplate(TemplateCallback):
         else:
             rewards = np.array([0.]*len(state.samples))
             sim_scores = np.array([0.]*len(state.samples))
-            hps = np.array([0.]*len(state.samples))
 
         state.template = rewards
         state.template_sim = sim_scores
@@ -1213,30 +1210,30 @@ class DatasetSampler(Sampler):
         samples = [self.data[i] for i in idxs]
         return samples
 
-class NoveltyBonus(Callback):
-    def __init__(self, name, reward):
-        super().__init__(name=name, order=1)
-        self.reward = reward
+# class NoveltyBonus(Callback):
+#     def __init__(self, name, reward):
+#         super().__init__(name=name, order=1)
+#         self.reward = reward
 
-    def setup(self):
-        log = self.environment.log
-        log.add_metric(self.name)
-        log.add_log(self.name)
+#     def setup(self):
+#         log = self.environment.log
+#         log.add_metric(self.name)
+#         log.add_log(self.name)
 
-    def compute_reward(self):
+#     def compute_reward(self):
 
-        log = self.environment.log
-        state = self.environment.batch_state
-        samples = np.array(state.samples)
+#         log = self.environment.log
+#         state = self.environment.batch_state
+#         samples = np.array(state.samples)
 
-        used = log.unique_samples
+#         used = log.unique_samples
 
-        new = [not i in used for i in samples]
-        reward = np.array([self.reward*i for i in new])
-        self.batch_state.rewards += to_device(torch.tensor(reward).float())
-        self.batch_state[self.name] = reward
+#         new = [not i in used for i in samples]
+#         reward = np.array([self.reward*i for i in new])
+#         self.batch_state.rewards += to_device(torch.tensor(reward).float())
+#         self.batch_state[self.name] = reward
 
-        log.update_metric(self.name, reward.mean())
+#         log.update_metric(self.name, reward.mean())
 
 def log_to_df(log, keys=None):
     batch = 0

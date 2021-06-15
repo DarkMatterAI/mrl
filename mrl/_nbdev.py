@@ -243,15 +243,11 @@ index = {"is_container": "00_core.ipynb",
          "LogSampler": "12_environment.ipynb",
          "LogEnumerator": "12_environment.ipynb",
          "DatasetSampler": "12_environment.ipynb",
-         "NoveltyBonus": "12_environment.ipynb",
          "log_to_df": "12_environment.ipynb",
          "Reward": "13_reward.ipynb",
-         "trajectory_wrapper": "13_reward.ipynb",
-         "RewardModule": "13_reward.ipynb",
-         "MolReward": "13_reward.ipynb",
-         "MLReward": "13_reward.ipynb",
-         "FPModelReward": "13_reward.ipynb",
-         "SequenceModelReward": "13_reward.ipynb"}
+         "FunctionReward": "13_reward.ipynb",
+         "SampleReward": "13_reward.ipynb",
+         "NoveltyBonus": "13_reward.ipynb"}
 
 modules = ["core.py",
            "chem.py",
