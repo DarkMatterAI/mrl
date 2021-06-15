@@ -46,6 +46,8 @@ class Log(Callback):
         self.log['sources']
         self.log['rewards']
 
+        self.timelog = defaultdict(list)
+
         self.report = 1
         self.do_log = True
         self.unique_samples = set()
@@ -114,6 +116,7 @@ class Buffer(Callback):
         self.used_buffer = []
         self.max_size = max_size
         self.p_total = p_total
+        self.buffer_valid = []
 
     def __len__(self):
         return len(self.buffer)
@@ -154,7 +157,7 @@ class Buffer(Callback):
         samples = template_cb.standardize(samples)
         valids = template_cb.filter_sequences(samples, return_array=True)
 
-        if valids.sum()<1.:
+        if valids.mean()<1.:
             filtered_samples = [samples[i] for i in range(len(samples)) if valids[i]]
             filtered_sources = [sources[i] for i in range(len(sources)) if valids[i]]
             filtered_latent_data = {}
@@ -167,7 +170,8 @@ class Buffer(Callback):
             self.batch_state.samples = filtered_samples
             self.batch_state.sources = filtered_sources
             self.batch_state.latent_data = filtered_latent_data
-            self.used_buffer += samples
+
+        self.used_buffer += samples
 
         diversity = len(set(self.batch_state.samples))/len(self.batch_state.samples)
         self.environment.log.update_metric('diversity', diversity)
@@ -183,9 +187,11 @@ class Buffer(Callback):
     def after_build_buffer(self):
         template_cb = self.environment.template_cb
         if self.buffer:
+            len1 = len(self.buffer)
             self.buffer = template_cb.standardize(self.buffer)
             self.buffer = list(set(self.buffer))
             self.buffer = template_cb.filter_sequences(self.buffer)
+            self.buffer_valid.append(len(self.buffer)/len1)
 
     def sample_batch(self):
         bs = int(self.environment.bs * self.p_total)
@@ -300,11 +306,15 @@ class Environment():
             self.remove_cb(ccb)
 
     def build_buffer(self):
+        start = time.time()
         if (len(self.buffer) < self.bs):
             self('build_buffer')
             self('after_build_buffer')
+        end = time.time() - start
+        self.log.timelog['build_buffer'].append(end)
 
     def sample_batch(self):
+        start = time.time()
         self.batch_state = BatchState()
         for cb in self.cbs:
             cb.batch_state = self.batch_state
@@ -312,16 +322,28 @@ class Environment():
         self('sample_batch')
 
         self('after_sample')
+        end = time.time() - start
+        self.log.timelog['sample_batch'].append(end)
+
+    def get_model_outputs(self):
+        start = time.time()
+        self('get_model_outputs')
+        end = time.time() - start
+        self.log.timelog['get_model_outputs'].append(end)
 
     def compute_reward(self):
+        start = time.time()
         self('compute_reward')
         rewards = self.batch_state.rewards
 
         self.log.update_metric('rewards', rewards.mean().detach().cpu().numpy())
 
         self('after_compute_reward')
+        end = time.time() - start
+        self.log.timelog['compute_reward'].append(end)
 
     def compute_loss(self):
+        start = time.time()
         self('compute_loss')
         loss = self.batch_state.loss
         self('zero_grad')
@@ -332,6 +354,14 @@ class Environment():
             pass
         self('before_step')
         self('step')
+        end = time.time() - start
+        self.log.timelog['compute_loss'].append(end)
+
+    def after_batch(self):
+        start = time.time()
+        self('after_batch')
+        end = time.time() - start
+        self.log.timelog['after_batch'].append(end)
 
     def fit(self, bs, sl, iters, report, cbs=[]):
         self.register_cbs(cbs)
@@ -346,10 +376,10 @@ class Environment():
             for step in progress_bar(range(iters), parent=mb):
                 self.build_buffer()
                 self.sample_batch()
-                self('get_model_outputs')
+                self.get_model_outputs()
                 self.compute_reward()
                 self.compute_loss()
-                self('after_batch')
+                self.after_batch()
 
         self('after_train')
         self.remove_cbs(cbs)
@@ -483,7 +513,7 @@ class ModelSampler(Sampler):
 
 
 class ContrastiveSampler(Sampler):
-    def __init__(self, base_sampler, agent, output_model, bs):
+    def __init__(self, base_sampler, agent, output_model, bs, repeats=1):
         super().__init__(base_sampler.name, base_sampler.buffer_size,
                          base_sampler.p_batch, base_sampler.track)
 
@@ -491,6 +521,7 @@ class ContrastiveSampler(Sampler):
         self.agent = agent
         self.output_model = output_model
         self.bs = bs
+        self.repeats = repeats
 
     def __call__(self, event_name):
 
@@ -511,26 +542,31 @@ class ContrastiveSampler(Sampler):
 
     def sample_outputs(self, sequences):
         env = self.environment
+        if self.repeats>1:
+            sequences = sequences*self.repeats
         pairs = [(i,'') for i in sequences]
         batch_ds = self.agent.dataset.new(pairs)
 
-        batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
-        batch = to_device(batch)
-        x,_ = batch
-        z = self.output_model.x_to_latent(x)
-        preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
-        new_sequences = self.agent.reconstruct(preds)
+        if len(batch_ds)<self.bs:
 
-#         batch_dl = batch_ds.dataloader(self.bs, shuffle=False)
+            batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
+            batch = to_device(batch)
+            x,_ = batch
+            z = self.output_model.x_to_latent(x)
+            preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
+            new_sequences = self.agent.reconstruct(preds)
 
-#         new_sequences = []
+        else:
+            batch_dl = batch_ds.dataloader(self.bs, shuffle=False)
 
-#         for i, batch in enumerate(batch_dl):
-#             batch = to_device(batch)
-#             x,_ = batch
-#             z = self.output_model.x_to_latent(x)
-#             preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
-#             new_sequences += self.agent.reconstruct(preds)
+            new_sequences = []
+
+            for i, batch in enumerate(batch_dl):
+                batch = to_device(batch)
+                x,_ = batch
+                z = self.output_model.x_to_latent(x)
+                preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
+                new_sequences += self.agent.reconstruct(preds)
 
         outputs = [(sequences[i], new_sequences[i]) for i in range(len(sequences))]
         env.batch_state[f'{self.name}_raw_contrastive'] = outputs
@@ -622,9 +658,11 @@ class TemplateCallback(Callback):
 
 
 class ContrastiveTemplate(TemplateCallback):
-    def __init__(self, similarity_function, template=None, weight=1., track=True, prefilter=True):
+    def __init__(self, similarity_function, max_score=None, template=None,
+                 weight=1., track=True, prefilter=True):
         super().__init__(template=template, weight=weight, track=track, prefilter=prefilter)
         self.similarity_function = similarity_function
+        self.max_score = max_score
 
     def setup(self):
         if self.track:
@@ -650,6 +688,9 @@ class ContrastiveTemplate(TemplateCallback):
 
             hps = self.get_hps(samples)
             rewards = target_rewards - source_rewards
+            if self.max_score is not None:
+                rewards = rewards / (self.max_score-source_rewards)
+
             sim_scores = self.similarity_function.score(source_samples, target_samples)
             rewards = rewards
 
