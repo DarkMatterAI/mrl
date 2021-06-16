@@ -37,13 +37,13 @@ class Log(Callback):
 
         self.pbar = None
         self.iterations = 0
-        self.metrics = defaultdict(list)
-        self.metrics['rewards']
+        self.metrics = {}
+        self.metrics['rewards'] = []
 
-        self.log = defaultdict(list)
-        self.log['samples']
-        self.log['sources']
-        self.log['rewards']
+        self.log = {}
+        self.log['samples'] = []
+        self.log['sources'] = []
+        self.log['rewards'] = []
 
         self.timelog = defaultdict(list)
 
@@ -59,10 +59,10 @@ class Log(Callback):
             self.pbar.write(cols, table=True)
 
     def add_metric(self, name):
-        self.metrics[name]
+        self.metrics[name] = []
 
     def add_log(self, name):
-        self.log[name]
+        self.log[name] = []
 
     def update_metric(self, name, value):
         if self.do_log:

@@ -83,7 +83,10 @@ class SampleReward(Reward):
                 outputs[to_score_idxs[i]] = scores[i]
 
                 if self.lookup:
-                    self.lookup_table[to_score[i]] = scores[i]
+                    item_score = scores[i]
+                    if type(item_score) == torch.Tensor:
+                        item_score = item_score.detach().cpu()
+                    self.lookup_table[to_score[i]] = item_score
 
 
         return outputs
