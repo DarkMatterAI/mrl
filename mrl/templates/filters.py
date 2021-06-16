@@ -176,11 +176,14 @@ class Filter():
         `name` - (str, None), filter name used for repr
 
         `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+
+        `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
     '''
-    def __init__(self, score=None, name=None, fail_score=0.):
+    def __init__(self, score=None, name=None, fail_score=0., mode='smile'):
         self.score_function = self.set_score(score, fail_score)
         self.name = name
         self.priority = 0
+        self.mode = mode
 
     def set_score(self, score_function, fail_score):
         if score_function is None:
@@ -198,13 +201,33 @@ class Filter():
         output = maybe_parallel(self.eval_mol, mol, with_score=with_score)
         return output
 
+    def to_mol(self, input):
+        if self.mode=='smile':
+            mol = to_mol(input)
+        elif self.mode=='protein':
+            mol = to_protein(input)
+        else:
+            raise ValueError("`self.mode` must be one of `['smile', 'protein']`")
+
+        return mol
+
+    def to_string(self, input):
+        if self.mode=='smile':
+            string = to_smile(input)
+        elif self.mode=='protein':
+            string = to_sequence(input)
+        else:
+            raise ValueError("`self.mode` must be one of `['smile', 'protein']`")
+
+        return string
+
     def eval_mol(self, mol, with_score=False):
         '''
         eval_mol - evaluates `Mol` based on `property_function`.
             if `with_score=True`, returns the output of `score_function`, else
             returns the output of `property_function
         '''
-        mol = to_mol(mol)
+        mol = self.to_mol(mol)
         property_output = self.property_function(mol)
         criteria_output = self.criteria_function(property_output)
 
@@ -233,16 +256,26 @@ class Filter():
 class ValidityFilter(Filter):
     '''
     ValidityFilter - checks to see if a given `Mol` is a valid compound
+
+    Inputs:
+
+        `score` - one of (None, int, float, ScoreFunction), see `set_score`
+
+        `name` - (str, None), filter name used for repr
+
+        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+
+        `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
     '''
-    def __init__(self, score=None, name=None, fail_score=0.):
+    def __init__(self, score=None, name=None, fail_score=0., mode='smile'):
         if name is None:
             name = 'Vaidity Filter'
 
-        super().__init__(score, name, fail_score=fail_score)
+        super().__init__(score=score, name=name, fail_score=fail_score, mode=mode)
         self.priority=2
 
     def property_function(self, mol):
-        mol = to_mol(mol)
+        mol = self.to_mol(mol)
         return mol
 
     def criteria_function(self, property_output):
@@ -260,7 +293,7 @@ class SingleCompoundFilter(Filter):
         self.priority=1
 
     def property_function(self, mol):
-        smile = to_smile(mol)
+        smile = self.to_string(mol)
         return smile
 
     def criteria_function(self, property_output):
@@ -281,11 +314,15 @@ class PropertyFilter(Filter):
         `max_val` - (None, int, float), inclusive upper bound for filter (ignored if None)
 
         `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+
         `name` - (str, None), filter name used for repr
 
         `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+
+        `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
     '''
-    def __init__(self, mol_function, min_val=None, max_val=None, score=None, fail_score=0., name=None):
+    def __init__(self, mol_function, min_val=None, max_val=None, score=None,
+                 fail_score=0., name=None, mode='smile'):
 
         self.mol_function = mol_function
         self.min_val = min_val
@@ -294,7 +331,7 @@ class PropertyFilter(Filter):
         if name is None:
             name = mol_function.__name__
 
-        super().__init__(score, name, fail_score=fail_score)
+        super().__init__(score, name, fail_score=fail_score, mode=mode)
 
     def property_function(self, mol):
         return self.mol_function(mol)

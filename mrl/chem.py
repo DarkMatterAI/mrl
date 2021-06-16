@@ -9,7 +9,8 @@ __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts'
            'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities',
            'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums',
            'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
-           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond']
+           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein',
+           'to_sequence', 'to_proteins', 'to_sequences']
 
 # Cell
 from .imports import *
@@ -181,7 +182,7 @@ def heteroatoms(mol):
 
 def all_atoms(mol):
     'total number of atoms'
-    mo = Chem.AddHs(mol)
+    mol = Chem.AddHs(mol)
     return mol.GetNumAtoms()
 
 def heavy_atoms(mol):
@@ -1183,3 +1184,33 @@ def add_one_bond(inputs):
         output = None
 
     return output
+
+# Cell
+
+def to_protein(sequence_or_mol):
+    if (type(sequence_or_mol) == str) or (type(sequence_or_mol) == np.str_):
+        mol = Chem.MolFromFASTA(sequence_or_mol)
+        if mol is not None:
+            try:
+                Chem.SanitizeMol(mol)
+            except:
+                mol = None
+    else:
+        mol = sequence_or_mol
+
+    return mol
+
+def to_sequence(sequence_or_mol):
+
+    if type(sequence_or_mol)==Chem.Mol:
+        sequence = Chem.MolToSequence(sequence_or_mol)
+    else:
+        sequence = sequence_or_mol
+
+    return sequence
+
+def to_proteins(list_of_inputs):
+    return maybe_parallel(to_protein, list_of_inputs)
+
+def to_sequences(list_of_inputs):
+    return maybe_parallel(to_sequence, list_of_inputs)

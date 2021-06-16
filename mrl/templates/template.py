@@ -29,14 +29,17 @@ class Template():
 
         `cpus` - (int, None), number of CPUs to use. If None, defaults to `os.environ['ncpus']`
 
+        `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
+
     '''
-    def __init__(self, hard_filters, soft_filters=[], log=True, use_lookup=True, fail_score=0.,
-                cpus=None):
+    def __init__(self, hard_filters, soft_filters=[], log=False, use_lookup=True, fail_score=0.,
+                cpus=None, mode='smile'):
         self.hard_filters = hard_filters
         self.soft_filters = soft_filters
         self.log = log
         self.use_lookup = use_lookup
         self.fail_score = fail_score
+        self.mode = mode
 
         self.hard_log = pd.DataFrame(columns=['smiles']+list(range(len(self.hard_filters)))+['final'])
         self.hard_col_names = ['smiles'] + [i.name for i in self.hard_filters] + ['final']
@@ -66,13 +69,33 @@ class Template():
 
         return return_outputs
 
+    def to_mol(self, input):
+        if self.mode=='smile':
+            mol = to_mol(input)
+        elif self.mode=='protein':
+            mol = to_protein(input)
+        else:
+            raise ValueError("`self.mode` must be one of `['smile', 'protein']`")
+
+        return mol
+
+    def to_string(self, input):
+        if self.mode=='smile':
+            string = to_smile(input)
+        elif self.mode=='protein':
+            string = to_sequence(input)
+        else:
+            raise ValueError("`self.mode` must be one of `['smile', 'protein']`")
+
+        return string
+
     def standardize(self, smiles):
-        mols = to_mols(smiles)
-        smiles = to_smiles(mols)
-        return smiles
+        mols = maybe_parallel(self.to_mol, smiles, cpus=self.cpus)
+        strings = maybe_parallel(self.to_string, mols, cpus=self.cpus)
+        return strings
 
     def validate(self, smiles):
-        mols = to_mols(smiles)
+        mols = maybe_parallel(self.to_mol, smiles, cpus=self.cpus)
 
         return [i is not None for i in mols]
 
@@ -100,8 +123,8 @@ class Template():
 
     def hf(self, mol, agg=True):
         'run hard filters'
-        mol = to_mol(mol) # future note - update for proteins
-        smile = to_smile(mol)
+        mol = self.to_mol(mol)
+        smile = self.to_string(mol)
 
         if self.use_lookup and smile in self.hard_lookup.keys():
             output = self.hard_lookup[smile]
@@ -127,8 +150,8 @@ class Template():
 
     def sf(self, mol):
         'run soft filters'
-        mol = to_mol(mol) # future note - update for proteins
-        smile = to_smile(mol)
+        mol = self.to_mol(mol)
+        smile = self.to_string(mol)
 
         if self.use_lookup and smile in self.soft_lookup.keys():
             output = self.soft_lookup[smile]
@@ -285,12 +308,12 @@ class Template():
 
 class BlankTemplate(Template):
     "Empty template (no hard or soft filters)"
-    def __init__(self):
-        super().__init__([],[])
+    def __init__(self, **template_kwargs):
+        super().__init__([],[], **template_kwargs)
 
 class ValidMoleculeTemplate(Template):
     'Template for checking if an input is a single valid chemical structure'
-    def __init__(self, hard=True, soft=False):
+    def __init__(self, hard=True, soft=False, **template_kwargs):
 
         if hard:
             hard_filters = [
@@ -308,11 +331,11 @@ class ValidMoleculeTemplate(Template):
         else:
             soft_filters = []
 
-        super().__init__(hard_filters, soft_filters)
+        super().__init__(hard_filters, soft_filters, **template_kwargs)
 
 class RuleOf5Template(Template):
     "Template for Lipinski's rule of 5 (en.wikipedia.org/wiki/Lipinski%27s_rule_of_five)"
-    def __init__(self, hard=True, soft=False):
+    def __init__(self, hard=True, soft=False, **template_kwargs):
 
         if hard:
             hard_filters = [
@@ -334,11 +357,11 @@ class RuleOf5Template(Template):
         else:
             soft_filters = []
 
-        super().__init__(hard_filters, soft_filters)
+        super().__init__(hard_filters, soft_filters, **template_kwargs)
 
 class GhoseTemplate(Template):
     "Template for Ghose filters (doi.org/10.1021/cc9800071)"
-    def __init__(self, hard=True, soft=False):
+    def __init__(self, hard=True, soft=False, **template_kwargs):
 
         if hard:
             hard_filters = [
@@ -360,11 +383,11 @@ class GhoseTemplate(Template):
         else:
             soft_filters = []
 
-        super().__init__(hard_filters, soft_filters)
+        super().__init__(hard_filters, soft_filters, **template_kwargs)
 
 class VeberTemplate(Template):
     "Template for Veber filters (doi.org/10.1021/jm020017n)"
-    def __init__(self, hard=True, soft=False):
+    def __init__(self, hard=True, soft=False, **template_kwargs):
 
         if hard:
             hard_filters = [
@@ -382,11 +405,11 @@ class VeberTemplate(Template):
         else:
             soft_filters = []
 
-        super().__init__(hard_filters, soft_filters)
+        super().__init__(hard_filters, soft_filters, **template_kwargs)
 
 class REOSTemplate(Template):
     "Template for REOS filters (10.1016/s0169-409x(02)00003-0)"
-    def __init__(self, hard=True, soft=False):
+    def __init__(self, hard=True, soft=False, **template_kwargs):
 
         if hard:
             hard_filters = [
@@ -414,11 +437,11 @@ class REOSTemplate(Template):
         else:
             soft_filters = []
 
-        super().__init__(hard_filters, soft_filters)
+        super().__init__(hard_filters, soft_filters, **template_kwargs)
 
 class RuleOf3Template(Template):
     "Template for rule of 5 filter (doi.org/10.1016/S1359-6446(03)02831-9)"
-    def __init__(self, hard=True, soft=False):
+    def __init__(self, hard=True, soft=False, **template_kwargs):
 
         if hard:
             hard_filters = [
@@ -442,4 +465,4 @@ class RuleOf3Template(Template):
         else:
             soft_filters = []
 
-        super().__init__(hard_filters, soft_filters)
+        super().__init__(hard_filters, soft_filters, **template_kwargs)

@@ -3,7 +3,7 @@
 __all__ = ['get_device', 'to_device', 'set_device', 'get_model_device', 'USE_CUDA', 'x_to_preds', 'gather_lps',
            'gumbel_onehot', 'average_batches', 'smooth_batches', 'pad_and_merge', 'merge_weights', 'merge_models',
            'freeze', 'unfreeze', 'discount_rewards', 'whiten', 'scatter_rewards', 'compute_advantages', 'CrossEntropy',
-           'HuberLoss', 'MSELoss', 'pca']
+           'BinaryCrossEntropy', 'HuberLoss', 'MSELoss', 'pca']
 
 # Cell
 from .imports import *
@@ -205,6 +205,15 @@ class CrossEntropy():
 
     def __call__(self, output, target):
         output = output.view(-1, output.shape[-1])
+        target = target.view(-1).long()
+        return self.loss(output, target)
+
+class BinaryCrossEntropy():
+    def __init__(self):
+        self.loss = nn.BCEWithLogitsLoss()
+
+    def __call__(self, output, target):
+        output = output.view(-1)
         target = target.view(-1)
         return self.loss(output, target)
 
