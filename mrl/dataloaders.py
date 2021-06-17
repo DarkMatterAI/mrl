@@ -3,8 +3,8 @@
 __all__ = ['SMILES_CHAR_VOCAB', 'SPECIAL_TOKENS', 'MAPPING_TOKENS', 'HALOGEN_REPLACE', 'MAPPING_REPLACE',
            'AMINO_ACID_VOCAB', 'SELFIES_VOCAB', 'SELFIES_EXPANDED_VOCAB', 'SMILE_REGEX', 'MAPPING_REGEX',
            'AA_MAPPING_REGEX', 'tokenize_by_character', 'tokenize_with_replacements', 'regex_tokenize', 'Vocab',
-           'CharacterVocab', 'CharacterReplaceVocab', 'RegexVocab', 'test_reconstruction', 'batch_sequences',
-           'lm_collate', 'seq_to_seq_collate', 'sequence_prediction_collate', 'vector_collate',
+           'CharacterVocab', 'FuncVocab', 'SelfiesVocab', 'CharacterReplaceVocab', 'RegexVocab', 'test_reconstruction',
+           'batch_sequences', 'lm_collate', 'seq_to_seq_collate', 'sequence_prediction_collate', 'vector_collate',
            'vector_reconstruction_collate', 'vector_prediction_collate', 'BaseDataset', 'TextDataset',
            'TextToTextDataset', 'TextPredictionDataset', 'Vector_Dataset', 'Vec_Recon_Dataset', 'Vec2Text_Dataset',
            'Vec_Prediction_Dataset']
@@ -60,7 +60,10 @@ SELFIES_VOCAB = ['[C]', '[Ring1]', '[=C]', '[Branch1_1]',
              '[=S@expl]', '[=S@@expl]', '[\\N]', '[/C@@Hexpl]', '[/C@Hexpl]',
              '[\\O]', '[\\C@Hexpl]', '[\\C@@Hexpl]', '[B]', '[/F]',
              '[/C@expl]', '[\\C@expl]', '[CHexpl]', '[\\F]', '[P@expl]',
-             '[Cexpl]', '[/C@@expl]', '[\\C@@expl]', '[=P]', '[P@@expl]']
+             '[Cexpl]', '[/C@@expl]', '[\\C@@expl]', '[=P]', '[P@@expl]',
+             '[/NH+expl]', '[/S-expl]', '[=NH+expl]', '[N-expl]', '[NH+expl]',
+             '[NH2+expl]', '[NH3+expl]', '[S-expl]', '[\\NHexpl]', '[\\O-expl]',
+             '[\\S-expl]']
 
 # includes tokens that appear <500 times in a dataset of 79 million compounds
 SELFIES_EXPANDED_VOCAB = ['[C]', '[Ring1]', '[=C]',
@@ -77,7 +80,10 @@ SELFIES_EXPANDED_VOCAB = ['[C]', '[Ring1]', '[=C]',
              '[P@@expl]', '[/Br]', '[=N-expl]', '[/N+expl]', '[S+expl]', '[\\NHexpl]',
              '[\\Br]', '[/NHexpl]', '[N@+expl]', '[/S@expl]', '[N@@+expl]', '[N-expl]',
              '[/S@@expl]', '[CH2expl]', '[=P@expl]', '[Oexpl]', '[Snexpl]', '[\\S@expl]',
-             '[C-expl]', '[/B]', '[\\N+expl]', '[#N+expl]', '[=P@@expl]', '[CH-expl]',
+             '[C-expl]', '[/B]', '[\\N+expl]', '[#N+expl]', '[=P@@expl]',
+             '[/NH+expl]', '[/S-expl]', '[=NH+expl]', '[N-expl]', '[NH+expl]',
+             '[NH2+expl]', '[NH3+expl]', '[S-expl]', '[\\NHexpl]', '[\\O-expl]',
+             '[\\S-expl]', '[CH-expl]',
              '[\\O-expl]', '[Expl/Ring2]', '[/Oexpl]', '[B-expl]', '[S@@+expl]', '[=S+expl]',
              '[P+expl]', '[/O-expl]', '[PHexpl]', '[=S@+expl]', '[P@@Hexpl]', '[\\I]',
              '[Expl/Ring1]', '[Expl\\Ring2]', '[S@+expl]', '[/I]', '[Nexpl]', '[=B]',
@@ -135,17 +141,40 @@ class Vocab():
     Inputs:
 
         `itos` - list, list of tokens in vocabulary
+
+        `prefunc` - None, Callable, function applied to `input` before tokenization
+
+        `postfunc` - None, Callable, function applied to `input` after reconstruction
+
     '''
-    def __init__(self, itos):
+    def __init__(self, itos, prefunc=None, postfunc=None):
         self.special_tokens = ['bos', 'eos', 'pad', 'unk']
 
         self.itos = self.special_tokens + [i for i in itos if not i in self.special_tokens]
         self.stoi = {self.itos[i]:i for i in range(len(self.itos))}
         self.unks = set()
+        self.prefunc = prefunc
+        self.postfunc = postfunc
 
-    def tokenize(self, input):
+    def _tokenize(self, input):
         'Tokenize `input`'
         raise NotImplementedError
+
+    def tokenize(self, input):
+        input = self.preprocess(input)
+        toks = self._tokenize(input)
+        toks = ['bos'] + toks + ['eos']
+        return toks
+
+    def preprocess(self, input):
+        if self.prefunc is not None:
+            input = self.prefunc(input)
+        return input
+
+    def postprocess(self, input):
+        if self.postfunc is not None:
+            input = self.postfunc(input)
+        return input
 
     def numericalize(self, input):
         'Numericalize `input` into integers'
@@ -172,7 +201,9 @@ class Vocab():
         return output
 
     def reconstruct(self, input):
-        return ''.join(self._reconstruct(input))
+        output = ''.join(self._reconstruct(input))
+        output = self.postprocess(output)
+        return output
 
     def reconstruct_trajectory(self, input):
         tokens = self._reconstruct(input)
@@ -194,11 +225,54 @@ class Vocab():
 class CharacterVocab(Vocab):
     '''
     CharacterVocab - tokenize by character
+
+    Inputs:
+
+        `itos` - list, list of tokens in vocabulary
+
+        `prefunc` - None, Callable, function applied to `input` before tokenization
+
+        `postfunc` - None, Callable, function applied to `input` after reconstruction
     '''
-    def tokenize(self, input):
+    def _tokenize(self, input):
         toks = tokenize_by_character(input)
-        toks = ['bos'] + toks + ['eos']
+#         toks = ['bos'] + toks + ['eos']
         return toks
+
+class FuncVocab(Vocab):
+    '''
+    FuncVocab - tokenize by `tok_func`
+
+    Inputs:
+
+        `itos` - list, list of tokens in vocabulary
+
+        `tok_func` - Callable, tokenization function
+
+        `prefunc` - None, Callable, function applied to `input` before tokenization
+
+        `postfunc` - None, Callable, function applied to `input` after reconstruction
+    '''
+
+    def __init__(self, itos, tok_func, prefunc=None, postfunc=None):
+        super().__init__(itos, prefunc, postfunc)
+        self.tok_func = tok_func
+
+    def _tokenize(self, input):
+        toks = self.tok_func(input)
+        return toks
+
+
+class SelfiesVocab(FuncVocab):
+    '''
+    SelfiesVocab - converts smiles to selfies
+
+    Inputs:
+
+        `itos` - list, list of tokens in vocabulary
+    '''
+    def __init__(self, itos):
+        super().__init__(itos, split_selfie, smile_to_selfie, selfie_to_smile)
 
 
 class CharacterReplaceVocab(Vocab):
@@ -208,10 +282,16 @@ class CharacterReplaceVocab(Vocab):
     Inputs:
 
         `itos` - list, list of tokens
+
         `replace_dict` - dict, replacement dictionary of the form {multi_character_token : single_character_token}.
         ie replace_dict={'Br':'R', 'Cl':'L'}
+
+        `prefunc` - None, Callable, function applied to `input` before tokenization
+
+        `postfunc` - None, Callable, function applied to `input` after reconstruction
+
     '''
-    def __init__(self, itos, replace_dict):
+    def __init__(self, itos, replace_dict, prefunc=None, postfunc=None):
         itos = list(itos)
         self.replace_dict = replace_dict
         if not 'unk' in self.replace_dict.keys():
@@ -221,11 +301,11 @@ class CharacterReplaceVocab(Vocab):
         for rep in self.reverse_dict.keys():
             if not rep in itos:
                 itos.append(rep)
-        super().__init__(itos)
+        super().__init__(itos, prefunc, postfunc)
 
-    def tokenize(self, smile):
+    def _tokenize(self, smile):
         toks = tokenize_with_replacements(smile, self.replace_dict)
-        toks = ['bos'] + toks + ['eos']
+#         toks = ['bos'] + toks + ['eos']
         return toks
 
     def _reconstruct(self, input):
@@ -250,17 +330,23 @@ class RegexVocab(Vocab):
     Inputs:
 
         `itos` - list, list of tokens
+
         `pattern` - str, regex string
+
+        `prefunc` - None, Callable, function applied to `input` before tokenization
+
+        `postfunc` - None, Callable, function applied to `input` after reconstruction
+
     '''
-    def __init__(self, itos, pattern):
-        super().__init__(itos)
+    def __init__(self, itos, pattern, prefunc=None, postfunc=None):
+        super().__init__(itos, prefunc, postfunc)
 
         self.pattern = pattern
         self.regex = re.compile(self.pattern)
 
-    def tokenize(self, smile):
+    def _tokenize(self, smile):
         toks = regex_tokenize(smile, self.regex)
-        toks = ['bos'] + toks + ['eos']
+#         toks = ['bos'] + toks + ['eos']
         return toks
 
 # Cell
@@ -493,52 +579,6 @@ class TextToTextDataset(BaseDataset):
         valid_ds = self.new([self.smiles_pairs[i] for i in valid_idxs])
 
         return (train_ds, valid_ds)
-
-# class TextToTextDataset(BaseDataset):
-#     '''
-#     TextToTextDataset - base dataset for sequence to sequence models
-
-#     Inputs:
-
-#         `in_smiles` - list[str], list of input text sequences
-
-#         `out_smiles` - list[str], list of output text sequences
-
-#         `vocab` - Vocab, vocabuary for tokenization/numericaization
-
-#         `collate_function` - batch collate function. If None, defauts to `seq_to_seq_collate`
-#     '''
-#     def __init__(self, in_smiles, out_smiles, vocab, collate_function=None):
-#         self.in_smiles = in_smiles
-#         self.out_smiles = out_smiles
-#         self.vocab = vocab
-#         if collate_function is None:
-#             collate_function = partial(seq_to_seq_collate, pad_idx=self.vocab.stoi['pad'])
-
-#         super().__init__(collate_function)
-
-#     def __len__(self):
-#         return len(self.smiles)
-
-#     def __getitem__(self, idx):
-#         in_smile = self.in_smiles[idx]
-#         out_smile = self.out_smiles[idx]
-#         in_tokens = self.vocab.tokenize(in_smile)
-#         out_tokens = self.vocab.tokenize(out_smile)
-#         in_ints = torch.LongTensor(self.vocab.numericalize(in_tokens))
-#         out_ints = torch.LongTensor(self.vocab.numericalize(out_tokens))
-#         return (in_ints, out_ints)
-
-#     def new(self, in_smiles, out_smiles):
-#         return self.__class__(in_smiles, out_smiles, self.vocab, self.collate_function)
-
-#     def split_on_idxs(self, train_idxs, valid_idxs):
-
-#         train_ds = self.new([self.in_smiles[i] for i in train_idxs],
-#                             [self.out_smiles[i] for i in train_idxs])
-#         valid_ds = self.new([self.in_smiles[i] for i in valid_idxs],
-#                             [self.out_smiles[i] for i in valid_idxs])
-#         return (train_ds, valid_ds)
 
 
 # Cell

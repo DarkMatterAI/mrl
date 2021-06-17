@@ -115,8 +115,8 @@ class TRPO(BasePolicy):
 
         pg_loss = loss1.mean() + loss2.mean() + loss3.mean() + v_loss
 
-        pg_dict = {'pg_discounted' : discounted_rewards,
-                    'pg_advantage' : advantages,
+        pg_dict = {'pg_discounted' : discounted_rewards.detach().cpu(),
+                    'pg_advantage' : advantages.detach().cpu(),
                     'ratios' : ratios.detach().cpu(),
                     'kl' : kl.detach().cpu(),
                     'loss1' : loss1.detach().cpu(),
@@ -214,8 +214,8 @@ class PPO(BasePolicy):
 
         self.update_kl(lps, ref_lps, mask)
 
-        pg_dict = {'pg_discounted' : discounted_rewards,
-                    'pg_advantage' : advantages,
+        pg_dict = {'pg_discounted' : discounted_rewards.detach().cpu(),
+                    'pg_advantage' : advantages.detach().cpu(),
                     'ratios' : ratios.detach().cpu(),
                     'loss' : loss.detach().cpu(),
                     'v_loss' : v_loss.detach().cpu(),

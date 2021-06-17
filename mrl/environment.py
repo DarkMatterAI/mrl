@@ -224,7 +224,7 @@ class BatchState(SettrDict):
         self.samples = []
         self.sources = []
         self.rewards = to_device(torch.tensor(0.))
-        self.loss = to_device(torch.tensor(0.))
+        self.loss = to_device(torch.tensor(0., requires_grad=True))
         self.latent_data = {}
 
 
@@ -346,14 +346,11 @@ class Environment():
         self('compute_loss')
         loss = self.batch_state.loss
         self('zero_grad')
-        try:
-            loss.backward()
-        except:
-            # possibly no loss
-            pass
+        loss.backward()
         self('before_step')
         self('step')
         end = time.time() - start
+
         self.log.timelog['compute_loss'].append(end)
 
     def after_batch(self):
