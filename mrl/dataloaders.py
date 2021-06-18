@@ -93,7 +93,15 @@ SELFIES_EXPANDED_VOCAB = ['[C]', '[Ring1]', '[=C]',
              '[I+expl]', '[=P@Hexpl]', '[\\Snexpl]', '[\\C-expl]', '[=SHexpl]', '[\\Siexpl]',
              '[SnH4+2expl]', '[Sn+expl]', '[=Snexpl]', '[=P+expl]', '[C+expl]', '[N@@H+expl]',
              '[Sn+3expl]', '[/C-expl]', '[/Cexpl]', '[BH3-expl]', '[\\CH-expl]', '[=Siexpl]',
-             '[/CHexpl]', '[/Snexpl]', '[BH2-expl]', '[\\Cexpl]', '[\\P]', '[=PHexpl]']
+             '[/CHexpl]', '[/Snexpl]', '[BH2-expl]', '[\\Cexpl]', '[\\P]', '[=PHexpl]',
+             '[#N+expl]', '[#NH+expl]', '[#PHexpl]', '[#P]', '[#Pexpl]', '[#SHexpl]',
+             '[#S]', '[#Sexpl]', '[/Br]', '[/CHexpl]', '[/Cexpl]', '[/N+expl]',
+             '[/NHexpl]', '[/O-expl]', '[/PHexpl]', '[/P]', '[/SHexpl]', '[=CHexpl]', '[=Cexpl]',
+             '[=N-expl]', '[=P+expl]', '[=P@@expl]', '[=P@expl]', '[=PHexpl]', '[=Pexpl]',
+             '[=S-expl]', '[=SHexpl]', '[=Sexpl]', '[=Siexpl]', '[Expl#Ring1]', '[Expl#Ring2]',
+             '[Expl/Ring1]', '[Expl/Ring2]', '[Expl\\Ring1]', '[Expl\\Ring2]', '[P+expl]', '[PHexpl]',
+             '[Pexpl]', '[SHexpl]', '[Sexpl]', '[\\Br]', '[\\CHexpl]', '[\\Cexpl]',
+             '[\\I]', '[\\N+expl]', '[\\SHexpl]', '[\\Siexpl]']
 
 
 # Cell

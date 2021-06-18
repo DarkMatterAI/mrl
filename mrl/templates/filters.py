@@ -5,7 +5,8 @@ __all__ = ['ScoreFunction', 'NoScore', 'PassThroughScore', 'ModifiedScore', 'Con
            'PropertyFilter', 'MolWtFilter', 'HBDFilter', 'HBAFilter', 'TPSAFilter', 'RotBondFilter', 'SP3Filter',
            'LogPFilter', 'RingFilter', 'HeteroatomFilter', 'AromaticRingFilter', 'HeavyAtomsFilter', 'MRFilter',
            'ChargeFilter', 'TotalAtomFilter', 'QEDFilter', 'SAFilter', 'LooseRotBondFilter', 'MaxRingFilter',
-           'MinRingFilter', 'StructureFilter', 'ExclusionFilter', 'FPFilter']
+           'MinRingFilter', 'BridgeheadFilter', 'SpiroFilter', 'ChiralFilter', 'StructureFilter', 'ExclusionFilter',
+           'FPFilter']
 
 # Cell
 from ..imports import *
@@ -440,6 +441,21 @@ class MaxRingFilter(PropertyFilter):
 
 class MinRingFilter(PropertyFilter):
     "Min ring size filter"
+    def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
+        super().__init__(min_ring_size, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
+class BridgeheadFilter(PropertyFilter):
+    "Number of bridgehead carbons filter"
+    def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
+        super().__init__(num_bridgeheads, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
+class SpiroFilter(PropertyFilter):
+    "Spiro carbon filter"
+    def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
+        super().__init__(num_spiro, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
+class ChiralFilter(PropertyFilter):
+    "Chiral center filter"
     def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
         super().__init__(min_ring_size, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
 
