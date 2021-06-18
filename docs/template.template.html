@@ -2,7 +2,6 @@
 
 title: Templates
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -32,7 +31,7 @@ nb_path: "nbs/03_template.template.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>//anaconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -64,7 +63,7 @@ TPSA: Less than 80 (+1)
 Substructure Match: '[#6]1:[#6]:[#7]:[#6]:[#6]:[#6]:1' (+3)
 Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 <p>Based on the above criteria, a molecule that passes the must-have criteria could get a score between -1 and +5 based on meeting the nice-to-have criteria.</p>
-<p>Templates are instantiated through the <a href="/mrl/template.template.html#Template"><code>Template</code></a> class. A template is a collections of filters, created through the <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a> class. See <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a> for more details on defining filter functions.</p>
+<p>Templates are instantiated through the <a href="/mrl/template.template#Template"><code>Template</code></a> class. A template is a collections of filters, created through the <a href="/mrl/template.filters#Filter"><code>Filter</code></a> class. See <a href="/mrl/template.filters#Filter"><code>Filter</code></a> for more details on defining filter functions.</p>
 <p>Templates contain two sets of filters - hard filters and soft filters. Hard filters contain the must-have citeria for a molecule, while the soft filters contain the nice-to-have criteria.</p>
 <p>During model training, a generative model creates a batch of compounds. These compounds are first screened against the hard filters. Compounds that fail the hard filters can then be excluded from the training batch or assigned a default failure score. Compounds that pass the hard filters are then scored using the soft filters. Soft filters can provide a small score bonus or penalty for a molecule in addition to the main score function.</p>
 <p>Soft filters incentivise a genertive model to maximize the soft filter conditions without making them a hard requirement. This allows soft filters to be highly targeted towards narrow property ranges or highly specific substructures. If these highly targeted criteria were set as hard filters, they might invalidate too many compounds and cause the model to struggle during training.</p>
@@ -81,7 +80,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Templates">Templates<a class="anchor-link" href="#Templates"> </a></h2><p>The <a href="/mrl/template.template.html#Template"><code>Template</code></a> class holds a collection of hard filters and soft filters and manages screening a molecule against those filters. Templates by default log the fitler results in detail, allowing you to inspect which filters a molecule failed.</p>
+<h2 id="Templates">Templates<a class="anchor-link" href="#Templates"> </a></h2><p>The <a href="/mrl/template.template#Template"><code>Template</code></a> class holds a collection of hard filters and soft filters and manages screening a molecule against those filters. Templates by default log the fitler results in detail, allowing you to inspect which filters a molecule failed.</p>
 <p>Templates can be merged by adding templates together, ie <code>new_template = template1 + template2</code>. Adding two templates merges the hard and soft filters in each template.</p>
 <p>Templates by default will log all molecules passed through the hard and soft filters to an internal dataframe, and build a lookup table of <code>{smile : final_score}</code>. The first time a molecule is screened, it is added to the internal dataframe and lookup table. If that molecule is seen again (defined by the smiles string), the lookup value is returned. If this behavior isn't desired, pass <code>log=False</code> to disable all logging and lookup, or <code>use_lookup=False</code> to keep logging but avoid using the lookup table.</p>
 
@@ -92,6 +91,13 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -99,20 +105,24 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Template" class="doc_header"><code>class</code> <code>Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Template</code>(<strong><code>hard_filters</code></strong>, <strong><code>soft_filters</code></strong>=<em><code>[]</code></em>, <strong><code>log</code></strong>=<em><code>True</code></em>, <strong><code>use_lookup</code></strong>=<em><code>True</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>)</p>
+<h2 id="Template" class="doc_header"><code>class</code> <code>Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Template</code>(<strong><code>hard_filters</code></strong>, <strong><code>soft_filters</code></strong>=<em><code>[]</code></em>, <strong><code>log</code></strong>=<em><code>False</code></em>, <strong><code>use_lookup</code></strong>=<em><code>True</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>, <strong><code>cpus</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'smile'</code></em>)</p>
 </blockquote>
 <p>Template - class for managing hard and soft filters</p>
 <p>Inputs:
-    <code>hard_filters</code> - (list), list of <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a> objects used for pass/fail screening</p>
+    <code>hard_filters</code> - (list), list of <a href="/mrl/template.filters#Filter"><code>Filter</code></a> objects used for pass/fail screening</p>
 
-<pre><code>`soft_filters` - (list), list of [`Filter`](/mrl/template.filters.html#Filter) objects used for soft scoring
+<pre><code>`soft_filters` - (list), list of [`Filter`](/mrl/template.filters#Filter) objects used for soft scoring
 
 `log` - (bool), if True, template will log screened compounds
 
 `use_lookup` - (bool), if True, filter results are stored in a lookup table. If a compound
     is re-screened, the lookup value is returned
 
-`fail_score` - (float), placeholder score for compounds that fail to pass hard filters</code></pre>
+`fail_score` - (float), placeholder score for compounds that fail to pass hard filters
+
+`cpus` - (int, None), number of CPUs to use. If None, defaults to `os.environ['ncpus']`
+
+`mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects</code></pre>
 
 </div>
 
@@ -142,7 +152,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BlankTemplate" class="doc_header"><code>class</code> <code>BlankTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L272" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlankTemplate</code>() :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="BlankTemplate" class="doc_header"><code>class</code> <code>BlankTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L309" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlankTemplate</code>(<strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Empty template (no hard or soft filters)</p>
 
@@ -167,7 +177,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ValidMoleculeTemplate" class="doc_header"><code>class</code> <code>ValidMoleculeTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L277" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidMoleculeTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="ValidMoleculeTemplate" class="doc_header"><code>class</code> <code>ValidMoleculeTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L314" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidMoleculeTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for checking if an input is a single valid chemical structure</p>
 
@@ -192,7 +202,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RuleOf5Template" class="doc_header"><code>class</code> <code>RuleOf5Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf5Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="RuleOf5Template" class="doc_header"><code>class</code> <code>RuleOf5Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L336" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf5Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Lipinski's rule of 5 (en.wikipedia.org/wiki/Lipinski%27s_rule_of_five)</p>
 
@@ -217,7 +227,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GhoseTemplate" class="doc_header"><code>class</code> <code>GhoseTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L325" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GhoseTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="GhoseTemplate" class="doc_header"><code>class</code> <code>GhoseTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L362" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GhoseTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Ghose filters (doi.org/10.1021/cc9800071)</p>
 
@@ -242,7 +252,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VeberTemplate" class="doc_header"><code>class</code> <code>VeberTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L351" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VeberTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="VeberTemplate" class="doc_header"><code>class</code> <code>VeberTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L388" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VeberTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Veber filters (doi.org/10.1021/jm020017n)</p>
 
@@ -267,7 +277,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="REOSTemplate" class="doc_header"><code>class</code> <code>REOSTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L373" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>REOSTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="REOSTemplate" class="doc_header"><code>class</code> <code>REOSTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L410" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>REOSTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for REOS filters (10.1016/s0169-409x(02)00003-0)</p>
 
@@ -292,7 +302,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RuleOf3Template" class="doc_header"><code>class</code> <code>RuleOf3Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L405" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf3Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="RuleOf3Template" class="doc_header"><code>class</code> <code>RuleOf3Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L442" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf3Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for rule of 5 filter (doi.org/10.1016/S1359-6446(03)02831-9)</p>
 
@@ -302,13 +312,6 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -388,7 +391,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">template</span> <span class="o">=</span> <span class="n">RuleOf3Template</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">template</span> <span class="o">=</span> <span class="n">RuleOf3Template</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;files/smiles.csv&#39;</span><span class="p">)</span>
 <span class="n">passes</span><span class="p">,</span> <span class="n">fails</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">screen_mols</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">passes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">92</span>
@@ -432,6 +435,24 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">([])</span>
 <span class="k">assert</span> <span class="n">template</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">template</span> <span class="o">=</span> <span class="n">RuleOf3Template</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;protein&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">template</span><span class="p">([</span><span class="s1">&#39;MAAR&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
 </pre></div>
 
     </div>

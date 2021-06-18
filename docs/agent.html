@@ -2,7 +2,6 @@
 
 title: Agent
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -36,6 +35,13 @@ nb_path: "nbs/08_agent.ipynb"
 </div>
 </div>
 </div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -85,7 +91,7 @@ nb_path: "nbs/08_agent.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PredictiveAgent" class="doc_header"><code>class</code> <code>PredictiveAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L100" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PredictiveAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/agent.html#Agent"><code>Agent</code></a></p>
+<h2 id="PredictiveAgent" class="doc_header"><code>class</code> <code>PredictiveAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L101" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PredictiveAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/agent#Agent"><code>Agent</code></a></p>
 </blockquote>
 
 </div>
@@ -116,7 +122,7 @@ nb_path: "nbs/08_agent.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BaselineAgent" class="doc_header"><code>class</code> <code>BaselineAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L116" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaselineAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>v_update</code></strong>=<em><code>0.95</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>value_head</code></strong>=<em><code>None</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>vopt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/agent.html#Agent"><code>Agent</code></a></p>
+<h2 id="BaselineAgent" class="doc_header"><code>class</code> <code>BaselineAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L118" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaselineAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>v_update</code></strong>=<em><code>0.95</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>value_head</code></strong>=<em><code>None</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>vopt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/agent#Agent"><code>Agent</code></a></p>
 </blockquote>
 
 </div>
@@ -147,7 +153,7 @@ nb_path: "nbs/08_agent.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GenerativeAgent" class="doc_header"><code>class</code> <code>GenerativeAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L205" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GenerativeAgent</code>(<strong><code>model</code></strong>, <strong><code>vocab</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>v_update</code></strong>=<em><code>0.95</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>value_head</code></strong>=<em><code>None</code></em>, <strong><code>latents</code></strong>=<em><code>None</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>vopt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>lopt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/agent.html#BaselineAgent"><code>BaselineAgent</code></a></p>
+<h2 id="GenerativeAgent" class="doc_header"><code>class</code> <code>GenerativeAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L207" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GenerativeAgent</code>(<strong><code>model</code></strong>, <strong><code>vocab</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>v_update</code></strong>=<em><code>0.95</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>value_head</code></strong>=<em><code>None</code></em>, <strong><code>latents</code></strong>=<em><code>None</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>vopt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>lopt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/agent#BaselineAgent"><code>BaselineAgent</code></a></p>
 </blockquote>
 
 </div>
@@ -178,7 +184,7 @@ nb_path: "nbs/08_agent.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CriticAgent" class="doc_header"><code>class</code> <code>CriticAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L290" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CriticAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/agent.html#BaselineAgent"><code>BaselineAgent</code></a></p>
+<h2 id="CriticAgent" class="doc_header"><code>class</code> <code>CriticAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L292" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CriticAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/agent#BaselineAgent"><code>BaselineAgent</code></a></p>
 </blockquote>
 
 </div>
@@ -187,230 +193,6 @@ nb_path: "nbs/08_agent.ipynb"
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># class GenerativeAgent(Agent):</span>
-<span class="c1">#     def __init__(self, model, vocab, loss_function, dataset, base_update=0.99,</span>
-<span class="c1">#                  v_update=0.95, base_model=True, value_head=None, latents=None,</span>
-<span class="c1">#                  opt_kwargs={}, vopt_kwargs={}, lopt_kwargs={}):</span>
-<span class="c1">#         super().__init__(model, loss_function, dataset, opt_kwargs)</span>
-             
-            
-<span class="c1">#         self.opts = [self.opt]</span>
-<span class="c1">#         self.set_models(base_model, value_head, latents, </span>
-<span class="c1">#                         vopt_kwargs, lopt_kwargs)</span>
-                    
-<span class="c1">#         self.vocab = vocab</span>
-<span class="c1">#         self.base_update = base_update</span>
-<span class="c1">#         self.v_update = v_update</span>
-            
-            
-<span class="c1">#     def set_models(self, base_model, value_head, latents, </span>
-<span class="c1">#                    vopt_kwargs, lopt_kwargs):</span>
-        
-<span class="c1">#         if base_model==True:</span>
-<span class="c1">#             self.base_model = copy.deepcopy(self.model)</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             self.base_model = base_model</span>
-            
-<span class="c1">#         to_device(self.base_model)</span>
-        
-<span class="c1">#         self.value_head = value_head</span>
-<span class="c1">#         if self.value_head is not None:</span>
-<span class="c1">#             self.base_value_head = copy.deepcopy(self.value_head)</span>
-<span class="c1">#             to_device(self.value_head)</span>
-<span class="c1">#             to_device(self.base_value_head)</span>
-            
-<span class="c1">#             self.value_opt = self.get_opt(self.value_head.parameters(), **vopt_kwargs)</span>
-<span class="c1">#             self.opts.append(self.value_opt)</span>
-            
-<span class="c1">#         self.latents = latents</span>
-<span class="c1">#         if self.latents is not None:</span>
-<span class="c1">#             self.latents = to_device(self.latents)</span>
-<span class="c1">#             self.latents = nn.Parameter(self.latents)</span>
-<span class="c1">#             self.latent_opt = self.get_opt([self.latents], **lopt_kwargs)</span>
-<span class="c1">#             self.opts.append(self.latent_opt)</span>
-            
-<span class="c1">#     def zero_grad(self):</span>
-<span class="c1">#         for opt in self.opts:</span>
-<span class="c1">#             opt.zero_grad()</span>
-            
-<span class="c1">#     def step(self):</span>
-<span class="c1">#         for opt in self.opts:</span>
-<span class="c1">#             opt.step()</span>
-            
-<span class="c1">#     def base_to_model(self):</span>
-<span class="c1">#         if type(self.base_model)==type(self.model):</span>
-<span class="c1">#             self.base_model.load_state_dict(self.model.state_dict())</span>
-            
-<span class="c1">#     def model_to_base(self):</span>
-<span class="c1">#         if type(self.base_model)==type(self.model):</span>
-<span class="c1">#             self.model.load_state_dict(self.base_model.state_dict())</span>
-            
-<span class="c1">#     def update_base_models(self):</span>
-<span class="c1">#         if type(self.base_model)==type(self.model):</span>
-<span class="c1">#             if self.base_update &lt; 1:</span>
-<span class="c1">#                 merge_models(self.base_model, self.model, alpha=self.base_update)</span>
-            
-<span class="c1">#         if self.value_head is not None:</span>
-<span class="c1">#             if self.v_update &lt; 1:</span>
-<span class="c1">#                 merge_models(self.base_value_head, self.value_head, alpha=self.v_update)</span>
-    
-<span class="c1">#     def reconstruct(self, preds):</span>
-<span class="c1">#         return maybe_parallel(self.vocab.reconstruct, [i for i in preds.detach().cpu()])</span>
-    
-<span class="c1">#     def reconstruct_trajectory(self, preds):</span>
-<span class="c1">#         trajectories = maybe_parallel(self.vocab.reconstruct_trajectory, [i for i in preds.detach().cpu()])</span>
-<span class="c1">#         return trajectories</span>
-    
-<span class="c1">#     def load_weights(self, filename, base=False):</span>
-<span class="c1">#         state_dict = torch.load(filename, map_location=get_model_device(self.model))</span>
-        
-<span class="c1">#         if &#39;value_head&#39; in state_dict.keys():</span>
-<span class="c1">#             value_state = state_dict[&#39;value_head&#39;]</span>
-<span class="c1">#             state_dict = state_dict[&#39;model&#39;]</span>
-<span class="c1">#             if not base:</span>
-<span class="c1">#                 self.value_head.load_state_dict(value_state)</span>
-        
-<span class="c1">#         if not base:</span>
-<span class="c1">#             self.model.load_state_dict(state_dict)</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             if not isinstance(self.base_model, nn.Module):</span>
-<span class="c1">#                 self.base_model = copy.deepcopy(model)</span>
-            
-<span class="c1">#             self.base_model.load_state_dict(state_dict)</span>
-
-<span class="c1">#     def save_weights(self, filename, base=False):</span>
-        
-<span class="c1">#         if base:</span>
-<span class="c1">#             state_dict = self.base_model.state_dict()</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             state_dict = self.model.state_dict()</span>
-            
-<span class="c1">#         if self.value_head is not None:</span>
-<span class="c1">#             value_state = self.value_head.state_dict()</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             value_state = None</span>
-            
-<span class="c1">#         state_dict = {&#39;model&#39;:state_dict, &#39;value_head&#39;:value_state}    </span>
-            
-<span class="c1">#         torch.save(state_dict, filename)</span>
-        
-<span class="c1">#     def get_batch_params(self, model_output):</span>
-<span class="c1">#         x = model_output[&#39;x&#39;]</span>
-<span class="c1">#         y = model_output[&#39;y&#39;]</span>
-<span class="c1">#         mask = ~(y==self.vocab.stoi[&#39;pad&#39;])</span>
-<span class="c1">#         lengths = mask.sum(-1)</span>
-<span class="c1">#         sl = y.shape[-1]</span>
-<span class="c1">#         trajectories = self.reconstruct_trajectory(y)</span>
-<span class="c1">#         smiles = [i[-1] if i else &#39;&#39; for i in trajectories]</span>
-        
-<span class="c1">#         model_output[&#39;mask&#39;] = mask</span>
-<span class="c1">#         model_output[&#39;lengths&#39;] = lengths</span>
-<span class="c1">#         model_output[&#39;sl&#39;] = sl</span>
-<span class="c1">#         model_output[&#39;sequences&#39;] = smiles</span>
-<span class="c1">#         model_output[&#39;sequence_trajectories&#39;] = trajectories</span>
-        
-<span class="c1">#         return model_output</span>
-        
-    
-<span class="c1">#     def get_model_outputs(self, model_output):</span>
-<span class="c1">#         x = model_output[&#39;x&#39;]</span>
-<span class="c1">#         y = model_output[&#39;y&#39;]</span>
-<span class="c1">#         latent = model_output[&#39;latent&#39;]</span>
-<span class="c1">#         mo, mlp, mglp, me = self.model.get_rl_tensors(x,y,latent=latent)</span>
-<span class="c1">#         mprob = mlp.exp()</span>
-    
-<span class="c1">#         model_output[&#39;model_output&#39;] = mo</span>
-<span class="c1">#         model_output[&#39;model_logprobs&#39;] = mlp</span>
-<span class="c1">#         model_output[&#39;model_gathered_logprobs&#39;] = mglp</span>
-<span class="c1">#         model_output[&#39;model_encoded&#39;] = me</span>
-<span class="c1">#         model_output[&#39;y_gumbel&#39;] = F.one_hot(y, len(self.vocab.itos)) + mprob - mprob.detach()</span>
-        
-<span class="c1">#         if self.value_head is not None:</span>
-<span class="c1">#             value_predictions = self.value_head(me)</span>
-<span class="c1">#             with torch.no_grad():</span>
-<span class="c1">#                 base_value_predictions = self.base_value_head(me)</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             value_predictions = None</span>
-<span class="c1">#             base_value_predictions = None</span>
-            
-<span class="c1">#         model_output[&#39;state_values&#39;] = value_predictions</span>
-<span class="c1">#         model_output[&#39;old_state_values&#39;] = base_value_predictions</span>
-        
-<span class="c1">#         if self.base_model is not None:</span>
-<span class="c1">#             with torch.no_grad():</span>
-<span class="c1">#                 bo, blp, bglp, be = self.base_model.get_rl_tensors(x,y)</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             bo, blp, bglp, be = None, None, None, None</span>
-
-<span class="c1">#         model_output[&#39;reference_output&#39;] = bo</span>
-<span class="c1">#         model_output[&#39;reference_logprobs&#39;] = blp</span>
-<span class="c1">#         model_output[&#39;reference_gathered_logprobs&#39;] = bglp</span>
-<span class="c1">#         model_output[&#39;reference_encoded&#39;] = be</span>
-    
-<span class="c1">#         return model_output</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="ModelOutput" class="doc_header"><code>class</code> <code>ModelOutput</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L324" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelOutput</code>() :: <code>dict</code></p>
-</blockquote>
-<p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-    (key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-    d = {}
-    for k, v in iterable:
-        d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-    in the keyword argument list.  For example:  dict(one=1, two=2)</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

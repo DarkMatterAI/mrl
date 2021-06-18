@@ -2,7 +2,6 @@
 
 title: Tutorial - Templates (Intermediate)
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -43,12 +42,12 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.core</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.templates</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">rdkit</span> <span class="k">import</span> <span class="n">Chem</span>
-<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="k">import</span> <span class="n">rdMolDescriptors</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.core</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.templates</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">rdMolDescriptors</span>
 </pre></div>
 
     </div>
@@ -61,7 +60,7 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>//anaconda3/envs/insight/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -157,7 +156,7 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Property-Filters">Property Filters<a class="anchor-link" href="#Property-Filters"> </a></h2><p>Property filters calculate some property of a compound and determine if it fallls within a specific range. This is impemented in the <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a> class. A <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a> takes in a <code>mol_function</code>, which is any function that converts an RDKit <code>Mol</code> to a numeric value.</p>
+<h2 id="Property-Filters">Property Filters<a class="anchor-link" href="#Property-Filters"> </a></h2><p>Property filters calculate some property of a compound and determine if it fallls within a specific range. This is impemented in the <a href="/mrl/template.filters#PropertyFilter"><code>PropertyFilter</code></a> class. A <a href="/mrl/template.filters#PropertyFilter"><code>PropertyFilter</code></a> takes in a <code>mol_function</code>, which is any function that converts an RDKit <code>Mol</code> to a numeric value.</p>
 <p>For example, say we wanted to create a filter for the number of amide bonds in a molecule. We first need to define a function that computes our desired property - in this case the number of amide bonds - and choose a range</p>
 
 </div>
@@ -268,7 +267,7 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Property-and-Criteria-Functions">Property and Criteria Functions<a class="anchor-link" href="#Property-and-Criteria-Functions"> </a></h2><p>Under the hood, the filter function performs two steps. The first is to compute <a href="/mrl/template.filters.html#PropertyFilter.property_function"><code>PropertyFilter.property_function</code></a>, which for this filter computes the value of <code>my_property_function</code>, the number of amide bonds. The result of the property function is then sent to <a href="/mrl/template.filters.html#PropertyFilter.criteria_function"><code>PropertyFilter.criteria_function</code></a>, which converts the output of the property function to a boolean value based on the <code>min_val</code>, <code>max_val</code> arguments we passed.</p>
+<h2 id="Property-and-Criteria-Functions">Property and Criteria Functions<a class="anchor-link" href="#Property-and-Criteria-Functions"> </a></h2><p>Under the hood, the filter function performs two steps. The first is to compute <a href="/mrl/template.filters#PropertyFilter.property_function"><code>PropertyFilter.property_function</code></a>, which for this filter computes the value of <code>my_property_function</code>, the number of amide bonds. The result of the property function is then sent to <a href="/mrl/template.filters#PropertyFilter.criteria_function"><code>PropertyFilter.criteria_function</code></a>, which converts the output of the property function to a boolean value based on the <code>min_val</code>, <code>max_val</code> arguments we passed.</p>
 <p>Under the hood, it looks like this:</p>
 
 <pre><code>class PropertyFilter(Filter):
@@ -298,7 +297,7 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Custom-Filters">Custom Filters<a class="anchor-link" href="#Custom-Filters"> </a></h2><p>To make custom filters, subclass the main <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a> function and define your own <code>property_function</code> and <code>criteria_function</code>. For a simple example, look at the <a href="/mrl/template.filters.html#SingleCompoundFilter"><code>SingleCompoundFilter</code></a> class. This filter determines if a molecule is a single compound. In SMILES strings, different compounds are separated by a period <code>.</code>. To filter based on the single compound criteria, we need to set up our <code>property_function</code> and <code>criteria_function</code> to return <code>True</code> if a period is not found in the SMILES string.</p>
+<h2 id="Custom-Filters">Custom Filters<a class="anchor-link" href="#Custom-Filters"> </a></h2><p>To make custom filters, subclass the main <a href="/mrl/template.filters#Filter"><code>Filter</code></a> function and define your own <code>property_function</code> and <code>criteria_function</code>. For a simple example, look at the <a href="/mrl/template.filters#SingleCompoundFilter"><code>SingleCompoundFilter</code></a> class. This filter determines if a molecule is a single compound. In SMILES strings, different compounds are separated by a period <code>.</code>. To filter based on the single compound criteria, we need to set up our <code>property_function</code> and <code>criteria_function</code> to return <code>True</code> if a period is not found in the SMILES string.</p>
 
 <pre><code>class SingleCompoundFilter(Filter):
     def __init__(self, score=None, name=None, fail_score=0.):        
@@ -392,7 +391,7 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Score-Functions">Score Functions<a class="anchor-link" href="#Score-Functions"> </a></h2><p>Under the hood, scores are determined by the <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a> class. A score function has a <code>__call__</code> method that takes in the output of a filter's <code>property_function</code> and <code>criteria_function</code> and returns a numeric value.</p>
+<h2 id="Score-Functions">Score Functions<a class="anchor-link" href="#Score-Functions"> </a></h2><p>Under the hood, scores are determined by the <a href="/mrl/template.filters#ScoreFunction"><code>ScoreFunction</code></a> class. A score function has a <code>__call__</code> method that takes in the output of a filter's <code>property_function</code> and <code>criteria_function</code> and returns a numeric value.</p>
 <p>Lets say for the amide bond example we want our score to actually return <code>1/(1+n)</code> where <code>n</code> is the number of amide bonds. We can implement that as follows:</p>
 
 </div>
@@ -406,7 +405,7 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">MyScore</span><span class="p">(</span><span class="n">ScoreFunction</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_output</span><span class="p">,</span> <span class="n">criteria_output</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_output</span><span class="p">,</span> <span class="n">criteria_output</span><span class="p">):</span>
         
         <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">property_output</span><span class="p">)</span>
 </pre></div>
@@ -420,7 +419,7 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we can pass an instance of <code>MyScore</code> to the <code>score</code> keyword argument in <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a>. The Filter will verify the passes score function is an instance of the main <a href="/mrl/template.filters.html#ScoreFunction"><code>ScoreFunction</code></a> class, so it's important to subclass</p>
+<p>Now we can pass an instance of <code>MyScore</code> to the <code>score</code> keyword argument in <a href="/mrl/template.filters#PropertyFilter"><code>PropertyFilter</code></a>. The Filter will verify the passes score function is an instance of the main <a href="/mrl/template.filters#ScoreFunction"><code>ScoreFunction</code></a> class, so it's important to subclass</p>
 
 </div>
 </div>
@@ -495,7 +494,7 @@ nb_path: "nbs/tutorials.template.intermediate.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If your propety or score calculation is complex, it can be easier to abstract the property calculation and score computation entirely. This can be done with the <a href="/mrl/template.filters.html#PassThroughScore"><code>PassThroughScore</code></a> class, which just returns the output of the property function.</p>
+<p>If your propety or score calculation is complex, it can be easier to abstract the property calculation and score computation entirely. This can be done with the <a href="/mrl/template.filters#PassThroughScore"><code>PassThroughScore</code></a> class, which just returns the output of the property function.</p>
 
 <pre><code>class PassThroughScore(ScoreFunction):
     "Pass through for no score"

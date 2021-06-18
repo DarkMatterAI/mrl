@@ -2,7 +2,6 @@
 
 title: Tutorial - Templates (Beginner)
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -31,7 +30,7 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This is a basic overview of using the <a href="/mrl/template.template.html#Template"><code>Template</code></a> class to filter compounds. This tutorial looks under the hood at how templates function and how you can create your own templates</p>
+<p>This is a basic overview of using the <a href="/mrl/template.template#Template"><code>Template</code></a> class to filter compounds. This tutorial looks under the hood at how templates function and how you can create your own templates</p>
 
 </div>
 </div>
@@ -43,10 +42,10 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.core</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.templates</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.core</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.templates</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -59,7 +58,7 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>//anaconda3/envs/insight/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -148,7 +147,7 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Basic-Templates">Basic Templates<a class="anchor-link" href="#Basic-Templates"> </a></h2><p>Now we create our template. We'll use the <a href="/mrl/template.template.html#RuleOf3Template"><code>RuleOf3Template</code></a> class, which implements the "Rule of 3" constraints (doi.org/10.1016/S1359-6446(03)02831-9). The Rule of 3 imposes the following criteria:</p>
+<h2 id="Basic-Templates">Basic Templates<a class="anchor-link" href="#Basic-Templates"> </a></h2><p>Now we create our template. We'll use the <a href="/mrl/template.template#RuleOf3Template"><code>RuleOf3Template</code></a> class, which implements the "Rule of 3" constraints (doi.org/10.1016/S1359-6446(03)02831-9). The Rule of 3 imposes the following criteria:</p>
 <ul>
 <li>Molecular weight &lt; 300</li>
 <li>LogP &lt; 3</li>
@@ -156,7 +155,7 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 <li>Hydrogen Bond Acceptors &lt; 3</li>
 <li>Rotatable bonds &lt; 3</li>
 </ul>
-<p>This is a specific case of the <a href="/mrl/template.template.html#Template"><code>Template</code></a> class</p>
+<p>This is a specific case of the <a href="/mrl/template.template#Template"><code>Template</code></a> class</p>
 
 </div>
 </div>
@@ -261,8 +260,8 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Under the hood, the Template contains a list of filters, implemented with the <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a> class. These filters take in a mol and assign it a True/False output.</p>
-<p>Take for example the <a href="/mrl/template.filters.html#MolWtFilter"><code>MolWtFilter</code></a> class. If we create it will the inputs <code>min_val=50, max_val=300</code>, it will return True for any molecule that has a molecular weight between 50 and 300</p>
+<p>Under the hood, the Template contains a list of filters, implemented with the <a href="/mrl/template.filters#Filter"><code>Filter</code></a> class. These filters take in a mol and assign it a True/False output.</p>
+<p>Take for example the <a href="/mrl/template.filters#MolWtFilter"><code>MolWtFilter</code></a> class. If we create it will the inputs <code>min_val=50, max_val=300</code>, it will return True for any molecule that has a molecular weight between 50 and 300</p>
 
 </div>
 </div>
@@ -303,8 +302,8 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A <a href="/mrl/template.template.html#Template"><code>Template</code></a> is basically a list of filters with some added functions for logging data, saving/loading templates and parallel processing.</p>
-<p>We can re-create the <a href="/mrl/template.template.html#RuleOf3Template"><code>RuleOf3Template</code></a> we used earlier by specifying the individual filters for the Rule of 3</p>
+<p>A <a href="/mrl/template.template#Template"><code>Template</code></a> is basically a list of filters with some added functions for logging data, saving/loading templates and parallel processing.</p>
+<p>We can re-create the <a href="/mrl/template.template#RuleOf3Template"><code>RuleOf3Template</code></a> we used earlier by specifying the individual filters for the Rule of 3</p>
 
 </div>
 </div>
@@ -576,9 +575,9 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Lets go through the soft filters we creates.</p>
-<p>The first filter is a structure filter that looks for a desirable structure - a 6-membered aromatic ring with one nitrogen. We want to give a score bonus to compounds that meet this criteria. The filter is a <a href="/mrl/template.filters.html#StructureFilter"><code>StructureFilter</code></a>. The main argument is a list of smarts to look for, in this case just the one smarts. The <code>exclude=False</code> denotes that the filter will return <code>True</code> if a mol matches the given smarts. <code>score=1</code> means a compound that matches the smarts gets a score of <code>1</code>. <code>fail_score=-1</code> means a compound that fails to match the smarts gets aa score of <code>-1</code>.</p>
+<p>The first filter is a structure filter that looks for a desirable structure - a 6-membered aromatic ring with one nitrogen. We want to give a score bonus to compounds that meet this criteria. The filter is a <a href="/mrl/template.filters#StructureFilter"><code>StructureFilter</code></a>. The main argument is a list of smarts to look for, in this case just the one smarts. The <code>exclude=False</code> denotes that the filter will return <code>True</code> if a mol matches the given smarts. <code>score=1</code> means a compound that matches the smarts gets a score of <code>1</code>. <code>fail_score=-1</code> means a compound that fails to match the smarts gets aa score of <code>-1</code>.</p>
 <p>The second fitler looks at substructure filtering from a different perspective. Now we want to exclude undesirable structures. In this case, we have smarts for an aromatic ring with a <code>N-N</code> feature and a <code>N-N-N</code> feature. We pass <code>excude=True</code> and <code>criteria='any'</code> to denote that the filter will return <code>False</code> if a molecule matches any of the smarts given. We set <code>score=0.</code> and <code>fail_score=-1</code> so that compounds that don't match the smarts get no score, while compounds that match any of the smarts get <code>-1</code>.</p>
-<p>The next two filters, <a href="/mrl/template.filters.html#MolWtFilter"><code>MolWtFilter</code></a> and <a href="/mrl/template.filters.html#TPSAFilter"><code>TPSAFilter</code></a> are property filters for molecular weight and TPSA, giving a compound a score of <code>1</code> for meeting each criteria.</p>
+<p>The next two filters, <a href="/mrl/template.filters#MolWtFilter"><code>MolWtFilter</code></a> and <a href="/mrl/template.filters#TPSAFilter"><code>TPSAFilter</code></a> are property filters for molecular weight and TPSA, giving a compound a score of <code>1</code> for meeting each criteria.</p>
 <p>For a detailed look at different filter functions and their arguments, see the <a href="/mrl/template.filters.html">Filter</a> page.</p>
 
 </div>
@@ -586,7 +585,7 @@ nb_path: "nbs/tutorials.template.beginner.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we can filter compounds using the <a href="/mrl/template.template.html#Template.screen_mols"><code>Template.screen_mols</code></a> function. This returns two lists, <code>passes</code> and <code>fails</code>. <code>passes</code> contains tuples of <code>(mol, score)</code> for compounds that passes the hard filters. <code>fails</code> contains a list of mols that failed the hard filters</p>
+<p>Now we can filter compounds using the <a href="/mrl/template.template#Template.screen_mols"><code>Template.screen_mols</code></a> function. This returns two lists, <code>passes</code> and <code>fails</code>. <code>passes</code> contains tuples of <code>(mol, score)</code> for compounds that passes the hard filters. <code>fails</code> contains a list of mols that failed the hard filters</p>
 
 </div>
 </div>

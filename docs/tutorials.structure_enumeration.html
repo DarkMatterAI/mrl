@@ -2,7 +2,6 @@
 
 title: Tutorial - Structure Enumeration
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -32,7 +31,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Structure enumeration is a useful way to explore constrained chemical spaces. You might want to try swapping a ring in a molecule with every possible 6 member ring, or try every linker with four atoms or less.</p>
-<p>The <a href="/mrl/chem.html#StructureEnumerator"><code>StructureEnumerator</code></a> class provides a principled way of enumerating constrained chemical spaces. The jist of it is this. We create a SMARTs template outlining the general structure we want to enumerate. Then, for every atom and bond we want to vary, we define a list of allowed substitutions. The <a href="/mrl/chem.html#StructureEnumerator"><code>StructureEnumerator</code></a> then generates all combinations based on these specifications and filters them for chemical validity.</p>
+<p>The <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> class provides a principled way of enumerating constrained chemical spaces. The jist of it is this. We create a SMARTs template outlining the general structure we want to enumerate. Then, for every atom and bond we want to vary, we define a list of allowed substitutions. The <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> then generates all combinations based on these specifications and filters them for chemical validity.</p>
 
 </div>
 </div>
@@ -44,10 +43,10 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.core</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">rdkit</span> <span class="k">import</span> <span class="n">Chem</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.core</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
 </pre></div>
 
     </div>
@@ -60,7 +59,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>//anaconda3/envs/insight/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -79,9 +78,9 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <p><code>C1CCCCC1</code></p>
 <p>We convert this to a smarts string</p>
 <p><code>'[#6]1-[#6]-[#6]-[#6]-[#6]-[#6]-1'</code></p>
-<p>The <a href="/mrl/chem.html#StructureEnumerator"><code>StructureEnumerator</code></a> relies on atom mapping to avoid worrying about atom order. We add a mapping number to every atom in the smarts</p>
+<p>The <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> relies on atom mapping to avoid worrying about atom order. We add a mapping number to every atom in the smarts</p>
 <p><code>'[#6:1]1-[#6:2]-[#6:3]-[#6:4]-[#6:5]-1'</code></p>
-<p>This process can be automated with the <a href="/mrl/chem.html#add_map_nums"><code>add_map_nums</code></a> function:</p>
+<p>This process can be automated with the <a href="/mrl/chem#add_map_nums"><code>add_map_nums</code></a> function:</p>
 
 </div>
 </div>
@@ -127,7 +126,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <p>Atom specifications are defined in a dictionary of the form <code>map_num : [possible_atoms]</code>. So <code>atom_spec = {2 : ['C', 'N', 'O']}</code> would denote enumerating carbon, nitrogen and oxygen at the atom defined by map number 1.</p>
 <p>Bond specifications are defined in a dictionary of the form <code>(start_map_num, end_map_num) : [possible_bond_types]</code>. So <code>bond_spec = {(1,2) : ['single', 'double']}</code>  would denote enumerating single and double bonds at the bond between the atom with map number 1 and the atom with map number 2. The code checks both <code>(start_map_num, end_map_num)</code> and <code>(end_map_num, start_map_num)</code> so the index order doesn't matter.</p>
 <p>Any atoms or bonds not included in <code>atom_spec</code> or <code>bond_spec</code> are left as-is based on the smarts definition. Note that the end state for generated compounds is SMILES strings, so atoms or bonds left unchanged should be SMILES compatible.</p>
-<p>To make things easy, the <a href="/mrl/chem.html#generate_spec_template"><code>generate_spec_template</code></a> function creates a bank <code>atom_spec</code> and <code>bond_spec</code> from a given <code>mol</code>, along with the matching mapped smarts string.</p>
+<p>To make things easy, the <a href="/mrl/chem#generate_spec_template"><code>generate_spec_template</code></a> function creates a bank <code>atom_spec</code> and <code>bond_spec</code> from a given <code>mol</code>, along with the matching mapped smarts string.</p>
 
 </div>
 </div>
@@ -247,14 +246,14 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Why atom 3 instead of some other atom, or multiple other? For this case, it doesn't really matter because we're generating rotationaly symmetric rings. Enumerating examples where all atoms are set for optional removal just blows up our enumeration space for no benefit.</p>
 <p>When designing enumeration specs, it's important to consider the tradeoffs from expanding a combinatorial space.</p>
-<p><a href="/mrl/chem.html#StructureEnumerator"><code>StructureEnumerator</code></a> follows the convention that all possible atoms should be present in the initial SMARTS, with optional removals specified. This allows greater control over which atoms are removed relative to substitution patterns or other chemical features</p>
+<p><a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> follows the convention that all possible atoms should be present in the initial SMARTS, with optional removals specified. This allows greater control over which atoms are removed relative to substitution patterns or other chemical features</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we use the <a href="/mrl/chem.html#StructureEnumerator"><code>StructureEnumerator</code></a> to enumerate based on our specification.</p>
+<p>Now we use the <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> to enumerate based on our specification.</p>
 <p>Note the <code>max_num</code> parameter. By default, the code generates the cartesian product of all specification choices. The chemical space represented by the specification can quickly grow to billions of molecules if you're not careful. For this reason, enumeration is best done on chemical spaces less than ~10,000,000 compounds (your compute and memory resources depending). The <code>max_num</code> parameter puts a limit on how many compounds will be tested.</p>
 
 </div>
@@ -381,7 +380,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The next step is to create all these enumerations as molecules, and check them for validity. Before we do this, it's a good idea to cut down on the number of enumerations if we can.</p>
-<p>For this specific example, we specified we wanted at most 3 heteroatoms in the final rings. This is an easy criteria to filter on. The <a href="/mrl/chem.html#StructureEnumerator.filter_combos"><code>StructureEnumerator.filter_combos</code></a> supports doing this. All we need is a function that takes in one enumeration dictionary and returns True or False</p>
+<p>For this specific example, we specified we wanted at most 3 heteroatoms in the final rings. This is an easy criteria to filter on. The <a href="/mrl/chem#StructureEnumerator.filter_combos"><code>StructureEnumerator.filter_combos</code></a> supports doing this. All we need is a function that takes in one enumeration dictionary and returns True or False</p>
 
 </div>
 </div>
@@ -450,7 +449,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This cuts things down to 397141 combinations. Now we run <a href="/mrl/chem.html#StructureEnumerator.filter_combos"><code>StructureEnumerator.filter_combos</code></a>, which converts the 397141 combinations into a set of unique, chemically valid (by RDKit canonicalization) SMILES strings</p>
+<p>This cuts things down to 397141 combinations. Now we run <a href="/mrl/chem#StructureEnumerator.filter_combos"><code>StructureEnumerator.filter_combos</code></a>, which converts the 397141 combinations into a set of unique, chemically valid (by RDKit canonicalization) SMILES strings</p>
 
 </div>
 </div>
@@ -1023,7 +1022,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we filter the outputs based on <a href="/mrl/chem.html#check_ring_bonds"><code>check_ring_bonds</code></a> (removing SP atoms in rings) and our criteria for no <code>[N,O]-[N,O]</code> linkages and fewer than 5 N,O heteroatoms</p>
+<p>Now we filter the outputs based on <a href="/mrl/chem#check_ring_bonds"><code>check_ring_bonds</code></a> (removing SP atoms in rings) and our criteria for no <code>[N,O]-[N,O]</code> linkages and fewer than 5 N,O heteroatoms</p>
 
 </div>
 </div>

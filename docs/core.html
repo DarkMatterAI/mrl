@@ -2,7 +2,6 @@
 
 title: Core
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -43,6 +42,13 @@ nb_path: "nbs/00_core.ipynb"
 </div>
 </div>
 </div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -196,13 +202,6 @@ nb_path: "nbs/00_core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -221,14 +220,21 @@ nb_path: "nbs/00_core.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Parallel-Processing">Parallel Processing<a class="anchor-link" href="#Parallel-Processing"> </a></h2><p>MRL tries to build in automatic parallel processing at every level. This can make a huge difference when you're processing millions of molecules</p>
-<p><a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a> is a convenient wrapper for parallel processing. The given <code>func</code> is wrapped with <code>**kwargs</code> and used to process the <code>iterable</code>. If <code>iterable</code> is a <code>list</code> or <code>np.ndarray</code>, the elements in <code>iterable</code> are run in parallel by <code>func</code>.</p>
-<p><a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a> defaults to using all availlable CPUs for processing. To control CPU usage, either pass in a specific number for the <code>cpus</code> argument, or set <code>ncpus</code> as an environment variable:</p>
+<p><a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> is a convenient wrapper for parallel processing. The given <code>func</code> is wrapped with <code>**kwargs</code> and used to process the <code>iterable</code>. If <code>iterable</code> is a <code>list</code> or <code>np.ndarray</code>, the elements in <code>iterable</code> are run in parallel by <code>func</code>.</p>
+<p><a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> defaults to using all availlable CPUs for processing. To control CPU usage, either pass in a specific number for the <code>cpus</code> argument, or set <code>ncpus</code> as an environment variable:</p>
 <p><code>os.environ['ncpus'] = '8'</code></p>
-<p>Passing <code>cpus=0</code> or setting <code>os.environ['ncpus'] = '0'</code> causes <a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a> to default to serial processing</p>
+<p>Passing <code>cpus=0</code> or setting <code>os.environ['ncpus'] = '0'</code> causes <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> to default to serial processing</p>
 
 </div>
 </div>
 </div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -249,13 +255,6 @@ nb_path: "nbs/00_core.ipynb"
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

@@ -2,7 +2,6 @@
 
 title: Policy Gradient
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -22,6 +21,13 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 <div class="container" id="notebook-container">
         
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -78,7 +84,7 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradients#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 
 </div>
@@ -109,7 +115,7 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L77" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradients#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 
 </div>
@@ -140,7 +146,7 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L150" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/policy_gradients.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L174" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradients#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 
 </div>
@@ -149,13 +155,6 @@ nb_path: "nbs/11_policy_gradients.ipynb"
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

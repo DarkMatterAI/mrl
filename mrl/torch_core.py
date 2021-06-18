@@ -16,8 +16,14 @@ USE_CUDA = torch.cuda.is_available()
 if USE_CUDA:
     torch.backends.cudnn.benchmark = True
 
+
+if USE_CUDA:
+    os.environ['use_cuda'] = 'cuda'
+else:
+    os.environ['use_cuda'] = 'cpu'
+
 def get_device():
-    if torch.cuda.is_available():
+    if torch.cuda.is_available() and os.environ['use_cuda']=='cuda':
         device = torch.cuda.current_device()
     else:
         device='cpu'

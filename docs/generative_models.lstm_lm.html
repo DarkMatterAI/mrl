@@ -2,7 +2,6 @@
 
 title: LSTM Language Model
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -22,6 +21,13 @@ nb_path: "nbs/09_generative_models.lstm_lm.ipynb"
 
 <div class="container" id="notebook-container">
         
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -87,13 +93,6 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -103,13 +102,27 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <span class="n">x</span> <span class="o">=</span> <span class="n">ints</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">ints</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">lm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+    <span class="n">to_device</span><span class="p">(</span><span class="n">lm</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="c1"># o,lp,lpg,e = lm.get_rl_tensors(to_device(x),to_device(y))</span>
 <span class="n">o</span><span class="p">,</span><span class="n">lp</span><span class="p">,</span><span class="n">lpg</span><span class="p">,</span><span class="n">e</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_rl_tensors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+
 <span class="n">_</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -125,7 +138,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conditional_LSTM_LM" class="doc_header"><code>class</code> <code>Conditional_LSTM_LM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/g_models/lstm_lm.py#L69" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM_LM</code>(<strong><code>encoder</code></strong>, <strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>False</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/layers.html#Encoder_Decoder"><code>Encoder_Decoder</code></a></p>
+<h2 id="Conditional_LSTM_LM" class="doc_header"><code>class</code> <code>Conditional_LSTM_LM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/g_models/lstm_lm.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM_LM</code>(<strong><code>encoder</code></strong>, <strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>lstm_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>lin_drop</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>False</code></em>, <strong><code>bos_idx</code></strong>=<em><code>0</code></em>, <strong><code>prior</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/layers#Encoder_Decoder"><code>Encoder_Decoder</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -165,13 +178,6 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -186,14 +192,24 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <span class="n">condition</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">8</span><span class="p">,</span><span class="mi">128</span><span class="p">))</span>
 
+<span class="n">prior</span> <span class="o">=</span> <span class="n">SphericalPrior</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">encoder</span><span class="o">.</span><span class="n">d_latent</span><span class="p">,)),</span> 
+                            <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">encoder</span><span class="o">.</span><span class="n">d_latent</span><span class="p">,)),</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+    <span class="n">to_device</span><span class="p">(</span><span class="n">lm</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">condition</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span>
+    <span class="n">to_device</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+                       
+
 <span class="n">_</span> <span class="o">=</span> <span class="n">lm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
 
 <span class="n">o</span><span class="p">,</span><span class="n">lp</span><span class="p">,</span><span class="n">lpg</span><span class="p">,</span><span class="n">e</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_rl_tensors</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">condition</span><span class="p">],</span><span class="n">y</span><span class="p">)</span>
 
 <span class="n">_</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
 
-<span class="n">lm</span><span class="o">.</span><span class="n">set_prior</span><span class="p">(</span><span class="n">SphericalPrior</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">encoder</span><span class="o">.</span><span class="n">d_latent</span><span class="p">,)),</span> 
-                            <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">encoder</span><span class="o">.</span><span class="n">d_latent</span><span class="p">,)),</span> <span class="kc">True</span><span class="p">))</span>
+<span class="n">lm</span><span class="o">.</span><span class="n">set_prior</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
 
 <span class="n">o</span><span class="p">,</span><span class="n">lp</span><span class="p">,</span><span class="n">lpg</span><span class="p">,</span><span class="n">e</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_rl_tensors</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">condition</span><span class="p">],</span><span class="n">y</span><span class="p">)</span>
 

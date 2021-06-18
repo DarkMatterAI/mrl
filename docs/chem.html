@@ -2,7 +2,6 @@
 
 title: Chem
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -32,7 +31,7 @@ nb_path: "nbs/01_chem.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>//anaconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -53,11 +52,18 @@ nb_path: "nbs/01_chem.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="RDKit-i/o">RDKit i/o<a class="anchor-link" href="#RDKit-i/o"> </a></h2><p><a href="/mrl/chem.html#to_mol"><code>to_mol</code></a> and <a href="/mrl/chem.html#to_smile"><code>to_smile</code></a> are functions that make it easy to work with both SMILES strings and RDKit <code>Mol</code> objects. For example, if a function requires a <code>mol</code> input, adding <code>mol = to_mol(mol)</code> allows the function to take either SMILES strings or RDKit mols as input</p>
+<h2 id="RDKit-i/o">RDKit i/o<a class="anchor-link" href="#RDKit-i/o"> </a></h2><p><a href="/mrl/chem#to_mol"><code>to_mol</code></a> and <a href="/mrl/chem#to_smile"><code>to_smile</code></a> are functions that make it easy to work with both SMILES strings and RDKit <code>Mol</code> objects. For example, if a function requires a <code>mol</code> input, adding <code>mol = to_mol(mol)</code> allows the function to take either SMILES strings or RDKit mols as input</p>
 
 </div>
 </div>
 </div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -69,7 +75,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_mol" class="doc_header"><code>to_mol</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_mol</code>(<strong><code>smile_or_mol</code></strong>)</p>
+<h4 id="to_mol" class="doc_header"><code>to_mol</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_mol</code>(<strong><code>smile_or_mol</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -93,7 +99,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_smile" class="doc_header"><code>to_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_smile</code>(<strong><code>smile_or_mol</code></strong>)</p>
+<h4 id="to_smile" class="doc_header"><code>to_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L43" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_smile</code>(<strong><code>smile_or_mol</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -117,7 +123,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_smart" class="doc_header"><code>to_smart</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L48" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_smart</code>(<strong><code>smart_or_mol</code></strong>)</p>
+<h4 id="to_smart" class="doc_header"><code>to_smart</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L52" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_smart</code>(<strong><code>smart_or_mol</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -141,7 +147,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_mols" class="doc_header"><code>to_mols</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_mols</code>(<strong><code>list_of_inputs</code></strong>)</p>
+<h4 id="to_mols" class="doc_header"><code>to_mols</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_mols</code>(<strong><code>list_of_inputs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -165,7 +171,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_smiles" class="doc_header"><code>to_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L60" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_smiles</code>(<strong><code>list_of_inputs</code></strong>)</p>
+<h4 id="to_smiles" class="doc_header"><code>to_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L64" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_smiles</code>(<strong><code>list_of_inputs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -189,7 +195,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_smarts" class="doc_header"><code>to_smarts</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L63" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_smarts</code>(<strong><code>list_of_inputs</code></strong>)</p>
+<h4 id="to_smarts" class="doc_header"><code>to_smarts</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_smarts</code>(<strong><code>list_of_inputs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -213,7 +219,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="canon_smile" class="doc_header"><code>canon_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>canon_smile</code>(<strong><code>smile</code></strong>)</p>
+<h4 id="canon_smile" class="doc_header"><code>canon_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>canon_smile</code>(<strong><code>smile</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -229,6 +235,71 @@ nb_path: "nbs/01_chem.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="smile_to_selfie" class="doc_header"><code>smile_to_selfie</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>smile_to_selfie</code>(<strong><code>smile</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="selfie_to_smile" class="doc_header"><code>selfie_to_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>selfie_to_smile</code>(<strong><code>selfie</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="split_selfie" class="doc_header"><code>split_selfie</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>split_selfie</code>(<strong><code>selfie</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -253,6 +324,24 @@ nb_path: "nbs/01_chem.ipynb"
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;O=C(NCc1ccc(Br)cc1F)C(=O)NCC1(Cc2ccccc2)CC1&#39;</span>
+<span class="k">assert</span> <span class="n">selfie_to_smile</span><span class="p">(</span><span class="n">smile_to_selfie</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="o">==</span> <span class="n">s</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Misc-Functions">Misc Functions<a class="anchor-link" href="#Misc-Functions"> </a></h2><p>Miscellaneous RDKit related functions</p>
@@ -264,6 +353,13 @@ nb_path: "nbs/01_chem.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -271,7 +367,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="neutralize_atoms" class="doc_header"><code>neutralize_atoms</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>neutralize_atoms</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="neutralize_atoms" class="doc_header"><code>neutralize_atoms</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>neutralize_atoms</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>Neutralize charges, from rdkit.org/docs/Cookbook.html#neutralizing-molecules</p>
 
@@ -296,7 +392,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="initialize_neutralisation_reactions" class="doc_header"><code>initialize_neutralisation_reactions</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>initialize_neutralisation_reactions</code>()</p>
+<h4 id="initialize_neutralisation_reactions" class="doc_header"><code>initialize_neutralisation_reactions</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>initialize_neutralisation_reactions</code>()</p>
 </blockquote>
 <p>github.com/kaiwang0112006/clusfps/blob/master/third_party_package/RDKit_2015_03_1/Docs/Book/Cookbook.rst</p>
 
@@ -321,7 +417,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="neutralize_charges" class="doc_header"><code>neutralize_charges</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>neutralize_charges</code>(<strong><code>mol</code></strong>, <strong><code>reactions</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="neutralize_charges" class="doc_header"><code>neutralize_charges</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>neutralize_charges</code>(<strong><code>mol</code></strong>, <strong><code>reactions</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>github.com/kaiwang0112006/clusfps/blob/master/third_party_package/RDKit_2015_03_1/Docs/Book/Cookbook.rst</p>
 
@@ -353,7 +449,7 @@ nb_path: "nbs/01_chem.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="draw_mols" class="doc_header"><code>draw_mols</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>draw_mols</code>(<strong><code>mols</code></strong>, <strong><code>legends</code></strong>=<em><code>None</code></em>, <strong><code>mols_per_row</code></strong>=<em><code>3</code></em>, <strong><code>sub_img_size</code></strong>=<em><code>(300, 300)</code></em>)</p>
+<h4 id="draw_mols" class="doc_header"><code>draw_mols</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>draw_mols</code>(<strong><code>mols</code></strong>, <strong><code>legends</code></strong>=<em><code>None</code></em>, <strong><code>mols_per_row</code></strong>=<em><code>3</code></em>, <strong><code>sub_img_size</code></strong>=<em><code>(300, 300)</code></em>)</p>
 </blockquote>
 
 </div>
@@ -362,13 +458,6 @@ nb_path: "nbs/01_chem.ipynb"
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -414,7 +503,7 @@ nb_path: "nbs/01_chem.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>parallel execution failed
+<pre>Parallel execution succeeded
 Parallel execution succeeded
 </pre>
 </div>
@@ -463,13 +552,20 @@ Parallel execution succeeded
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>parallel execution failed
+<pre>Parallel execution succeeded
 </pre>
 </div>
 </div>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -485,7 +581,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="molwt" class="doc_header"><code>molwt</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L146" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>molwt</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="molwt" class="doc_header"><code>molwt</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>molwt</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>molecular weight</p>
 
@@ -510,7 +606,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="hbd" class="doc_header"><code>hbd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hbd</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="hbd" class="doc_header"><code>hbd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hbd</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>number of hydrogen bond donors</p>
 
@@ -535,7 +631,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="hba" class="doc_header"><code>hba</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hba</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="hba" class="doc_header"><code>hba</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L179" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hba</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>number of hydrogen bond acceptors</p>
 
@@ -560,7 +656,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tpsa" class="doc_header"><code>tpsa</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L158" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tpsa</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="tpsa" class="doc_header"><code>tpsa</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tpsa</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>total polar surface area</p>
 
@@ -585,7 +681,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rotbond" class="doc_header"><code>rotbond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L162" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rotbond</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="rotbond" class="doc_header"><code>rotbond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L187" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rotbond</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>number of rotatable bonds</p>
 
@@ -610,7 +706,32 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fsp3" class="doc_header"><code>fsp3</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L166" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fsp3</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="loose_rotbond" class="doc_header"><code>loose_rotbond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>loose_rotbond</code>(<strong><code>mol</code></strong>)</p>
+</blockquote>
+<p>number of rotatable bonds, includes things like amides and esters</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fsp3" class="doc_header"><code>fsp3</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L195" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fsp3</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>fraction sp3 hybridized atoms</p>
 
@@ -635,7 +756,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logp" class="doc_header"><code>logp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L170" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logp</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="logp" class="doc_header"><code>logp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L199" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logp</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>logp</p>
 
@@ -660,7 +781,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rings" class="doc_header"><code>rings</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rings</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="rings" class="doc_header"><code>rings</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rings</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>number of rings</p>
 
@@ -685,7 +806,57 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="heteroatoms" class="doc_header"><code>heteroatoms</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>heteroatoms</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="max_ring_size" class="doc_header"><code>max_ring_size</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L207" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>max_ring_size</code>(<strong><code>mol</code></strong>)</p>
+</blockquote>
+<p>size of largest ring</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="min_ring_size" class="doc_header"><code>min_ring_size</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L212" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>min_ring_size</code>(<strong><code>mol</code></strong>)</p>
+</blockquote>
+<p>size of smallest ring</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="heteroatoms" class="doc_header"><code>heteroatoms</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L217" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>heteroatoms</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>number of heteroatoms</p>
 
@@ -710,7 +881,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="all_atoms" class="doc_header"><code>all_atoms</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L182" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>all_atoms</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="all_atoms" class="doc_header"><code>all_atoms</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L221" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>all_atoms</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>total number of atoms</p>
 
@@ -735,7 +906,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="heavy_atoms" class="doc_header"><code>heavy_atoms</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L187" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>heavy_atoms</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="heavy_atoms" class="doc_header"><code>heavy_atoms</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>heavy_atoms</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>number of heavy atoms</p>
 
@@ -760,8 +931,9 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="formal_charge" class="doc_header"><code>formal_charge</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>formal_charge</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="formal_charge" class="doc_header"><code>formal_charge</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L230" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>formal_charge</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
+<p>formal charge</p>
 
 </div>
 
@@ -784,7 +956,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="molar_refractivity" class="doc_header"><code>molar_refractivity</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L194" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>molar_refractivity</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="molar_refractivity" class="doc_header"><code>molar_refractivity</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L234" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>molar_refractivity</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>molar refractivity</p>
 
@@ -809,7 +981,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="aromaticrings" class="doc_header"><code>aromaticrings</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L198" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>aromaticrings</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="aromaticrings" class="doc_header"><code>aromaticrings</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L238" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>aromaticrings</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>number of aromatic rings</p>
 
@@ -834,7 +1006,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="qed" class="doc_header"><code>qed</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>qed</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="qed" class="doc_header"><code>qed</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L242" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>qed</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>QED Score doi:10.1038/nchem.1243 </p>
 
@@ -859,7 +1031,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sa_score" class="doc_header"><code>sa_score</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L206" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sa_score</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="sa_score" class="doc_header"><code>sa_score</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L246" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sa_score</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>Synthetic Accessability score doi.org/10.1186/1758-2946-1-8</p>
 
@@ -876,6 +1048,74 @@ Parallel execution succeeded
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="num_bridgeheads" class="doc_header"><code>num_bridgeheads</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L250" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>num_bridgeheads</code>(<strong><code>mol</code></strong>)</p>
+</blockquote>
+<p>Number of bridgehead atoms</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="num_spiro" class="doc_header"><code>num_spiro</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L254" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>num_spiro</code>(<strong><code>mol</code></strong>)</p>
+</blockquote>
+<p>Number of spiro atoms</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="chiral_centers" class="doc_header"><code>chiral_centers</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L258" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>chiral_centers</code>(<strong><code>mol</code></strong>)</p>
+</blockquote>
+<p>Number of chiral centers</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -907,13 +1147,20 @@ Parallel execution succeeded
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Substructure-Matching">Substructure Matching<a class="anchor-link" href="#Substructure-Matching"> </a></h2><p>This class is used for substructure matching an input <code>Mol</code> against a list of SMARTS.</p>
 <p><strong>Note</strong>: Substructure matching is tricky. Be sure to verify your SMARTS before putting a large number of them into a filter.</p>
-<p><code>CatalogMatch</code> functions as a base class to match <code>Mol</code> objects against any generic catalog. <code>has_match</code> will return a single boolean value for if the <code>Mol</code> matches one of he filters in the catalog. <code>get_matches</code> will return a list of bools for all elements in the catalog.</p>
+<p><code>CatalogMatch</code> functions as a base class to match <code>Mol</code> objects against any generic catalog. <code>has_match</code> will return a single boolean value for if the <code>Mol</code> matches one of he filters in the catalog. <code>get_matches</code> will return a list of bools for all elements in the catalog. <code>percent_matches</code> returns a list of floats for what percentate of filters match.</p>
 <p><code>SMARTSMatch</code> will generate a catalog from a list of SMARTS</p>
 <p><code>PAINSMatch</code>, <code>PAINSAMatch</code>, <code>PAINSBMatch</code> and <code>PAINSCMatch</code> specify different PAINS catalogs present in RDKit (see <a href="https://www.rdkit.org/docs/source/rdkit.Chem.rdfiltercatalog.html#rdkit.Chem.rdfiltercatalog.FilterCatalogParams.FilterCatalogs">here</a>)</p>
 
 </div>
 </div>
 </div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -925,7 +1172,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Catalog" class="doc_header"><code>class</code> <code>Catalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L211" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Catalog</code>(<strong><code>catalog</code></strong>)</p>
+<h2 id="Catalog" class="doc_header"><code>class</code> <code>Catalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L263" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Catalog</code>(<strong><code>catalog</code></strong>)</p>
 </blockquote>
 <p>Base Class for SMARTS matching</p>
 <p>Inputs: <code>catalog</code>, RDKit <code>FilterCatalog</code></p>
@@ -951,7 +1198,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SmartsCatalog" class="doc_header"><code>class</code> <code>SmartsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L240" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsCatalog</code>(<strong><code>smarts</code></strong>) :: <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a></p>
+<h2 id="SmartsCatalog" class="doc_header"><code>class</code> <code>SmartsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L325" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsCatalog</code>(<strong><code>smarts</code></strong>) :: <a href="/mrl/chem#Catalog"><code>Catalog</code></a></p>
 </blockquote>
 <p>Class for SMARTS matching</p>
 <p>Inputs: <code>smarts</code>, list of smarts</p>
@@ -977,7 +1224,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ParamsCatalog" class="doc_header"><code>class</code> <code>ParamsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L260" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamsCatalog</code>(<strong><code>params</code></strong>) :: <a href="/mrl/chem.html#Catalog"><code>Catalog</code></a></p>
+<h2 id="ParamsCatalog" class="doc_header"><code>class</code> <code>ParamsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L345" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamsCatalog</code>(<strong><code>params</code></strong>) :: <a href="/mrl/chem#Catalog"><code>Catalog</code></a></p>
 </blockquote>
 <p>Generates <code>CatalogMatch</code> object from <code>params</code>, a <code>FilterCatalogParams</code> object</p>
 
@@ -1002,7 +1249,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSCatalog" class="doc_header"><code>class</code> <code>PAINSCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L270" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="PAINSCatalog" class="doc_header"><code>class</code> <code>PAINSCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L355" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>Full PAINS filter matching</p>
 
@@ -1027,7 +1274,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSACatalog" class="doc_header"><code>class</code> <code>PAINSACatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L275" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSACatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="PAINSACatalog" class="doc_header"><code>class</code> <code>PAINSACatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L360" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSACatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS A filter matching</p>
 
@@ -1052,7 +1299,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSBCatalog" class="doc_header"><code>class</code> <code>PAINSBCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L280" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSBCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="PAINSBCatalog" class="doc_header"><code>class</code> <code>PAINSBCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L365" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSBCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS B filter matching</p>
 
@@ -1077,7 +1324,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSCCatalog" class="doc_header"><code>class</code> <code>PAINSCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L285" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="PAINSCCatalog" class="doc_header"><code>class</code> <code>PAINSCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L370" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS C filter matching</p>
 
@@ -1102,7 +1349,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ZINCCatalog" class="doc_header"><code>class</code> <code>ZINCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L290" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZINCCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="ZINCCatalog" class="doc_header"><code>class</code> <code>ZINCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L375" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZINCCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>ZINC filter matching</p>
 
@@ -1127,7 +1374,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BRENKCatalog" class="doc_header"><code>class</code> <code>BRENKCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L295" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BRENKCatalog</code>() :: <a href="/mrl/chem.html#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="BRENKCatalog" class="doc_header"><code>class</code> <code>BRENKCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L380" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BRENKCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>BRENK filter matching</p>
 
@@ -1144,6 +1391,24 @@ Parallel execution succeeded
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="NIHCatalog" class="doc_header"><code>class</code> <code>NIHCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L385" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NIHCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+</blockquote>
+<p>NIH filter matching</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -1174,7 +1439,9 @@ Parallel execution succeeded
 
 <span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_mol</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">smiles</span><span class="p">]</span>
 
-<span class="k">assert</span> <span class="n">sm</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">sm</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">sm</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">sm</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">criteria</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">==</span><span class="kc">True</span>
 </pre></div>
 
     </div>
@@ -1186,13 +1453,20 @@ Parallel execution succeeded
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Fingerprints">Fingerprints<a class="anchor-link" href="#Fingerprints"> </a></h2><p>This section deals with creating and manipulating molecular fingerprints. Below are functions for generating different forms of Morgan fingerprints (ECFP4, ECFP6, FCFP4, FCFP6). Fingerprints by default are generated as RDKit <code>ExplicitBitVect</code> objects, but can be converted to numpy arrays using the <a href="/mrl/chem.html#fp_to_array"><code>fp_to_array</code></a> function.</p>
+<h2 id="Fingerprints">Fingerprints<a class="anchor-link" href="#Fingerprints"> </a></h2><p>This section deals with creating and manipulating molecular fingerprints. Below are functions for generating different forms of Morgan fingerprints (ECFP4, ECFP6, FCFP4, FCFP6). Fingerprints by default are generated as RDKit <code>ExplicitBitVect</code> objects, but can be converted to numpy arrays using the <a href="/mrl/chem#fp_to_array"><code>fp_to_array</code></a> function.</p>
 <p>Fingerprint similarity functions using Tanimoto, Dice and Cosine metrics are implemented for both <code>ExplicitBitVect</code> and <code>ndarray</code> objects.</p>
 <p><strong>Note</strong> following cheminformatics convention, fingerprint metrics are implemented as <em>similarities</em> rather than <em>distances</em>. The metrics used have the relationship <code>similarity = 1 - distance</code>. For using fingerprint difference metrics in machine learning applications, be sure you are using the correct relationship (similarity vs difference) for your task.</p>
 
 </div>
 </div>
 </div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1204,7 +1478,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="morgan_fp" class="doc_header"><code>morgan_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L302" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>morgan_fp</code>(<strong><code>mol</code></strong>, <strong><code>radius</code></strong>=<em><code>3</code></em>, <strong><code>nbits</code></strong>=<em><code>2048</code></em>, <strong><code>use_features</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="morgan_fp" class="doc_header"><code>morgan_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L392" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>morgan_fp</code>(<strong><code>mol</code></strong>, <strong><code>radius</code></strong>=<em><code>3</code></em>, <strong><code>nbits</code></strong>=<em><code>2048</code></em>, <strong><code>use_features</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>morgan fingerprint</p>
 
@@ -1229,7 +1503,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ECFP4" class="doc_header"><code>ECFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L308" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP4</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="ECFP4" class="doc_header"><code>ECFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L398" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP4</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>ECFP4 Fingerprint</p>
 
@@ -1254,7 +1528,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ECFP6" class="doc_header"><code>ECFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L312" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP6</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="ECFP6" class="doc_header"><code>ECFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L402" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP6</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>ECFP6 Fingerprint</p>
 
@@ -1279,7 +1553,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FCFP4" class="doc_header"><code>FCFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L316" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP4</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="FCFP4" class="doc_header"><code>FCFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L406" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP4</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>FCFP4 Fingerprint</p>
 
@@ -1304,7 +1578,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FCFP6" class="doc_header"><code>FCFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP6</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="FCFP6" class="doc_header"><code>FCFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L410" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP6</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>FCFP6 Fingerprint</p>
 
@@ -1329,8 +1603,9 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="failsafe_fp" class="doc_header"><code>failsafe_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L324" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>failsafe_fp</code>(<strong><code>mol</code></strong>, <strong><code>fp_function</code></strong>)</p>
+<h4 id="failsafe_fp" class="doc_header"><code>failsafe_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L414" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>failsafe_fp</code>(<strong><code>mol</code></strong>, <strong><code>fp_function</code></strong>)</p>
 </blockquote>
+<p>Returns vector of zeros if failure</p>
 
 </div>
 
@@ -1353,7 +1628,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_to_array" class="doc_header"><code>fp_to_array</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L337" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_to_array</code>(<strong><code>fp</code></strong>)</p>
+<h4 id="fp_to_array" class="doc_header"><code>fp_to_array</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L427" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_to_array</code>(<strong><code>fp</code></strong>)</p>
 </blockquote>
 <p>Converts RDKit <code>ExplicitBitVec</code> to numpy array</p>
 
@@ -1378,7 +1653,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tanimoto" class="doc_header"><code>tanimoto</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L350" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="tanimoto" class="doc_header"><code>tanimoto</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L440" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Tanimoto similarity</p>
 
@@ -1403,7 +1678,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tanimoto_rd" class="doc_header"><code>tanimoto_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L354" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="tanimoto_rd" class="doc_header"><code>tanimoto_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L444" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1427,7 +1702,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice" class="doc_header"><code>dice</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L357" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="dice" class="doc_header"><code>dice</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L447" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Dice similarity</p>
 
@@ -1452,7 +1727,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice_rd" class="doc_header"><code>dice_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L361" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="dice_rd" class="doc_header"><code>dice_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L451" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1476,7 +1751,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cosine" class="doc_header"><code>cosine</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L364" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="cosine" class="doc_header"><code>cosine</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L454" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Cosine similarity</p>
 
@@ -1501,7 +1776,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cosine_rd" class="doc_header"><code>cosine_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L368" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="cosine_rd" class="doc_header"><code>cosine_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L458" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1514,6 +1789,17 @@ Parallel execution succeeded
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When computing similarities between fingerprints, several things need to be lined up. Different methods are needed for different fingerprint formats (<code>ndarray</code> vs <code>ExplicitBitVect</code>) and different distance metrics.</p>
+<p>The <a href="/mrl/chem#FP"><code>FP</code></a> class holds logic to make this easy.</p>
+<p>The <a href="/mrl/chem#FP.get_fingerprint"><code>FP.get_fingerprint</code></a> function allows for parallel processing of fingerprint generation.</p>
+<p>The <a href="/mrl/chem#FP.fingerprint_similarity"><code>FP.fingerprint_similarity</code></a> routes fingerprints to the correct similarity function based on the fingerprint's array type and the simillarity metric used.</p>
+<p>For cases where instantiating a class isn't helpful, <a href="/mrl/chem#get_fingerprint"><code>get_fingerprint</code></a> and <a href="/mrl/chem#fingerprint_similarities"><code>fingerprint_similarities</code></a> work as functional wrappers around <a href="/mrl/chem#FP"><code>FP</code></a>.</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1521,17 +1807,6 @@ Parallel execution succeeded
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>When computing similarities between fingerprints, several things need to be lined up. Different methods are needed for different fingerprint formats (<code>ndarray</code> vs <code>ExplicitBitVect</code>) and different distance metrics.</p>
-<p>The <a href="/mrl/chem.html#FP"><code>FP</code></a> class holds logic to make this easy.</p>
-<p>The <a href="/mrl/chem.html#FP.get_fingerprint"><code>FP.get_fingerprint</code></a> function allows for parallel processing of fingerprint generation.</p>
-<p>The <a href="/mrl/chem.html#FP.fingerprint_similarity"><code>FP.fingerprint_similarity</code></a> routes fingerprints to the correct similarity function based on the fingerprint's array type and the simillarity metric used.</p>
-<p>For cases where instantiating a class isn't helpful, <a href="/mrl/chem.html#get_fingerprint"><code>get_fingerprint</code></a> and <a href="/mrl/chem.html#fingerprint_similarities"><code>fingerprint_similarities</code></a> work as functional wrappers around <a href="/mrl/chem.html#FP"><code>FP</code></a>.</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1543,7 +1818,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP" class="doc_header"><code>class</code> <code>FP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L373" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP</code>()</p>
+<h2 id="FP" class="doc_header"><code>class</code> <code>FP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L463" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP</code>()</p>
 </blockquote>
 <p>FP - class for manipulating molecular fingerprints</p>
 <p><code>fp = FP()</code></p>
@@ -1570,7 +1845,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_fingerprint" class="doc_header"><code>get_fingerprint</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L482" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_fingerprint</code>(<strong><code>mol</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>output_type</code></strong>=<em><code>'rdkit'</code></em>)</p>
+<h4 id="get_fingerprint" class="doc_header"><code>get_fingerprint</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L572" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_fingerprint</code>(<strong><code>mol</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>output_type</code></strong>=<em><code>'rdkit'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1594,7 +1869,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fingerprint_similarities" class="doc_header"><code>fingerprint_similarities</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L486" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fingerprint_similarities</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>, <strong><code>metric</code></strong>)</p>
+<h4 id="fingerprint_similarities" class="doc_header"><code>fingerprint_similarities</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L576" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fingerprint_similarities</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>, <strong><code>metric</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1603,13 +1878,6 @@ Parallel execution succeeded
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1726,15 +1994,22 @@ Parallel execution succeeded
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Mol-Operations">Mol Operations<a class="anchor-link" href="#Mol-Operations"> </a></h2><p>Functions for editing or manipulating <code>Mol</code> objects.</p>
-<p>Fragmenting functions like <a href="/mrl/chem.html#fragment_smile"><code>fragment_smile</code></a> break molecules into fragments by cutting single bonds.</p>
-<p><a href="/mrl/chem.html#fuse_on_atom_mapping"><code>fuse_on_atom_mapping</code></a> fuses fragments following RDKit's atom mapping conventions.</p>
+<p>Fragmenting functions like <a href="/mrl/chem#fragment_smile"><code>fragment_smile</code></a> break molecules into fragments by cutting single bonds.</p>
+<p><a href="/mrl/chem#fuse_on_atom_mapping"><code>fuse_on_atom_mapping</code></a> fuses fragments following RDKit's atom mapping conventions.</p>
 <p><code>[*:1]-R1-[*:2] + [*:1]-R2 &gt;&gt; [*:2]-R1-R2</code></p>
-<p><a href="/mrl/chem.html#fuse_on_link"><code>fuse_on_link</code></a> relies on user-defined linkages such as heavy atoms.</p>
+<p><a href="/mrl/chem#fuse_on_link"><code>fuse_on_link</code></a> relies on user-defined linkages such as heavy atoms.</p>
 <p><code>[Rb]-R1-[Pb] + [Rb]-R2 &gt;&gt; [Pb]-R1-R2</code></p>
 
 </div>
 </div>
 </div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1746,7 +2021,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fragment_mol" class="doc_header"><code>fragment_mol</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L492" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_mol</code>(<strong><code>mol</code></strong>, <strong><code>max_cuts</code></strong>, <strong><code>return_mols</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="fragment_mol" class="doc_header"><code>fragment_mol</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L583" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_mol</code>(<strong><code>mol</code></strong>, <strong><code>max_cuts</code></strong>, <strong><code>return_mols</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Wrapper for RDKit mol fragmentation</p>
 
@@ -1771,7 +2046,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fragment_smile" class="doc_header"><code>fragment_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L496" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smile</code>(<strong><code>smile</code></strong>, <strong><code>cuts</code></strong>)</p>
+<h4 id="fragment_smile" class="doc_header"><code>fragment_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L587" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smile</code>(<strong><code>smile</code></strong>, <strong><code>cuts</code></strong>)</p>
 </blockquote>
 <p>fragment_smile - fragment <code>smile</code> based on <code>cuts</code></p>
 <p><code>smile</code> - str, smiles string to fragment</p>
@@ -1801,7 +2076,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fragment_smiles" class="doc_header"><code>fragment_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L542" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>cuts</code></strong>)</p>
+<h4 id="fragment_smiles" class="doc_header"><code>fragment_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L633" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>cuts</code></strong>)</p>
 </blockquote>
 <p>fragment and deduplicate a list of smiles</p>
 
@@ -1811,13 +2086,6 @@ Parallel execution succeeded
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1844,13 +2112,20 @@ Parallel execution succeeded
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;*CCCC&#39;, &#39;*CC&#39;, &#39;*CCCCCCC&#39;, &#39;*CCCCCC&#39;, &#39;*C&#39;, &#39;*CCCCC&#39;, &#39;*CCC&#39;]</pre>
+<pre>[&#39;*C&#39;, &#39;*CCC&#39;, &#39;*CCCCC&#39;, &#39;*CCCC&#39;, &#39;*CC&#39;, &#39;*CCCCCCC&#39;, &#39;*CCCCCC&#39;]</pre>
 </div>
 
 </div>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1866,7 +2141,7 @@ Parallel execution succeeded
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuse_on_atom_mapping" class="doc_header"><code>fuse_on_atom_mapping</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L549" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_atom_mapping</code>(<strong><code>fragment_string</code></strong>)</p>
+<h4 id="fuse_on_atom_mapping" class="doc_header"><code>fuse_on_atom_mapping</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L640" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_atom_mapping</code>(<strong><code>fragment_string</code></strong>)</p>
 </blockquote>
 <p>Inputs: <code>fragment_string</code>, str or Chem.Mol</p>
 <p>Outputs: str</p>
@@ -1881,13 +2156,6 @@ Mappings that occur once or more than 2 times are ignored</p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1915,6 +2183,13 @@ Mappings that occur once or more than 2 times are ignored</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -1922,7 +2197,7 @@ Mappings that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuse_on_link" class="doc_header"><code>fuse_on_link</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L604" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_link</code>(<strong><code>fragment_string</code></strong>, <strong><code>links</code></strong>)</p>
+<h4 id="fuse_on_link" class="doc_header"><code>fuse_on_link</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L695" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_link</code>(<strong><code>fragment_string</code></strong>, <strong><code>links</code></strong>)</p>
 </blockquote>
 <p>Inputs: <code>fragment_string</code>, str or Chem.Mol, <code>links</code>, list of defines linkages</p>
 <p>Outputs: str</p>
@@ -1938,13 +2213,6 @@ Links that occur once or more than 2 times are ignored</p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1991,7 +2259,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -2043,12 +2311,19 @@ Links that occur once or more than 2 times are ignored</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Structure-Enumeration">Structure Enumeration<a class="anchor-link" href="#Structure-Enumeration"> </a></h2><p>Often it can be useful to enumerate variants of the same core structure. For example, generating every 6 member ring variant with 2 nitrogens. The <a href="/mrl/chem.html#StructureEnumerator"><code>StructureEnumerator</code></a> class provides a way of enumerating over a core structure defined by a smarts string and a set of user inputs. The structure enumerator can also add wildcard atoms.</p>
-<p>For examples on using the <a href="/mrl/chem.html#StructureEnumerator"><code>StructureEnumerator</code></a> class, see the Structure Enumeration tutorial page</p>
+<h2 id="Structure-Enumeration">Structure Enumeration<a class="anchor-link" href="#Structure-Enumeration"> </a></h2><p>Often it can be useful to enumerate variants of the same core structure. For example, generating every 6 member ring variant with 2 nitrogens. The <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> class provides a way of enumerating over a core structure defined by a smarts string and a set of user inputs. The structure enumerator can also add wildcard atoms.</p>
+<p>For examples on using the <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> class, see the Structure Enumeration tutorial page</p>
 
 </div>
 </div>
 </div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -2060,7 +2335,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_map_nums" class="doc_header"><code>add_map_nums</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L635" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_map_nums</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="add_map_nums" class="doc_header"><code>add_map_nums</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L726" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_map_nums</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>Adds map numbers to all atoms in <code>mol</code></p>
 
@@ -2085,7 +2360,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="check_ring_bonds" class="doc_header"><code>check_ring_bonds</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L644" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_ring_bonds</code>(<strong><code>smile</code></strong>)</p>
+<h4 id="check_ring_bonds" class="doc_header"><code>check_ring_bonds</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L735" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_ring_bonds</code>(<strong><code>smile</code></strong>)</p>
 </blockquote>
 <p>Looks for SP hybridized atoms in rings</p>
 
@@ -2110,7 +2385,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decorate_smile" class="doc_header"><code>decorate_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L654" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smile</code>(<strong><code>smile</code></strong>, <strong><code>num_attachments</code></strong>)</p>
+<h4 id="decorate_smile" class="doc_header"><code>decorate_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L745" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smile</code>(<strong><code>smile</code></strong>, <strong><code>num_attachments</code></strong>)</p>
 </blockquote>
 <p>decorate_smiles - adds wildcard atoms to smile based on num_attachments.
  If there are N atoms with at lest one implicit hydrogen, N choose num_attachments
@@ -2137,7 +2412,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decorate_smiles" class="doc_header"><code>decorate_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L683" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>num_attachments</code></strong>)</p>
+<h4 id="decorate_smiles" class="doc_header"><code>decorate_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L774" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>num_attachments</code></strong>)</p>
 </blockquote>
 <p>Decorate all items in <code>smiles</code> and cleans results</p>
 
@@ -2162,7 +2437,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="remove_atom" class="doc_header"><code>remove_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L691" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>remove_atom</code>(<strong><code>rwmol</code></strong>, <strong><code>atom_idx</code></strong>, <strong><code>add_bond</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="remove_atom" class="doc_header"><code>remove_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L782" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>remove_atom</code>(<strong><code>rwmol</code></strong>, <strong><code>atom_idx</code></strong>, <strong><code>add_bond</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>remove_atom - removes atom based on <code>atom_idx</code>. If <code>add_bond</code> and the removed
  atom is connected to two other heavy atoms, a single bond is formed between neighbors</p>
@@ -2188,7 +2463,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="generate_spec_template" class="doc_header"><code>generate_spec_template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L712" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_spec_template</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="generate_spec_template" class="doc_header"><code>generate_spec_template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L803" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_spec_template</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>generates blank atom_spec and bond_spec for mol. returns blank specs and matching smarts</p>
 
@@ -2213,7 +2488,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StructureEnumerator" class="doc_header"><code>class</code> <code>StructureEnumerator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L723" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureEnumerator</code>(<strong><code>smarts</code></strong>, <strong><code>atom_spec</code></strong>, <strong><code>bond_spec</code></strong>, <strong><code>max_num</code></strong>=<em><code>1000000</code></em>, <strong><code>substitute_bonds</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="StructureEnumerator" class="doc_header"><code>class</code> <code>StructureEnumerator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L814" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureEnumerator</code>(<strong><code>smarts</code></strong>, <strong><code>atom_spec</code></strong>, <strong><code>bond_spec</code></strong>, <strong><code>max_num</code></strong>=<em><code>1000000</code></em>, <strong><code>substitute_bonds</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>StructureEnumerator - class for enumerating molecular structures</p>
 <p>Inputs:</p>
@@ -2259,7 +2534,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_one_atom" class="doc_header"><code>add_one_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1021" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_one_atom</code>(<strong><code>inputs</code></strong>)</p>
+<h4 id="add_one_atom" class="doc_header"><code>add_one_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_one_atom</code>(<strong><code>inputs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2290,7 +2565,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_atom_combi" class="doc_header"><code>add_atom_combi</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1048" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_atom_combi</code>(<strong><code>smile</code></strong>, <strong><code>atom_types</code></strong>)</p>
+<h4 id="add_atom_combi" class="doc_header"><code>add_atom_combi</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_atom_combi</code>(<strong><code>smile</code></strong>, <strong><code>atom_types</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2299,13 +2574,6 @@ Links that occur once or more than 2 times are ignored</p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -2331,6 +2599,13 @@ Links that occur once or more than 2 times are ignored</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -2338,7 +2613,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_bond_combi" class="doc_header"><code>add_bond_combi</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1087" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_bond_combi</code>(<strong><code>smile</code></strong>, <strong><code>max_ring_size</code></strong>=<em><code>8</code></em>)</p>
+<h4 id="add_bond_combi" class="doc_header"><code>add_bond_combi</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_bond_combi</code>(<strong><code>smile</code></strong>, <strong><code>max_ring_size</code></strong>=<em><code>8</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2362,7 +2637,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_one_bond" class="doc_header"><code>add_one_bond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_one_bond</code>(<strong><code>inputs</code></strong>)</p>
+<h4 id="add_one_bond" class="doc_header"><code>add_one_bond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1245" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_one_bond</code>(<strong><code>inputs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2371,13 +2646,6 @@ Links that occur once or more than 2 times are ignored</p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -2390,6 +2658,136 @@ Links that occur once or more than 2 times are ignored</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">add_bond_combi</span><span class="p">(</span><span class="s1">&#39;C1CN=CCC1&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Proteins">Proteins<a class="anchor-link" href="#Proteins"> </a></h2><p>Functions designed for manipulating proteins as amino acid sequences.</p>
+<h4 id="Current-Limitations">Current Limitations<a class="anchor-link" href="#Current-Limitations"> </a></h4><p>The underlying RDKit utils for amino acids are somewhat more restricted than those for SMILES strings. Only standard amino acid characters can be used (ie no wildcards).</p>
+<p>Proteins are represented as FASTA sequences, ie <code>MKDCSNGCSAECTGEGG</code></p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_protein" class="doc_header"><code>to_protein</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1279" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_protein</code>(<strong><code>sequence_or_mol</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_sequence" class="doc_header"><code>to_sequence</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1292" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_sequence</code>(<strong><code>sequence_or_mol</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_proteins" class="doc_header"><code>to_proteins</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1301" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_proteins</code>(<strong><code>list_of_inputs</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_sequences" class="doc_header"><code>to_sequences</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1304" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_sequences</code>(<strong><code>list_of_inputs</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">to_protein</span><span class="p">(</span><span class="s1">&#39;MKDCSNGCSAECTGEGG&#39;</span><span class="p">))</span><span class="o">==</span><span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span>
+<span class="k">assert</span> <span class="n">to_sequence</span><span class="p">(</span><span class="n">to_protein</span><span class="p">(</span><span class="s1">&#39;MKDCSNGCSAECTGEGG&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="s1">&#39;MKDCSNGCSAECTGEGG&#39;</span>
 </pre></div>
 
     </div>
