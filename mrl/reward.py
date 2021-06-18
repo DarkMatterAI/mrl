@@ -33,7 +33,8 @@ class Reward(Callback):
     def compute_reward(self):
         rewards = self._compute_reward()
         rewards = rewards.squeeze()
-        self.batch_state.rewards += self.weight*rewards
+        rewards = rewards*self.weight
+        self.batch_state.rewards += rewards
         self.batch_state[self.name] = rewards
 
         if self.track:
@@ -50,12 +51,11 @@ class FunctionReward(Reward):
 
 
 class SampleReward(Reward):
-    def __init__(self, reward_function, template_filter, lookup,
+    def __init__(self, reward_function, lookup,
                  name, order=10, weight=1., track=True):
         super().__init__(name, order, weight, track)
         self.reward_function = reward_function
         self.lookup = lookup
-        self.template_filter = template_filter
         self.lookup_table = {}
 
     def _compute_reward(self):
@@ -72,12 +72,11 @@ class SampleReward(Reward):
                 outputs[i] = self.lookup_table[sample]
 
             else:
-                if (self.template_filter and hps[i]) or (not self.template_filter):
-                    to_score.append(sample)
-                    to_score_idxs.append(i)
+                to_score.append(sample)
+                to_score_idxs.append(i)
 
         if to_score:
-            scores = self.reward_function(samples)
+            scores = self.reward_function(to_score)
 
             for i in range(len(to_score)):
                 outputs[to_score_idxs[i]] = scores[i]

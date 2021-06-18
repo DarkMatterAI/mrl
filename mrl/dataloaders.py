@@ -166,6 +166,9 @@ class Vocab():
         toks = ['bos'] + toks + ['eos']
         return toks
 
+    def join_tokens(self, tokens):
+        return ''.join(tokens)
+
     def preprocess(self, input):
         if self.prefunc is not None:
             input = self.prefunc(input)
@@ -201,13 +204,14 @@ class Vocab():
         return output
 
     def reconstruct(self, input):
-        output = ''.join(self._reconstruct(input))
+        tokens = self._reconstruct(input)
+        output = self.join_tokens(tokens)
         output = self.postprocess(output)
         return output
 
     def reconstruct_trajectory(self, input):
         tokens = self._reconstruct(input)
-        return [''.join(tokens[:i]) for i in range(1,len(tokens)+1)]
+        return [self.join_tokens(tokens[:i]) for i in range(1,len(tokens)+1)]
 
     def update_vocab(self):
         'Adds tokens in `self.unks` to vocabulary'
@@ -236,7 +240,6 @@ class CharacterVocab(Vocab):
     '''
     def _tokenize(self, input):
         toks = tokenize_by_character(input)
-#         toks = ['bos'] + toks + ['eos']
         return toks
 
 class FuncVocab(Vocab):
@@ -305,7 +308,6 @@ class CharacterReplaceVocab(Vocab):
 
     def _tokenize(self, smile):
         toks = tokenize_with_replacements(smile, self.replace_dict)
-#         toks = ['bos'] + toks + ['eos']
         return toks
 
     def _reconstruct(self, input):
@@ -346,7 +348,6 @@ class RegexVocab(Vocab):
 
     def _tokenize(self, smile):
         toks = regex_tokenize(smile, self.regex)
-#         toks = ['bos'] + toks + ['eos']
         return toks
 
 # Cell

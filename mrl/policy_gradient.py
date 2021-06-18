@@ -214,8 +214,8 @@ class PPO(BasePolicy):
 
         self.update_kl(lps, ref_lps, mask)
 
-        pg_dict = {'pg_discounted' : discounted_rewards.detach().cpu(),
-                    'pg_advantage' : advantages.detach().cpu(),
+        pg_dict = {'pg_discounted' : discounted_rewards,
+                    'pg_advantage' : advantages,
                     'ratios' : ratios.detach().cpu(),
                     'loss' : loss.detach().cpu(),
                     'v_loss' : v_loss.detach().cpu(),

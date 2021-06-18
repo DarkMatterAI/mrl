@@ -2,8 +2,9 @@
 
 __all__ = ['Callback', 'Log', 'Buffer', 'SettrDict', 'BatchState', 'Event', 'Environment', 'Sampler', 'ModelSampler',
            'ContrastiveSampler', 'TemplateCallback', 'ContrastiveTemplate', 'AgentCallback', 'GenAgentCallback',
-           'RewardCallback', 'LossCallback', 'PriorLoss', 'HistoricPriorLoss', 'UpdateBaselineCB', 'StatsCallback',
-           'Rollback', 'RetrainRollback', 'SupevisedCB', 'LogSampler', 'LogEnumerator', 'DatasetSampler', 'log_to_df']
+           'LossCallback', 'PriorLoss', 'HistoricPriorLoss', 'UpdateBaselineCB', 'StatsCallback', 'Rollback',
+           'RetrainRollback', 'SupevisedCB', 'LogSampler', 'TokenSwapSampler', 'LogEnumerator', 'DatasetSampler',
+           'log_to_df']
 
 # Cell
 
@@ -610,12 +611,13 @@ class TemplateCallback(Callback):
 
         hps = self.get_hps(state.samples)
         state[self.name] = rewards
+        rewards = rewards*self.weight
 
         if self.track:
             env.log.update_metric(self.name, rewards.mean())
 
         state.template_passes = hps
-        state.rewards += to_device(torch.from_numpy(self.weight*rewards).float())
+        state.rewards += to_device(torch.from_numpy(rewards).float())
 
     def get_hps(self, sequences):
         if self.template is not None:
@@ -697,6 +699,7 @@ class ContrastiveTemplate(TemplateCallback):
         state.template_sim = sim_scores
 
         full_rewards = rewards + sim_scores
+        full_rewards = full_rewards*self.weight
 
         if self.track:
             env.log.update_metric(self.name, full_rewards.mean())
@@ -708,7 +711,7 @@ class ContrastiveTemplate(TemplateCallback):
         state[self.name+'_sim'] = sim_scores
 
         state.template_passes = hps
-        state.rewards += to_device(torch.from_numpy(self.weight*full_rewards).float())
+        state.rewards += to_device(torch.from_numpy(full_rewards).float())
 
     def standardize(self, sequences):
         if self.template is not None:
@@ -877,30 +880,6 @@ class GenAgentCallback(AgentCallback):
 
 
 # Cell
-
-class RewardCallback(Callback):
-    def __init__(self, reward_function, name, weight=1., track=True):
-        super().__init__(order=1)
-        self.name = name
-        self.reward_function = reward_function
-        self.weight = weight
-        self.track = track
-
-    def setup(self):
-        if self.track:
-            log = self.environment.log
-            log.add_metric(self.name)
-            log.add_log(self.name)
-
-    def compute_reward(self):
-        rewards, reward_dict = self.reward_function.from_batch_state(self.batch_state)
-
-        if self.track:
-            self.environment.log.update_metric(self.name, rewards.mean().detach().cpu().numpy())
-
-        rewards = rewards * self.weight
-        self.batch_state.rewards += rewards
-        self.batch_state[self.name] = reward_dict
 
 class LossCallback(Callback):
     def __init__(self, loss_function, name, weight=1., track=True):
@@ -1163,6 +1142,33 @@ class LogSampler(Sampler):
                 outputs = list(subset.sample(n=min(bs, subset.shape[0])).samples.values)
 
         return outputs
+
+
+class TokenSwapSampler(LogSampler):
+    def __init__(self, sample_name, start_iter, perceltile, buffer_size,
+                 vocab, swap_percent):
+        super().__init__(sample_name, start_iter, percentile, buffer_size)
+        self.vocab = vocab
+        self.swap_percent = swap_percent
+
+    def _build_buffer(self):
+        samples = super()._build_buffer()
+
+        new_samples = []
+
+        for sample in samples:
+            tokens = self.vocab.tokenize(sample)
+            num_swaps = int(self.swap_percent*len(tokens))
+            swap_idxs = np.random.choice(np.arange(len(tokens)), num_swaps, replace=False)
+            new_tokens = np.random.choice(self.vocab.itos, num_swaps, replace=True)
+            for idx, new_token in zip(swap_idxs, new_tokens):
+                tokens[idx] = new_token
+
+            sample = self.vocab.join_tokens(tokens)
+            sample = self.vocab.postprocess(sample)
+            new_samples.append(sample)
+
+        return new_samples
 
 class LogEnumerator(Sampler):
     def __init__(self, sample_name, start_iter, buffer_size, percentile):

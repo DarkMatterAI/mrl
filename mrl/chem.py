@@ -2,16 +2,16 @@
 
 __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts', 'canon_smile', 'smile_to_selfie',
            'selfie_to_smile', 'split_selfie', 'neutralize_atoms', 'initialize_neutralisation_reactions',
-           'neutralize_charges', 'draw_mols', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond', 'fsp3', 'logp', 'rings',
-           'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge', 'molar_refractivity', 'aromaticrings', 'qed',
-           'sa_score', 'Catalog', 'SmartsCatalog', 'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog',
-           'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6',
-           'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP',
-           'get_fingerprint', 'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles',
-           'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums', 'check_ring_bonds', 'decorate_smile',
-           'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator', 'add_one_atom',
-           'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins',
-           'to_sequences']
+           'neutralize_charges', 'draw_mols', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond', 'loose_rotbond', 'fsp3', 'logp',
+           'rings', 'max_ring_size', 'min_ring_size', 'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge',
+           'molar_refractivity', 'aromaticrings', 'qed', 'sa_score', 'Catalog', 'SmartsCatalog', 'ParamsCatalog',
+           'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog',
+           'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd',
+           'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities',
+           'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums',
+           'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
+           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein',
+           'to_sequence', 'to_proteins', 'to_sequences']
 
 # Cell
 from .imports import *
@@ -187,6 +187,10 @@ def rotbond(mol):
     'number of rotatable bonds'
     return rdMolDescriptors.CalcNumRotatableBonds(mol)
 
+def loose_rotbond(mol):
+    'number of rotatable bonds, includes things like amides and esters'
+    return rdMolDescriptors.CalcNumRotatableBonds(mol, False)
+
 def fsp3(mol):
     'fraction sp3 hybridized atoms'
     return rdMolDescriptors.CalcFractionCSP3(mol)
@@ -198,6 +202,16 @@ def logp(mol):
 def rings(mol):
     'number of rings'
     return rdMolDescriptors.CalcNumRings(mol)
+
+def max_ring_size(mol):
+    'size of largest ring'
+    ring_info = mol.GetRingInfo()
+    return max((len(r) for r in ring_info.AtomRings()), default=0)
+
+def min_ring_size(mol):
+    'size of smallest ring'
+    ring_info = mol.GetRingInfo()
+    return min((len(r) for r in ring_info.AtomRings()), default=0)
 
 def heteroatoms(mol):
     'number of heteroatoms'
@@ -213,7 +227,8 @@ def heavy_atoms(mol):
     return mol.GetNumHeavyAtoms()
 
 def formal_charge(mol):
-    return mol.GetFormalCharge()
+    'formal charge'
+    return Chem.rdmolops.GetFormalCharge(mol)
 
 def molar_refractivity(mol):
     'molar refractivity'

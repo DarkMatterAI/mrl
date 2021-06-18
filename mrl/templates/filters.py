@@ -4,7 +4,8 @@ __all__ = ['ScoreFunction', 'NoScore', 'PassThroughScore', 'ModifiedScore', 'Con
            'PropertyFunctionScore', 'LinearDecayScore', 'Filter', 'ValidityFilter', 'SingleCompoundFilter',
            'PropertyFilter', 'MolWtFilter', 'HBDFilter', 'HBAFilter', 'TPSAFilter', 'RotBondFilter', 'SP3Filter',
            'LogPFilter', 'RingFilter', 'HeteroatomFilter', 'AromaticRingFilter', 'HeavyAtomsFilter', 'MRFilter',
-           'ChargeFilter', 'TotalAtomFilter', 'QEDFilter', 'SAFilter', 'StructureFilter', 'ExclusionFilter', 'FPFilter']
+           'ChargeFilter', 'TotalAtomFilter', 'QEDFilter', 'SAFilter', 'LooseRotBondFilter', 'MaxRingFilter',
+           'MinRingFilter', 'StructureFilter', 'ExclusionFilter', 'FPFilter']
 
 # Cell
 from ..imports import *
@@ -426,6 +427,22 @@ class SAFilter(PropertyFilter):
     "SA Score fillter"
     def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
         super().__init__(sa_score, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
+class LooseRotBondFilter(PropertyFilter):
+    "Loose Rotatable bond filter"
+    def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
+        super().__init__(loose_rotbond, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
+class MaxRingFilter(PropertyFilter):
+    "Max ring size filter"
+    def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
+        super().__init__(max_ring_size, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
+class MinRingFilter(PropertyFilter):
+    "Min ring size filter"
+    def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
+        super().__init__(min_ring_size, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
 
 # Cell
 
