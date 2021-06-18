@@ -57,6 +57,10 @@ def maybe_parallel(func, iterable, cpus=None, **kwargs):
 
         processes = min(cpus, len(iterable))
 
+        if processes == 1:
+            # spinning up a single pool has more overhead
+            processes = 0
+
         if processes == 0:
             output = [func(i) for i in iterable]
 

@@ -6,9 +6,9 @@ __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts'
            'rings', 'max_ring_size', 'min_ring_size', 'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge',
            'molar_refractivity', 'aromaticrings', 'qed', 'sa_score', 'num_bridgeheads', 'num_spiro', 'chiral_centers',
            'Catalog', 'SmartsCatalog', 'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog',
-           'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6',
-           'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP',
-           'get_fingerprint', 'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles',
+           'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4',
+           'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd',
+           'FP', 'get_fingerprint', 'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles',
            'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums', 'check_ring_bonds', 'decorate_smile',
            'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator', 'add_one_atom',
            'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins',
@@ -271,12 +271,36 @@ class Catalog():
         self.names = [self.catalog.GetEntryWithIdx(i).GetDescription()
                       for i in range(self.catalog.GetNumEntries())]
 
-    def __call__(self, mol, criteria='any'):
-        assert criteria in ('any', 'all'), "criteria must be one of ('any', 'all')"
+    def __call__(self, mol, criteria=None):
+        '''
+        __call__ - run `mol` against `self.catalog`
+
+        Inputs:
+
+            `mol` - (Chem.Mol, list[Chem.Mol]), input mols
+
+            `criteria` - ('any', 'all', float, int). If 'any', returns `True` if
+            any smarts match. If `all`, returns `True` if all smarts match. If `float`,
+            returns `True` if more than `float` percent (inclusive) of smarts match.
+            If `int`, returns `True` if more than `int` total (inclusive) smarts match
+        '''
+
+        if type(mol)==Chem.Mol:
+            mol = [mol]
+
         if criteria=='all':
-            output = maybe_parallel(self.get_matches, mol)
-        else:
+            output = [all(i) for i in maybe_parallel(self.get_matches, mol)]
+        elif criteria=='any':
             output = maybe_parallel(self.has_match, mol)
+        elif type(criteria)==float:
+            output = [i>=criteria for i in maybe_parallel(self.percent_matches, mol)]
+        elif type(criteria)==int:
+            output = [i>=criteria for i in maybe_parallel(self.num_matches, mol)]
+        else:
+            output = maybe_parallel(self.get_matches, mol)
+
+        if len(output)==1:
+            output = output[0]
 
         return output
 
@@ -288,6 +312,15 @@ class Catalog():
         mol = to_mol(mol)
         matches = [i.GetDescription() for i in self.catalog.GetMatches(mol)]
         return [i in matches for i in self.names]
+
+    def num_matches(self, mol):
+        mol = to_mol(mol)
+        matches = [i.GetDescription() for i in self.catalog.GetMatches(mol)]
+        return len(matches)
+
+    def percent_matches(self, mol):
+        num_matches = self.num_matches(mol)
+        return num_matches/len(self.names)
 
 class SmartsCatalog(Catalog):
     '''
@@ -348,6 +381,11 @@ class BRENKCatalog(ParamsCatalog):
     "BRENK filter matching"
     def __init__(self):
         super().__init__(FilterCatalogParams.FilterCatalogs.BRENK)
+
+class NIHCatalog(ParamsCatalog):
+    "NIH filter matching"
+    def __init__(self):
+        super().__init__(FilterCatalogParams.FilterCatalogs.NIH)
 
 # Cell
 

@@ -5,8 +5,8 @@ __all__ = ['ScoreFunction', 'NoScore', 'PassThroughScore', 'ModifiedScore', 'Con
            'PropertyFilter', 'MolWtFilter', 'HBDFilter', 'HBAFilter', 'TPSAFilter', 'RotBondFilter', 'SP3Filter',
            'LogPFilter', 'RingFilter', 'HeteroatomFilter', 'AromaticRingFilter', 'HeavyAtomsFilter', 'MRFilter',
            'ChargeFilter', 'TotalAtomFilter', 'QEDFilter', 'SAFilter', 'LooseRotBondFilter', 'MaxRingFilter',
-           'MinRingFilter', 'BridgeheadFilter', 'SpiroFilter', 'ChiralFilter', 'StructureFilter', 'ExclusionFilter',
-           'FPFilter']
+           'MinRingFilter', 'BridgeheadFilter', 'SpiroFilter', 'ChiralFilter', 'criteria_check', 'StructureFilter',
+           'ExclusionFilter', 'KeepFilter', 'PAINSFilter', 'PAINSAFilter', 'PAINSBFilter', 'PAINSCFilter', 'FPFilter']
 
 # Cell
 from ..imports import *
@@ -462,17 +462,25 @@ class ChiralFilter(PropertyFilter):
 
 # Cell
 
+def criteria_check(criteria):
+    criteria_check1 = (criteria in ('any', 'all'))
+    criteria_check2 = (type(criteria)==float and 0<=criteria<=1)
+    criteria_check3 = (type(criteria)==int)
+    return any([criteria_check1, criteria_check2, criteria_check3])
+
 class StructureFilter(Filter):
     '''
     StructureFilter - filters mols based on structures in `smarts`
 
     Inputs:
 
-        `smarts` - (list, SmartsCatalog), list of smarts strings for filtering or `SmartsCatalog`
+        `smarts` - (list, Catalog), list of smarts strings for filtering or `SmartsCatalog`
 
         `exclude` - if True, filter returns `False` when a structure match is found
 
-        `criteria` - ('any', 'all'), match criteria (match any filter, match all filters)
+        `criteria` - ('any', 'all', float, int), match criteria
+        (match any filter, match all filters, match float percent of filters,
+         match int number of filters)
 
         `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
 
@@ -484,8 +492,11 @@ class StructureFilter(Filter):
 
         self.catalog = self.get_catalog(smarts)
         self.exclude = exclude
+
+        if not criteria_check(criteria):
+            raise ValueError('`criteria` must be `any`, `all`, a float between 0 and 1, or an int')
+
         self.criteria = criteria
-        assert self.criteria in ('any', 'all'), "`criteria` must be one of ('any', 'all')"
 
         if name is None:
             name = f'Structure filter, criteria: {criteria}, exclude: {exclude}'
@@ -522,9 +533,11 @@ class ExclusionFilter(StructureFilter):
 
     Inputs:
 
-        `smarts` - (list, SmartsCatalog), list of smarts strings for filtering or `SmartsCatalog`
+        `smarts` - (list, Catalog), list of smarts strings for filtering or `SmartsCatalog`
 
-        `criteria` - ('any', 'all'), match criteria (match any filter, match all filters)
+        `criteria` - ('any', 'all', float, int), match criteria
+        (match any filter, match all filters, match float percent of filters,
+         match int number of filters)
 
         `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
 
@@ -540,6 +553,114 @@ class ExclusionFilter(StructureFilter):
         super().__init__(smarts, exclude=True, criteria=criteria,
                          score=score, name=name, fail_score=fail_score)
 
+class KeepFilter(StructureFilter):
+    '''
+    KeepFilter - keeps mols with substructure matches to `smarts`
+
+    Inputs:
+
+        `smarts` - (list, Catalog), list of smarts strings for filtering or `SmartsCatalog`
+
+        `criteria` - ('any', 'all', float, int), match criteria
+        (match any filter, match all filters, match float percent of filters,
+         match int number of filters)
+
+        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+
+        `name` - (str, None), filter name used for repr
+
+        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    '''
+    def __init__(self, smarts, criteria='any', score=None, name=None, fail_score=0.):
+
+        if name is None:
+            name = f'Excusion filter, criteria: {criteria}'
+
+        super().__init__(smarts, exclude=False, criteria=criteria,
+                         score=score, name=name, fail_score=fail_score)
+
+# Cell
+
+class PAINSFilter(ExclusionFilter):
+    '''
+    PAINSFilter - excludes mols with substructure matches to PAINS filters
+
+    Inputs:
+
+        `criteria` - ('any', 'all', float, int), match criteria
+        (match any filter, match all filters, match float percent of filters,
+         match int number of filters)
+
+        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+
+        `name` - (str, None), filter name used for repr
+
+        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    '''
+    def __init__(self, criteria='any', score=None, name=None, fail_score=0.):
+        super().__init__(PAINSCatalog(), criteria, score, name, fail_score)
+
+
+class PAINSAFilter(ExclusionFilter):
+    '''
+    PAINSAFilter - excludes mols with substructure matches to PAINS_A filters
+
+    Inputs:
+
+        `criteria` - ('any', 'all', float, int), match criteria
+        (match any filter, match all filters, match float percent of filters,
+         match int number of filters)
+
+        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+
+        `name` - (str, None), filter name used for repr
+
+        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    '''
+    def __init__(self, criteria='any', score=None, name=None, fail_score=0.):
+        super().__init__(PAINSACatalog(), criteria, score, name, fail_score)
+
+class PAINSBFilter(ExclusionFilter):
+    '''
+    PAINSBFilter - excludes mols with substructure matches to PAINS_B filters
+
+    Inputs:
+
+        `criteria` - ('any', 'all', float, int), match criteria
+        (match any filter, match all filters, match float percent of filters,
+         match int number of filters)
+
+        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+
+        `name` - (str, None), filter name used for repr
+
+        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    '''
+    def __init__(self, criteria='any', score=None, name=None, fail_score=0.):
+        super().__init__(PAINSBCatalog(), criteria, score, name, fail_score)
+
+
+class PAINSCFilter(ExclusionFilter):
+    '''
+    PAINSCFilter - excludes mols with substructure matches to PAINS_C filters
+
+    Inputs:
+
+        `criteria` - ('any', 'all', float, int), match criteria
+        (match any filter, match all filters, match float percent of filters,
+         match int number of filters)
+
+        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+
+        `name` - (str, None), filter name used for repr
+
+        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    '''
+    def __init__(self, criteria='any', score=None, name=None, fail_score=0.):
+        super().__init__(PAINSCCatalog(), criteria, score, name, fail_score)
+
+
+
 # Cell
 
 class FPFilter(Filter):
@@ -554,7 +675,9 @@ class FPFilter(Filter):
 
         `fp_metric` - fingerprint similarity metric. see `FP`
 
-        `criteria` - ('any', 'all'), match criteria (match any reference, match all references)
+        `criteria` - ('any', 'all', float, int), match criteria
+        (match any filter, match all filters, match float percent of filters,
+         match int number of filters)
 
         `fp_thresh` - float, fingerprint similarity cutoff for defining a match
 
@@ -575,6 +698,10 @@ class FPFilter(Filter):
         self.get_fp = partial(self.fp.get_fingerprint, fp_type=self.fp_type, output_type=self.array_type)
         self.get_similaity = partial(self.fp.fingerprint_similarity,
                                      fps2=self.reference_fps, metric=fp_metric)
+
+        if not criteria_check(criteria):
+            raise ValueError('`criteria` must be `any`, `all`, a float between 0 and 1, or an int')
+
         self.criteria = criteria
         self.fp_thresh = fp_thresh
 
@@ -596,8 +723,15 @@ class FPFilter(Filter):
 
         if self.criteria=='any':
             output = any(property_output)
-        else:
+
+        elif self.criteria=='all':
             output = all(property_output)
+
+        elif type(self.criteria)==float:
+            output = (sum(property_output)/len(property_output))>=self.criteria
+
+        else:
+            output = sum(property_output)>=self.criteria
 
         return output
 
