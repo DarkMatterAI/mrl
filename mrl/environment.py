@@ -253,8 +253,21 @@ class Event():
 # Cell
 
 class Environment():
-    def __init__(self, agent_cb, template_cb=None, samplers=[], reward_cbs=[], loss_cbs=[], cbs=[],
-                buffer_p_batch=None, reward_decay=0.9):
+    def __init__(self, agent_cb, template_cb=None, samplers=None, reward_cbs=None, loss_cbs=None,
+                 cbs=None, buffer_p_batch=None, reward_decay=0.9):
+
+        if samplers is None:
+            samplers = []
+
+        if reward_cbs is None:
+            reward_cbs = []
+
+        if loss_cbs is None:
+            loss_cbs = []
+
+        if cbs is None:
+            cbs = []
+
         self.agent_cb = agent_cb
         self.template_cb = template_cb if template_cb is not None else TemplateCallback()
         self.samplers = samplers
@@ -360,7 +373,9 @@ class Environment():
         end = time.time() - start
         self.log.timelog['after_batch'].append(end)
 
-    def fit(self, bs, sl, iters, report, cbs=[]):
+    def fit(self, bs, sl, iters, report, cbs=None):
+        if cbs is None:
+            cbs = []
         self.register_cbs(cbs)
         self.bs = bs
         self.sl = sl

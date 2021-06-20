@@ -2,23 +2,24 @@
 
 __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts', 'canon_smile', 'smile_to_selfie',
            'selfie_to_smile', 'split_selfie', 'neutralize_atoms', 'initialize_neutralisation_reactions',
-           'neutralize_charges', 'draw_mols', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond', 'loose_rotbond', 'fsp3', 'logp',
-           'rings', 'max_ring_size', 'min_ring_size', 'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge',
-           'molar_refractivity', 'aromaticrings', 'qed', 'sa_score', 'num_bridgeheads', 'num_spiro', 'chiral_centers',
-           'Catalog', 'SmartsCatalog', 'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog',
-           'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4',
-           'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd',
-           'FP', 'get_fingerprint', 'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles',
-           'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums', 'check_ring_bonds', 'decorate_smile',
-           'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator', 'add_one_atom',
-           'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins',
-           'to_sequences']
+           'neutralize_charges', 'find_bond_groups', 'draw_mols', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond',
+           'loose_rotbond', 'rot_chain_length', 'fsp3', 'logp', 'rings', 'max_ring_size', 'min_ring_size',
+           'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge', 'molar_refractivity', 'aromaticrings', 'qed',
+           'sa_score', 'num_bridgeheads', 'num_spiro', 'chiral_centers', 'Catalog', 'SmartsCatalog', 'ParamsCatalog',
+           'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog',
+           'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto',
+           'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities',
+           'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums',
+           'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
+           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein',
+           'to_sequence', 'to_proteins', 'to_sequences']
 
 # Cell
 from .imports import *
 from .core import *
 from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDConfig
+from rdkit.Chem.Lipinski import RotatableBondSmarts
 from rdkit.Chem.FilterCatalog import *
 sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
 import sascorer
@@ -153,6 +154,32 @@ def neutralize_charges(mol, reactions=None):
 
     return mol
 
+def find_bond_groups(mol):
+    """
+    Find groups of contiguous rotatable bonds and return them sorted by decreasing size
+
+    https://www.rdkit.org/docs/Cookbook.html
+    """
+    rot_atom_pairs = mol.GetSubstructMatches(RotatableBondSmarts)
+    rot_bond_set = set([mol.GetBondBetweenAtoms(*ap).GetIdx() for ap in rot_atom_pairs])
+    rot_bond_groups = []
+    while (rot_bond_set):
+        i = rot_bond_set.pop()
+        connected_bond_set = set([i])
+        stack = [i]
+        while (stack):
+            i = stack.pop()
+            b = mol.GetBondWithIdx(i)
+            bonds = []
+            for a in (b.GetBeginAtom(), b.GetEndAtom()):
+                bonds.extend([b.GetIdx() for b in a.GetBonds() if (
+                    (b.GetIdx() in rot_bond_set) and (not (b.GetIdx() in connected_bond_set)))])
+            connected_bond_set.update(bonds)
+            stack.extend(bonds)
+        rot_bond_set.difference_update(connected_bond_set)
+        rot_bond_groups.append(tuple(connected_bond_set))
+    return tuple(sorted(rot_bond_groups, reverse = True, key = lambda x: len(x)))
+
 
 # Cell
 
@@ -191,6 +218,12 @@ def rotbond(mol):
 def loose_rotbond(mol):
     'number of rotatable bonds, includes things like amides and esters'
     return rdMolDescriptors.CalcNumRotatableBonds(mol, False)
+
+def rot_chain_length(mol):
+    'Length of longest contiguous rotatable bond chain'
+    output = find_bond_groups(mol)
+    output = len(output[0]) if output else 0
+    return output
 
 def fsp3(mol):
     'fraction sp3 hybridized atoms'
@@ -433,7 +466,6 @@ def fp_to_array(fp):
         # note `ConvertToNumpyArray` ~25x faster than `np.asarray`
         arr = np.zeros((1,), dtype=np.int8)
         DataStructs.ConvertToNumpyArray(fp, arr)
-    #     fp = np.asarray(fp, dtype=np.int8)
 
         return arr
 
@@ -653,41 +685,57 @@ def fuse_on_atom_mapping(fragment_string):
 
     mol = to_mol(fragment_string)
 
-    new_mol = Chem.RWMol(mol)
+    if mol is not None:
+        fragment_string = to_smile(mol)
 
-    maps = defaultdict(list)
-    for atom in new_mol.GetAtoms():
-        atom_map = atom.GetAtomMapNum()
-        if atom_map and atom.GetAtomicNum()==0:
-            maps[atom_map].append(atom)
+        fragments = fragment_string.split('.')
+        fragment_check = [i.GetNumAtoms()>1 if i is not None else False for i in
+                      [to_mol(k) for k in fragments]]
+        check = all(fragment_check)
+    else:
+        check = False
 
-    remove_idxs = []
-    missing = []
+    if check:
 
-    for map_num in maps.keys():
-        atoms = maps[map_num]
-        if len(atoms) == 2:
-            atom1, atom2 = atoms
+        new_mol = Chem.RWMol(mol)
 
-            neighbor1_idx = atom1.GetNeighbors()[0].GetIdx()
-            neighbor2_idx = atom2.GetNeighbors()[0].GetIdx()
-            atom1_idx = atom1.GetIdx()
-            atom2_idx = atom2.GetIdx()
-            bond_order = atom2.GetBonds()[0].GetBondType()
+        maps = defaultdict(list)
+        for atom in new_mol.GetAtoms():
+            atom_map = atom.GetAtomMapNum()
+            if atom_map and atom.GetAtomicNum()==0:
+                maps[atom_map].append(atom)
 
-            new_mol.AddBond(neighbor1_idx,
-                         neighbor2_idx,
-                         order=bond_order)
+        remove_idxs = []
+        missing = []
 
-            remove_idxs += [atom1_idx, atom2_idx]
+        for map_num in maps.keys():
+            atoms = maps[map_num]
+            if len(atoms) == 2:
+                atom1, atom2 = atoms
 
-        elif len(atoms) == 1:
-            missing.append(map_num)
+                neighbor1_idx = atom1.GetNeighbors()[0].GetIdx()
+                neighbor2_idx = atom2.GetNeighbors()[0].GetIdx()
+                atom1_idx = atom1.GetIdx()
+                atom2_idx = atom2.GetIdx()
+                bond_order = atom2.GetBonds()[0].GetBondType()
 
-    for idx in sorted(remove_idxs)[::-1]:
-        new_mol.RemoveAtom(idx)
+                new_mol.AddBond(neighbor1_idx,
+                             neighbor2_idx,
+                             order=bond_order)
 
-    new_smile = Chem.MolToSmiles(new_mol.GetMol())
+                remove_idxs += [atom1_idx, atom2_idx]
+
+            elif len(atoms) == 1:
+                missing.append(map_num)
+
+        for idx in sorted(remove_idxs)[::-1]:
+            new_mol.RemoveAtom(idx)
+
+        new_smile = Chem.MolToSmiles(new_mol.GetMol())
+
+
+    else:
+        new_smile = fragment_string
 
     return new_smile
 

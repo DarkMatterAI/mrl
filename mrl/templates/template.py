@@ -32,8 +32,12 @@ class Template():
         `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
 
     '''
-    def __init__(self, hard_filters, soft_filters=[], log=False, use_lookup=True, fail_score=0.,
+    def __init__(self, hard_filters, soft_filters=None, log=False, use_lookup=True, fail_score=0.,
                 cpus=None, mode='smile'):
+
+        if soft_filters is None:
+            soft_filters = []
+
         self.hard_filters = hard_filters
         self.soft_filters = soft_filters
         self.log = log
@@ -89,13 +93,19 @@ class Template():
 
         return string
 
-    def standardize(self, smiles):
-        mols = maybe_parallel(self.to_mol, smiles, cpus=self.cpus)
-        strings = maybe_parallel(self.to_string, mols, cpus=self.cpus)
+    def standardize(self, smiles, cpus=None):
+        'Canonicalize/standardize smiles'
+        if cpus is None:
+            cpus = self.cpus
+        mols = maybe_parallel(self.to_mol, smiles, cpus=cpus)
+        strings = maybe_parallel(self.to_string, mols, cpus=cpus)
         return strings
 
-    def validate(self, smiles):
-        mols = maybe_parallel(self.to_mol, smiles, cpus=self.cpus)
+    def validate(self, smiles, cpus=None):
+        'Validate `smiles` (ie valid structure), should not be related to filters'
+        if cpus is None:
+            cpus = self.cpus
+        mols = maybe_parallel(self.to_mol, smiles, cpus=cpus)
 
         return [i is not None for i in mols]
 

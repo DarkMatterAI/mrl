@@ -26,7 +26,10 @@ class Block():
 
         `subblocks` - list, list of `Block` classes nested within this block
     '''
-    def __init__(self, template, links, name, subblocks=[]):
+    def __init__(self, template, links, name, subblocks=None):
+        if subblocks is None:
+            subblocks = []
+
         self.template = template
         self.links = links
         self.name = name
@@ -41,7 +44,7 @@ class Block():
             for sl in b.sublinks:
                 self.sublinks.append(sl)
 
-    def eval_mol(self, mol):
+    def eval_mol(self, mol, previous_pass=True):
         '''
         eval_mol - evaluates `mol`.
 
@@ -53,13 +56,16 @@ class Block():
         Context: this will be executed in parallel processing if available, meaning the automated
         logging implemented in `Template.__call__` won't work. For this reason, the log information
         is captured as an output and added to the template log later (see `BlockTree`)
-
-        note: uses of `to_mol` and `to_smile` will need to be removed at some point for protein applications
         '''
-        mol = to_mol(mol)
-        smile = to_smile(mol)
+        mol = self.template.to_mol(mol)
+        smile = self.template.to_string(mol)
 
-        if self.match_fragment(smile):
+        if type(smile)==str:
+            match = self.match_fragment(smile)
+        else:
+            match = False
+
+        if previous_pass and match:
             hardpass, hardlog = self.template.hf(mol)
         else:
             hardpass = False
@@ -144,7 +150,7 @@ class MolBlock(Block):
     Note that '0' should not be used as an isotope number because RDKit removes '0' isotopes from
     SMILES strings automatically.
     '''
-    def __init__(self, template, links, name, subblocks=[]):
+    def __init__(self, template, links, name, subblocks=None):
         super().__init__(template, links, name, subblocks=subblocks)
 
         # self.links = ['1*:2', '1*:3']
@@ -294,55 +300,67 @@ class MolBlock(Block):
         total_pass = []
         total_score = 0.
 
-        if type(fragments) == str:
+        if not is_container(fragments):
             fragments = [fragments]
 
-        fragments = [self.decompose_fragments(i) for i in fragments]
-        fragments = [item for sublist in fragments for item in sublist]
+#         if type(fragments) == str:
+#             fragments = [fragments]
 
-        if self.subblocks:
-            new_fragments = []
+        valids = self.template.validate(fragments, cpus=0)
 
-            unrouted = list(fragments) # copy list
+        if all(valids):
 
-            for sb in self.subblocks:
-                routed = [i for i in unrouted if sb.match_fragment_recursive(i)]
-                unrouted = [i for i in unrouted if not i in routed]
+            fragments = [self.decompose_fragments(i) for i in fragments]
+            fragments = [item for sublist in fragments for item in sublist]
 
-                if routed:
-                    r_fused, r_pass, r_score, subdicts = sb.recurse_fragments(routed)
-                    new_fragments.append(r_fused)
-                    total_pass.append(r_pass)
-                    total_score += r_score
-                    output_dicts += subdicts
+            if self.subblocks:
+                new_fragments = []
 
-                if isinstance(sb, ConstantBlock) and add_constant:
-                    new_fragments.append(sb.smile)
+                unrouted = list(fragments) # copy list
 
-            fragments = new_fragments + unrouted
+                for sb in self.subblocks:
+                    routed = [i for i in unrouted if sb.match_fragment_recursive(i)]
+                    unrouted = [i for i in unrouted if not i in routed]
 
-        joined_fragments = self.join_fragments(fragments)
-        fused = self.fuse_fragments(joined_fragments)
+                    if routed:
+                        r_fused, r_pass, r_score, subdicts = sb.recurse_fragments(routed)
+                        new_fragments.append(r_fused)
+                        total_pass.append(r_pass)
+                        total_score += r_score
+                        output_dicts += subdicts
 
-        frag_pass, frag_score, hardlog, softlog = self.eval_mol(fused)
-        total_pass.append(frag_pass)
-        total_score += frag_score
+                    if isinstance(sb, ConstantBlock) and add_constant:
+                        new_fragments.append(sb.smile)
 
-        total_pass = all(total_pass)
+                fragments = new_fragments + unrouted
 
-        output_dict = {
-            'block' : self.name,
-            'fused' : fused,
-            'fragments' : fragments,
-            'block_pass' : frag_pass,
-            'block_score' : frag_score,
-            'all_pass' : total_pass,
-            'all_score' : total_score,
-            'hardlog' : hardlog,
-            'softlog' : softlog
-        }
+            joined_fragments = self.join_fragments(fragments)
+            fused = self.fuse_fragments(joined_fragments)
 
-        output_dicts.append(output_dict)
+            frag_pass, frag_score, hardlog, softlog = self.eval_mol(fused, all(total_pass))
+            total_pass.append(frag_pass)
+            total_score += frag_score
+
+            total_pass = all(total_pass)
+
+            output_dict = {
+                'block' : self.name,
+                'fused' : fused,
+                'fragments' : fragments,
+                'block_pass' : frag_pass,
+                'block_score' : frag_score,
+                'all_pass' : total_pass,
+                'all_score' : total_score,
+                'hardlog' : hardlog,
+                'softlog' : softlog
+            }
+
+            output_dicts.append(output_dict)
+        else:
+            fused = ''
+            total_pass = False
+            total_score = self.template.fail_score
+            output_dicts = {}
 
         return fused, total_pass, total_score, output_dicts
 
@@ -432,6 +450,15 @@ class BlockTemplate():
 
         return outputs
 
+    def standardize(self, smiles):
+        return self.head_block.template.standardize(smiles)
+
+    def validate(self, smiles):
+        return self.head_block.template.validate(smiles)
+
+    def eval_mols(self, mols):
+        return self.__call__(mols, filter_type='soft')
+
     def nodes_to_list(self, block):
         nodes = [block]
         if block.subblocks:
@@ -474,8 +501,12 @@ class BlockTemplate():
 
         See `MolBlock.recurse_fragments`
         '''
-        if type(fragments) == str:
+
+        if not is_container(fragments):
             fragments = [fragments]
+
+#         if type(fragments) == str:
+#             fragments = [fragments]
 
         outputs = maybe_parallel(self.head_block.recurse_fragments, fragments, add_constant=add_constant)
         output_data = []
@@ -586,28 +617,43 @@ class RGroupBlockTemplate(BlockTemplate):
 
         `full_molecule_template` - `Template`, None. Optional template for full molecule
     '''
-    def __init__(self, base_smile, rgroup_template, full_molecule_template=None):
+    def __init__(self, base_smile, rgroup_template, full_molecule_template=None,
+                replace_wildcard=True):
 
         assert base_smile.count('*')==1, '`base_smile` should have exactly one wildcard'
 
-        mol = to_mol(base_smile)
+        self.replace_wildcard = replace_wildcard
+
+        mol = rgroup_template.to_mol(base_smile)
 
         for atom in mol.GetAtoms():
             atom.SetAtomMapNum(0)
             atom.SetIsotope(0)
 
-        base_smile = to_smile(mol)
+        base_smile = rgroup_template.to_string(mol)
         base_smile = base_smile.replace('*', '[1*:1]')
 
-        scaffold_block = ConstantMolBlock(scaffold_smile, 'scaffold')
+        scaffold_block = ConstantMolBlock(base_smile, 'scaffold')
         rgroup_block = MolBlock(rgroup_template, ['2*:1'], 'rgroup')
+        self.rgroup_block = rgroup_block
 
         if full_molecule_template is None:
-            full_molecule_template = Template([])
+            full_molecule_template = Template([], log=rgroup_template.log,
+                                             use_lookup=rgroup_template.use_lookup,
+                                             cpus=rgroup_template.cpus,
+                                             mode=rgroup_template.mode)
 
         head_block = MolBlock(full_molecule_template, [], 'full_molecule', subblocks=[scaffold_block, rgroup_block])
 
         super().__init__(head_block)
+
+    def recurse_fragments(self, fragments, add_constant=True):
+
+        if self.replace_wildcard:
+            fragments = [self.rgroup_block.add_mapping(i) if i is not None else i for i in fragments]
+
+        return super().recurse_fragments(fragments, add_constant=add_constant)
+
 
 class DoubleRGroupBlockTemplate(BlockTemplate):
     '''
@@ -634,12 +680,17 @@ class DoubleRGroupBlockTemplate(BlockTemplate):
         scaffold_links = ['[1*:1]', '[1*:2]']
         assert set(mapping)==set(scaffold_links), "`base_smile` must be mapped with ['1*:1', '1*:2']"
 
+        base_smile = r1_template.standardize(base_smile)
+
         scaffold_block = ConstantMolBlock(base_smile, 'scaffold')
         r1_block = MolBlock(r1_template, ['2*:1'], 'r1')
         r2_block = MolBlock(r2_template, ['2*:2'], 'r2')
 
         if full_molecule_template is None:
-            full_molecule_template = Template([])
+            full_molecule_template = Template([], log=rgroup_template.log,
+                                             use_lookup=rgroup_template.use_lookup,
+                                             cpus=rgroup_template.cpus,
+                                             mode=rgroup_template.mode)
 
         head_block = MolBlock(full_molecule_template, [], 'full_molecule',
                               subblocks=[scaffold_block, r1_block, r2_block])
@@ -666,20 +717,20 @@ class LinkerBlockTemplate(BlockTemplate):
         assert smile1.count('*')==1, '`smile1` should contain 1 wildcard'
         assert smile2.count('*')==1, '`smile2` should contain 1 wildcard'
 
-        mol1 = to_mol(smile1)
+        mol1 = linker_template.to_mol(smile1)
         for atom in mol1.GetAtoms():
             atom.SetAtomMapNum(0)
             atom.SetIsotope(0)
 
-        smile1 = to_smile(mol1)
+        smile1 = linker_template.to_string(mol1)
         smile1 = smile1.replace('*', '[1*:1]')
 
-        mol2 = to_mol(smile2)
+        mol2 = linker_template.to_mol(smile2)
         for atom in mol2.GetAtoms():
             atom.SetAtomMapNum(0)
             atom.SetIsotope(0)
 
-        smile2 = to_smile(mol2)
+        smile2 = linker_template.to_string(mol2)
         smile2 = smile2.replace('*', '[1*:2]')
 
         block1 = ConstantMolBlock(smile1, 'left_linker')
@@ -687,7 +738,10 @@ class LinkerBlockTemplate(BlockTemplate):
         linker_block = MolBlock(linker_template, ['2*:1', '2*:2'], 'linker')
 
         if full_molecule_template is None:
-            full_molecule_template = Template([])
+            full_molecule_template = Template([], log=rgroup_template.log,
+                                             use_lookup=rgroup_template.use_lookup,
+                                             cpus=rgroup_template.cpus,
+                                             mode=rgroup_template.mode)
 
         head_block = MolBlock(full_molecule_template, [], 'full_molecule',
                               subblocks=[block1, block2, linker_block])
@@ -734,7 +788,10 @@ class ScaffoldBlockTemplate(BlockTemplate):
         subblocks.append(scaffold_block)
 
         if full_molecule_template is None:
-            full_molecule_template = Template([])
+            full_molecule_template = Template([], log=rgroup_template.log,
+                                             use_lookup=rgroup_template.use_lookup,
+                                             cpus=rgroup_template.cpus,
+                                             mode=rgroup_template.mode)
 
         head_block = MolBlock(full_molecule_template, [], 'full_molecule', subblocks=subblocks)
 

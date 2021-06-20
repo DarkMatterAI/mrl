@@ -5,8 +5,9 @@ __all__ = ['ScoreFunction', 'NoScore', 'PassThroughScore', 'ModifiedScore', 'Con
            'PropertyFilter', 'MolWtFilter', 'HBDFilter', 'HBAFilter', 'TPSAFilter', 'RotBondFilter', 'SP3Filter',
            'LogPFilter', 'RingFilter', 'HeteroatomFilter', 'AromaticRingFilter', 'HeavyAtomsFilter', 'MRFilter',
            'ChargeFilter', 'TotalAtomFilter', 'QEDFilter', 'SAFilter', 'LooseRotBondFilter', 'MaxRingFilter',
-           'MinRingFilter', 'BridgeheadFilter', 'SpiroFilter', 'ChiralFilter', 'criteria_check', 'StructureFilter',
-           'ExclusionFilter', 'KeepFilter', 'PAINSFilter', 'PAINSAFilter', 'PAINSBFilter', 'PAINSCFilter', 'FPFilter']
+           'MinRingFilter', 'BridgeheadFilter', 'SpiroFilter', 'ChiralFilter', 'RotChainFilter', 'criteria_check',
+           'StructureFilter', 'ExclusionFilter', 'KeepFilter', 'PAINSFilter', 'PAINSAFilter', 'PAINSBFilter',
+           'PAINSCFilter', 'FPFilter']
 
 # Cell
 from ..imports import *
@@ -458,6 +459,11 @@ class ChiralFilter(PropertyFilter):
     "Chiral center filter"
     def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
         super().__init__(min_ring_size, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
+class RotChainFilter(PropertyFilter):
+    "Longest rotatable bond chain filter"
+    def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
+        super().__init__(rot_chain_length, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
 
 
 # Cell
