@@ -52,15 +52,24 @@ class FunctionReward(Reward):
 
 class SampleReward(Reward):
     def __init__(self, reward_function, lookup,
-                 name, order=10, weight=1., track=True):
+                 name, use_fused=True, order=10, weight=1., track=True):
         super().__init__(name, order, weight, track)
         self.reward_function = reward_function
         self.lookup = lookup
+        self.use_fused = use_fused
         self.lookup_table = {}
+
+    def load_data(self, samples, values):
+        for i in range(len(samples)):
+            self.lookup_table[samples[i]] = values[i]
 
     def _compute_reward(self):
 
-        samples = self.batch_state.samples
+        if self.use_fused and 'samples_fused' in self.batch_state.keys():
+            samples = self.batch_state.samples_fused
+        else:
+            samples = self.batch_state.samples
+
         hps = self.batch_state.template_passes
         outputs = to_device(torch.tensor([0. for i in samples]))
 

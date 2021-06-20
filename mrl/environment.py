@@ -513,7 +513,10 @@ class ModelSampler(Sampler):
 
             samples = [samples[i] for i in range(len(samples)) if sources[i]]
 
-            diversity = len(set(samples))/len(samples)
+            if len(samples)>0:
+                diversity = len(set(samples))/len(samples)
+            else:
+                diversity = 0
             valid = len(samples)/len(state[f'{self.name}_raw'])
 
             used = log.unique_samples
@@ -615,12 +618,22 @@ class TemplateCallback(Callback):
             log.add_metric(self.name)
             log.add_log(self.name)
 
+            if isinstance(self.template, BlockTemplate):
+                log.add_log('samples_fused')
+
+
     def compute_reward(self):
         env = self.environment
         state = env.batch_state
 
-        if self.template is not None:
+        if isinstance(self.template, BlockTemplate):
+            outputs = self.template.recurse_fragments(state.samples)
+            rewards = np.array([i[3] for i in outputs])
+            state.samples_fused = [i[1] for i in outputs]
+
+        elif self.template is not None:
             rewards = np.array(self.template.eval_mols(state.samples))
+
         else:
             rewards = np.array([0.]*len(state.samples))
 
@@ -686,6 +699,9 @@ class ContrastiveTemplate(TemplateCallback):
             log.add_log(self.name+'_temp')
             log.add_log(self.name+'_sim')
 
+            if isinstance(self.template, BlockTemplate):
+                log.add_log('samples_fused')
+
     def compute_reward(self):
         env = self.environment
         state = env.batch_state
@@ -695,16 +711,26 @@ class ContrastiveTemplate(TemplateCallback):
         target_samples = [i[1] for i in samples]
         hps = self.get_hps(samples)
 
-        if template is not None:
-            source_rewards = np.array(self.template.eval_mols(source_samples))
-            target_rewards = np.array(self.template.eval_mols(target_samples))
+        if self.template is not None:
+
+            if isinstance(self.template, BlockTemplate):
+                source_outputs = self.template.recurse_fragments(source_samples)
+                target_outputs = self.template.recurse_fragments(target_samples)
+                state.samples_fused = [(source_outputs[i][1], target_outputs[i][1])
+                                      for i in range(len(source_outputs))]
+
+                source_rewards = np.array([i[3] for i in source_outputs])
+                target_rewards = np.array([i[3] for i in target_outputs])
+
+            else:
+                source_rewards = np.array(self.template.eval_mols(source_samples))
+                target_rewards = np.array(self.template.eval_mols(target_samples))
 
             rewards = target_rewards - source_rewards
             if self.max_score is not None:
                 rewards = rewards / (self.max_score-source_rewards)
 
             sim_scores = self.similarity_function.score(source_samples, target_samples)
-            rewards = rewards
 
         else:
             rewards = np.array([0.]*len(state.samples))

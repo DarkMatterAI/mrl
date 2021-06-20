@@ -429,7 +429,7 @@ class BlockTemplate():
     '''
     BlockTemplate - base class for handling nested blocks. Takes care of running fragment strings and logging outputs
     '''
-    def __init__(self, head_block):
+    def __init__(self, head_block, lookup=True):
         self.head_block = head_block
         self.nodes = self.nodes_to_list(self.head_block)
         self.leaf_nodes = [i for i in self.nodes if not i.subblocks]
@@ -438,6 +438,8 @@ class BlockTemplate():
         self.log = []
         self.block_log = []
         self.input_id = 0
+        self.lookup = lookup
+        self.lookup_table = {}
 
     def __call__(self, fragments, filter_type='hard', add_constant=True):
 
@@ -505,16 +507,32 @@ class BlockTemplate():
         if not is_container(fragments):
             fragments = [fragments]
 
-#         if type(fragments) == str:
-#             fragments = [fragments]
+        output_data = [[] for i in fragments]
 
-        outputs = maybe_parallel(self.head_block.recurse_fragments, fragments, add_constant=add_constant)
-        output_data = []
+        if self.lookup:
+            to_screen = []
+            idx_list = []
+            for i, frag in enumerate(fragments):
+                if frag in self.lookup_table.keys():
+                    output_data[i] = self.lookup_table[frag]
+                else:
+                    to_screen.append(frag)
+                    idx_list.append(i)
+        else:
+            to_screen = fragments
+
+        outputs = maybe_parallel(self.head_block.recurse_fragments, to_screen, add_constant=add_constant)
         output_dicts = []
 
         for i, out in enumerate(outputs):
             fused, allpass, allscore, log_dicts = out
-            output_data.append([fragments[i], fused, allpass, allscore])
+
+            output_data[idx_list[i]] = [to_screen[i], fused, allpass, allscore]
+
+            if self.lookup:
+                self.lookup_table[to_screen[i]] = [to_screen[i], fused, allpass, allscore]
+
+#             output_data.append([fragments[i], fused, allpass, allscore])
 
             for ld in log_dicts:
                 ld['input_id'] = self.input_id
@@ -524,6 +542,7 @@ class BlockTemplate():
 
         self.log_outputs(output_dicts)
         self.log += output_data
+
         return output_data
 
     def load_data(self, fragments, recurse=False):
@@ -618,7 +637,7 @@ class RGroupBlockTemplate(BlockTemplate):
         `full_molecule_template` - `Template`, None. Optional template for full molecule
     '''
     def __init__(self, base_smile, rgroup_template, full_molecule_template=None,
-                replace_wildcard=True):
+                replace_wildcard=True, lookup=True):
 
         assert base_smile.count('*')==1, '`base_smile` should have exactly one wildcard'
 
@@ -645,12 +664,22 @@ class RGroupBlockTemplate(BlockTemplate):
 
         head_block = MolBlock(full_molecule_template, [], 'full_molecule', subblocks=[scaffold_block, rgroup_block])
 
-        super().__init__(head_block)
+        super().__init__(head_block, lookup)
 
     def recurse_fragments(self, fragments, add_constant=True):
 
         if self.replace_wildcard:
-            fragments = [self.rgroup_block.add_mapping(i) if i is not None else i for i in fragments]
+            new_fragments = []
+            valids = self.validate(fragments)
+            for i in range(len(fragments)):
+                if valids[i] and self.rgroup_block.match_fragment(fragments[i]):
+                    new_fragment = self.rgroup_block.add_mapping(fragments[i])
+                else:
+                    new_fragment = fragments[i]
+
+                new_fragments.append(new_fragment)
+
+            fragments = new_fragments
 
         return super().recurse_fragments(fragments, add_constant=add_constant)
 
@@ -671,7 +700,8 @@ class DoubleRGroupBlockTemplate(BlockTemplate):
 
         `full_molecule_template` - `Template`, None. Optional template for full molecule
     '''
-    def __init__(self, base_smile, r1_template, r2_template, full_molecule_template=None):
+    def __init__(self, base_smile, r1_template, r2_template,
+                 full_molecule_template=None, lookup=True):
 
         assert base_smile.count('*')==2, '`base_smile` should have exactly two wildcards'
 
@@ -695,7 +725,7 @@ class DoubleRGroupBlockTemplate(BlockTemplate):
         head_block = MolBlock(full_molecule_template, [], 'full_molecule',
                               subblocks=[scaffold_block, r1_block, r2_block])
 
-        super().__init__(head_block)
+        super().__init__(head_block, lookup)
 
 class LinkerBlockTemplate(BlockTemplate):
     '''
@@ -713,7 +743,8 @@ class LinkerBlockTemplate(BlockTemplate):
 
         `full_molecule_template` - `Template`, None. Optional template for full molecule
     '''
-    def __init__(self, smile1, smile2, linker_template, full_molecule_template=None):
+    def __init__(self, smile1, smile2, linker_template,
+                 full_molecule_template=None, lookup=True):
         assert smile1.count('*')==1, '`smile1` should contain 1 wildcard'
         assert smile2.count('*')==1, '`smile2` should contain 1 wildcard'
 
@@ -746,7 +777,7 @@ class LinkerBlockTemplate(BlockTemplate):
         head_block = MolBlock(full_molecule_template, [], 'full_molecule',
                               subblocks=[block1, block2, linker_block])
 
-        super().__init__(head_block)
+        super().__init__(head_block, lookup)
 
 class ScaffoldBlockTemplate(BlockTemplate):
     '''
@@ -762,7 +793,8 @@ class ScaffoldBlockTemplate(BlockTemplate):
         `full_molecule_template` - `Template`, None. Optional template for full molecule
     '''
 
-    def __init__(self, attachments, scaffold_template, full_molecule_template=None):
+    def __init__(self, attachments, scaffold_template,
+                 full_molecule_template=None, lookup=True):
 
         pattern = re.compile('\[.\*:.]')
         links = []
@@ -795,4 +827,4 @@ class ScaffoldBlockTemplate(BlockTemplate):
 
         head_block = MolBlock(full_molecule_template, [], 'full_molecule', subblocks=subblocks)
 
-        super().__init__(head_block)
+        super().__init__(head_block, lookup)
