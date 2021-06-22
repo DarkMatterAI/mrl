@@ -163,6 +163,7 @@ index = {"is_container": "00_core.ipynb",
          "unfreeze": "05_torch_core.ipynb",
          "x_to_preds": "05_torch_core.ipynb",
          "gather_lps": "05_torch_core.ipynb",
+         "subset_tensor": "05_torch_core.ipynb",
          "merge_weights": "05_torch_core.ipynb",
          "merge_models": "05_torch_core.ipynb",
          "CrossEntropy": "05_torch_core.ipynb",
@@ -237,7 +238,17 @@ index = {"is_container": "00_core.ipynb",
          "Log": "13_logging.ipynb",
          "Buffer": "14_buffer.ipynb",
          "TemplateCallback": "15_template_callback.ipynb",
-         "ContrastiveTemplate": "15_template_callback.ipynb"}
+         "ContrastiveTemplate": "15_template_callback.ipynb",
+         "Agent": "16_agent.ipynb",
+         "PredictiveAgent": "16_agent.ipynb",
+         "BaselineAgent": "16_agent.ipynb",
+         "CriticAgent": "16_agent.ipynb",
+         "GenerativeAgent": "16_agent.ipynb",
+         "BasePolicy": "17_policy_gradient.ipynb",
+         "PolicyGradient": "17_policy_gradient.ipynb",
+         "TRPO": "17_policy_gradient.ipynb",
+         "PPO": "17_policy_gradient.ipynb",
+         "LossCallback": "18_losses.ipynb"}
 
 modules = ["core.py",
            "chem.py",
@@ -255,7 +266,9 @@ modules = ["core.py",
            "callbacks/log.py",
            "callbacks/buffer.py",
            "callbacks/template_cb.py",
-           "agent.py"]
+           "agent.py",
+           "policy_gradient.py",
+           "loss.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 

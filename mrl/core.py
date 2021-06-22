@@ -9,7 +9,7 @@ from .imports import *
 # Cell
 def is_container(x):
     "check if `x` is a container (used for parallel processing)"
-    if (type(x) == list) or (type(x) == np.ndarray):
+    if isinstance(x, (list, tuple, np.ndarray)):
         return True
     else:
         return False
