@@ -5,7 +5,7 @@ __all__ = ['TemplateCallback', 'ContrastiveTemplate']
 # Cell
 
 from .core import *
-from ..chem import *
+# from mrl.chem import *
 from ..templates import *
 
 # Cell

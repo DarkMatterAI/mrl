@@ -254,7 +254,8 @@ modules = ["core.py",
            "callbacks/core.py",
            "callbacks/log.py",
            "callbacks/buffer.py",
-           "callbacks/template_cb.py"]
+           "callbacks/template_cb.py",
+           "agent.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 
