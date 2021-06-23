@@ -272,7 +272,10 @@ index = {"is_container": "00_core.ipynb",
          "LogSampler": "19_samplers.ipynb",
          "TokenSwapSampler": "19_samplers.ipynb",
          "LogEnumerator": "19_samplers.ipynb",
-         "Environment": "20_environment.ipynb"}
+         "Environment": "20_environment.ipynb",
+         "Reward": "21_reward.ipynb",
+         "FunctionReward": "21_reward.ipynb",
+         "NoveltyReward": "21_reward.ipynb"}
 
 modules = ["core.py",
            "chem.py",
@@ -294,7 +297,8 @@ modules = ["core.py",
            "policy_gradient.py",
            "loss.py",
            "sampler.py",
-           "environment.py"]
+           "environment.py",
+           "reward.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 

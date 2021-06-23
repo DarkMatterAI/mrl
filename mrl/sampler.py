@@ -70,7 +70,7 @@ class ModelSampler(Sampler):
             log.add_metric(f'{self.name}_rewards')
             log.add_metric(f'{self.name}_new')
 
-    def _build_buffer(self):
+    def _build_buffer(self): # bs, sl
         env = self.environment
         buffer_size = self.buffer_size
         sl = env.sl
@@ -85,7 +85,7 @@ class ModelSampler(Sampler):
                                                      temperature=self.temperature)
                 sequences = [self.vocab.reconstruct(i) for i in preds]
                 sequences = list(set(sequences))
-                sequences = env.template_cb.filter_sequences(sequences)
+#                 sequences = env.template_cb.filter_sequences(sequences)
                 outputs += sequences
                 outputs = list(set(outputs))
                 to_generate = buffer_size - len(outputs)
@@ -93,7 +93,7 @@ class ModelSampler(Sampler):
         return outputs
 
 
-    def _sample_batch(self):
+    def _sample_batch(self): # bs, sl
         env = self.environment
         bs = int(env.bs * self.p_batch)
         sequences = []
@@ -175,7 +175,7 @@ class LatentSampler(ModelSampler):
     def _build_buffer(self):
         return []
 
-    def _sample_batch(self):
+    def _sample_batch(self): # bs, sl
         env = self.environment
         bs = int(env.bs * self.p_batch)
         sequences = []

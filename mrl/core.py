@@ -5,6 +5,7 @@ __all__ = ['is_container', 'flatten_recursive', 'flatten_list_of_lists', 'dedupl
 
 # Cell
 from .imports import *
+from multiprocessing import get_context
 
 # Cell
 def is_container(x):
@@ -53,7 +54,7 @@ def maybe_parallel(func, iterable, cpus=None, **kwargs):
             if 'ncpus' in os.environ.keys():
                 cpus = int(os.environ['ncpus'])
             else:
-                cpus = os.cpu_count()
+                cpus = 0
 
         processes = min(cpus, len(iterable))
 

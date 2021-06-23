@@ -41,13 +41,36 @@ class Event():
         self.get_model_outputs = 'get_model_outputs'
         self.compute_reward = 'compute_reward'
         self.after_compute_reward = 'after_compute_reward'
-        self.reward_modification = 'reward_modification'
         self.compute_loss = 'compute_loss'
         self.zero_grad = 'zero_grad'
         self.before_step = 'before_step'
         self.step = 'step'
         self.after_batch = 'after_batch'
         self.after_train = 'after_train'
+
+
+# class Event():
+#     def __init__(self):
+#         self.setup = 'setup'
+#         self.before_train = 'before_train'
+#         self.build_buffer = 'build_buffer'
+#         self.filter_buffer = 'filter_buffer'
+#         self.after_build_buffer = 'after_build_buffer'
+#         self.score_buffer = 'compute_buffer_reward'
+#         self.before_batch = 'before_batch'
+#         self.sample_batch = 'sample_batch'
+#         self.filter_batch = 'filter_batch'
+#         self.after_sample = 'after_sample'
+#         self.compute_reward = 'compute_batch_reward'
+#         self.after_compute_reward = 'after_compute_reward'
+#         self.reward_modification = 'reward_modification'
+#         self.get_model_outputs = 'get_model_outputs'
+#         self.compute_loss = 'compute_loss'
+#         self.zero_grad = 'zero_grad'
+#         self.before_step = 'before_step'
+#         self.step = 'step'
+#         self.after_batch = 'after_batch'
+#         self.after_train = 'after_train'
 
 # Cell
 
