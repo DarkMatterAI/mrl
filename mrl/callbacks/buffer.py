@@ -4,6 +4,7 @@ __all__ = ['Buffer']
 
 # Cell
 
+from ..imports import *
 from .core import *
 
 # Cell
@@ -46,39 +47,13 @@ class Buffer(Callback):
         env = self.environment
         batch_state = env.batch_state
 
-#         template_cb = env.template_cb
-#         samples = batch_state.samples
-#         samples = template_cb.standardize(samples)
-#         batch_state.samples = samples
-
-#         sources = np.array(batch_state.sources)
-#         valids = template_cb.filter_sequences(samples, return_array=True)
-
-#         if valids.mean()<1.:
-#             filtered_samples = [samples[i] for i in range(len(samples)) if valids[i]]
-#             filtered_sources = [sources[i] for i in range(len(sources)) if valids[i]]
-#             filtered_latent_data = {}
-
-#             for source,latent_idxs in batch_state.latent_data.items():
-#                 valid_subset = valids[sources==source]
-#                 latent_filtered = latent_idxs[valid_subset]
-#                 filtered_latent_data[source] = latent_filtered
-
-#             batch_state.samples = filtered_samples
-#             batch_state.sources = filtered_sources
-#             batch_state.latent_data = filtered_latent_data
-
         diversity = len(set(batch_state.samples))/len(batch_state.samples)
         self.environment.log.update_metric('diversity', diversity)
-#         self.environment.log.update_metric('valid', valids.mean())
         self.environment.log.update_metric('bs', len(batch_state.samples))
 
     def after_build_buffer(self):
-#         template_cb = self.environment.template_cb
         if self.buffer:
-#             self.buffer = template_cb.standardize(self.buffer)
             self.buffer = list(set(self.buffer))
-#             self.buffer = template_cb.filter_sequences(self.buffer)
 
     def sample_batch(self):
         env = self.environment

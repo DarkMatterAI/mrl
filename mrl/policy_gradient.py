@@ -110,7 +110,7 @@ class TRPO(BasePolicy):
         loss3 = self.eta * torch.maximum(to_device(torch.tensor(0.)),
                                          kl - 2.0*self.kl_target)
 
-        pg_loss = loss1 + loss2 + loss3 + v_loss
+        pg_loss = loss1 + loss2 + loss3 + v_loss.mean(-1)
 
         pg_dict = { 'loss' : pg_loss.detach().cpu(),
                     'pg_discounted' : discounted_rewards.detach().cpu(),
@@ -208,7 +208,7 @@ class PPO(BasePolicy):
 
         entropy = Categorical(lps).entropy()
 
-        pg_loss = loss + v_loss - self.ent_coef*entropy
+        pg_loss = loss + v_loss.mean(-1) - self.ent_coef*entropy
 
         self.update_kl(lps, base_lps, mask)
 

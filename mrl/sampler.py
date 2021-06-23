@@ -51,11 +51,11 @@ class DatasetSampler(Sampler):
 # Cell
 
 class ModelSampler(Sampler):
-    def __init__(self, agent, model, name, buffer_size, p_batch,
+    def __init__(self, vocab, model, name, buffer_size, p_batch,
                  genbatch, track=True, temperature=1.):
         super().__init__(name, buffer_size, p_batch, track)
 
-        self.agent = agent
+        self.vocab = vocab
         self.model = model
         self.genbatch = genbatch
         self.temperature = temperature
@@ -81,7 +81,7 @@ class ModelSampler(Sampler):
 
                 preds, _ = self.model.sample_no_grad(current_bs, sl, multinomial=True,
                                                      temperature=self.temperature)
-                sequences = self.agent.reconstruct(preds)
+                sequences = [self.vocab.reconstruct(i) for i in preds]
                 sequences = list(set(sequences))
                 sequences = env.template_cb.filter_sequences(sequences)
                 outputs += sequences
@@ -101,7 +101,7 @@ class ModelSampler(Sampler):
             preds, _ = self.model.sample_no_grad(bs, env.sl, z=None, multinomial=True,
                                                 temperature=self.temperature)
 
-            sequences = self.agent.reconstruct(preds)
+            sequences = [self.vocab.reconstruct(i) for i in preds]
 
             env.batch_state[f'{self.name}_raw'] = sequences
 
@@ -145,10 +145,10 @@ class ModelSampler(Sampler):
 # Cell
 
 class LatentSampler(ModelSampler):
-    def __init__(self, agent, model, latent, name, buffer_size,
+    def __init__(self, vocab, model, latent, name, buffer_size,
                  p_batch, genbatch, track=True,
                  temperature=1., opt_kwargs={}):
-        super().__init__(agent,
+        super().__init__(vocab,
                          model,
                          name,
                          buffer_size,
@@ -187,7 +187,7 @@ class LatentSampler(ModelSampler):
 
             preds, _ = self.model.sample_no_grad(bs, env.sl, z=sample_latents, multinomial=True,
                                                 temperature=self.temperature)
-            sequences = self.agent.reconstruct(preds)
+            sequences = [self.vocab.reconstruct(i) for i in preds]
 
             env.batch_state[f'{self.name}_raw'] = sequences
 
@@ -199,12 +199,13 @@ class LatentSampler(ModelSampler):
 # Cell
 
 class ContrastiveSampler(Sampler):
-    def __init__(self, base_sampler, agent, output_model, bs, repeats=1):
+    def __init__(self, base_sampler, vocab, dataset, output_model, bs, repeats=1):
         super().__init__(base_sampler.name, base_sampler.buffer_size,
                          base_sampler.p_batch, base_sampler.track)
 
         self.base_sampler = base_sampler
-        self.agent = agent
+        self.vocab = vocab
+        self.dataset = dataset
         self.output_model = output_model
         self.bs = bs
         self.repeats = repeats
@@ -231,7 +232,7 @@ class ContrastiveSampler(Sampler):
         if self.repeats>1:
             sequences = sequences*self.repeats
         pairs = [(i,'') for i in sequences]
-        batch_ds = self.agent.dataset.new(pairs)
+        batch_ds = self.dataset.new(pairs)
 
         if len(batch_ds)<self.bs:
 
@@ -240,7 +241,7 @@ class ContrastiveSampler(Sampler):
             x,_ = batch
             z = self.output_model.x_to_latent(x)
             preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
-            new_sequences = self.agent.reconstruct(preds)
+            new_sequences = [self.vocab.reconstruct(i) for i in preds]
 
         else:
             batch_dl = batch_ds.dataloader(self.bs, shuffle=False)
@@ -252,7 +253,7 @@ class ContrastiveSampler(Sampler):
                 x,_ = batch
                 z = self.output_model.x_to_latent(x)
                 preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
-                new_sequences += self.agent.reconstruct(preds)
+                new_sequences += [self.vocab.reconstruct(i) for i in preds]
 
         outputs = [(sequences[i], new_sequences[i]) for i in range(len(sequences))]
         env.batch_state[f'{self.name}_raw_contrastive'] = outputs

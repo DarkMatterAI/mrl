@@ -5,6 +5,7 @@ __all__ = ['log_to_df', 'Log']
 # Cell
 
 from ..imports import *
+from ..core import *
 from .core import *
 from ..torch_imports import *
 

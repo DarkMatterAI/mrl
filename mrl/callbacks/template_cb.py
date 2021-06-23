@@ -7,6 +7,8 @@ __all__ = ['TemplateCallback', 'ContrastiveTemplate']
 from .core import *
 from ..chem import *
 from ..templates import *
+from ..torch_imports import *
+from ..torch_core import *
 
 # Cell
 
@@ -32,9 +34,9 @@ class TemplateCallback(Callback):
     def after_build_buffer(self):
         env = self.environment
         buffer = env.buffer
-        if bufer.buffer:
-            bufer.buffer = self.standardize(self.buffer)
-            bufer.buffer = self.filter_sequences(self.buffer)
+        if buffer.buffer:
+            buffer.buffer = self.standardize(buffer.buffer)
+            buffer.buffer = self.filter_sequences(buffer.buffer)
 
     def after_sample(self):
         env = self.environment
