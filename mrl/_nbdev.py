@@ -166,7 +166,16 @@ index = {"is_container": "00_core.ipynb",
          "subset_tensor": "05_torch_core.ipynb",
          "merge_weights": "05_torch_core.ipynb",
          "merge_models": "05_torch_core.ipynb",
+         "smooth_batches": "05_torch_core.ipynb",
+         "discount_rewards": "05_torch_core.ipynb",
+         "whiten": "05_torch_core.ipynb",
+         "scatter_rewards": "05_torch_core.ipynb",
+         "compute_advantages": "05_torch_core.ipynb",
          "CrossEntropy": "05_torch_core.ipynb",
+         "BinaryCrossEntropy": "05_torch_core.ipynb",
+         "HuberLoss": "05_torch_core.ipynb",
+         "MSELoss": "05_torch_core.ipynb",
+         "pca": "05_torch_core.ipynb",
          "LinearBlock": "06_layers.ipynb",
          "ValueHead": "06_layers.ipynb",
          "Conv": "06_layers.ipynb",
@@ -248,7 +257,13 @@ index = {"is_container": "00_core.ipynb",
          "PolicyGradient": "17_policy_gradient.ipynb",
          "TRPO": "17_policy_gradient.ipynb",
          "PPO": "17_policy_gradient.ipynb",
-         "LossCallback": "18_losses.ipynb"}
+         "LossCallback": "18_losses.ipynb",
+         "Sampler": "19_samplers.ipynb",
+         "DatasetSampler": "19_samplers.ipynb",
+         "ModelSampler": "19_samplers.ipynb",
+         "LatentSampler": "19_samplers.ipynb",
+         "ContrastiveSampler": "19_samplers.ipynb",
+         "Environment": "20_environment.ipynb"}
 
 modules = ["core.py",
            "chem.py",
@@ -268,7 +283,9 @@ modules = ["core.py",
            "callbacks/template_cb.py",
            "agent.py",
            "policy_gradient.py",
-           "loss.py"]
+           "loss.py",
+           "sampler.py",
+           "environment.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 

@@ -83,7 +83,8 @@ class LSTM_LM(GenerativeModel):
 class Conditional_LSTM_LM(GenerativeModel):
     def __init__(self, encoder, d_vocab, d_embedding, d_hidden, d_latent, n_layers,
                  input_dropout=0., lstm_dropout=0., norm_latent=True,
-                 condition_hidden=True, condition_output=False, bos_idx=0, prior=None):
+                 condition_hidden=True, condition_output=False, bos_idx=0,
+                 prior=None, forward_rollout=False, p_force=0., force_decay=0.99):
         super().__init__()
 
         self.encoder = encoder
@@ -101,14 +102,54 @@ class Conditional_LSTM_LM(GenerativeModel):
                                 trainable=False)
 
         self.prior = prior
+        self.forward_rollout = forward_rollout
+        self.p_force = p_force
+        self.force_decay = force_decay
 
-    def forward(self, x, condition, hiddens=None):
+    def forward(self, x, condition=None, hiddens=None):
+        if condition is None:
+            condition = x
+
         z = self.encoder(condition)
 
         z = self.maybe_norm(z)
 
-        x, hiddens, encoded = self.decoder(x, z, hiddens)
+        x, hiddens, encoded = self.decoder_forward(x, z, hiddens)
         return x
+
+    def decoder_forward(self, x, z, hiddens=None):
+        if self.forward_rollout:
+            current_device = next(self.parameters()).device
+            sl = x.shape[1]
+            bs = x.shape[0]
+
+            start_idx = torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1)
+
+            idxs = to_device(start_idx, device=current_device)
+
+            output = []
+            encoded = []
+
+            for i in range(sl):
+                output_iter, hiddens, encoded_iter = self.decoder(idxs,z,hiddens)
+                output.append(output_iter)
+                encoded.append(encoded_iter)
+
+                if np.random.random()<self.p_force:
+                    idxs = x[:,i].unsqueeze(-1)
+
+                else:
+                    with torch.no_grad():
+                        idxs = F.softmax(output_iter,-1).argmax(-1)
+
+            output = torch.cat(output, 1)
+            encoded = torch.cat(encoded, 1)
+            self.p_force = self.p_force * self.force_decay
+
+        else:
+            output, hiddens, encoded = self.decoder(x, z, hiddens)
+
+        return output, hiddens, encoded
 
     def maybe_norm(self, z):
         if self.norm_latent:

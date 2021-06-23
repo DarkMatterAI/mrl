@@ -37,11 +37,17 @@ class VAE_Transition(nn.Module):
 # Cell
 
 class VAE(GenerativeModel):
-    def __init__(self, encoder, decoder, prior=None, bos_idx=0, transition=None):
+    def __init__(self, encoder, decoder, prior=None, bos_idx=0, transition=None,
+                forward_rollout=False, p_force=0., force_decay=0.99):
         super().__init__()
 
         self.encoder = encoder
         self.decoder = decoder
+
+        if transition is None:
+            transition = VAE_Transition(encoder.d_latent)
+
+        self.transition = transition
 
         if prior is None:
             prior = NormalPrior(torch.zeros((encoder.d_latent)), torch.zeros((encoder.d_latent)),
@@ -49,13 +55,11 @@ class VAE(GenerativeModel):
 
         self.prior = prior
 
-        if transition is None:
-            transition = VAE_Transition(encoder.d_latent)
-
-        self.transition = transition
-
         self.bos_idx = bos_idx
         self.z_scale = 1.
+        self.forward_rollout = forward_rollout
+        self.p_force = p_force
+        self.force_decay = force_decay
 
     def forward(self, decoder_input, encoder_input=None, hiddens=None):
         if encoder_input is None:
@@ -63,8 +67,43 @@ class VAE(GenerativeModel):
 
         z = self.encoder(encoder_input)
         z, kl_loss = self.transition(z, self.z_scale)
-        output, hiddens, encoded = self.decoder(decoder_input, z, hiddens)
+#         output, hiddens, encoded = self.decoder(decoder_input, z, hiddens)
+        output, hiddens, encoded = self.decoder_forward(decoder_input, z, hiddens)
         return output, kl_loss
+
+    def decoder_forward(self, x, z, hiddens=None):
+        if self.forward_rollout:
+            current_device = next(self.parameters()).device
+            sl = x.shape[1]
+            bs = x.shape[0]
+
+            start_idx = torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1)
+
+            idxs = to_device(start_idx, device=current_device)
+
+            output = []
+            encoded = []
+
+            for i in range(sl):
+                output_iter, hiddens, encoded_iter = self.decoder(idxs,z,hiddens)
+                output.append(output_iter)
+                encoded.append(encoded_iter)
+
+                if np.random.random()<self.p_force:
+                    idxs = x[:,i].unsqueeze(-1)
+
+                else:
+                    with torch.no_grad():
+                        idxs = F.softmax(output_iter,-1).argmax(-1)
+
+            output = torch.cat(output, 1)
+            encoded = torch.cat(encoded, 1)
+            self.p_force = self.p_force * self.force_decay
+
+        else:
+            output, hiddens, encoded = self.decoder(x, z, hiddens)
+
+        return output, hiddens, encoded
 
     def unpack_x(self, x):
         if isinstance(x, (list, tuple)):
@@ -164,7 +203,8 @@ class LSTM_VAE(VAE):
     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, d_latent,
                 input_dropout=0., lstm_dropout=0.,
                 condition_hidden=True, condition_output=True,
-                prior=None, bos_idx=0, transition=None):
+                prior=None, bos_idx=0, transition=None,
+                forward_rollout=False, p_force=0., force_decay=0.99):
 
         encoder = LSTM_Encoder(
                                 d_vocab,
@@ -191,7 +231,8 @@ class LSTM_VAE(VAE):
                             )
 
 
-        super().__init__(encoder, decoder, prior, bos_idx, transition)
+        super().__init__(encoder, decoder, prior, bos_idx, transition,
+                        forward_rollout, p_force, force_decay)
 
 # Cell
 
@@ -201,7 +242,8 @@ class Conv_VAE(VAE):
                  d_hidden, n_layers, d_latent,
                  input_dropout=0., lstm_dropout=0.,
                  condition_hidden=True, condition_output=True,
-                 prior=None, bos_idx=0, transition=None):
+                 prior=None, bos_idx=0, transition=None,
+                 forward_rollout=False, p_force=0., force_decay=0.99):
 
         encoder = Conv_Encoder(
                                 d_vocab,
@@ -227,7 +269,8 @@ class Conv_VAE(VAE):
                                 condition_output=condition_output,
                             )
 
-        super().__init__(encoder, decoder, prior, bos_idx, transition)
+        super().__init__(encoder, decoder, prior, bos_idx, transition,
+                        forward_rollout, p_force, force_decay)
 
 # Cell
 
@@ -236,7 +279,8 @@ class MLP_VAE(VAE):
                  d_hidden, n_layers, d_latent,
                  input_dropout=0., lstm_dropout=0.,
                  condition_hidden=True, condition_output=True,
-                 prior=None, bos_idx=0, transition=None):
+                 prior=None, bos_idx=0, transition=None,
+                 forward_rollout=False, p_force=0., force_decay=0.99):
 
 
         encoder = MLP_Encoder(encoder_d_in, encoder_dims, d_latent, encoder_drops)
@@ -255,7 +299,8 @@ class MLP_VAE(VAE):
                                 condition_output=condition_output,
                             )
 
-        super().__init__(encoder, decoder, prior, bos_idx, transition)
+        super().__init__(encoder, decoder, prior, bos_idx, transition,
+                        forward_rollout, p_force, force_decay)
 
 
 

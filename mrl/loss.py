@@ -7,7 +7,6 @@ __all__ = ['LossCallback']
 from .imports import *
 from .torch_imports import *
 from .torch_core import *
-from .layers import *
 from .callbacks import *
 from .policy_gradient import *
 
