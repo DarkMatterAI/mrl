@@ -325,11 +325,12 @@ class GenerativeAgent(BaselineAgent):
         if latent_info:
             latent_sources = []
             output_tensors = []
+
+
             for (latent_source, latents) in latent_info.items():
                 latent_sources.append(latent_source)
-#                 latent_mask = torch.tensor([i==latent_source for i in sources]).bool()
-#                 latents = self.agent.latents[latent_idxs]
-                out = self.agent.model.get_rl_tensors(subset_tensor(x, latent_mask),
+                latent_mask = torch.tensor([i==latent_source for i in sources]).bool()
+                out = self.model.get_rl_tensors(subset_tensor(x, latent_mask),
                                                       subset_tensor(y, latent_mask),
                                                       latent=latents)
                 output_tensors.append(out)
@@ -369,17 +370,6 @@ class GenerativeAgent(BaselineAgent):
         batch_state.model_encoded = me
         batch_state.y_gumbel = F.one_hot(y, len(self.vocab.itos)) + mprob - mprob.detach()
         batch_state.value_input = me
-
-#         if self.agent.value_head is not None:
-#             value_predictions = self.agent.value_head(me)
-#             with torch.no_grad():
-#                 base_value_predictions = self.agent.base_value_head(me)
-#         else:
-#             value_predictions = None
-#             base_value_predictions = None
-
-#         self.batch_state.state_values = value_predictions
-#         self.batch_state.ref_state_values = base_value_predictions
 
         if self.base_model is not None:
             with torch.no_grad():
