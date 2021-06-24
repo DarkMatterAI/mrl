@@ -70,7 +70,7 @@ class PolicyGradient(BasePolicy):
         traj_rewards = batch_state.trajectory_rewards
 
         loss, pg_dict = self(lps, mask, rewards, base_lps, traj_rewards)
-        return loss, pg_dict
+        return loss
 
 
 # Cell
@@ -148,7 +148,7 @@ class TRPO(BasePolicy):
 
         loss, pg_dict = self(lps_g, base_lps_g, lps, base_lps, mask,
                              rewards, values, traj_rewards)
-        return loss, pg_dict
+        return loss
 
     def compute_advantages(self, rewards, values):
 
@@ -246,7 +246,7 @@ class PPO(BasePolicy):
         loss, pg_dict = self(lps, base_lps, mask, rewards,
                              values, ref_values, traj_rewards)
 
-        return loss, pg_dict
+        return loss
 
     def compute_kl_reward(self, lps, base_lps):
         kl = lps - base_lps

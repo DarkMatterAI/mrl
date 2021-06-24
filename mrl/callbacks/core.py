@@ -45,6 +45,8 @@ class Callback():
             if i <len(metrics):
                 ax.plot(np.stack(data_dict[metrics[i]]),)
                 ax.set_title(metrics[i])
+            else:
+                ax.axis('off')
 
     def plot_time(self, cols=4, smooth=True):
         self.plot_dict(self.event_timelog, cols=cols, smooth=smooth)

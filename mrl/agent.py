@@ -407,9 +407,12 @@ class SupevisedCB(Callback):
 
     def train_model(self):
         env = self.environment
-        df = log_to_df(env.log.log, ['samples', self.log_term])
-        df.drop_duplicates(subset='samples', inplace=True)
-        df = df[df.rewards>np.percentile(df.rewards.values, self.percentile)]
+        df = env.log.df[['samples', self.log_term]]
+        df = df[df[self.log_term]>np.percentile(df[self.log_term].values, self.percentile)]
+
+#         df = log_to_df(env.log.log, ['samples', self.log_term])
+#         df.drop_duplicates(subset='samples', inplace=True)
+#         df = df[df.rewards>np.percentile(df.rewards.values, self.percentile)]
 
         self.agent.update_dataset_from_inputs(df.samples.values)
         self.agent.train_supervised(self.bs, 1, self.lr)

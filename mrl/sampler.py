@@ -309,18 +309,18 @@ class LogSampler(Sampler):
     def build_buffer(self):
         env = self.environment
         iterations = self.environment.log.iterations
-        log = env.log.log
+        df = env.log.df
 
-        outputs = self._build_buffer(iterations, log)
+        outputs = self._build_buffer(iterations, df)
         if outputs:
             self.environment.buffer.add(outputs)
 
-    def _build_buffer(self, iterations, log):
+    def _build_buffer(self, iterations, df):
         outputs = []
 
         if iterations > self.start_iter:
-            df = log_to_df(log, ['samples', self.sample_name])
-            df.drop_duplicates(subset='samples', inplace=True)
+#             df = log_to_df(log, ['samples', self.sample_name])
+#             df.drop_duplicates(subset='samples', inplace=True)
             bs = self.buffer_size
             if bs > 0:
 

@@ -49,6 +49,11 @@ class Log(Callback):
         self.add_log('sources')
         self.add_log('rewards')
 
+        self.log_df = None
+
+    def setup(self):
+        self.df = pd.DataFrame(self.log)
+
     def before_train(self):
         cols = ['iterations'] + list(self.metrics.keys())
         if self.pbar is None:
@@ -72,6 +77,7 @@ class Log(Callback):
         batch_state = env.batch_state
         samples = batch_state.samples
         self.unique_samples.update(set(samples))
+        update_dict = {}
 
         for key in self.log.keys():
             try:
@@ -79,8 +85,15 @@ class Log(Callback):
                 if isinstance(items, torch.Tensor):
                     items = items.detach().cpu().numpy()
                 self.log[key].append(items)
+                update_dict[key] = items
             except:
                 pass
+
+#         self.df = self.df.append(pd.DataFrame(update_dict))
+        self.df = pd.concat([self.df, pd.DataFrame(update_dict)])
+
+        if self.iterations%5==0 and self.iterations>0:
+            self.df.drop_duplicates(subset='samples', inplace=True)
 
     def report_batch(self):
         outputs = [f'{self.iterations}']
@@ -110,22 +123,8 @@ class Log(Callback):
     def get_df(self):
         return log_to_df(self.log)
 
-#     def plot_dict(self, data_dict, cols=4, smooth=True):
-#         num_metrics = len(data_dict.keys())
-
-#         rows = int(np.ceil(num_metrics/cols))
-#         fig, axes = plt.subplots(rows, cols, figsize=(4*cols, 4*rows))
-
-#         metrics = list(data_dict.keys())
-
-#         for i, ax in enumerate(axes.flat):
-#             if i <len(metrics):
-#                 ax.plot(np.stack(data_dict[metrics[i]]),)
-#                 ax.set_title(metrics[i])
-
     def plot_metrics(self, cols=4, smooth=True):
         self.plot_dict(self.metrics, cols=cols, smooth=smooth)
-
 
     def plot_timelog(self, cols=4, smooth=True):
         self.plot_dict(self.timelog, cols=cols, smooth=smooth)
