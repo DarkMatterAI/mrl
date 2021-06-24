@@ -110,7 +110,7 @@ class Agent(Callback):
         valid_dl = valid_ds.dataloader(bs)
 
         scheduler = optim.lr_scheduler.OneCycleLR(self.opt, max_lr=lr,
-                                                 steps_per_epoch=len(train_dl), epochs=10)
+                                        steps_per_epoch=len(train_dl), epochs=epochs)
 
         mb = master_bar(range(epochs))
         mb.write(['Epoch', 'Train Loss', 'Valid  Loss', 'Time'], table=True)

@@ -88,8 +88,6 @@ class Environment():
     def sample_batch(self):
         start = time.time()
         self.batch_state = BatchState()
-        for cb in self.cbs:
-            cb.batch_state = self.batch_state
         self('before_batch')
         self('sample_batch')
 
@@ -154,3 +152,11 @@ class Environment():
 
         self('after_train')
         self.remove_cbs(cbs)
+
+    def plot_event_times(self, event):
+        buffer_times = [i.event_timelog[event] for i in self.cbs]
+        labels = [i.name for i in self.cbs]
+
+        fig, ax = plt.subplots(figsize=(8,6))
+        ax.stackplot(np.arange(len(buffer_times[0])), *buffer_times, labels=labels);
+        ax.legend(loc='upper left');

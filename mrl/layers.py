@@ -2,7 +2,7 @@
 
 __all__ = ['LinearBlock', 'ValueHead', 'Conv', 'Conv1d', 'Conv2d', 'Conv3d', 'SphericalDistribution', 'Prior',
            'NormalPrior', 'SphericalPrior', 'SequenceDropout', 'Conditional_LSTM', 'LSTM', 'Conditional_LSTM_Block',
-           'LSTM_Block', 'Encoder', 'LSTM_Encoder', 'MLP_Encoder', 'Conv_Encoder']
+           'LSTM_Block', 'Encoder', 'LSTM_Encoder', 'MLP_Encoder', 'Conv_Encoder', 'MLP']
 
 # Cell
 from .imports import *
@@ -445,4 +445,29 @@ class Conv_Encoder(Encoder):
         x = self.convs(x)
         x = self.pool(x).squeeze(-1)
         x = self.head(x)
+        return x
+
+# Cell
+
+class MLP(nn.Module):
+    def __init__(self, d_in, dims, d_out, drops, outrange=None):
+        super().__init__()
+
+        dims = [d_in]+dims
+
+        acts = [True]*(len(dims)-1)
+        bns = [True]*(len(dims)-1)
+        layers = [LinearBlock(d_in, d_out, act=a, bn=b, dropout=p)
+                 for d_in, d_out, a, b, p in zip(dims[:-1], dims[1:], acts, bns, dropouts)]
+        layers.append(nn.Linear(dims[-1], d_out))
+
+        self.layers = nn.Sequential(*layers)
+        self.outrange = outrange
+
+    def forward(self, x):
+        x = self.layers(x)
+
+        if self.outrange is not None:
+            x = torch.sigmoid(x) * (self.outrange[1]-self.outrange[0]) + self.outrange[0]
+
         return x

@@ -26,7 +26,7 @@ class LossCallback(Callback):
             log.add_log(self.name)
 
     def compute_loss(self):
-        loss, loss_dict = self.loss_function.from_batch_state(self.batch_state)
+        loss, loss_dict = self.loss_function.from_batch_state(self.environment.batch_state)
 
         if self.track:
             self.environment.log.update_metric(self.name, loss.mean().detach().cpu().numpy())

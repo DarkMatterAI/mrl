@@ -110,6 +110,25 @@ class Log(Callback):
     def get_df(self):
         return log_to_df(self.log)
 
+#     def plot_dict(self, data_dict, cols=4, smooth=True):
+#         num_metrics = len(data_dict.keys())
+
+#         rows = int(np.ceil(num_metrics/cols))
+#         fig, axes = plt.subplots(rows, cols, figsize=(4*cols, 4*rows))
+
+#         metrics = list(data_dict.keys())
+
+#         for i, ax in enumerate(axes.flat):
+#             if i <len(metrics):
+#                 ax.plot(np.stack(data_dict[metrics[i]]),)
+#                 ax.set_title(metrics[i])
+
+    def plot_metrics(self, cols=4, smooth=True):
+        self.plot_dict(self.metrics, cols=cols, smooth=smooth)
+
+
+    def plot_timelog(self, cols=4, smooth=True):
+        self.plot_dict(self.timelog, cols=cols, smooth=smooth)
 
 
 # Cell

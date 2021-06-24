@@ -35,8 +35,8 @@ class Sampler(Callback):
     def sample_batch(self):
         outputs = self._sample_batch()
         if outputs:
-            self.batch_state.samples += outputs
-            self.batch_state.sources += [self.name]*len(outputs)
+            self.environment.batch_state.samples += outputs
+            self.environment.batch_state.sources += [self.name]*len(outputs)
 
 # Cell
 
@@ -70,10 +70,15 @@ class ModelSampler(Sampler):
             log.add_metric(f'{self.name}_rewards')
             log.add_metric(f'{self.name}_new')
 
-    def _build_buffer(self): # bs, sl
+    def build_buffer(self):
         env = self.environment
-        buffer_size = self.buffer_size
         sl = env.sl
+        outputs = self._build_buffer(sl)
+        if outputs:
+            self.environment.buffer.add(outputs)
+
+    def _build_buffer(self, sl):
+        buffer_size = self.buffer_size
         outputs = []
         to_generate = buffer_size
 
@@ -85,7 +90,6 @@ class ModelSampler(Sampler):
                                                      temperature=self.temperature)
                 sequences = [self.vocab.reconstruct(i) for i in preds]
                 sequences = list(set(sequences))
-#                 sequences = env.template_cb.filter_sequences(sequences)
                 outputs += sequences
                 outputs = list(set(outputs))
                 to_generate = buffer_size - len(outputs)
@@ -93,19 +97,27 @@ class ModelSampler(Sampler):
         return outputs
 
 
-    def _sample_batch(self): # bs, sl
+    def sample_batch(self):
         env = self.environment
-        bs = int(env.bs * self.p_batch)
+        bs = env.bs
+        sl = env.sl
+        outputs = self._sample_batch(bs, sl)
+        env.batch_state[f'{self.name}_raw'] = outputs
+        if outputs:
+            env.batch_state.samples += outputs
+            env.batch_state.sources += [self.name]*len(outputs)
+
+
+    def _sample_batch(self, bs, sl):
+        bs = int(bs * self.p_batch)
         sequences = []
 
         if bs > 0:
 
-            preds, _ = self.model.sample_no_grad(bs, env.sl, z=None, multinomial=True,
+            preds, _ = self.model.sample_no_grad(bs, sl, z=None, multinomial=True,
                                                 temperature=self.temperature)
 
             sequences = [self.vocab.reconstruct(i) for i in preds]
-
-            env.batch_state[f'{self.name}_raw'] = sequences
 
         return sequences
 
@@ -172,28 +184,37 @@ class LatentSampler(ModelSampler):
     def step(self):
         self.opt.step()
 
-    def _build_buffer(self):
+    def _build_buffer(self, sl):
         return []
 
-    def _sample_batch(self): # bs, sl
+    def sample_batch(self):
         env = self.environment
-        bs = int(env.bs * self.p_batch)
+        bs = env.bs
+        sl = env.sl
+        sequences, sample_latents = self._sample_batch(bs, sl)
+
+        env.batch_state[f'{self.name}_raw'] = sequences
+        env.batch_state.latent_data[self.name] = sample_latents
+
+        if sequences:
+            env.batch_state.samples += sequences
+            env.batch_state.sources += [self.name]*len(sequences)
+
+    def _sample_batch(self, bs, sl):
+        bs = int(bs * self.p_batch)
         sequences = []
+        sample_latents = []
 
         if bs > 0:
 
             latent_idxs = torch.randint(0, self.latents.shape[0]-1, (bs,))
             sample_latents = self.latents[latent_idxs]
 
-            preds, _ = self.model.sample_no_grad(bs, env.sl, z=sample_latents, multinomial=True,
+            preds, _ = self.model.sample_no_grad(bs, sl, z=sample_latents, multinomial=True,
                                                 temperature=self.temperature)
             sequences = [self.vocab.reconstruct(i) for i in preds]
 
-            env.batch_state[f'{self.name}_raw'] = sequences
-
-            env.batch_state.latent_data[self.name] = sample_latents
-
-        return sequences
+        return sequences, sample_latents
 
 
 # Cell
@@ -227,9 +248,8 @@ class ContrastiveSampler(Sampler):
     def setup(self):
         self.base_sampler.environment = self.environment
 
-    def sample_outputs(self, sequences):
+    def sample_outputs(self, sequences, sl):
         sequences = list(sequences)
-        env = self.environment
         if self.repeats>1:
             sequences = sequences*self.repeats
         pairs = [(i,'') for i in sequences]
@@ -241,7 +261,7 @@ class ContrastiveSampler(Sampler):
             batch = to_device(batch)
             x,_ = batch
             z = self.output_model.x_to_latent(x)
-            preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
+            preds, _ = self.output_model.sample_no_grad(z.shape[0], sl, z=z)
             new_sequences = [self.vocab.reconstruct(i) for i in preds]
 
         else:
@@ -253,24 +273,28 @@ class ContrastiveSampler(Sampler):
                 batch = to_device(batch)
                 x,_ = batch
                 z = self.output_model.x_to_latent(x)
-                preds, _ = self.output_model.sample_no_grad(z.shape[0], env.sl, z=z)
+                preds, _ = self.output_model.sample_no_grad(z.shape[0], sl, z=z)
                 new_sequences += [self.vocab.reconstruct(i) for i in preds]
 
         outputs = [(sequences[i], new_sequences[i]) for i in range(len(sequences))]
-        env.batch_state[f'{self.name}_raw_contrastive'] = outputs
 
         return outputs
 
     def _build_buffer(self):
         outputs = self.base_sampler._build_buffer()
+        env = self.environment
+        sl = env.sl
         if outputs:
-            outputs = self.sample_outputs(outputs)
+            outputs = self.sample_outputs(outputs, sl)
         return outputs
 
     def _sample_batch(self):
         outputs = self.base_sampler._sample_batch()
+        env = self.environment
+        sl = env.sl
         if outputs:
-            outputs = self.sample_outputs(outputs)
+            outputs = self.sample_outputs(outputs, sl)
+            env.batch_state[f'{self.name}_raw_contrastive'] = outputs
         return outputs
 
 # Cell
@@ -282,14 +306,20 @@ class LogSampler(Sampler):
         self.percentile = percentile
         self.sample_name = sample_name
 
-    def _build_buffer(self):
+    def build_buffer(self):
         env = self.environment
-
         iterations = self.environment.log.iterations
+        log = env.log.log
+
+        outputs = self._build_buffer(iterations, log)
+        if outputs:
+            self.environment.buffer.add(outputs)
+
+    def _build_buffer(self, iterations, log):
         outputs = []
 
         if iterations > self.start_iter:
-            df = log_to_df(env.log.log, ['samples', self.sample_name])
+            df = log_to_df(log, ['samples', self.sample_name])
             df.drop_duplicates(subset='samples', inplace=True)
             bs = self.buffer_size
             if bs > 0:
@@ -307,8 +337,8 @@ class TokenSwapSampler(LogSampler):
         self.vocab = vocab
         self.swap_percent = swap_percent
 
-    def _build_buffer(self):
-        samples = super()._build_buffer()
+    def _build_buffer(self, iterations, log):
+        samples = super()._build_buffer(iterations, log)
 
         new_samples = []
 

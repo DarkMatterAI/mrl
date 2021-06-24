@@ -43,7 +43,7 @@ class Reward(Callback):
             sample_chunks = chunk_list(samples, self.bs)
             rewards = []
             for chunk in sample_chunks:
-                rewards_iter = self._compute_reward(sample_chunks)
+                rewards_iter = self._compute_reward(chunk)
                 rewards += list(rewards_iter)
 
         else:
@@ -82,14 +82,16 @@ class Reward(Callback):
 # Cell
 
 class FunctionReward(Reward):
-    def __init__(self, reward_function, name, sample_name='samples', weight=1.,
+    def __init__(self, reward_function, name, sample_name='samples',
+                 weight=1., bs=None,
                  order=10, track=True, log=True):
-        super().__init__(name,
-                         sample_name,
-                         weight,
-                         order,
-                         track,
-                         log)
+        super().__init__(name=name,
+                         sample_name=sample_name,
+                         weight=weight,
+                         bs=bs,
+                         order=order,
+                         track=track,
+                         log=log)
 
         self.reward_function = reward_function
 
@@ -107,9 +109,12 @@ class FunctionReward(Reward):
 
 class NoveltyReward(Reward):
     def __init__(self, weight=1., track=True):
-        super().__init__(name='novel', sample_name='samples',
-                        weight=weight, order=10, track=track,
-                        log=False)
+        super().__init__(name='novel',
+                         sample_name='samples',
+                         weight=weight,
+                         order=10,
+                         track=track,
+                         log=False)
 
     def _compute_reward(self, samples):
         log = self.environment.log
