@@ -90,6 +90,11 @@ def subset_tensor(x, mask):
 # Cell
 
 def merge_weights(sd1, sd2, alpha=0.5):
+    '''
+    merges state dicts following `new_weight = alpha*weight_model1 + (1-alpha)*weight_model2`
+
+    New weights are returned as a new state dict
+    '''
     new_dict = {}
     for key in sd1.keys():
         if key in sd2.keys():
@@ -99,6 +104,11 @@ def merge_weights(sd1, sd2, alpha=0.5):
     return new_dict
 
 def merge_models(model1, model2, alpha=0.5):
+    '''
+    merges weights following `new_weight = alpha*weight_model1 + (1-alpha)*weight_model2`
+
+    New weights are loaded into `modell` inplace
+    '''
     new_weights = merge_weights(model1.state_dict(), model2.state_dict(), alpha)
     model1.load_state_dict(new_weights)
 
