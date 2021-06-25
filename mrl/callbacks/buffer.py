@@ -30,7 +30,6 @@ class Buffer(Callback):
     def setup(self):
         log = self.environment.log
         log.add_metric(f'diversity')
-#         log.add_metric(f'valid')
         log.add_metric(f'bs')
 
     def sample(self, n):

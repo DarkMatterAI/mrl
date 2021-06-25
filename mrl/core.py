@@ -47,6 +47,7 @@ def filter_passing(inputs, bools):
 # Cell
 
 GLOBAL_POOL = None
+os.environ['max_global_threads'] = '2000'
 
 def set_global_pool(cpus=None):
     global GLOBAL_POOL
@@ -57,6 +58,7 @@ def set_global_pool(cpus=None):
         GLOBAL_POOL = None
     else:
         GLOBAL_POOL = Pool(processes=cpus)
+        GLOBAL_POOL.uses = 0
 
 def close_global_pool():
     global GLOBAL_POOL
@@ -113,6 +115,11 @@ def maybe_parallel(func, iterable, cpus=None, **kwargs):
 
         elif GLOBAL_POOL is not None:
             output = GLOBAL_POOL.map(func, iterable)
+            GLOBAL_POOL.uses += 1
+            if GLOBAL_POOL.uses > int(os.environ['max_global_threads']):
+                print('pool refresh')
+                refresh_global_pool()
+                gc.collect()
 
         else:
             output = [func(i) for i in iterable]

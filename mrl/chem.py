@@ -1184,7 +1184,7 @@ def add_one_atom(inputs):
 
 # Cell
 
-def add_atom_combi(smile, atom_types):
+def add_atom_combi(smile, atom_types, cpus=0):
 
     bond_to_valence = {
         Chem.rdchem.BondType.SINGLE:1,
@@ -1219,11 +1219,11 @@ def add_atom_combi(smile, atom_types):
                         to_add = [mol, atom_idx, atom_type, bt]
                         additions.append(to_add)
 
-    return maybe_parallel(add_one_atom, additions, cpus=0)
+    return maybe_parallel(add_one_atom, additions, cpus=cpus)
 
 # Cell
 
-def add_bond_combi(smile, max_ring_size=8):
+def add_bond_combi(smile, max_ring_size=8, cpus=0):
 
     bond_to_valence = {
         Chem.rdchem.BondType.SINGLE:1,
@@ -1287,7 +1287,7 @@ def add_bond_combi(smile, max_ring_size=8):
                     to_add = [smile, idx1, idx2, bt_to_str[bt]]
                     additions.append(to_add)
 
-    return maybe_parallel(add_one_bond, additions, cpus=0)
+    return maybe_parallel(add_one_bond, additions, cpus=cpus)
 
 
 def add_one_bond(inputs):
