@@ -11,3 +11,7 @@ MRL is an open source python library designed to unlock the potential of drug de
 ## How to use
 
 Coming soon!
+
+### Optional Dependencies
+
+`pip install bio-transformers`

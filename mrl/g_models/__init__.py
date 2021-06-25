@@ -3,6 +3,7 @@ from ..core import *
 from ..torch_imports import *
 from ..torch_core import *
 from ..layers import *
-from ..agent import *
+from ..dataloaders import *
+from .generative_base import *
 from .lstm_lm import *
 from .vae import *
