@@ -117,7 +117,6 @@ def maybe_parallel(func, iterable, cpus=None, **kwargs):
             output = GLOBAL_POOL.map(func, iterable)
             GLOBAL_POOL.uses += 1
             if GLOBAL_POOL.uses > int(os.environ['max_global_threads']):
-                print('pool refresh')
                 refresh_global_pool()
                 gc.collect()
 

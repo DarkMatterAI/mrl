@@ -38,11 +38,12 @@ class Log(Callback):
         self.iterations = 0
         self.metrics = {}
 
-        self.log = {}
+        self.batch_log = {}
         self.timelog = defaultdict(list)
 
         self.report = 1
-        self.unique_samples = set()
+        self.unique_samples = {}
+#         self.unique_samples = set()
 
         self.add_metric('rewards')
         self.add_log('samples')
@@ -52,7 +53,7 @@ class Log(Callback):
         self.log_df = None
 
     def setup(self):
-        self.df = pd.DataFrame(self.log)
+        self.df = pd.DataFrame(self.batch_log)
 
     def before_train(self):
         cols = ['iterations'] + list(self.metrics.keys())
@@ -66,8 +67,8 @@ class Log(Callback):
             self.metrics[name] = []
 
     def add_log(self, name):
-        if not name in self.log.keys():
-            self.log[name] = []
+        if not name in self.batch_log.keys():
+            self.batch_log[name] = []
 
     def update_metric(self, name, value):
         self.metrics[name].append(value)
@@ -76,24 +77,46 @@ class Log(Callback):
         env = self.environment
         batch_state = env.batch_state
         samples = batch_state.samples
-        self.unique_samples.update(set(samples))
         update_dict = {}
 
-        for key in self.log.keys():
-            try:
-                items = batch_state[key]
-                if isinstance(items, torch.Tensor):
-                    items = items.detach().cpu().numpy()
-                self.log[key].append(items)
-                update_dict[key] = items
-            except:
-                pass
+        for key in self.batch_log.keys():
+            items = batch_state[key]
+            if isinstance(items, torch.Tensor):
+                items = items.detach().cpu().numpy()
+            self.batch_log[key].append(items)
+            update_dict[key] = items
 
-#         self.df = self.df.append(pd.DataFrame(update_dict))
-        self.df = pd.concat([self.df, pd.DataFrame(update_dict)])
+        new_df = pd.DataFrame(update_dict)
+        repeats = new_df.samples.isin(self.df.samples)
+        new_df = new_df[~repeats]
 
-        if self.iterations%5==0 and self.iterations>0:
-            self.df.drop_duplicates(subset='samples', inplace=True)
+        self.df = self.df.append(new_df)
+
+#         if self.iterations%5==0 and self.iterations>0:
+#             self.df.drop_duplicates(subset='samples', inplace=True)
+
+    def before_compute_reward(self):
+        env = self.environment
+        batch_state = env.batch_state
+        samples = batch_state.samples
+        batch_state.prescored = []
+
+        for i, sample in enumerate(samples):
+            if sample in self.unique_samples:
+                batch_state.prescored.append(True)
+                batch_state.rewards[i] = torch.tensor(self.unique_samples[sample])
+            else:
+                batch_state.prescored.append(False)
+
+
+    def after_compute_reward(self):
+        env = self.environment
+        batch_state = env.batch_state
+        samples = batch_state.samples
+        rewards = batch_state.rewards.detach().cpu().numpy()
+        for i in range(len(samples)):
+            if not samples[i] in self.unique_samples:
+                self.unique_samples[samples[i]] = rewards[i]
 
     def report_batch(self):
         outputs = [f'{self.iterations}']
@@ -121,7 +144,7 @@ class Log(Callback):
         self.report_batch()
 
     def get_df(self):
-        return log_to_df(self.log)
+        return log_to_df(self.batch_log)
 
     def plot_metrics(self, cols=4, smooth=True):
         self.plot_dict(self.metrics, cols=cols, smooth=smooth)
@@ -133,7 +156,7 @@ class Log(Callback):
 # Cell
 
 class StatsCallback(Callback):
-    # grabs from buffer based on name
+    # grabs from batch_state based on name
     def __init__(self, batch_attribute, grabname=None, name='stats', order=20):
         super().__init__(name=name, order=order)
         self.grabname = grabname

@@ -38,7 +38,7 @@ class TemplateCallback(Callback):
             buffer.buffer = self.standardize(buffer.buffer)
             buffer.buffer = self.filter_sequences(buffer.buffer)
 
-    def after_sample(self):
+    def filter_batch(self):
         env = self.environment
         batch_state = env.batch_state
 
@@ -46,25 +46,13 @@ class TemplateCallback(Callback):
         samples = self.standardize(samples)
         batch_state.samples = samples
 
-        sources = np.array(batch_state.sources)
         valids = self.filter_sequences(samples, return_array=True)
 
-        if valids.mean()<1.:
-            filtered_samples = [samples[i] for i in range(len(samples)) if valids[i]]
-            filtered_sources = [sources[i] for i in range(len(sources)) if valids[i]]
-            filtered_latent_data = {}
-
-            for source,latent_idxs in batch_state.latent_data.items():
-                valid_subset = valids[sources==source]
-                latent_filtered = latent_idxs[valid_subset]
-                filtered_latent_data[source] = latent_filtered
-
-            batch_state.samples = filtered_samples
-            batch_state.sources = filtered_sources
-            batch_state.latent_data = filtered_latent_data
+        self._filter_sample(valids)
 
         if self.track:
             env.log.update_metric('valid', valids.mean())
+
 
     def compute_reward(self):
         env = self.environment

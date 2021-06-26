@@ -29,25 +29,7 @@ class Agent(Callback):
     def get_opt(self, parameters, **optim_kwargs):
         return optim.Adam(parameters, **optim_kwargs)
 
-    def setup(self):
-        pass
-
-    def before_train(self):
-        pass
-
-    def build_buffer(self):
-        pass
-
-    def after_build_buffer(self):
-        pass
-
-    def before_batch(self):
-        pass
-
-    def sample_batch(self):
-        pass
-
-    def after_sample(self):
+    def before_compute_reward(self):
         env = self.environment
         batch_state = env.batch_state
         sequences = batch_state.samples
@@ -62,22 +44,6 @@ class Agent(Callback):
         batch_state.y = y
         batch_state.bs = bs
         batch_state.rewards = to_device(torch.zeros(bs))
-        batch_state.trajectory_rewards = None
-
-    def get_model_outputs(self):
-        pass
-
-    def compute_reward(self):
-        pass
-
-    def after_compute_reward(self):
-        pass
-
-    def reward_modification(self):
-        pass
-
-    def compute_loss(self):
-        pass
 
     def zero_grad(self):
         self.opt.zero_grad()
@@ -87,12 +53,6 @@ class Agent(Callback):
 
     def step(self):
         self.opt.step()
-
-    def after_batch(self):
-        pass
-
-    def after_train(self):
-        pass
 
     def one_batch(self, batch):
         batch = to_device(batch)
@@ -301,7 +261,7 @@ class GenerativeAgent(BaselineAgent):
     def reconstruct(self, preds):
         return maybe_parallel(self.vocab.reconstruct, [i for i in preds.detach().cpu()])
 
-    def after_sample(self):
+    def before_compute_reward(self):
         env = self.environment
         batch_state = env.batch_state
         sequences = batch_state.samples

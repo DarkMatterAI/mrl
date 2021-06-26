@@ -50,7 +50,7 @@ class Buffer(Callback):
         self.environment.log.update_metric('diversity', diversity)
         self.environment.log.update_metric('bs', len(batch_state.samples))
 
-    def after_build_buffer(self):
+    def filter_buffer(self):
         if self.buffer:
             self.buffer = list(set(self.buffer))
 

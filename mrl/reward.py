@@ -60,18 +60,40 @@ class Reward(Callback):
         env = self.environment
         batch_state = env.batch_state
         samples = batch_state[self.sample_name]
+        prescored = batch_state.prescored
 
-        if self.log:
-            to_score = [i for i in samples if not i in self.score_log.keys()]
-            rewards = self.compute_batched_reward(to_score)
+        rewards = np.array([0. for i in samples])
 
-            for i in range(len(to_score)):
-                self.score_log[to_score[i]] = rewards[i]
+        to_score = []
+        to_score_idxs = []
 
-            rewards = [self.score_log[i] for i in samples]
+        for i in range(len(samples)):
+            if not prescored[i]:
 
-        else:
-            rewards = self.compute_batched_reward(samples)
+#                 if self.log:
+#                     if samples[i] in self.score_log:
+#                         rewards[i] = self.score_log[samples[i]]
+#                     else:
+#                         to_score.append(samples[i])
+#                         to_score_idxs.append(i)
+
+#                 else:
+#                     to_score.append(samples[i])
+#                     to_score_idxs.append(i)
+
+                if (self.log and (not samples[i] in self.score_log)) or (not self.log):
+                    to_score.append(samples[i])
+                    to_score_idxs.append(i)
+
+        new_rewards = self.compute_batched_reward(to_score)
+
+        for i in range(len(to_score)):
+            batch_idx = to_score_idxs[i]
+            reward = new_rewards[i]
+            rewards[batch_idx] = reward
+
+            if self.log:
+                self.score_log[to_score[i]] = reward
 
         rewards = to_device(torch.tensor(rewards).float()).squeeze()
         rewards = rewards * self.weight
@@ -81,6 +103,33 @@ class Reward(Callback):
 
         if self.track:
             env.log.update_metric(self.name, rewards.mean().detach().cpu().numpy())
+
+
+#     def compute_reward(self):
+#         env = self.environment
+#         batch_state = env.batch_state
+#         samples = batch_state[self.sample_name]
+
+#         if self.log:
+#             to_score = [i for i in samples if not i in self.score_log.keys()]
+#             rewards = self.compute_batched_reward(to_score)
+
+#             for i in range(len(to_score)):
+#                 self.score_log[to_score[i]] = rewards[i]
+
+#             rewards = [self.score_log[i] for i in samples]
+
+#         else:
+#             rewards = self.compute_batched_reward(samples)
+
+#         rewards = to_device(torch.tensor(rewards).float()).squeeze()
+#         rewards = rewards * self.weight
+
+#         batch_state.rewards += rewards
+#         batch_state[self.name] = rewards
+
+#         if self.track:
+#             env.log.update_metric(self.name, rewards.mean().detach().cpu().numpy())
 
 
 

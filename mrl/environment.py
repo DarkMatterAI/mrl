@@ -12,7 +12,7 @@ from .callbacks.template_cb import TemplateCallback
 
 class Environment():
     def __init__(self, agent_cb, template_cb=None, samplers=None, reward_cbs=None, loss_cbs=None,
-                 cbs=None, buffer_p_batch=None):
+                 cbs=None, buffer_p_batch=None, log=None):
 
         if samplers is None:
             samplers = []
@@ -25,6 +25,9 @@ class Environment():
 
         if cbs is None:
             cbs = []
+
+        if log is None:
+            log = Log()
 
         self.agent_cb = agent_cb
         self.template_cb = template_cb if template_cb is not None else TemplateCallback()
@@ -40,7 +43,7 @@ class Environment():
 
         self.buffer = Buffer(buffer_p_batch)
         self.batch_state = BatchState()
-        self.log = Log()
+        self.log = log
 
         all_cbs = [self.agent_cb] + [self.template_cb] + self.samplers + self.reward_cbs
         all_cbs += self.loss_cbs + cbs + [self.buffer] + [self.log]
@@ -81,6 +84,7 @@ class Environment():
         start = time.time()
         if (len(self.buffer) < self.bs):
             self('build_buffer')
+            self('filter_buffer')
             self('after_build_buffer')
         end = time.time() - start
         self.log.timelog['build_buffer'].append(end)
@@ -90,7 +94,7 @@ class Environment():
         self.batch_state = BatchState()
         self('before_batch')
         self('sample_batch')
-
+        self('filter_batch')
         self('after_sample')
         end = time.time() - start
         self.log.timelog['sample_batch'].append(end)
@@ -103,6 +107,7 @@ class Environment():
 
     def compute_reward(self):
         start = time.time()
+        self('before_compute_reward')
         self('compute_reward')
         rewards = self.batch_state.rewards
 
@@ -145,8 +150,8 @@ class Environment():
             for step in progress_bar(range(iters), parent=mb):
                 self.build_buffer()
                 self.sample_batch()
-                self.get_model_outputs()
                 self.compute_reward()
+                self.get_model_outputs()
                 self.compute_loss()
                 self.after_batch()
 
@@ -154,9 +159,9 @@ class Environment():
         self.remove_cbs(cbs)
 
     def plot_event_times(self, event):
-        buffer_times = [i.event_timelog[event] for i in self.cbs]
+        event_times = [i.event_timelog[event] for i in self.cbs]
         labels = [i.name for i in self.cbs]
 
         fig, ax = plt.subplots(figsize=(8,6))
-        ax.stackplot(np.arange(len(buffer_times[0])), *buffer_times, labels=labels);
+        ax.stackplot(np.arange(len(event_times[0])), *event_times, labels=labels);
         ax.legend(loc='upper left');

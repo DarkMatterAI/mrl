@@ -319,8 +319,6 @@ class LogSampler(Sampler):
         outputs = []
 
         if iterations > self.start_iter:
-#             df = log_to_df(log, ['samples', self.sample_name])
-#             df.drop_duplicates(subset='samples', inplace=True)
             bs = self.buffer_size
             if bs > 0:
 

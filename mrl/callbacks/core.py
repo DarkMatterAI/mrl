@@ -33,6 +33,28 @@ class Callback():
     def __repr__(self):
         return self.name
 
+    def _filter_sample(self, valids):
+        valids = np.array(valids)
+        env = self.environment
+        batch_state = env.batch_state
+
+        samples = batch_state.samples
+        sources = np.array(batch_state.sources)
+
+        if valids.mean()<1.:
+            filtered_samples = [samples[i] for i in range(len(samples)) if valids[i]]
+            filtered_sources = [sources[i] for i in range(len(sources)) if valids[i]]
+            filtered_latent_data = {}
+
+            for source,latents in batch_state.latent_data.items():
+                valid_subset = valids[sources==source]
+                latent_filtered = latents[valid_subset]
+                filtered_latent_data[source] = latent_filtered
+
+            batch_state.samples = filtered_samples
+            batch_state.sources = filtered_sources
+            batch_state.latent_data = filtered_latent_data
+
     def plot_dict(self, data_dict, cols=4, smooth=True):
         num_metrics = len(data_dict.keys())
 
@@ -60,13 +82,14 @@ class Event():
         self.build_buffer = 'build_buffer'
         self.filter_buffer = 'filter_buffer'
         self.after_build_buffer = 'after_build_buffer'
-        self.compute_buffer_reward = 'compute_buffer_reward'
-        self.after_compute_buffer_reward = 'after_compute_buffer_reward'
+#         self.compute_buffer_reward = 'compute_buffer_reward'
+#         self.after_compute_buffer_reward = 'after_compute_buffer_reward'
         self.before_batch = 'before_batch'
         self.sample_batch = 'sample_batch'
         self.filter_batch = 'filter_batch'
         self.after_sample = 'after_sample'
-        self.compute_reward = 'compute_batch_reward'
+        self.before_compute_reward = 'before_compute_reward'
+        self.compute_reward = 'compute_reward'
         self.after_compute_reward = 'after_compute_reward'
         self.reward_modification = 'reward_modification'
         self.get_model_outputs = 'get_model_outputs'
