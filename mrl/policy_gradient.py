@@ -57,7 +57,7 @@ class PolicyGradient(BasePolicy):
         base_lps = batch_state.base_gathered_logprobs
         mask = batch_state.mask
 
-        rewards = batch_state.rewards
+        rewards = batch_state.rewards_final
 
         if self.scale_rewards:
             if self.mean_reward is None:
@@ -132,7 +132,7 @@ class TRPO(BasePolicy):
         base_lps = batch_state.base_logprobs
 
         mask = batch_state.mask
-        rewards = batch_state.rewards
+        rewards = batch_state.rewards_final
 
         if self.scale_rewards:
             if self.mean_reward is None:
@@ -228,7 +228,7 @@ class PPO(BasePolicy):
 
 
         mask = batch_state.mask
-        rewards = batch_state.rewards
+        rewards = batch_state.rewards_final
 
         if self.scale_rewards:
             if self.mean_reward is None:

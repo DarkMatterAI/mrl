@@ -70,8 +70,13 @@ class Agent(Callback):
         train_dl = train_ds.dataloader(bs, shuffle=True)
         valid_dl = valid_ds.dataloader(bs)
 
-        scheduler = optim.lr_scheduler.OneCycleLR(self.opt, max_lr=lr,
+        opt = optim.Adam(self.model.parameters(), lr=lr)
+
+        scheduler = optim.lr_scheduler.OneCycleLR(opt, max_lr=lr,
                                         steps_per_epoch=len(train_dl), epochs=epochs)
+
+#         scheduler = optim.lr_scheduler.OneCycleLR(self.opt, max_lr=lr,
+#                                         steps_per_epoch=len(train_dl), epochs=epochs)
 
         mb = master_bar(range(epochs))
         mb.write(['Epoch', 'Train Loss', 'Valid  Loss', 'Time'], table=True)
@@ -83,9 +88,11 @@ class Agent(Callback):
 
                 loss = self.one_batch(batch)
 
-                self.zero_grad()
+                opt.zero_grad()
+#                 self.zero_grad()
                 loss.backward()
-                self.step()
+#                 self.step()
+                opt.step()
                 scheduler.step()
                 train_losses.append(loss.detach().cpu())
                 mb.child.comment = f"{train_losses[-1]:.5f}"

@@ -284,6 +284,7 @@ index = {"is_container": "00_core.ipynb",
          "LogEnumerator": "19_samplers.ipynb",
          "Environment": "20_environment.ipynb",
          "Reward": "21_reward.ipynb",
+         "RewardModification": "21_reward.ipynb",
          "ContrastiveReward": "21_reward.ipynb",
          "FunctionReward": "21_reward.ipynb",
          "NoveltyReward": "21_reward.ipynb"}

@@ -33,7 +33,7 @@ class Callback():
     def __repr__(self):
         return self.name
 
-    def _filter_sample(self, valids):
+    def _filter_batch(self, valids):
         valids = np.array(valids)
         env = self.environment
         batch_state = env.batch_state
@@ -93,6 +93,7 @@ class Event():
         self.after_compute_reward = 'after_compute_reward'
         self.reward_modification = 'reward_modification'
         self.get_model_outputs = 'get_model_outputs'
+        self.after_get_model_outputs = 'after_get_model_outputs'
         self.compute_loss = 'compute_loss'
         self.zero_grad = 'zero_grad'
         self.before_step = 'before_step'

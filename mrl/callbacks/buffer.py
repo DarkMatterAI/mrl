@@ -27,11 +27,6 @@ class Buffer(Callback):
         else:
             self.buffer.append(item)
 
-    def setup(self):
-        log = self.environment.log
-        log.add_metric(f'diversity')
-        log.add_metric(f'bs')
-
     def sample(self, n):
 
         idxs = np.random.choice(np.arange(len(self.buffer)), min(n, len(self.buffer)),
@@ -41,14 +36,6 @@ class Buffer(Callback):
             self.buffer.pop(idx)
 
         return batch
-
-    def after_sample(self):
-        env = self.environment
-        batch_state = env.batch_state
-
-        diversity = len(set(batch_state.samples))/len(batch_state.samples)
-        self.environment.log.update_metric('diversity', diversity)
-        self.environment.log.update_metric('bs', len(batch_state.samples))
 
     def filter_buffer(self):
         if self.buffer:

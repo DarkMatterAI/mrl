@@ -43,14 +43,19 @@ class Log(Callback):
 
         self.report = 1
         self.unique_samples = {}
-#         self.unique_samples = set()
+
+        self.log_df = None
 
         self.add_metric('rewards')
+        self.add_metric('rewards_final')
+        self.add_metric('new')
+        self.add_metric('diversity')
+        self.add_metric('bs')
+
         self.add_log('samples')
         self.add_log('sources')
         self.add_log('rewards')
-
-        self.log_df = None
+        self.add_log('rewards_final')
 
     def setup(self):
         self.df = pd.DataFrame(self.batch_log)
@@ -73,6 +78,41 @@ class Log(Callback):
     def update_metric(self, name, value):
         self.metrics[name].append(value)
 
+    def after_sample(self):
+        env = self.environment
+        batch_state = env.batch_state
+        samples = batch_state.samples
+
+        new = np.array([not i in self.unique_samples for i in samples])
+
+        self.update_metric('new', new.mean())
+
+        diversity = len(set(samples))/len(samples)
+        self.environment.log.update_metric('diversity', diversity)
+
+        self.environment.log.update_metric('bs', len(batch_state.samples))
+
+    def after_compute_reward(self):
+        env = self.environment
+        batch_state = env.batch_state
+        samples = batch_state.samples
+        rewards = batch_state.rewards
+        batch_state.rewards_final = rewards.clone().detach()
+
+        rewards = rewards.detach().cpu().numpy()
+
+        self.update_metric('rewards', rewards.mean())
+
+        for i in range(len(samples)):
+            if not samples[i] in self.unique_samples:
+                self.unique_samples[samples[i]] = rewards[i]
+
+    def after_reward_modification(self):
+        env = self.environment
+        rewards = env.batch_state.rewards_final.detach().cpu().numpy()
+        self.update_metric('rewards_final', rewards.mean())
+
+
     def update_log(self):
         env = self.environment
         batch_state = env.batch_state
@@ -90,33 +130,10 @@ class Log(Callback):
         repeats = new_df.samples.isin(self.df.samples)
         new_df = new_df[~repeats]
 
-        self.df = self.df.append(new_df)
+        self.df = self.df.append(new_df, ignore_index=True)
 
-#         if self.iterations%5==0 and self.iterations>0:
-#             self.df.drop_duplicates(subset='samples', inplace=True)
-
-    def before_compute_reward(self):
-        env = self.environment
-        batch_state = env.batch_state
-        samples = batch_state.samples
-        batch_state.prescored = []
-
-        for i, sample in enumerate(samples):
-            if sample in self.unique_samples:
-                batch_state.prescored.append(True)
-                batch_state.rewards[i] = torch.tensor(self.unique_samples[sample])
-            else:
-                batch_state.prescored.append(False)
-
-
-    def after_compute_reward(self):
-        env = self.environment
-        batch_state = env.batch_state
-        samples = batch_state.samples
-        rewards = batch_state.rewards.detach().cpu().numpy()
-        for i in range(len(samples)):
-            if not samples[i] in self.unique_samples:
-                self.unique_samples[samples[i]] = rewards[i]
+        if self.iterations%10==0 and self.iterations>0:
+            self.df.drop_duplicates(subset='samples', inplace=True)
 
     def report_batch(self):
         outputs = [f'{self.iterations}']
@@ -127,6 +144,8 @@ class Log(Callback):
 
                 if type(val)==int:
                     val = f'{val}'
+                elif type(val)==str:
+                    val = val
                 else:
                     val = f'{val:.3f}'
 

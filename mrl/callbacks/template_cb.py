@@ -31,7 +31,7 @@ class TemplateCallback(Callback):
             if isinstance(self.template, BlockTemplate):
                 log.add_log('samples_fused')
 
-    def after_build_buffer(self):
+    def filter_buffer(self):
         env = self.environment
         buffer = env.buffer
         if buffer.buffer:
@@ -48,7 +48,7 @@ class TemplateCallback(Callback):
 
         valids = self.filter_sequences(samples, return_array=True)
 
-        self._filter_sample(valids)
+        self._filter_batch(valids)
 
         if self.track:
             env.log.update_metric('valid', valids.mean())

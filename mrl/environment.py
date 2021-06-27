@@ -102,6 +102,7 @@ class Environment():
     def get_model_outputs(self):
         start = time.time()
         self('get_model_outputs')
+        self('after_get_model_outputs')
         end = time.time() - start
         self.log.timelog['get_model_outputs'].append(end)
 
@@ -109,11 +110,9 @@ class Environment():
         start = time.time()
         self('before_compute_reward')
         self('compute_reward')
-        rewards = self.batch_state.rewards
-
-        self.log.update_metric('rewards', rewards.mean().detach().cpu().numpy())
-
         self('after_compute_reward')
+        self('reward_modification')
+        self('after_reward_modification')
         end = time.time() - start
         self.log.timelog['compute_reward'].append(end)
 
