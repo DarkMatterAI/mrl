@@ -236,8 +236,10 @@ class FPSimilarity():
         self.soft_max = soft_max
 
     def get_sims(self, source_smiles, target_smiles):
-        source_fps = [failsafe_fp(i, self.fp_function) for i in source_smiles]
-        target_fps = [failsafe_fp(i, self.fp_function) for i in target_smiles]
+        source_fps = maybe_parallel(self.fp_function, source_smiles)
+        target_fps = maybe_parallel(self.fp_function, target_smiles)
+#         source_fps = [failsafe_fp(i, self.fp_function) for i in source_smiles]
+#         target_fps = [failsafe_fp(i, self.fp_function) for i in target_smiles]
 
         sims = np.array([self.distance_function(source_fps[i], [target_fps[i]])[0]
                  for i in range(len(source_smiles))])

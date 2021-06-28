@@ -114,16 +114,16 @@ def maybe_parallel(func, iterable, cpus=None, **kwargs):
             output = new_pool_parallel(func, iterable, cpus, **kwargs)
 
         elif GLOBAL_POOL is not None:
-            output = GLOBAL_POOL.map(func, iterable)
+            output = GLOBAL_POOL.map(p_func, iterable)
             GLOBAL_POOL.uses += 1
             if GLOBAL_POOL.uses > int(os.environ['max_global_threads']):
                 refresh_global_pool()
                 gc.collect()
 
         else:
-            output = [func(i) for i in iterable]
+            output = [p_func(i) for i in iterable]
 
     else:
-        output = func(iterable)
+        output = p_func(iterable)
 
     return output

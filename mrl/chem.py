@@ -5,14 +5,14 @@ __all__ = ['to_mol', 'to_smile', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts'
            'neutralize_charges', 'find_bond_groups', 'draw_mols', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond',
            'loose_rotbond', 'rot_chain_length', 'fsp3', 'logp', 'rings', 'max_ring_size', 'min_ring_size',
            'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge', 'molar_refractivity', 'aromaticrings', 'qed',
-           'sa_score', 'num_bridgeheads', 'num_spiro', 'chiral_centers', 'Catalog', 'SmartsCatalog', 'ParamsCatalog',
-           'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog',
-           'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto',
-           'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities',
-           'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums',
-           'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
-           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein',
-           'to_sequence', 'to_proteins', 'to_sequences']
+           'sa_score', 'num_bridgeheads', 'num_spiro', 'chiral_centers', 'penalized_logp', 'Catalog', 'SmartsCatalog',
+           'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog',
+           'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array',
+           'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint',
+           'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping',
+           'fuse_on_link', 'add_map_nums', 'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom',
+           'generate_spec_template', 'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi',
+           'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins', 'to_sequences']
 
 # Cell
 from .imports import *
@@ -26,6 +26,7 @@ import sascorer
 from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')
 import selfies as sf
+import networkx as nx
 
 # Cell
 def to_mol(smile_or_mol):
@@ -291,6 +292,47 @@ def num_spiro(mol):
 def chiral_centers(mol):
     'Number of chiral centers'
     return len(Chem.FindMolChiralCenters(mol))
+
+
+# Modified from https://github.com/bowenliu16/rl_graph_generation
+def penalized_logp(mol):
+    """
+    Reward that consists of log p penalized by SA and # long cycles,
+    as described in (Kusner et al. 2017). Scores are normalized based on the
+    statistics of 250k_rndm_zinc_drugs_clean.smi dataset
+    :param mol: rdkit mol object
+    :return: float
+    """
+    # normalization constants, statistics from 250k_rndm_zinc_drugs_clean.smi
+    mol = to_mol(mol)
+    logP_mean = 2.4570953396190123
+    logP_std = 1.434324401111988
+    SA_mean = -3.0525811293166134
+    SA_std = 0.8335207024513095
+    cycle_mean = -0.0485696876403053
+    cycle_std = 0.2860212110245455
+
+    log_p = logp(mol)
+    SA = -sa_score(mol)
+
+    # cycle score
+    cycle_list = nx.cycle_basis(nx.Graph(
+        Chem.rdmolops.GetAdjacencyMatrix(mol)))
+    if len(cycle_list) == 0:
+        cycle_length = 0
+    else:
+        cycle_length = max([len(j) for j in cycle_list])
+    if cycle_length <= 6:
+        cycle_length = 0
+    else:
+        cycle_length = cycle_length - 6
+    cycle_score = -cycle_length
+
+    normalized_log_p = (log_p - logP_mean) / logP_std
+    normalized_SA = (SA - SA_mean) / SA_std
+    normalized_cycle = (cycle_score - cycle_mean) / cycle_std
+
+    return normalized_log_p + normalized_SA + normalized_cycle
 
 # Cell
 class Catalog():
@@ -1162,18 +1204,29 @@ def add_one_atom(inputs):
     mol, source_idx, target_atom, bond_type = inputs
     new_mol = Chem.RWMol(mol)
 
-    if not target_atom==-1:
-        target_atom = Chem.Atom(target_atom)
-        new_idx = new_mol.AddAtom(target_atom)
-        new_mol.AddBond(source_idx, new_idx, bond_type)
-
-    else:
-
-        new_mol.RemoveAtom(source_idx)
-
-    mol = new_mol.GetMol()
-
     try:
+        if target_atom == -1:
+            new_mol.RemoveAtom(source_idx)
+        elif target_atom == -2:
+            atom = new_mol.GetAtomWithIdx(source_idx)
+            bonds = atom.GetBonds()
+
+            if len(bonds)==2:
+                neighbors = atom.GetNeighbors()
+                n1 = neighbors[0].GetIdx()
+                n2 = neighbors[1].GetIdx()
+                new_mol.AddBond(n1, n2, order=Chem.rdchem.BondType.SINGLE)
+
+            new_mol.RemoveAtom(source_idx)
+
+        else:
+            target_atom = Chem.Atom(target_atom)
+            new_idx = new_mol.AddAtom(target_atom)
+            new_mol.AddBond(source_idx, new_idx, bond_type)
+
+
+        mol = new_mol.GetMol()
+
         Chem.SanitizeMol(mol)
         mol = to_mol(to_smile(mol))
         output = to_smile(mol)
@@ -1204,7 +1257,7 @@ def add_atom_combi(smile, atom_types, cpus=0):
     additions = []
     for i, (atom_idx, imp_h) in enumerate(valid_idxs):
         for atom_type in atom_types:
-            if atom_type==-1:
+            if (atom_type==-1) or (atom_type==-2):
                 to_add = [mol, atom_idx, atom_type, None]
                 additions.append(to_add)
             else:

@@ -359,22 +359,22 @@ class TokenSwapSampler(LogSampler):
 class LogEnumerator(LogSampler):
     def __init__(self, sample_name, start_iter, percentile,
                  buffer_size, atom_types=None):
-        super().__init__(sample_name+'_enum', start_iter, percentile, buffer_size)
+        super().__init__(sample_name, start_iter, percentile, buffer_size)
 
+        self.name = sample_name+'_enum'
         if atom_types is None:
             atom_types = ['C', 'N', 'O', 'F', 'S', 'Br', 'Cl', -1]
 
         self.atom_types = atom_types
 
-    def _build_buffer(self):
-
-        samples = super()._build_buffer()
+    def _build_buffer(self, iterations, df):
+        samples = super()._build_buffer(iterations, df)
 
         new_samples = []
 
         for sample in samples:
 
-            new_smiles = add_atom_combi(s, self.atom_types) + add_bond_combi(s)
+            new_smiles = add_atom_combi(sample, self.atom_types) + add_bond_combi(sample)
             new_smiles = [i for i in new_smiles if i is not None]
             new_smiles = [i for i in new_smiles if not '.' in i]
             new_samples += new_smiles

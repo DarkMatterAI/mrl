@@ -187,9 +187,6 @@ class ContrastiveReward(Reward):
 
         return output
 
-    def setup(self):
-        self.base_reward.environment = self.environment
-
     def compute_and_clean(self, samples):
         rewards = self.base_reward._compute_reward(samples)
         if isinstance(rewards, torch.Tensor):
