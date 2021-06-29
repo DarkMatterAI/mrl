@@ -36,7 +36,9 @@ class TemplateCallback(Callback):
         buffer = env.buffer
         if buffer.buffer:
             buffer.buffer = self.standardize(buffer.buffer)
-            buffer.buffer = self.filter_sequences(buffer.buffer)
+            valids = self.filter_sequences(buffer.buffer, return_array=True)
+            buffer._filter_buffer(valids)
+#             buffer.buffer = self.filter_sequences(buffer.buffer)
 
     def filter_batch(self):
         env = self.environment

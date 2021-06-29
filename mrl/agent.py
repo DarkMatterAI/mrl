@@ -98,12 +98,14 @@ class Agent(Callback):
                 mb.child.comment = f"{train_losses[-1]:.5f}"
 
             with torch.no_grad():
+                self.model.eval()
                 valid_losses = []
                 for batch in progress_bar(valid_dl, parent=mb):
 
                     loss = self.one_batch(batch)
                     valid_losses.append(loss.detach().cpu())
                     mb.child.comment = f"{valid_losses[-1]:.5f}"
+                self.model.train()
 
             train_loss = smooth_batches(train_losses)
             valid_loss = smooth_batches(valid_losses)

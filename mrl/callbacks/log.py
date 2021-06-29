@@ -188,7 +188,10 @@ class StatsCallback(Callback):
 
         if self.grabname is not None:
             source_mask = sources==self.grabname
-            values = values[source_mask]
+            if source_mask.sum()>0:
+                values = values[source_mask]
+            else:
+                values = np.array([0.])
 
         if isinstance(values, torch.Tensor):
             values = values.detach().cpu().numpy()

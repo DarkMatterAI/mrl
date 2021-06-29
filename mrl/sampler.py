@@ -30,7 +30,7 @@ class Sampler(Callback):
     def build_buffer(self):
         outputs = self._build_buffer()
         if outputs:
-            self.environment.buffer.add(outputs)
+            self.environment.buffer.add(outputs, self.name)
 
     def sample_batch(self):
         outputs = self._sample_batch()
@@ -75,7 +75,7 @@ class ModelSampler(Sampler):
         sl = env.sl
         outputs = self._build_buffer(sl)
         if outputs:
-            self.environment.buffer.add(outputs)
+            self.environment.buffer.add(outputs, self.name)
 
     def _build_buffer(self, sl):
         buffer_size = self.buffer_size
@@ -144,14 +144,18 @@ class ModelSampler(Sampler):
 
             if len(samples)>0:
                 diversity = len(set(samples))/len(samples)
+                used = log.unique_samples
+                novel = [i for i in samples if not i in used]
+                percent_novel = len(novel)/len(samples)
             else:
                 diversity = 0
+                percent_novel = 0.
 
             valid = len(samples)/len(batch_state[f'{self.name}_raw'])
 
-            used = log.unique_samples
-            novel = [i for i in samples if not i in used]
-            percent_novel = len(novel)/len(samples)
+#             used = log.unique_samples
+#             novel = [i for i in samples if not i in used]
+#             percent_novel = len(novel)/len(samples)
             log.update_metric(f'{self.name}_new', percent_novel)
             log.update_metric(f"{self.name}_diversity", diversity)
             log.update_metric(f"{self.name}_valid", valid)
@@ -160,7 +164,7 @@ class ModelSampler(Sampler):
 
 class LatentSampler(ModelSampler):
     def __init__(self, vocab, model, latents, name, buffer_size,
-                 p_batch, genbatch, track=True,
+                 p_batch, genbatch, track=True, train=True,
                  temperature=1., opt_kwargs={}):
         super().__init__(vocab,
                          model,
@@ -171,18 +175,24 @@ class LatentSampler(ModelSampler):
                          track,
                          temperature)
 
+        self.train = train
         self.set_latents(latents, opt_kwargs)
 
     def set_latents(self, latents, opt_kwargs):
         self.latents = to_device(latents)
-        self.latents = nn.Parameter(self.latents)
-        self.opt = optim.Adam([self.latents], **opt_kwargs)
+        if self.train:
+            self.latents = nn.Parameter(self.latents)
+            self.opt = optim.Adam([self.latents], **opt_kwargs)
+        else:
+            self.latents._requires_grad(False)
 
     def zero_grad(self):
-        self.opt.zero_grad()
+        if self.train:
+            self.opt.zero_grad()
 
     def step(self):
-        self.opt.step()
+        if self.train:
+            self.opt.step()
 
     def _build_buffer(self, sl):
         return []
@@ -313,7 +323,7 @@ class LogSampler(Sampler):
 
         outputs = self._build_buffer(iterations, df)
         if outputs:
-            self.environment.buffer.add(outputs)
+            self.environment.buffer.add(outputs, self.name)
 
     def _build_buffer(self, iterations, df):
         outputs = []
@@ -332,6 +342,7 @@ class TokenSwapSampler(LogSampler):
     def __init__(self, sample_name, start_iter, percentile, buffer_size,
                  vocab, swap_percent):
         super().__init__(sample_name, start_iter, percentile, buffer_size)
+        self.name = sample_name+'_tokswap'
         self.vocab = vocab
         self.swap_percent = swap_percent
 

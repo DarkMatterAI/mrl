@@ -764,6 +764,9 @@ class LinkerBlockTemplate(BlockTemplate):
         smile2 = linker_template.to_string(mol2)
         smile2 = smile2.replace('*', '[1*:2]')
 
+        self.smile1 = smile1
+        self.smile2 = smile2
+
         block1 = ConstantMolBlock(smile1, 'left_linker')
         block2 = ConstantMolBlock(smile2, 'right_linker')
         linker_block = MolBlock(linker_template, ['2*:1', '2*:2'], 'linker')
