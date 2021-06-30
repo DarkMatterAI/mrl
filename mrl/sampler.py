@@ -310,11 +310,12 @@ class ContrastiveSampler(Sampler):
 # Cell
 
 class LogSampler(Sampler):
-    def __init__(self, sample_name, start_iter, percentile, buffer_size):
+    def __init__(self, sample_name, lookup_name, start_iter, percentile, buffer_size):
         super().__init__(sample_name+'_sample', buffer_size, p_batch=0.)
         self.start_iter = start_iter
         self.percentile = percentile
         self.sample_name = sample_name
+        self.lookup_name = lookup_name
 
     def build_buffer(self):
         env = self.environment
@@ -332,16 +333,16 @@ class LogSampler(Sampler):
             bs = self.buffer_size
             if bs > 0:
 
-                subset = df[df[self.sample_name]>np.percentile(df[self.sample_name].values,
+                subset = df[df[self.lookup_name]>np.percentile(df[self.lookup_name].values,
                                                                self.percentile)]
-                outputs = list(subset.sample(n=min(bs, subset.shape[0])).samples.values)
+                outputs = list(subset.sample(n=min(bs, subset.shape[0]))[self.sample_name].values)
 
         return outputs
 
 class TokenSwapSampler(LogSampler):
-    def __init__(self, sample_name, start_iter, percentile, buffer_size,
+    def __init__(self, sample_name, lookup_name, start_iter, percentile, buffer_size,
                  vocab, swap_percent):
-        super().__init__(sample_name, start_iter, percentile, buffer_size)
+        super().__init__(sample_name, lookup_name, start_iter, percentile, buffer_size)
         self.name = sample_name+'_tokswap'
         self.vocab = vocab
         self.swap_percent = swap_percent
@@ -368,9 +369,9 @@ class TokenSwapSampler(LogSampler):
 # Cell
 
 class LogEnumerator(LogSampler):
-    def __init__(self, sample_name, start_iter, percentile,
+    def __init__(self, sample_name, lookup_name, start_iter, percentile,
                  buffer_size, atom_types=None):
-        super().__init__(sample_name, start_iter, percentile, buffer_size)
+        super().__init__(sample_name, lookup_name, start_iter, percentile, buffer_size)
 
         self.name = sample_name+'_enum'
         if atom_types is None:

@@ -75,9 +75,6 @@ class Agent(Callback):
         scheduler = optim.lr_scheduler.OneCycleLR(opt, max_lr=lr,
                                         steps_per_epoch=len(train_dl), epochs=epochs)
 
-#         scheduler = optim.lr_scheduler.OneCycleLR(self.opt, max_lr=lr,
-#                                         steps_per_epoch=len(train_dl), epochs=epochs)
-
         mb = master_bar(range(epochs))
         mb.write(['Epoch', 'Train Loss', 'Valid  Loss', 'Time'], table=True)
         for epoch in mb:
@@ -89,9 +86,7 @@ class Agent(Callback):
                 loss = self.one_batch(batch)
 
                 opt.zero_grad()
-#                 self.zero_grad()
                 loss.backward()
-#                 self.step()
                 opt.step()
                 scheduler.step()
                 train_losses.append(loss.detach().cpu())

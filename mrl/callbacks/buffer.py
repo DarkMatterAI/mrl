@@ -49,11 +49,23 @@ class Buffer(Callback):
 
     def filter_buffer(self):
         if self.buffer:
-            df = pd.DataFrame(self.buffer, columns=['samples'])
-            valids = df.duplicated(subset='samples').values
+            seen = set()
+            unique = []
+            for item in self.buffer:
+                if item in seen:
+                    unique.append(False)
+                else:
+                    seen.add(item)
+                    unique.append(True)
 
-            self._filter_buffer(~valids)
-            del df
+            self._filter_buffer(np.array(unique))
+
+
+#             df = pd.DataFrame(self.buffer, columns=['samples'])
+#             valids = df.duplicated(subset='samples').values
+
+#             self._filter_buffer(~valids)
+#             del df
 
 #             self.buffer = list(set(self.buffer))
 

@@ -82,8 +82,6 @@ class Event():
         self.build_buffer = 'build_buffer'
         self.filter_buffer = 'filter_buffer'
         self.after_build_buffer = 'after_build_buffer'
-#         self.compute_buffer_reward = 'compute_buffer_reward'
-#         self.after_compute_buffer_reward = 'after_compute_buffer_reward'
         self.before_batch = 'before_batch'
         self.sample_batch = 'sample_batch'
         self.filter_batch = 'filter_batch'

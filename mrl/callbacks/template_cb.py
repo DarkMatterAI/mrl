@@ -13,13 +13,16 @@ from ..torch_core import *
 # Cell
 
 class TemplateCallback(Callback):
-    def __init__(self, template=None, weight=1., track=True, prefilter=True):
+    def __init__(self, template=None, sample_name='samples', weight=1.,
+                 track=True, prefilter=True, filter_batch=True):
         super().__init__(order=-1)
         self.template = template
         self.track = track
         self.name = 'template'
         self.prefilter = prefilter
         self.weight = weight
+        self.sample_name = sample_name
+        self.filter_batch = filter_batch
 
     def setup(self):
         if self.track:
@@ -32,28 +35,30 @@ class TemplateCallback(Callback):
                 log.add_log('samples_fused')
 
     def filter_buffer(self):
-        env = self.environment
-        buffer = env.buffer
-        if buffer.buffer:
-            buffer.buffer = self.standardize(buffer.buffer)
-            valids = self.filter_sequences(buffer.buffer, return_array=True)
-            buffer._filter_buffer(valids)
-#             buffer.buffer = self.filter_sequences(buffer.buffer)
+        if self.filter_batch:
+            env = self.environment
+            buffer = env.buffer
+            if buffer.buffer:
+                buffer.buffer = self.standardize(buffer.buffer)
+                valids = self.filter_sequences(buffer.buffer, return_array=True)
+                buffer._filter_buffer(valids)
+    #             buffer.buffer = self.filter_sequences(buffer.buffer)
 
     def filter_batch(self):
-        env = self.environment
-        batch_state = env.batch_state
+        if self.filter_batch
+            env = self.environment
+            batch_state = env.batch_state
 
-        samples = batch_state.samples
-        samples = self.standardize(samples)
-        batch_state.samples = samples
+            samples = batch_state[self.sample_name]
+            samples = self.standardize(samples)
+            batch_state[self.sample_name] = samples
 
-        valids = self.filter_sequences(samples, return_array=True)
+            valids = self.filter_sequences(samples, return_array=True)
 
-        self._filter_batch(valids)
+            self._filter_batch(valids)
 
-        if self.track:
-            env.log.update_metric('valid', valids.mean())
+            if self.track:
+                env.log.update_metric('valid', valids.mean())
 
 
     def compute_reward(self):
@@ -61,17 +66,18 @@ class TemplateCallback(Callback):
         state = env.batch_state
 
         if isinstance(self.template, BlockTemplate):
-            outputs = self.template.recurse_fragments(state.samples)
+            outputs = self.template.recurse_fragments(state[self.sample_name])
             rewards = np.array([i[3] for i in outputs])
-            state.samples_fused = [i[1] for i in outputs]
+            state[self.sample_name+'_fused'] = [i[1] for i in outputs]
+#             state.samples_fused = [i[1] for i in outputs]
 
         elif self.template is not None:
-            rewards = np.array(self.template.eval_mols(state.samples))
+            rewards = np.array(self.template.eval_mols(state[self.sample_name]))
 
         else:
-            rewards = np.array([0.]*len(state.samples))
+            rewards = np.array([0.]*len(state[self.sample_name]))
 
-        hps = self.get_hps(state.samples)
+        hps = self.get_hps(state[self.sample_name])
         state[self.name] = rewards
         rewards = rewards*self.weight
 
@@ -118,9 +124,16 @@ class TemplateCallback(Callback):
 # Cell
 
 class ContrastiveTemplate(TemplateCallback):
-    def __init__(self, similarity_function, max_score=None, template=None,
-                 weight=1., track=True, prefilter=True):
-        super().__init__(template=template, weight=weight, track=track, prefilter=prefilter)
+    def __init__(self, similarity_function, sample_name='samples',
+                 max_score=None, template=None,
+                 weight=1., track=True, prefilter=True, filter_batch=True):
+        super().__init__(template=template,
+                         sample_name=sample_name,
+                         weight=weight,
+                         track=track,
+                         prefilter=prefilter,
+                         filter_batch=filter_batch)
+
         self.similarity_function = similarity_function
         self.max_score = max_score
 
@@ -143,7 +156,7 @@ class ContrastiveTemplate(TemplateCallback):
         env = self.environment
         state = env.batch_state
 
-        samples = state.samples
+        samples = state[self.sample_name]
         source_samples = [i[0] for i in samples]
         target_samples = [i[1] for i in samples]
         hps = self.get_hps(samples)
@@ -153,8 +166,11 @@ class ContrastiveTemplate(TemplateCallback):
             if isinstance(self.template, BlockTemplate):
                 source_outputs = self.template.recurse_fragments(source_samples)
                 target_outputs = self.template.recurse_fragments(target_samples)
-                state.samples_fused = [(source_outputs[i][1], target_outputs[i][1])
+                state[self.sample_name+'_fused'] = [(source_outputs[i][1], target_outputs[i][1])
                                       for i in range(len(source_outputs))]
+
+#                 state.samples_fused = [(source_outputs[i][1], target_outputs[i][1])
+#                                       for i in range(len(source_outputs))]
 
                 source_rewards = np.array([i[3] for i in source_outputs])
                 target_rewards = np.array([i[3] for i in target_outputs])
@@ -168,7 +184,7 @@ class ContrastiveTemplate(TemplateCallback):
                 rewards = rewards / (self.max_score-source_rewards)
 
         else:
-            rewards = np.array([0.]*len(state.samples))
+            rewards = np.array([0.]*len(state[self.sample_name]))
 
         sim_scores = self.similarity_function.score(source_samples, target_samples)
 
