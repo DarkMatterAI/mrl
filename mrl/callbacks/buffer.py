@@ -14,46 +14,60 @@ class Buffer(Callback):
         super().__init__(name='buffer', order=0)
 
         self.buffer = []
+        self.buffer_sources = []
         self.p_total = p_total
 
     def __len__(self):
         return len(self.buffer)
 
-    def add(self, item):
+    def add(self, item, name=''):
 
         if type(item)==list:
             for i in item:
-                self.add(i)
+                self.add(i, name=name)
         else:
             self.buffer.append(item)
-
-    def setup(self):
-        log = self.environment.log
-        log.add_metric(f'diversity')
-#         log.add_metric(f'valid')
-        log.add_metric(f'bs')
+            self.buffer_sources.append(name)
 
     def sample(self, n):
 
         idxs = np.random.choice(np.arange(len(self.buffer)), min(n, len(self.buffer)),
                                 replace=False)
         batch = [self.buffer[i] for i in idxs]
+        sources = [self.buffer_sources[i] for i in idxs]
         for idx in sorted(idxs, reverse=True):
             self.buffer.pop(idx)
+            self.buffer_sources.pop(idx)
 
-        return batch
+        return batch, sources
 
-    def after_sample(self):
-        env = self.environment
-        batch_state = env.batch_state
+    def _filter_buffer(self, valids):
 
-        diversity = len(set(batch_state.samples))/len(batch_state.samples)
-        self.environment.log.update_metric('diversity', diversity)
-        self.environment.log.update_metric('bs', len(batch_state.samples))
+        self.buffer = [self.buffer[i] for i in range(len(self.buffer)) if valids[i]]
+        self.buffer_sources = [self.buffer_sources[i]
+                               for i in range(len(self.buffer_sources)) if valids[i]]
 
-    def after_build_buffer(self):
+    def filter_buffer(self):
         if self.buffer:
-            self.buffer = list(set(self.buffer))
+            seen = set()
+            unique = []
+            for item in self.buffer:
+                if item in seen:
+                    unique.append(False)
+                else:
+                    seen.add(item)
+                    unique.append(True)
+
+            self._filter_buffer(np.array(unique))
+
+
+#             df = pd.DataFrame(self.buffer, columns=['samples'])
+#             valids = df.duplicated(subset='samples').values
+
+#             self._filter_buffer(~valids)
+#             del df
+
+#             self.buffer = list(set(self.buffer))
 
     def sample_batch(self):
         env = self.environment
@@ -61,6 +75,8 @@ class Buffer(Callback):
 
         bs = int(env.bs * self.p_total)
         if bs>0:
-            sample = self.sample(bs)
+            sample, sources = self.sample(bs)
             batch_state.samples += sample
-            batch_state.sources += ['buffer']*len(sample)
+            batch_state.sources += sources
+#             batch_state.sources += [i+'_buffer' for i in sources]
+#             batch_state.sources += ['buffer']*len(sample)

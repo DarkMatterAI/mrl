@@ -60,7 +60,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="is_container" class="doc_header"><code>is_container</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>is_container</code>(<strong><code>x</code></strong>)</p>
+<h4 id="is_container" class="doc_header"><code>is_container</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L12" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>is_container</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>check if <code>x</code> is a container (used for parallel processing)</p>
 
@@ -85,7 +85,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten_recursive" class="doc_header"><code>flatten_recursive</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L17" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_recursive</code>(<strong><code>list_of_lists</code></strong>)</p>
+<h4 id="flatten_recursive" class="doc_header"><code>flatten_recursive</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_recursive</code>(<strong><code>list_of_lists</code></strong>)</p>
 </blockquote>
 <p>Recursively flattel list of lists</p>
 
@@ -110,7 +110,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten_list_of_lists" class="doc_header"><code>flatten_list_of_lists</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_list_of_lists</code>(<strong><code>list_of_lists</code></strong>)</p>
+<h4 id="flatten_list_of_lists" class="doc_header"><code>flatten_list_of_lists</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_list_of_lists</code>(<strong><code>list_of_lists</code></strong>)</p>
 </blockquote>
 <p>Flattens list of lists (not recursive)</p>
 
@@ -135,7 +135,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="deduplicate_list" class="doc_header"><code>deduplicate_list</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>deduplicate_list</code>(<strong><code>l</code></strong>)</p>
+<h4 id="deduplicate_list" class="doc_header"><code>deduplicate_list</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L34" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>deduplicate_list</code>(<strong><code>l</code></strong>)</p>
 </blockquote>
 <p>Deduplicates list l</p>
 
@@ -160,7 +160,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="chunk_list" class="doc_header"><code>chunk_list</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L36" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>chunk_list</code>(<strong><code>input_list</code></strong>, <strong><code>chunksize</code></strong>)</p>
+<h4 id="chunk_list" class="doc_header"><code>chunk_list</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>chunk_list</code>(<strong><code>input_list</code></strong>, <strong><code>chunksize</code></strong>)</p>
 </blockquote>
 <p>Breaks <code>input_list</code> into chunks of size <code>chunksize</code>, ragged on last list</p>
 
@@ -185,7 +185,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="filter_passing" class="doc_header"><code>filter_passing</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>filter_passing</code>(<strong><code>inputs</code></strong>, <strong><code>bools</code></strong>)</p>
+<h4 id="filter_passing" class="doc_header"><code>filter_passing</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>filter_passing</code>(<strong><code>inputs</code></strong>, <strong><code>bools</code></strong>)</p>
 </blockquote>
 <p>Subsets <code>inputs</code> (list) by <code>bools</code> (list of bools)</p>
 
@@ -219,11 +219,27 @@ nb_path: "nbs/00_core.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Parallel-Processing">Parallel Processing<a class="anchor-link" href="#Parallel-Processing"> </a></h2><p>MRL tries to build in automatic parallel processing at every level. This can make a huge difference when you're processing millions of molecules</p>
-<p><a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> is a convenient wrapper for parallel processing. The given <code>func</code> is wrapped with <code>**kwargs</code> and used to process the <code>iterable</code>. If <code>iterable</code> is a <code>list</code> or <code>np.ndarray</code>, the elements in <code>iterable</code> are run in parallel by <code>func</code>.</p>
-<p><a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> defaults to using all availlable CPUs for processing. To control CPU usage, either pass in a specific number for the <code>cpus</code> argument, or set <code>ncpus</code> as an environment variable:</p>
-<p><code>os.environ['ncpus'] = '8'</code></p>
-<p>Passing <code>cpus=0</code> or setting <code>os.environ['ncpus'] = '0'</code> causes <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> to default to serial processing</p>
+<h2 id="Parallel-Processing">Parallel Processing<a class="anchor-link" href="#Parallel-Processing"> </a></h2><p>MRL tries to build in parallel processing at every level. This can make a huge difference when you're processing millions of molecules</p>
+<p><a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a> and <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> are convenient wrappers for parallel processing. The given <code>func</code> is wrapped with <code>**kwargs</code> and used to process the <code>iterable</code>. If <code>iterable</code> is a <code>list</code> or <code>np.ndarray</code>, the elements in <code>iterable</code> are run in parallel by <code>func</code>.</p>
+<h3 id="Parallel-processing-tradeoffs">Parallel processing tradeoffs<a class="anchor-link" href="#Parallel-processing-tradeoffs"> </a></h3><p>Parallel processing can significantly speed up a process. There are however some tradeoffs.</p>
+<p>In Python, parallel processing is creating using a <code>Pool</code>. A pool maps instances of a function over an interable.</p>
+
+<pre><code># uses 5 processes to map `my_iterable` to `my_func`
+with Pool(processes=5) as p:
+    outputs = p.map(my_func, my_iterable)</code></pre>
+<p>Using the above code creates a new <code>Pool</code> with 5 processes, and uses those 5 processes to process the function arguments. The code incurs some i/o overhead creating the <code>Pool</code>. This means that if the time required to process the function calls is less than the Pool overhead, using parallel processing will actually be slower than serial processing. There are two ways around this:</p>
+<ol>
+<li>Use process pools for bulk processing (ie function time much greater than i/o time)</li>
+<li>Maintain an open process pool to avoid repeated pool creation overhead</li>
+</ol>
+<p>MRL uses different functions to control the method of parallel processing used.</p>
+<p>The <a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a> function implements parallel processing using a new pool for every function call, similar to the above code. This function is best used to process large numbers of inputs infrequently. Parallel processing is controlled by the <code>cpus</code> argument. If <code>cpus=None</code>, the <code>ncpus</code> environment variable is used (ie <code>os.environ['ncpus'] = '8'</code>)</p>
+<p>The <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> function allows for repeated use of a stateful process Pool, defined by the <a href="/mrl/core#GLOBAL_POOL"><code>GLOBAL_POOL</code></a> variable. By default, <code>GLOBAL_POOL=None</code>. To create a global pool, use the <a href="/mrl/core#set_global_pool"><code>set_global_pool</code></a> function.</p>
+
+<pre><code>set_global_pool(cpus=8)</code></pre>
+<p>If the <code>cpus=None</code>, <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> will run processes using <a href="/mrl/core#GLOBAL_POOL"><code>GLOBAL_POOL</code></a> if it exists, or serial processing if it does not. If <code>cpus</code> is not None, <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> defaults back to using <a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a></p>
+<p>If you need to frequently use parallel processing on small batches of inputs (ie batches from a model), set a global pool and use <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a></p>
+<h3 id="Global-Pool-Gotchas">Global Pool Gotchas<a class="anchor-link" href="#Global-Pool-Gotchas"> </a></h3><p>Using a global pool allows us to take advantage of parallel processing on small batches without having the overhead of creating process pools over and over again. However, process pools left open accumulate memory. If memory usage builds up, use <a href="/mrl/core#refresh_global_pool"><code>refresh_global_pool</code></a> to release the memory and create a new global pool, or use <a href="/mrl/core#close_global_pool"><code>close_global_pool</code></a> to delete the global pool and reset it to <code>None</code></p>
 
 </div>
 </div>
@@ -246,7 +262,103 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="maybe_parallel" class="doc_header"><code>maybe_parallel</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L46" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maybe_parallel</code>(<strong><code>func</code></strong>, <strong><code>iterable</code></strong>, <strong><code>cpus</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="set_global_pool" class="doc_header"><code>set_global_pool</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L52" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_global_pool</code>(<strong><code>cpus</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="close_global_pool" class="doc_header"><code>close_global_pool</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L63" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>close_global_pool</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="refresh_global_pool" class="doc_header"><code>refresh_global_pool</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>refresh_global_pool</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="new_pool_parallel" class="doc_header"><code>new_pool_parallel</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L78" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>new_pool_parallel</code>(<strong><code>func</code></strong>, <strong><code>iterable</code></strong>, <strong><code>cpus</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="maybe_parallel" class="doc_header"><code>maybe_parallel</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/core.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maybe_parallel</code>(<strong><code>func</code></strong>, <strong><code>iterable</code></strong>, <strong><code>cpus</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -267,16 +379,43 @@ nb_path: "nbs/00_core.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">test_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
+</pre></div>
 
-<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_func</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
 <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">new_pool_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span> <span class="c1"># serial processing</span>
 <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">new_pool_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span> <span class="n">cpus</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># 4 cpus manually defined</span>
+<span class="n">t3</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ncpus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">new_pool_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span> <span class="c1"># 4 cpus defined by environ variable</span>
+<span class="n">t4</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Serial time: </span><span class="si">{</span><span class="n">t1</span><span class="o">-</span><span class="n">start</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, Parallel time: </span><span class="si">{</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">Results will depend on the number of CPUs available&#39;</span><span class="p">)</span>
+<span class="n">print_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">Serial time: </span><span class="si">{</span><span class="n">t1</span><span class="o">-</span><span class="n">start</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">new_pool_parallel, 0 cpus time: </span><span class="si">{</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">new_pool_parallel, 4 cpus (arg defined) time: </span><span class="si">{</span><span class="n">t3</span><span class="o">-</span><span class="n">t2</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">new_pool_parallel, 4 cpus (environ defined) time: </span><span class="si">{</span><span class="n">t4</span><span class="o">-</span><span class="n">t3</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">print_str</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -289,8 +428,116 @@ nb_path: "nbs/00_core.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Serial time: 10.03, Parallel time: 1.09.
-Results will depend on the number of CPUs available
+<pre>
+Serial time: 5.01
+
+new_pool_parallel, 0 cpus time: 5.01
+
+new_pool_parallel, 4 cpus (arg defined) time: 1.53
+
+new_pool_parallel, 4 cpus (environ defined) time: 1.53
+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">GLOBAL_POOL</span><span class="p">))</span>
+<span class="n">set_global_pool</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">GLOBAL_POOL</span><span class="p">))</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span> <span class="n">cpus</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">print_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">maybe_parallel Global Pool (5 cpus) time: </span><span class="si">{</span><span class="n">t1</span><span class="o">-</span><span class="n">start</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">maybe_parallel arg override 2 cpus time: </span><span class="si">{</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">print_str</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;NoneType&#39;&gt;
+&lt;class &#39;multiprocessing.pool.Pool&#39;&gt;
+
+maybe_parallel Global Pool (5 cpus) time: 1.00
+
+maybe_parallel arg override 2 cpus time: 3.03
+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span> <span class="n">cpus</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">print_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">maybe_parallel Global Pool (5 cpus) time: </span><span class="si">{</span><span class="n">t1</span><span class="o">-</span><span class="n">start</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">maybe_parallel arg override 2 cpus time: </span><span class="si">{</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">print_str</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+maybe_parallel Global Pool (5 cpus) time: 1.00
+
+maybe_parallel arg override 2 cpus time: 3.02
+
+
 </pre>
 </div>
 </div>
@@ -303,7 +550,94 @@ Results will depend on the number of CPUs available
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Debugging-Parallel-Processing">Debugging Parallel Processing<a class="anchor-link" href="#Debugging-Parallel-Processing"> </a></h2><p>Errors in parallel processing can be difficult to debug because the true error and stack trace are obscured by the parallel processing stack trace. If you have errors in parallel processing, first try setting <code>os.environ['ncpus'] = '0'</code> to disable python multiprocessing. This should reveal the true error.</p>
+<h2 id="Examples-of-different-pools">Examples of different pools<a class="anchor-link" href="#Examples-of-different-pools"> </a></h2>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">new_pool_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>
+    
+<span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">end</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> elapsed&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>15.25 elapsed
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">maybe_parallel</span><span class="p">(</span><span class="n">test_func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>
+    
+<span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">end</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> elapsed&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>10.03 elapsed
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the above example, <a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a> takes 5 seconds longer to execute compared to <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a>. The time difference is driven by the overhead generated by creating new pools</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Debugging-Parallel-Processing">Debugging Parallel Processing<a class="anchor-link" href="#Debugging-Parallel-Processing"> </a></h2><p>Errors in parallel processing can be difficult to debug because the true error and stack trace are obscured by the parallel processing stack trace. If you have errors in parallel processing, first try setting <code>os.environ['ncpus'] = '0'</code> and running <a href="/mrl/core#close_global_pool"><code>close_global_pool</code></a> to disable python multiprocessing. This should reveal the true error.</p>
 <p>If everything works fine when multiprocessing is disabled, it is likely one of your functions is failing to pickle.</p>
 
 </div>

@@ -317,7 +317,6 @@ class Conditional_LSTM(nn.Module):
             new_hiddens.append((h,c))
         return new_hiddens
 
-
 # Cell
 
 class LSTM(Conditional_LSTM):
@@ -341,7 +340,8 @@ class LSTM(Conditional_LSTM):
 class Conditional_LSTM_Block(nn.Module):
     def __init__(self, d_vocab, d_embedding, d_hidden, d_output, d_latent, n_layers,
                  input_dropout=0., lstm_dropout=0., bidir=False,
-                 condition_hidden=True, condition_output=False):
+                 condition_hidden=True, condition_output=False,
+                 forward_rollout=False, p_force=1., p_force_decay=1.):
         super().__init__()
 
         self.embedding = nn.Embedding(d_vocab, d_embedding)
@@ -350,11 +350,49 @@ class Conditional_LSTM_Block(nn.Module):
                                      bidir=bidir, input_dropout=input_dropout, lstm_dropout=lstm_dropout)
 
         self.head = nn.Linear(d_output, d_vocab)
+        self.forward_rollout = forward_rollout
+        self.p_force = p_force
+        self.p_force_decay = p_force_decay
 
     def forward(self, x, z, hiddens=None):
+        if self.forward_rollout:
+            output, hiddens, encoded = self._forward_rollout(x,z,hiddens)
+        else:
+            output, hiddens, encoded = self._forward(x,z,hiddens)
+
+        return output, hiddens, encoded
+
+
+    def _forward(self, x, z, hiddens=None):
         x = self.embedding(x)
         encoded, hiddens = self.lstm(x, z, hiddens)
         output = self.head(encoded)
+
+        return output, hiddens, encoded
+
+    def _forward_rollout(self, x, z, hiddens=None):
+        bs = x.shape[0]
+        sl = x.shape[1]
+
+        idxs = x[:,0].unsqueeze(-1)
+
+        output = []
+        encoded = []
+
+        for i in range(1, sl):
+            output_iter, hiddens, encoded_iter = self._forward(idxs, z, hiddens=hiddens)
+            output.append(output_iter)
+            encoded.append(encoded_iter)
+
+            with torch.no_grad():
+                idxs = F.softmax(output_iter, -1).argmax(-1)
+
+            if np.random.random()<self.p_force:
+                idxs = x[:,i].unsqueeze(-1)
+
+        output = torch.cat(output, 1)
+        encoded = torch.cat(encoded, 1)
+        self.p_force = self.p_force * self.force_decay
 
         return output, hiddens, encoded
 
