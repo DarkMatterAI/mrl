@@ -77,5 +77,6 @@ class Buffer(Callback):
         if bs>0:
             sample, sources = self.sample(bs)
             batch_state.samples += sample
-            batch_state.sources += [i+'_buffer' for i in sources]
+            batch_state.sources += sources
+#             batch_state.sources += [i+'_buffer' for i in sources]
 #             batch_state.sources += ['buffer']*len(sample)

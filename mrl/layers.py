@@ -360,6 +360,8 @@ class Conditional_LSTM_Block(nn.Module):
         else:
             output, hiddens, encoded = self._forward(x,z,hiddens)
 
+        return output, hiddens, encoded
+
 
     def _forward(self, x, z, hiddens=None):
         x = self.embedding(x)

@@ -14,7 +14,7 @@ from ..torch_core import *
 
 class TemplateCallback(Callback):
     def __init__(self, template=None, sample_name='samples', weight=1.,
-                 track=True, prefilter=True, filter_batch=True):
+                 track=True, prefilter=True, do_filter=True):
         super().__init__(order=-1)
         self.template = template
         self.track = track
@@ -22,7 +22,7 @@ class TemplateCallback(Callback):
         self.prefilter = prefilter
         self.weight = weight
         self.sample_name = sample_name
-        self.filter_batch = filter_batch
+        self.do_filter = do_filter
 
     def setup(self):
         if self.track:
@@ -35,7 +35,7 @@ class TemplateCallback(Callback):
                 log.add_log('samples_fused')
 
     def filter_buffer(self):
-        if self.filter_batch:
+        if self.do_filter:
             env = self.environment
             buffer = env.buffer
             if buffer.buffer:
@@ -45,7 +45,7 @@ class TemplateCallback(Callback):
     #             buffer.buffer = self.filter_sequences(buffer.buffer)
 
     def filter_batch(self):
-        if self.filter_batch
+        if self.do_filter:
             env = self.environment
             batch_state = env.batch_state
 
@@ -126,13 +126,13 @@ class TemplateCallback(Callback):
 class ContrastiveTemplate(TemplateCallback):
     def __init__(self, similarity_function, sample_name='samples',
                  max_score=None, template=None,
-                 weight=1., track=True, prefilter=True, filter_batch=True):
+                 weight=1., track=True, prefilter=True, do_filter=True):
         super().__init__(template=template,
                          sample_name=sample_name,
                          weight=weight,
                          track=track,
                          prefilter=prefilter,
-                         filter_batch=filter_batch)
+                         do_filter=do_filter)
 
         self.similarity_function = similarity_function
         self.max_score = max_score
