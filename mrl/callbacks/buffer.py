@@ -27,7 +27,7 @@ class Buffer(Callback):
                 self.add(i, name=name)
         else:
             self.buffer.append(item)
-            self.buffer_sources.append(name)
+            self.buffer_sources.append(name+'_buffer')
 
     def sample(self, n):
 
@@ -60,15 +60,6 @@ class Buffer(Callback):
 
             self._filter_buffer(np.array(unique))
 
-
-#             df = pd.DataFrame(self.buffer, columns=['samples'])
-#             valids = df.duplicated(subset='samples').values
-
-#             self._filter_buffer(~valids)
-#             del df
-
-#             self.buffer = list(set(self.buffer))
-
     def sample_batch(self):
         env = self.environment
         batch_state = env.batch_state
@@ -78,5 +69,21 @@ class Buffer(Callback):
             sample, sources = self.sample(bs)
             batch_state.samples += sample
             batch_state.sources += sources
-#             batch_state.sources += [i+'_buffer' for i in sources]
-#             batch_state.sources += ['buffer']*len(sample)
+
+    def filter_batch(self):
+        env = self.environment
+        batch_state = env.batch_state
+        samples = batch_state.samples
+
+        unique_samples = set()
+        unique = []
+
+        for sample in samples:
+            if sample in unique_samples:
+                unique.append(False)
+            else:
+                unique_samples.add(sample)
+                unique.append(True)
+
+        unique = np.array(unique)
+        self._filter_batch(unique)

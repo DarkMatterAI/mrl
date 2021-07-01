@@ -176,14 +176,21 @@ class Log(Callback):
 
 class StatsCallback(Callback):
     # grabs from batch_state based on name
-    def __init__(self, batch_attribute, grabname=None, name='stats', order=20):
+    def __init__(self, batch_attribute, grabname=None, include_buffer=True,
+                     name='stats', order=20):
         super().__init__(name=name, order=order)
+
         self.grabname = grabname
         self.batch_attribute = batch_attribute
+        self.include_buffer = include_buffer
 
     def get_values(self):
         batch_state = self.environment.batch_state
         sources = np.array(batch_state.sources)
+
+        if self.include_buffer:
+            sources = np.array([i.replace('_buffer', '') for i in sources])
+
         values = batch_state[self.batch_attribute]
 
         if self.grabname is not None:
@@ -199,14 +206,15 @@ class StatsCallback(Callback):
         return values
 
 class MaxCallback(StatsCallback):
-    def __init__(self, batch_attribute, grabname, order=20):
+    def __init__(self, batch_attribute, grabname, include_buffer=True):
 
         if grabname is None:
             name = f'{batch_attribute}_max'
         else:
             name = f'{batch_attribute}_{grabname}_max'
 
-        super().__init__(batch_attribute, grabname, name=name)
+        super().__init__(batch_attribute, grabname,
+                         include_buffer=include_buffer, name=name)
 
 
     def setup(self):
@@ -219,14 +227,15 @@ class MaxCallback(StatsCallback):
         self.environment.log.update_metric(self.name, values.max())
 
 class PercentileCallback(StatsCallback):
-    def __init__(self, batch_attribute, grabname, percentile, order=20):
+    def __init__(self, batch_attribute, grabname, percentile, include_buffer=True):
 
         if grabname is None:
             name = f'{batch_attribute}_p{percentile}'
         else:
             name = f'{batch_attribute}_{grabname}_p{percentile}'
 
-        super().__init__(batch_attribute, grabname, name=name)
+        super().__init__(batch_attribute, grabname,
+                         include_buffer=include_buffer, name=name)
         self.percentile = percentile
 
     def setup(self):

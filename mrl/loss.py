@@ -5,6 +5,7 @@ __all__ = ['LossCallback', 'PolicyLoss', 'PriorLoss', 'HistoricPriorLoss']
 # Cell
 
 from .imports import *
+from .core import *
 from .torch_imports import *
 from .torch_core import *
 from .callbacks import *
@@ -67,7 +68,7 @@ class PolicyLoss(LossCallback):
         else:
             self.opt = None
 
-    def before_batch(self):
+    def after_sample(self):
         env = self.environment
         batch_state = env.batch_state
         for field in self.fields:
@@ -134,49 +135,69 @@ class PolicyLoss(LossCallback):
 # Cell
 
 class PriorLoss():
-    def __init__(self, prior, model, base_prior=None, clip=1.):
+    def __init__(self, prior, base_prior=None, clip=10.):
 
         self.prior = prior
-        self.model = model
         self.base_prior = base_prior
         self.clip = clip
 
-    def loss(self, x, rewards):
-        z = self.model.x_to_latent(x)
+    def loss(self, z, rewards):
         rewards = rewards-rewards.mean()
 
         prior_lps = self.prior.log_prob(z)
 
         if self.base_prior is not None:
             with torch.no_grad():
-                base_lps = self.base_prior.log_prob(z)
+                base_lps = self.base_prior.log_prob(z.detach())
 
             ratios = prior_lps - base_lps.detach()
 
-            prior_loss = (-ratios.sum(-1)*rewards)
+            prior_loss = (-ratios.mean(-1)*rewards)
         else:
-            prior_loss = (-prior_lps.sum(-1)*rewards)
+            prior_loss = (-prior_lps.mean(-1)*rewards)
 
         prior_loss = torch.clip(prior_loss, -self.clip, self.clip)
 
         return prior_loss
 
-    def from_batch_state(self, batch_state):
-        x = batch_state.x
+    def from_batch_state(self, batch_state, subset_name=None):
+        z = batch_state.model_latent
         rewards = batch_state.rewards
-        return self.loss(x, rewards)
+
+        if subset_name is not None:
+            sources = batch_state.sources
+            sources = np.array([i.replace('_buffer', '') for i in sources])
+            source_mask = sources==subset_name
+
+            loss = to_device(torch.zeros(sources.shape))
+
+            z = z[source_mask]
+            rewards = rewards[source_mask]
+
+            if z.numel()>0:
+                loss[source_mask] = self.loss(z, rewards)
+
+        else:
+            loss = self.loss(z, rewards)
+
+        return loss
 
 
 class HistoricPriorLoss(Callback):
-    def __init__(self, prior_loss, dataset, percentile,
-                 n, start_iter, frequency,
+    def __init__(self, prior_loss, model, dataset, percentile,
+                 n, above_percent, start_iter, frequency,
                  log_term='rewards', weight=1., track=True):
         super().__init__(name='hist_prior', order=20)
 
+        if not is_container(prior_loss):
+            prior_loss = [prior_loss]
+
         self.prior_loss = prior_loss
+        self.model = model
         self.dataset = dataset
         self.percentile = percentile
         self.n = n
+        self.above_percent = above_percent
         self.start_iter = start_iter
         self.frequency = frequency
         self.log_term = log_term
@@ -198,33 +219,41 @@ class HistoricPriorLoss(Callback):
         self.environment.batch_state.loss += loss.mean()
         self.environment.batch_state[self.name] = loss.detach().cpu().numpy()
 
+    def select_data(self):
+        env = self.environment
+        df = env.log.df
+
+        df1 = df[df[self.log_term]>np.percentile(df[self.log_term].values, self.percentile)]
+        n_samp = min(int(self.n*self.above_percent), df1.shape[0])
+        samples1 = df1.sample(n=n_samp)
+
+        df2 = df[df[self.log_term]<np.percentile(df[self.log_term].values, self.percentile)]
+        n_samp = min(int(self.n*(1-self.above_percent)), df2.shape[0])
+        samples2 = df2.sample(n=n_samp)
+
+        df = pd.concat([samples1, samples2])
+        return df
+
     def historic_loss(self):
         env = self.environment
 
         iterations = self.environment.log.iterations
 
         if (iterations > self.start_iter) and (iterations%self.frequency==0):
-            df = env.log.df
 
-            df1 = df[df[self.log_term]>np.percentile(df[self.log_term].values, self.percentile)]
-            n_samp = min(self.n, df1.shape[0])
-            samples1 = df1.sample(n=n_samp)
-
-            df2 = df[df[self.log_term]<np.percentile(df[self.log_term].values, self.percentile)]
-            n_samp = min(self.n, df2.shape[0])
-            samples2 = df2.sample(n=n_samp)
-
-            df = pd.concat([samples1, samples2])
+            df = self.select_data()
 
             rewards = to_device(torch.tensor(df.rewards.values).float())
-
 
             batch_ds = self.dataset.new(df.samples.values)
             batch = batch_ds.collate_function([batch_ds[i] for i in range(len(batch_ds))])
             batch = to_device(batch)
             x,y = batch
 
-            prior_loss = self.prior_loss.loss(x, rewards)
+            with torch.no_grad():
+                z = self.model.x_to_latent(x)
+
+            prior_loss = sum([i.loss(z, rewards) for i in self.prior_loss])
 
         else:
             prior_loss = torch.tensor(0.)

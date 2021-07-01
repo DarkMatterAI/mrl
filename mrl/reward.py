@@ -45,15 +45,16 @@ class Reward():
                 to_score.append(samples[i])
                 to_score_idxs.append(i)
 
-        new_rewards = self.compute_batched_reward(to_score)
+        if to_score:
+            new_rewards = self.compute_batched_reward(to_score)
 
-        for i in range(len(to_score)):
-            batch_idx = to_score_idxs[i]
-            reward = new_rewards[i]
-            rewards[batch_idx] = reward
+            for i in range(len(to_score)):
+                batch_idx = to_score_idxs[i]
+                reward = new_rewards[i]
+                rewards[batch_idx] = reward
 
-            if self.log:
-                self.score_log[to_score[i]] = reward
+                if self.log:
+                    self.score_log[to_score[i]] = reward
 
         rewards = to_device(torch.tensor(rewards).float()).squeeze()
         rewards = rewards * self.weight

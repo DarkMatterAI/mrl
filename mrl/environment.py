@@ -94,6 +94,7 @@ class Environment():
         self.batch_state = BatchState()
         self('before_batch')
         self('sample_batch')
+        self('before_filter_batch')
         self('filter_batch')
         self('after_sample')
         end = time.time() - start
