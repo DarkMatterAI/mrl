@@ -12,6 +12,26 @@ from .torch_core import *
 # Cell
 
 class LinearBlock(nn.Module):
+    '''
+    LinearBlock - Combined linear, batchnorm, ReLU and dropout.
+    Layers are executed in the order linear, batchnorm, ReLU, dropout.
+    Batchnorm, activation and dropout layers are optional
+
+    Inputs:
+
+        d_in int: number of input dimensions
+
+        d_out int: number of output dimensions
+
+        act bool: if True, applies a ReLU activation
+
+        bn bool: if True, applies 1d batchnorm
+
+        dropout float: dropout percentage
+
+        **lin_kwargs dict: keyword args passed to nn.Linear
+    '''
+
     def __init__(self, d_in, d_out, act=True, bn=False, dropout=0., **lin_kwargs):
         super().__init__()
 
@@ -34,6 +54,14 @@ class LinearBlock(nn.Module):
 # Cell
 
 class ValueHead(nn.Module):
+    '''
+    ValueHead - used in RL algorithms to predict state values
+
+    Inputs:
+
+        d_in int: number of input dimensions
+
+    '''
     def __init__(self, d_in, dropout=0.):
         super().__init__()
         self.drop = nn.Dropout(dropout)
@@ -46,6 +74,31 @@ class ValueHead(nn.Module):
 # Cell
 
 class Conv(nn.Module):
+    '''
+    Conv - base module for convolutions
+
+    Inputs:
+
+        d_in int: number of input dimensions
+
+        d_out int: number of output dimensions
+
+        ks int: kernel size
+
+        stride int: stride
+
+        padding int, None: padding. If None, derived from kernel size
+
+        ndim int: conv dimension (1D conv, 2D conv, 3D conv)
+
+        act bool: if True, applies a ReLU activation
+
+        bn bool: if True, applies batchnorm consistent with `ndim`
+
+        dropout float: dropout percentage
+
+        **conv_kwargs dict: keyword args passed to nn.Conv
+    '''
     def __init__(self, d_in, d_out, ks=3, stride=1, padding=None, ndim=2,
                  act=True, bn=False, dropout=0., **conv_kwargs):
         super().__init__()
@@ -80,18 +133,87 @@ class Conv(nn.Module):
         return self.layers(x)
 
 class Conv1d(Conv):
+    '''
+    Conv1d - 1D convolution
+
+    Inputs:
+
+        d_in int: number of input dimensions
+
+        d_out int: number of output dimensions
+
+        ks int: kernel size
+
+        stride int: stride
+
+        padding int, None: padding. If None, derived from kernel size
+
+        act bool: if True, applies a ReLU activation
+
+        bn bool: if True, applies batchnorm consistent with `ndim`
+
+        dropout float: dropout percentage
+
+        **conv_kwargs dict: keyword args passed to nn.Conv
+    '''
     def __init__(self, d_in, d_out, ks=3, stride=1, padding=None,
                  act=True, bn=False, dropout=0., **conv_kwargs):
         super().__init__(d_in, d_out, ks, stride, padding, ndim=1,
                  act=act, bn=bn, dropout=dropout, **conv_kwargs)
 
 class Conv2d(Conv):
+    '''
+    Conv2d - 2D convolution
+
+    Inputs:
+
+        d_in int: number of input dimensions
+
+        d_out int: number of output dimensions
+
+        ks int: kernel size
+
+        stride int: stride
+
+        padding int, None: padding. If None, derived from kernel size
+
+        act bool: if True, applies a ReLU activation
+
+        bn bool: if True, applies batchnorm consistent with `ndim`
+
+        dropout float: dropout percentage
+
+        **conv_kwargs dict: keyword args passed to nn.Conv
+    '''
     def __init__(self, d_in, d_out, ks=3, stride=1, padding=None,
                  act=True, bn=False, dropout=0., **conv_kwargs):
         super().__init__(d_in, d_out, ks, stride, padding, ndim=2,
                  act=act, bn=bn, dropout=dropout, **conv_kwargs)
 
 class Conv3d(Conv):
+    '''
+    Conv3d - 3D convolution
+
+    Inputs:
+
+        d_in int: number of input dimensions
+
+        d_out int: number of output dimensions
+
+        ks int: kernel size
+
+        stride int: stride
+
+        padding int, None: padding. If None, derived from kernel size
+
+        act bool: if True, applies a ReLU activation
+
+        bn bool: if True, applies batchnorm consistent with `ndim`
+
+        dropout float: dropout percentage
+
+        **conv_kwargs dict: keyword args passed to nn.Conv
+    '''
     def __init__(self, d_in, d_out, ks=3, stride=1, padding=None,
                  act=True, bn=False, dropout=0., **conv_kwargs):
         super().__init__(d_in, d_out, ks, stride, padding, ndim=3,
@@ -100,6 +222,15 @@ class Conv3d(Conv):
 # Cell
 
 class SphericalDistribution(torch.distributions.Distribution):
+    '''
+    SphericalDistribution - samples from points on the surface of a sphere
+
+    Inputs:
+
+        loc torch.Tensor: vector of means
+
+        scale torch.Tensor: vector of variances
+    '''
     def __init__(self, loc, scale, validate_args=False):
         super().__init__(loc.shape[0], validate_args=validate_args)
         self.dim = loc.shape[0]
@@ -123,6 +254,9 @@ class SphericalDistribution(torch.distributions.Distribution):
 # Cell
 
 class Prior(nn.Module):
+    '''
+    Prior - base class for trainable priors
+    '''
     def __init__(self):
         super().__init__()
 
@@ -145,6 +279,21 @@ class Prior(nn.Module):
 # Cell
 
 class NormalPrior(Prior):
+    '''
+    NormalPrior - normal distribution prior
+
+    Inputs:
+
+        loc torch.Tensor: vector of means
+
+        log_scale torch.Tensor: vector of log-variances
+
+        trainable bool: if True, `loc` and `scale` are trainable
+
+    Note that log-variances are used for stability. Optimizing
+    the variance directly can cause issues with gradient descent
+    sending variance values negative
+    '''
     def __init__(self, loc, log_scale, trainable=True):
         super().__init__()
         if trainable:
@@ -166,6 +315,21 @@ class NormalPrior(Prior):
         return -((x - self.loc) ** 2) / (2 * var) - self.log_scale - math.log(math.sqrt(2 * math.pi))
 
 class SphericalPrior(NormalPrior):
+    '''
+    SphericalPrior - spherical distribution prior
+
+    Inputs:
+
+        loc torch.Tensor: vector of means
+
+        log_scale torch.Tensor: vector of log-variances
+
+        trainable bool: if True, `loc` and `scale` are trainable
+
+    Note that log-variances are used for stability. Optimizing
+    the variance directly can cause issues with gradient descent
+    sending variance values negative
+    '''
     def __init__(self, loc, log_scale, trainable=True):
         super().__init__(loc, log_scale, trainable)
 
@@ -175,7 +339,18 @@ class SphericalPrior(NormalPrior):
 # Cell
 
 class SequenceDropout(nn.Module):
-    'Dropout along sequence dimension'
+    '''
+    SequenceDropout - dropout along the sequence dimension
+
+    Inputs:
+
+        p float: dropout probability
+
+        batch_first bool: if batch dimension is first in input tensors
+
+    Samples a dropout mask that is constant in the sequence dimension
+
+    '''
     def __init__(self, p, batch_first=True):
         super().__init__()
         self.p = p
@@ -198,6 +373,34 @@ class SequenceDropout(nn.Module):
 # Cell
 
 class Conditional_LSTM(nn.Module):
+    '''
+    Conditional_LSTM - Conditional LSTM module
+
+    Inputs:
+
+        d_embedding int: embedding dimension
+
+        d_hidden int: hidden dimension
+
+        d_output int: output dimension
+
+        d_latent int: latent vector dimension
+
+        n_layers int: number of layers
+
+        condition_hidden bool: if True, latent vector is used to initialize the
+        hidden state
+
+        condition_output bool: if True, latent vector is concatenated to inputs
+
+        bidir bool: if the LSTM should be bidirectional
+
+        input_dropout float: dropout percentage on inputs
+
+        lstm_dropout float: dropout on LSTM layers
+
+        batch_first bool: if batch dimension is first on input tensors
+    '''
     def __init__(self, d_embedding, d_hidden, d_output, d_latent, n_layers,
                  condition_hidden=True, condition_output=True,
                  bidir=False, input_dropout=0., lstm_dropout=0., batch_first=True):
@@ -246,6 +449,17 @@ class Conditional_LSTM(nn.Module):
             self.to_hidden = nn.ModuleList(to_hidden)
 
     def forward(self, x, z, hiddens=None):
+        '''
+        Inputs:
+
+            `x` torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]: input tensor
+
+            `z` torch.Tensor[bs, d_latent]: latent vector
+
+            `hiddens` list[(hidden_state, cell_state)], None: hidden state. If None,
+            a new hidden state is initialized
+
+        '''
 
         x = self.prepare_x(x, z)
         x = self.input_drop(x)
@@ -264,6 +478,9 @@ class Conditional_LSTM(nn.Module):
         return x, new_hiddens
 
     def prepare_x(self, x, z):
+        '''
+        Concatenate x to latent vector if `self.condition_output`
+        '''
         if self.condition_output:
             if self.batch_first:
                 sl = x.shape[1]
@@ -277,6 +494,9 @@ class Conditional_LSTM(nn.Module):
         return x
 
     def get_hidden(self, z, hiddens, bs):
+        '''
+        Initializes hidden state.
+        '''
         if hiddens is None:
             if self.condition_hidden:
                 hiddens = self.latent_to_hidden(z)
@@ -287,6 +507,9 @@ class Conditional_LSTM(nn.Module):
         return hiddens
 
     def latent_to_hidden(self, z):
+        '''
+        converts latent vector `z` into new hidden state
+        '''
         hiddens = []
         for layer in self.to_hidden:
             h = layer(z)
@@ -299,6 +522,9 @@ class Conditional_LSTM(nn.Module):
         return hiddens
 
     def get_new_hidden(self, bs):
+        '''
+        initializes new zeroed hidden states
+        '''
         hiddens = []
         for hs in self.hidden_sizes:
             h = torch.zeros(hs).repeat(1,bs,1)
@@ -308,6 +534,9 @@ class Conditional_LSTM(nn.Module):
         return hiddens
 
     def mixup_hiddens(self, hiddens):
+        '''
+        shuffles hidden states between layers for style mixing
+        '''
         new_hiddens = []
         for item in hiddens:
             h,c = item
@@ -320,6 +549,27 @@ class Conditional_LSTM(nn.Module):
 # Cell
 
 class LSTM(Conditional_LSTM):
+    '''
+    LSTM - LSTM module
+
+    Inputs:
+
+        d_embedding int: embedding dimension
+
+        d_hidden int: hidden dimension
+
+        d_output int: output dimension
+
+        n_layers int: number of layers
+
+        bidir bool: if the LSTM should be bidirectional
+
+        input_dropout float: dropout percentage on inputs
+
+        lstm_dropout float: dropout on LSTM layers
+
+        batch_first bool: if batch dimension is first on input tensors
+    '''
     def __init__(self, d_embedding, d_hidden, d_output, n_layers,
                  bidir=False, input_dropout=0., lstm_dropout=0.,
                  batch_first=True):
@@ -330,6 +580,15 @@ class LSTM(Conditional_LSTM):
                  lstm_dropout=lstm_dropout, batch_first=batch_first)
 
     def forward(self, x, hiddens=None):
+        '''
+        Inputs:
+
+            `x` torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]: input tensor
+
+            `hiddens` list[(hidden_state, cell_state)], None: hidden state. If None,
+            a new hidden state is initialized
+
+        '''
 
         x, new_hiddens = super().forward(x, None, hiddens)
 
@@ -338,6 +597,42 @@ class LSTM(Conditional_LSTM):
 # Cell
 
 class Conditional_LSTM_Block(nn.Module):
+    '''
+    Conditional_LSTM_Block - combines Embedding, Conditional LSTM,
+    and output layer
+
+    Inputs:
+
+        d_vocab int: vocab size
+
+        d_embedding int: embedding dimension
+
+        d_hidden int: hidden dimension
+
+        d_output int: output dimension
+
+        d_latent int: latent vector dimension
+
+        n_layers int: number of layers
+
+        input_dropout float: dropout percentage on inputs
+
+        lstm_dropout float: dropout on LSTM layers
+
+        bidir bool: if the LSTM should be bidirectional
+
+        condition_hidden bool: if True, latent vector is used to initialize the
+        hidden state
+
+        condition_output bool: if True, latent vector is concatenated to inputs
+
+        forward_rollout bool: if model should generate outputs through rollout
+        with teacher forcing
+
+        p_force float: teacher forcing frequency
+
+        p_force_decay float: teacher forcing decay rate
+    '''
     def __init__(self, d_vocab, d_embedding, d_hidden, d_output, d_latent, n_layers,
                  input_dropout=0., lstm_dropout=0., bidir=False,
                  condition_hidden=True, condition_output=False,
@@ -355,6 +650,17 @@ class Conditional_LSTM_Block(nn.Module):
         self.p_force_decay = p_force_decay
 
     def forward(self, x, z, hiddens=None):
+        '''
+        Inputs:
+
+            `x` torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]: input tensor
+
+            `z` torch.Tensor[bs, d_latent]: latent vector
+
+            `hiddens` list[(hidden_state, cell_state)], None: hidden state. If None,
+            a new hidden state is initialized
+
+        '''
         if self.forward_rollout:
             output, hiddens, encoded = self._forward_rollout(x,z,hiddens)
         else:
@@ -371,6 +677,13 @@ class Conditional_LSTM_Block(nn.Module):
         return output, hiddens, encoded
 
     def _forward_rollout(self, x, z, hiddens=None):
+        '''
+        _forward_rollout - forward with self-rollout
+
+        At each time step, the model generates a new output. With `p_force`, the
+        corret next step from the input is sent to the model, or with `1-p_force`
+        the model's last prediction is sent as the next step
+        '''
         bs = x.shape[0]
         sl = x.shape[1]
 
@@ -399,6 +712,27 @@ class Conditional_LSTM_Block(nn.Module):
 # Cell
 
 class LSTM_Block(nn.Module):
+    '''
+    LSTM_Block - combines Embedding, LSTM, and output layer
+
+    Inputs:
+
+        d_vocab int: vocab size
+
+        d_embedding int: embedding dimension
+
+        d_hidden int: hidden dimension
+
+        d_output int: output dimension
+
+        n_layers int: number of layers
+
+        input_dropout float: dropout percentage on inputs
+
+        lstm_dropout float: dropout on LSTM layers
+
+        bidir bool: if the LSTM should be bidirectional
+    '''
     def __init__(self, d_vocab, d_embedding, d_hidden, d_output, n_layers,
                  input_dropout=0., lstm_dropout=0., bidir=False):
         super().__init__()
@@ -410,6 +744,15 @@ class LSTM_Block(nn.Module):
         self.head = nn.Linear(d_output, d_vocab)
 
     def forward(self, x, hiddens=None):
+        '''
+        Inputs:
+
+            `x` torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]: input tensor
+
+            `hiddens` list[(hidden_state, cell_state)], None: hidden state. If None,
+            a new hidden state is initialized
+
+        '''
         x = self.embedding(x)
         encoded, hiddens = self.lstm(x, hiddens)
         output = self.head(encoded)
@@ -418,11 +761,34 @@ class LSTM_Block(nn.Module):
 
 # Cell
 class Encoder(nn.Module):
+    '''
+    Base encoder module. All encoders have a
+    d_latent attribute which is referenced by other modules
+    '''
     def __init__(self, d_latent):
         super().__init__()
         self.d_latent = d_latent
 
 class LSTM_Encoder(Encoder):
+    '''
+    LSTM_Encoder -
+
+    Inputs:
+
+        d_vocab int: vocab size
+
+        d_embedding int: embedding dimension
+
+        d_hidden int: hidden dimension
+
+        n_layers int: number of layers
+
+        d_latent int: latent vector dimension
+
+        input_dropout float: dropout percentage on inputs
+
+        lstm_dropout float: dropout on LSTM layers
+    '''
     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, d_latent,
                  input_dropout=0., lstm_dropout=0.):
         super().__init__(d_latent)

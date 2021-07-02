@@ -151,12 +151,14 @@ class PriorLoss():
                 base_lps = self.base_prior.log_prob(z.detach())
 
             ratios = prior_lps - base_lps.detach()
+            ratios = torch.clip(ratios, -self.clip, self.clip)
 
             prior_loss = (-ratios.mean(-1)*rewards)
         else:
+            prior_lps = torch.clip(prior_lps, -self.clip, self.clip)
             prior_loss = (-prior_lps.mean(-1)*rewards)
 
-        prior_loss = torch.clip(prior_loss, -self.clip, self.clip)
+#         prior_loss = torch.clip(prior_loss, -self.clip, self.clip)
 
         return prior_loss
 
