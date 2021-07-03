@@ -771,7 +771,7 @@ class Encoder(nn.Module):
 
 class LSTM_Encoder(Encoder):
     '''
-    LSTM_Encoder -
+    LSTM_Encoder - LSTM-based encoder
 
     Inputs:
 
@@ -788,6 +788,8 @@ class LSTM_Encoder(Encoder):
         input_dropout float: dropout percentage on inputs
 
         lstm_dropout float: dropout on LSTM layers
+
+    Generates latent vector from hidden states from the last LSTM layer
     '''
     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, d_latent,
                  input_dropout=0., lstm_dropout=0.):
@@ -808,6 +810,17 @@ class LSTM_Encoder(Encoder):
 # Cell
 
 class MLP_Encoder(Encoder):
+    '''
+    MLP_Encoder - MLP-based encoder
+
+    Inputs:
+
+        d_in int: number of input dimensions
+
+        dims list[int]: list of layer sizes ie `[1024, 512, 256]`
+
+        dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+    '''
     def __init__(self, d_in, dims, d_latent, dropouts):
         super().__init__(d_latent)
 
@@ -828,6 +841,25 @@ class MLP_Encoder(Encoder):
 # Cell
 
 class Conv_Encoder(Encoder):
+    '''
+    Conv_Encoder - 1D conv encoder
+
+    Inputs:
+
+        d_vocab int: vocab size
+
+        d_embedding int: embedding dimension
+
+        d_latent int: latent vector dimension
+
+        filters list[int]: filter sizes for conv layers ie `[64, 128, 256]`
+
+        kernel_sizes list[int]: kernel sizes for conv layers ie `[5, 5, 5]`
+
+        strides list[int]: strides for conv layers ie `[2, 2, 2]`
+
+        dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+    '''
     def __init__(self, d_vocab, d_embedding, d_latent, filters, kernel_sizes, strides, dropouts):
         super().__init__(d_latent)
 
@@ -854,6 +886,22 @@ class Conv_Encoder(Encoder):
 # Cell
 
 class MLP(nn.Module):
+    '''
+    MLP - multi-layer perceptron
+
+    Inputs:
+
+        d_in int: number of input dimensions
+
+        dims list[int]: list of layer sizes ie `[1024, 512, 256]`
+
+        d_out int: number of output dimensions
+
+        drops list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+
+        outrange list[float], None: squashes the output to be between `outrange[0]`
+        and `outrange[1]`
+    '''
     def __init__(self, d_in, dims, d_out, drops, outrange=None):
         super().__init__()
 

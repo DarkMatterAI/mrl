@@ -103,10 +103,16 @@ class Base_Dataset(Dataset):
 
     Inputs:
 
-        `collate_function` - batch collate function for the particular dataset class
+        `collate_function` Callable: batch collate function for the particular dataset class
     '''
     def __init__(self, collate_function):
         self.collate_function = collate_function
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def __getitem__(self, idx):
+        raise NotImplementedError
 
     def dataloader(self, bs, num_workers=-1, **dl_kwargs):
         if num_workers==-1:
@@ -143,11 +149,18 @@ class Text_Dataset(Base_Dataset):
 
     Inputs:
 
-        `sequences` - list[str], list[tuple], list of text sequences or text tuples (source, target)
+        `sequences` list[str], list[tuple]: list of text sequences or text tuples (source, target)
 
-        `vocab` - Vocab, vocabuary for tokenization/numericaization
+        `vocab` Vocab: vocabuary for tokenization/numericaization
 
-        `collate_function` - batch collate function. If None, defauts to `lm_collate`
+        `collate_function` Callable: batch collate function. If None, defauts to `lm_collate`
+
+    If `sequences` is a list of strings, `__getitem__` returns a tuple of `(sequence_ints, None)`.
+    This is suitable for language modeling where the goal is to predict the input sequence.
+
+    If `sequences` is a list of tuples, `__getitem__` returns a tuple of
+    `(input_sequence_ints, output_sequence_ints)`. This is suitable for seq-to-seq tasks where
+    the predicted sequence is different from the input sequence
     '''
     def __init__(self, sequences, vocab, collate_function=None):
         self.sequences = sequences
@@ -195,13 +208,16 @@ class Text_Prediction_Dataset(Text_Dataset):
 
     Inputs:
 
-        `sequences` - list[str], list of text sequences
+        `sequences` list[str]: list of text sequences
 
-        `y_vals` - list[int, float], list of paired output values
+        `y_vals` list[int, float]: list of paired output values
 
-        `vocab` - Vocab, vocabuary for tokenization/numericaization
+        `vocab` Vocab: vocabuary for tokenization/numericaization
 
-        `collate_function` - batch collate function. If None, defauts to `sequence_prediction_collate`
+        `collate_function` Callable: batch collate function. If None, defauts to `sequence_prediction_collate`
+
+    `__getitem__` returns a tuple of `(sequence_ints, y_vals)` suitable for predicting
+    regressions or classifications from the sequence
     '''
     def __init__(self, sequences, y_vals, vocab, collate_function=None):
 
@@ -238,11 +254,11 @@ class Vector_Dataset(Base_Dataset):
 
     Inputs:
 
-        `sequences` - list[str], list of text sequences
+        `sequences` list[str]: list of text sequences
 
-        `vec_function` - function to convert sequence to a vector
+        `vec_function` Callable: function to convert sequence to a vector
 
-        `collate_function` - batch collate function. If None, defauts to `vector_collate`
+        `collate_function` Callable: batch collate function. If None, defauts to `vector_collate`
     '''
     def __init__(self, sequences, vec_function, collate_function=None):
         if collate_function is None:
@@ -280,13 +296,21 @@ class Vec_To_Text_Dataset(Vector_Dataset):
 
     Inputs:
 
-        `sequences` - list[str], list[tuple], list of text sequences or text tuples (source, target)
+        `sequences` list[str], list[tuple]: list of text sequences or text tuples (source, target)
 
-        `vocab` - Vocab, vocabuary for tokenization/numericaization
+        `vocab` Vocab: vocabuary for tokenization/numericaization
 
-        `vec_function` - function to convert a sequence to a vector
+        `vec_function` Callable: function to convert a sequence to a vector
 
-        `collate_function` - batch collate function. If None, defauts to `vec_to_text_collate`
+        `collate_function` Callable: batch collate function. If None, defauts to `vec_to_text_collate`
+
+    `__getitem__` returns a tuple of `(sequence_vector, sequence_ints)`.
+
+    If `sequences` is a list of strings, both `sequence_vector` and `sequence_ints`
+    will be derived from the same sequence.
+
+    If `sequences` is a list of tuples, `sequence_vector` will be derived from the first sequence
+    and `sequence_ints` will be derived from the second sequence
     '''
     def __init__(self, sequences, vocab, vec_function, collate_function=None):
 
@@ -334,13 +358,13 @@ class Vec_Prediction_Dataset(Vector_Dataset):
 
     Inputs:
 
-        `sequences` - list[str], list of text sequences
+        `sequences` list[str]: list of text sequences
 
-        `y_vals` - list[int, float], list of paired output values
+        `y_vals` list[int, float]: list of paired output values
 
-        `vec_function` - function to convert a sequence to a vector
+        `vec_function` Callable: function to convert a sequence to a vector
 
-        `collate_function` - batch collate function. If None, defauts to `vector_prediction_collate`
+        `collate_function` Callable: batch collate function. If None, defauts to `vector_prediction_collate`
     '''
     def __init__(self, sequences, y_vals, vec_function, collate_function=None):
         if collate_function is None:
