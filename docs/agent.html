@@ -208,7 +208,7 @@ nb_path: "nbs/16_agent.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SupevisedCB" class="doc_header"><code>class</code> <code>SupevisedCB</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L353" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SupevisedCB</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>base_update</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="SupevisedCB" class="doc_header"><code>class</code> <code>SupevisedCB</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L368" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SupevisedCB</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>base_update</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -239,7 +239,7 @@ nb_path: "nbs/16_agent.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Rollback" class="doc_header"><code>class</code> <code>Rollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L385" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Rollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>alpha</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="Rollback" class="doc_header"><code>class</code> <code>Rollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L400" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Rollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>alpha</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -270,7 +270,7 @@ nb_path: "nbs/16_agent.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RetrainRollback" class="doc_header"><code>class</code> <code>RetrainRollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L415" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RetrainRollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>base_update</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="RetrainRollback" class="doc_header"><code>class</code> <code>RetrainRollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L430" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RetrainRollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>base_update</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -286,47 +286,28 @@ nb_path: "nbs/16_agent.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ResetAndRetrain</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">weight_fp</span><span class="p">,</span> <span class="n">base_update</span><span class="p">,</span> <span class="n">percentile</span><span class="p">,</span> 
-                 <span class="n">lr</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">log_term</span><span class="o">=</span><span class="s1">&#39;rewards&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;reset_retrain&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span> <span class="o">=</span> <span class="n">agent</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">frequency</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_update</span> <span class="o">=</span> <span class="n">base_update</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">percentile</span> <span class="o">=</span> <span class="n">percentile</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bs</span> <span class="o">=</span> <span class="n">bs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log_term</span> <span class="o">=</span> <span class="n">log_term</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weight_fp</span> <span class="o">=</span> <span class="n">weight_fp</span>
-        
-    <span class="k">def</span> <span class="nf">after_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span>
-        <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">iterations</span>
-        
-        <span class="k">if</span> <span class="n">iterations</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">iterations</span><span class="o">%</span><span class="k">self</span>.frequency==0:
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_model</span><span class="p">()</span>
-            
-            
-    <span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;samples&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_term</span><span class="p">]]</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">log_term</span><span class="p">]</span><span class="o">&gt;</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">log_term</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">percentile</span><span class="p">)]</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight_fp</span><span class="p">))</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">update_dataset_from_inputs</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span>
+</div>
+    {% endraw %}
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">base_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+    {% raw %}
     
-</pre></div>
+<div class="cell border-box-sizing code_cell rendered">
 
-    </div>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ResetAndRetrain" class="doc_header"><code>class</code> <code>ResetAndRetrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/agent.py#L478" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResetAndRetrain</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>weight_fp</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>epochs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>sample_term</code></strong>=<em><code>'samples'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -402,8 +383,8 @@ nb_path: "nbs/16_agent.ipynb"
     <tr>
       <td>0</td>
       <td>0.47915</td>
-      <td>0.63231</td>
-      <td>00:06</td>
+      <td>0.63230</td>
+      <td>00:08</td>
     </tr>
   </tbody>
 </table>

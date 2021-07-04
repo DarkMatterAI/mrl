@@ -55,30 +55,22 @@ nb_path: "nbs/06_layers.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="LinearBlock" class="doc_header"><code>class</code> <code>LinearBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinearBlock</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>lin_kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>LinearBlock - Combined linear, batchnorm, ReLU and dropout.
+Layers are executed in the order linear, batchnorm, ReLU, dropout.
+Batchnorm, activation and dropout layers are optional</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_in int: number of input dimensions
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_out int: number of output dimensions
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+act bool: if True, applies a ReLU activation
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+bn bool: if True, applies 1d batchnorm
+
+dropout float: dropout percentage
+
+**lin_kwargs dict: keyword args passed to nn.Linear</code></pre>
 
 </div>
 
@@ -126,32 +118,12 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ValueHead" class="doc_header"><code>class</code> <code>ValueHead</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L36" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValueHead</code>(<strong><code>d_in</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
+<h2 id="ValueHead" class="doc_header"><code>class</code> <code>ValueHead</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValueHead</code>(<strong><code>d_in</code></strong>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>ValueHead - used in RL algorithms to predict state values</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<pre><code>d_in int: number of input dimensions</code></pre>
 
 </div>
 
@@ -181,32 +153,30 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv" class="doc_header"><code>class</code> <code>Conv</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="Conv" class="doc_header"><code>class</code> <code>Conv</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L76" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>Conv - base module for convolutions</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_in int: number of input dimensions
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_out int: number of output dimensions
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+ks int: kernel size
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+stride int: stride
+
+padding int, None: padding. If None, derived from kernel size
+
+ndim int: conv dimension (1D conv, 2D conv, 3D conv)
+
+act bool: if True, applies a ReLU activation
+
+bn bool: if True, applies batchnorm consistent with `ndim`
+
+dropout float: dropout percentage
+
+**conv_kwargs dict: keyword args passed to nn.Conv</code></pre>
 
 </div>
 
@@ -229,32 +199,28 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv1d" class="doc_header"><code>class</code> <code>Conv1d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L82" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
+<h2 id="Conv1d" class="doc_header"><code>class</code> <code>Conv1d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L135" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>Conv1d - 1D convolution</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_in int: number of input dimensions
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_out int: number of output dimensions
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+ks int: kernel size
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+stride int: stride
+
+padding int, None: padding. If None, derived from kernel size
+
+act bool: if True, applies a ReLU activation
+
+bn bool: if True, applies batchnorm consistent with `ndim`
+
+dropout float: dropout percentage
+
+**conv_kwargs dict: keyword args passed to nn.Conv</code></pre>
 
 </div>
 
@@ -277,32 +243,28 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv2d" class="doc_header"><code>class</code> <code>Conv2d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L88" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv2d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
+<h2 id="Conv2d" class="doc_header"><code>class</code> <code>Conv2d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L164" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv2d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>Conv2d - 2D convolution</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_in int: number of input dimensions
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_out int: number of output dimensions
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+ks int: kernel size
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+stride int: stride
+
+padding int, None: padding. If None, derived from kernel size
+
+act bool: if True, applies a ReLU activation
+
+bn bool: if True, applies batchnorm consistent with `ndim`
+
+dropout float: dropout percentage
+
+**conv_kwargs dict: keyword args passed to nn.Conv</code></pre>
 
 </div>
 
@@ -325,32 +287,28 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv3d" class="doc_header"><code>class</code> <code>Conv3d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L94" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv3d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
+<h2 id="Conv3d" class="doc_header"><code>class</code> <code>Conv3d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L193" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv3d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>Conv3d - 3D convolution</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_in int: number of input dimensions
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_out int: number of output dimensions
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+ks int: kernel size
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+stride int: stride
+
+padding int, None: padding. If None, derived from kernel size
+
+act bool: if True, applies a ReLU activation
+
+bn bool: if True, applies batchnorm consistent with `ndim`
+
+dropout float: dropout percentage
+
+**conv_kwargs dict: keyword args passed to nn.Conv</code></pre>
 
 </div>
 
@@ -380,9 +338,14 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SphericalDistribution" class="doc_header"><code>class</code> <code>SphericalDistribution</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SphericalDistribution</code>(<strong><code>loc</code></strong>, <strong><code>scale</code></strong>, <strong><code>validate_args</code></strong>=<em><code>False</code></em>) :: <code>Distribution</code></p>
+<h2 id="SphericalDistribution" class="doc_header"><code>class</code> <code>SphericalDistribution</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L224" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SphericalDistribution</code>(<strong><code>loc</code></strong>, <strong><code>scale</code></strong>, <strong><code>validate_args</code></strong>=<em><code>False</code></em>) :: <code>Distribution</code></p>
 </blockquote>
-<p>Distribution is the abstract base class for probability distributions.</p>
+<p>SphericalDistribution - samples from points on the surface of a sphere</p>
+<p>Inputs:</p>
+
+<pre><code>loc torch.Tensor: vector of means
+
+scale torch.Tensor: vector of variances</code></pre>
 
 </div>
 
@@ -412,32 +375,9 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Prior" class="doc_header"><code>class</code> <code>Prior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L125" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Prior</code>() :: <code>Module</code></p>
+<h2 id="Prior" class="doc_header"><code>class</code> <code>Prior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L256" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Prior</code>() :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
-
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<p>Prior - base class for trainable priors</p>
 
 </div>
 
@@ -467,32 +407,21 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NormalPrior" class="doc_header"><code>class</code> <code>NormalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L147" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#Prior"><code>Prior</code></a></p>
+<h2 id="NormalPrior" class="doc_header"><code>class</code> <code>NormalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L281" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#Prior"><code>Prior</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>NormalPrior - normal distribution prior</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>loc torch.Tensor: vector of means
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+log_scale torch.Tensor: vector of log-variances
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+trainable bool: if True, `loc` and `scale` are trainable
 
 </code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<p>Note that log-variances are used for stability. Optimizing
+the variance directly can cause issues with gradient descent
+sending variance values negative</p>
 
 </div>
 
@@ -515,32 +444,21 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SphericalPrior" class="doc_header"><code>class</code> <code>SphericalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L168" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SphericalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#NormalPrior"><code>NormalPrior</code></a></p>
+<h2 id="SphericalPrior" class="doc_header"><code>class</code> <code>SphericalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L317" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SphericalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#NormalPrior"><code>NormalPrior</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>SphericalPrior - spherical distribution prior</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>loc torch.Tensor: vector of means
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+log_scale torch.Tensor: vector of log-variances
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+trainable bool: if True, `loc` and `scale` are trainable
 
 </code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<p>Note that log-variances are used for stability. Optimizing
+the variance directly can cause issues with gradient descent
+sending variance values negative</p>
 
 </div>
 
@@ -593,9 +511,17 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SequenceDropout" class="doc_header"><code>class</code> <code>SequenceDropout</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L177" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SequenceDropout</code>(<strong><code>p</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+<h2 id="SequenceDropout" class="doc_header"><code>class</code> <code>SequenceDropout</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L341" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SequenceDropout</code>(<strong><code>p</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Dropout along sequence dimension</p>
+<p>SequenceDropout - dropout along the sequence dimension</p>
+<p>Inputs:</p>
+
+<pre><code>p float: dropout probability
+
+batch_first bool: if batch dimension is first in input tensors
+
+</code></pre>
+<p>Samples a dropout mask that is constant in the sequence dimension</p>
 
 </div>
 
@@ -625,32 +551,33 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conditional_LSTM" class="doc_header"><code>class</code> <code>Conditional_LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L200" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+<h2 id="Conditional_LSTM" class="doc_header"><code>class</code> <code>Conditional_LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L375" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>True</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>Conditional_LSTM - Conditional LSTM module</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_embedding int: embedding dimension
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_hidden int: hidden dimension
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+d_output int: output dimension
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+d_latent int: latent vector dimension
+
+n_layers int: number of layers
+
+condition_hidden bool: if True, latent vector is used to initialize the
+hidden state
+
+condition_output bool: if True, latent vector is concatenated to inputs
+
+bidir bool: if the LSTM should be bidirectional
+
+input_dropout float: dropout percentage on inputs
+
+lstm_dropout float: dropout on LSTM layers
+
+batch_first bool: if batch dimension is first on input tensors</code></pre>
 
 </div>
 
@@ -725,6 +652,73 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">l5</span><span class="o">.</span><span class="n">get_new_hidden</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>2</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l5</span><span class="o">.</span><span class="n">get_new_hidden</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(torch.Size([2, 5, 64]), torch.Size([2, 5, 64])),
+ (torch.Size([2, 5, 32]), torch.Size([2, 5, 32]))]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -740,32 +734,26 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM" class="doc_header"><code>class</code> <code>LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L322" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#Conditional_LSTM"><code>Conditional_LSTM</code></a></p>
+<h2 id="LSTM" class="doc_header"><code>class</code> <code>LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L551" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#Conditional_LSTM"><code>Conditional_LSTM</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>LSTM - LSTM module</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_embedding int: embedding dimension
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_hidden int: hidden dimension
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+d_output int: output dimension
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+n_layers int: number of layers
+
+bidir bool: if the LSTM should be bidirectional
+
+input_dropout float: dropout percentage on inputs
+
+lstm_dropout float: dropout on LSTM layers
+
+batch_first bool: if batch dimension is first on input tensors</code></pre>
 
 </div>
 
@@ -821,32 +809,41 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conditional_LSTM_Block" class="doc_header"><code>class</code> <code>Conditional_LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L340" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>False</code></em>, <strong><code>forward_rollout</code></strong>=<em><code>False</code></em>, <strong><code>p_force</code></strong>=<em><code>1.0</code></em>, <strong><code>p_force_decay</code></strong>=<em><code>1.0</code></em>) :: <code>Module</code></p>
+<h2 id="Conditional_LSTM_Block" class="doc_header"><code>class</code> <code>Conditional_LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L599" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conditional_LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>condition_hidden</code></strong>=<em><code>True</code></em>, <strong><code>condition_output</code></strong>=<em><code>False</code></em>, <strong><code>forward_rollout</code></strong>=<em><code>False</code></em>, <strong><code>p_force</code></strong>=<em><code>1.0</code></em>, <strong><code>p_force_decay</code></strong>=<em><code>1.0</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>Conditional_LSTM_Block - combines Embedding, Conditional LSTM,
+and output layer</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_vocab int: vocab size
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_embedding int: embedding dimension
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+d_hidden int: hidden dimension
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+d_output int: output dimension
+
+d_latent int: latent vector dimension
+
+n_layers int: number of layers
+
+input_dropout float: dropout percentage on inputs
+
+lstm_dropout float: dropout on LSTM layers
+
+bidir bool: if the LSTM should be bidirectional
+
+condition_hidden bool: if True, latent vector is used to initialize the
+hidden state
+
+condition_output bool: if True, latent vector is concatenated to inputs
+
+forward_rollout bool: if model should generate outputs through rollout
+with teacher forcing
+
+p_force float: teacher forcing frequency
+
+p_force_decay float: teacher forcing decay rate</code></pre>
 
 </div>
 
@@ -876,32 +873,26 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_Block" class="doc_header"><code>class</code> <code>LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L401" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="LSTM_Block" class="doc_header"><code>class</code> <code>LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L714" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>LSTM_Block - combines Embedding, LSTM, and output layer</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_vocab int: vocab size
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_embedding int: embedding dimension
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+d_hidden int: hidden dimension
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+d_output int: output dimension
+
+n_layers int: number of layers
+
+input_dropout float: dropout percentage on inputs
+
+lstm_dropout float: dropout on LSTM layers
+
+bidir bool: if the LSTM should be bidirectional</code></pre>
 
 </div>
 
@@ -931,32 +922,10 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Encoder" class="doc_header"><code>class</code> <code>Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L420" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder</code>(<strong><code>d_latent</code></strong>) :: <code>Module</code></p>
+<h2 id="Encoder" class="doc_header"><code>class</code> <code>Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L763" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder</code>(<strong><code>d_latent</code></strong>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
-
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<p>Base encoder module. All encoders have a
+d_latent attribute which is referenced by other modules</p>
 
 </div>
 
@@ -979,32 +948,27 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_Encoder" class="doc_header"><code>class</code> <code>LSTM_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L425" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
+<h2 id="LSTM_Encoder" class="doc_header"><code>class</code> <code>LSTM_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L772" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>LSTM_Encoder - LSTM-based encoder</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_vocab int: vocab size
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_embedding int: embedding dimension
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+d_hidden int: hidden dimension
+
+n_layers int: number of layers
+
+d_latent int: latent vector dimension
+
+input_dropout float: dropout percentage on inputs
+
+lstm_dropout float: dropout on LSTM layers
 
 </code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<p>Generates latent vector from hidden states from the last LSTM layer</p>
 
 </div>
 
@@ -1053,32 +1017,16 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MLP_Encoder" class="doc_header"><code>class</code> <code>MLP_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L444" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_Encoder</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
+<h2 id="MLP_Encoder" class="doc_header"><code>class</code> <code>MLP_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L812" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_Encoder</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>MLP_Encoder - MLP-based encoder</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_in int: number of input dimensions
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+dims list[int]: list of layer sizes ie `[1024, 512, 256]`
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`</code></pre>
 
 </div>
 
@@ -1126,32 +1074,24 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv_Encoder" class="doc_header"><code>class</code> <code>Conv_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L464" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
+<h2 id="Conv_Encoder" class="doc_header"><code>class</code> <code>Conv_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L843" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>Conv_Encoder - 1D conv encoder</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_vocab int: vocab size
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+d_embedding int: embedding dimension
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+d_latent int: latent vector dimension
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+filters list[int]: filter sizes for conv layers ie `[64, 128, 256]`
+
+kernel_sizes list[int]: kernel sizes for conv layers ie `[5, 5, 5]`
+
+strides list[int]: strides for conv layers ie `[2, 2, 2]`
+
+dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`</code></pre>
 
 </div>
 
@@ -1199,32 +1139,21 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MLP" class="doc_header"><code>class</code> <code>MLP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L490" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_out</code></strong>, <strong><code>drops</code></strong>, <strong><code>outrange</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="MLP" class="doc_header"><code>class</code> <code>MLP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L888" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_out</code></strong>, <strong><code>drops</code></strong>, <strong><code>outrange</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<p>MLP - multi-layer perceptron</p>
+<p>Inputs:</p>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<pre><code>d_in int: number of input dimensions
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+dims list[int]: list of layer sizes ie `[1024, 512, 256]`
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+d_out int: number of output dimensions
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+drops list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+
+outrange list[float], None: squashes the output to be between `outrange[0]`
+and `outrange[1]`</code></pre>
 
 </div>
 

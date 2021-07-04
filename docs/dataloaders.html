@@ -211,7 +211,8 @@ batch for next-token prediction</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Datasets">Datasets<a class="anchor-link" href="#Datasets"> </a></h2><p>Datasets subclass the Pytorch <code>Dataset</code> class. MRL datasets add a collate function and the <a href="/mrl/dataloaders#Base_Dataset.dataloader"><code>Base_Dataset.dataloader</code></a> function to easily generate Pytorch dataloaders from the same class</p>
-<p>Datasets should all contain a <code>new</code> method. The purpose of <code>new</code> is to create a new dataset from new data using the same input arguments as the current dataset. This is used during generative training to process and batch generated samples to ensure they are processed and batched the same as training data</p>
+<p>Like all Pytorch datasets, subclass datasets must contain a valid <code>__len__</code> and <code>__getitem__</code> method. MRL datasets should aalso include a <code>new</code> method.</p>
+<p>The purpose of <code>new</code> is to create a new dataset from new data using the same input arguments and collate function as the current dataset. This is used during generative training to process and batch generated samples to ensure they are processed and batched the same as training data</p>
 
 </div>
 </div>
@@ -239,7 +240,7 @@ batch for next-token prediction</p>
 <p>BaseDataset - base dataset</p>
 <p>Inputs:</p>
 
-<pre><code>`collate_function` - batch collate function for the particular dataset class</code></pre>
+<pre><code>`collate_function` Callable: batch collate function for the particular dataset class</code></pre>
 
 </div>
 
@@ -278,16 +279,23 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Text_Dataset" class="doc_header"><code>class</code> <code>Text_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L140" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Text_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Base_Dataset"><code>Base_Dataset</code></a></p>
+<h2 id="Text_Dataset" class="doc_header"><code>class</code> <code>Text_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L146" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Text_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Base_Dataset"><code>Base_Dataset</code></a></p>
 </blockquote>
 <p>Text_Dataset - base dataset for language modes</p>
 <p>Inputs:</p>
 
-<pre><code>`sequences` - list[str], list[tuple], list of text sequences or text tuples (source, target)
+<pre><code>`sequences` list[str], list[tuple]: list of text sequences or text tuples (source, target)
 
-[`vocab`](/mrl/vocab) - Vocab, vocabuary for tokenization/numericaization
+[`vocab`](/mrl/vocab) Vocab: vocabuary for tokenization/numericaization
 
-`collate_function` - batch collate function. If None, defauts to [`lm_collate`](/mrl/dataloaders#lm_collate)</code></pre>
+`collate_function` Callable: batch collate function. If None, defauts to [`lm_collate`](/mrl/dataloaders#lm_collate)
+
+</code></pre>
+<p>If <code>sequences</code> is a list of strings, <code>__getitem__</code> returns a tuple of <code>(sequence_ints, None)</code>.
+This is suitable for language modeling where the goal is to predict the input sequence.</p>
+<p>If <code>sequences</code> is a list of tuples, <code>__getitem__</code> returns a tuple of
+<code>(input_sequence_ints, output_sequence_ints)</code>. This is suitable for seq-to-seq tasks where
+the predicted sequence is different from the input sequence</p>
 
 </div>
 
@@ -364,18 +372,22 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Text_Prediction_Dataset" class="doc_header"><code>class</code> <code>Text_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L192" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Text_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Text_Dataset"><code>Text_Dataset</code></a></p>
+<h2 id="Text_Prediction_Dataset" class="doc_header"><code>class</code> <code>Text_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L205" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Text_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Text_Dataset"><code>Text_Dataset</code></a></p>
 </blockquote>
 <p>Text_Prediction_Dataset - base dataset for predicting from text strings</p>
 <p>Inputs:</p>
 
-<pre><code>`sequences` - list[str], list of text sequences
+<pre><code>`sequences` list[str]: list of text sequences
 
-`y_vals` - list[int, float], list of paired output values
+`y_vals` list[int, float]: list of paired output values
 
-[`vocab`](/mrl/vocab) - Vocab, vocabuary for tokenization/numericaization
+[`vocab`](/mrl/vocab) Vocab: vocabuary for tokenization/numericaization
 
-`collate_function` - batch collate function. If None, defauts to [`sequence_prediction_collate`](/mrl/dataloaders#sequence_prediction_collate)</code></pre>
+`collate_function` Callable: batch collate function. If None, defauts to [`sequence_prediction_collate`](/mrl/dataloaders#sequence_prediction_collate)
+
+</code></pre>
+<p><code>__getitem__</code> returns a tuple of <code>(sequence_ints, y_vals)</code> suitable for predicting
+regressions or classifications from the sequence</p>
 
 </div>
 
@@ -435,16 +447,16 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vector_Dataset" class="doc_header"><code>class</code> <code>Vector_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L235" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Base_Dataset"><code>Base_Dataset</code></a></p>
+<h2 id="Vector_Dataset" class="doc_header"><code>class</code> <code>Vector_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L251" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Base_Dataset"><code>Base_Dataset</code></a></p>
 </blockquote>
 <p>Vector_Dataset - base dataset for molecule-derived vectors</p>
 <p>Inputs:</p>
 
-<pre><code>`sequences` - list[str], list of text sequences
+<pre><code>`sequences` list[str]: list of text sequences
 
-`vec_function` - function to convert sequence to a vector
+`vec_function` Callable: function to convert sequence to a vector
 
-`collate_function` - batch collate function. If None, defauts to [`vector_collate`](/mrl/dataloaders#vector_collate)</code></pre>
+`collate_function` Callable: batch collate function. If None, defauts to [`vector_collate`](/mrl/dataloaders#vector_collate)</code></pre>
 
 </div>
 
@@ -516,18 +528,25 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vec_To_Text_Dataset" class="doc_header"><code>class</code> <code>Vec_To_Text_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L277" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_To_Text_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Vector_Dataset"><code>Vector_Dataset</code></a></p>
+<h2 id="Vec_To_Text_Dataset" class="doc_header"><code>class</code> <code>Vec_To_Text_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L293" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_To_Text_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Vector_Dataset"><code>Vector_Dataset</code></a></p>
 </blockquote>
 <p>Vec_To_Text_Dataset - base dataset for predicting text sequences from vectors</p>
 <p>Inputs:</p>
 
-<pre><code>`sequences` - list[str], list[tuple], list of text sequences or text tuples (source, target)
+<pre><code>`sequences` list[str], list[tuple]: list of text sequences or text tuples (source, target)
 
-[`vocab`](/mrl/vocab) - Vocab, vocabuary for tokenization/numericaization
+[`vocab`](/mrl/vocab) Vocab: vocabuary for tokenization/numericaization
 
-`vec_function` - function to convert a sequence to a vector
+`vec_function` Callable: function to convert a sequence to a vector
 
-`collate_function` - batch collate function. If None, defauts to [`vec_to_text_collate`](/mrl/dataloaders#vec_to_text_collate)</code></pre>
+`collate_function` Callable: batch collate function. If None, defauts to [`vec_to_text_collate`](/mrl/dataloaders#vec_to_text_collate)
+
+</code></pre>
+<p><code>__getitem__</code> returns a tuple of <code>(sequence_vector, sequence_ints)</code>.</p>
+<p>If <code>sequences</code> is a list of strings, both <code>sequence_vector</code> and <code>sequence_ints</code>
+will be derived from the same sequence.</p>
+<p>If <code>sequences</code> is a list of tuples, <code>sequence_vector</code> will be derived from the first sequence
+and <code>sequence_ints</code> will be derived from the second sequence</p>
 
 </div>
 
@@ -600,18 +619,18 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vec_Prediction_Dataset" class="doc_header"><code>class</code> <code>Vec_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L331" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Vector_Dataset"><code>Vector_Dataset</code></a></p>
+<h2 id="Vec_Prediction_Dataset" class="doc_header"><code>class</code> <code>Vec_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L355" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Vector_Dataset"><code>Vector_Dataset</code></a></p>
 </blockquote>
 <p>Vec_Prediction_Dataset - base dataset for predicting y_vals from vectors</p>
 <p>Inputs:</p>
 
-<pre><code>`sequences` - list[str], list of text sequences
+<pre><code>`sequences` list[str]: list of text sequences
 
-`y_vals` - list[int, float], list of paired output values
+`y_vals` list[int, float]: list of paired output values
 
-`vec_function` - function to convert a sequence to a vector
+`vec_function` Callable: function to convert a sequence to a vector
 
-`collate_function` - batch collate function. If None, defauts to [`vector_prediction_collate`](/mrl/dataloaders#vector_prediction_collate)</code></pre>
+`collate_function` Callable: batch collate function. If None, defauts to [`vector_prediction_collate`](/mrl/dataloaders#vector_prediction_collate)</code></pre>
 
 </div>
 

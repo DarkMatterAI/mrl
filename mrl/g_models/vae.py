@@ -15,6 +15,14 @@ from ..dataloaders import *
 # Cell
 
 class VAE_Transition(nn.Module):
+    '''
+    VAE_Transition - converts an input vector to
+    a latent vector using the reparametarization trick
+
+    Inputs:
+
+        d_latent int: latent variable dimensions
+    '''
     def __init__(self, d_latent):
         super().__init__()
 
@@ -37,6 +45,29 @@ class VAE_Transition(nn.Module):
 # Cell
 
 class VAE(GenerativeModel):
+    '''
+    VAE - base VAE class
+
+    Inputs:
+
+        encoder nn.Module: encoder module
+
+        decoder nn.Module: decoder module
+
+        prior Optional[nn.Module]: prior module
+
+        bos_idx int: BOS token
+
+        transition Optional[nn.Module]: transition module
+
+        forward_rollout bool: if True, run supervised training using
+        rollout with teacher forcing. This is a technique used in some
+        seq2seq models and should not be used for pure generative models
+
+        p_force float: teacher forcing probabiliy
+
+        force_decay float: rate of decay of p_force
+    '''
     def __init__(self, encoder, decoder, prior=None, bos_idx=0, transition=None,
                 forward_rollout=False, p_force=0., force_decay=0.99):
         super().__init__()
@@ -72,6 +103,17 @@ class VAE(GenerativeModel):
         return output, kl_loss
 
     def decoder_forward(self, x, z, hiddens=None):
+        '''
+        decoder_forward
+
+        If using forward rollout, the model will be sampled
+        from at each time step. The model has a `p_force` chance
+        to recieve the correct next input, and a `1-p_force`
+        chance to recieve the model's own prediction.
+
+        If forward rollout is not used, `x` and `z` are
+        simply passed to the decoder
+        '''
         if self.forward_rollout:
             current_device = next(self.parameters()).device
             sl = x.shape[1]
@@ -122,6 +164,28 @@ class VAE(GenerativeModel):
         return z
 
     def sample(self, bs, sl, z=None, temperature=1., multinomial=True, z_scale=1.):
+        '''
+        sample - sample from the model
+
+        Inputs:
+
+            bs int: batch size
+
+            sl int: maximum sequence length
+
+            z Optional[torch.Tensor[bs, d_latent]]: latent vector
+
+            temperature float: sample temperature
+
+            multinomial bool: if True, use multinomial sampling.
+            If False, use argmax greedy sampling
+
+        Returns:
+
+            preds torch.LongTensor[bs, sl]: predicted sequence tokens
+
+            lps torch.FloatTensor[bs, sl, d_vocab]: prediction log probabilities
+        '''
 
         current_device = next(self.parameters()).device
 
@@ -155,10 +219,59 @@ class VAE(GenerativeModel):
         return preds[:, 1:], torch.cat(lps,-1)
 
     def sample_no_grad(self, bs, sl, z=None, temperature=1., multinomial=True):
+        '''
+        sample_no_grad - sample from the model without saving values for
+        gradient calculation
+
+        Inputs:
+
+            bs int: batch size
+
+            sl int: maximum sequence length
+
+            z Optional[torch.Tensor[bs, d_latent]]: latent vector
+
+            temperature float: sample temperature
+
+            multinomial bool: if True, use multinomial sampling.
+            If False, use argmax greedy sampling
+
+        Returns:
+
+            preds torch.LongTensor[bs, sl]: predicted sequence tokens
+
+            lps torch.FloatTensor[bs, sl, d_vocab]: prediction log probabilities
+        '''
         with torch.no_grad():
             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)
 
     def get_rl_tensors(self, x, y, temperature=1., latent=None):
+        '''
+        get_rl_tensors - generate values needed for RL training
+
+        Inputs:
+
+            x list[torch.LongTensor[bs, sl], condition]: x value
+
+            y torch.LongTensor[bs, sl]: y value
+
+            temperature float: sample temperature
+
+            latent Optonal[torch.FloatTensor[bs, d_latent]]: latent vector
+
+        Returns:
+
+            output torch.FloatTensor[bs, sl, d_vocab]: output of the model
+
+            lps torch.FloatTensor[bs, sl, d_vocab]: log probabilities.
+            Log softmax of `output` values
+
+            lps_gathered torch.FloatTensor[bs, sl]: log probabilities
+            gathered by the values in `y`
+
+            encoded torch.FloatTensor[bs, sl, d_embedding]: output from
+            final LSTM layer
+        '''
 
         decoder_input, encoder_input = self.unpack_x(x)
 
@@ -182,15 +295,47 @@ class VAE(GenerativeModel):
         return output, lps, lps_gathered, encoded
 
     def set_prior_from_stats(self, mu, logvar, trainable=False):
+        '''
+        set_prior_from_latent - set prior distribution
+        from `mu` and `logvar`
+
+        Inputs:
+
+            mu torch.FloatTensor[bs, d_latent]: vector of means
+
+            logvar torch.FloatTensor[bs, d_latent]: vector of log variances
+
+            trainable bool: if True, prior will be updated by gradient descent
+        '''
         mu = mu.detach()
         logvar = logvar.detach()
         self.prior = NormalPrior(mu, logvar, trainable)
 
     def set_prior_from_latent(self, z, trainable=False):
+        '''
+        set_prior_from_latent - set prior distribution
+        from `z`
+
+        Inputs:
+
+            z torch.FloatTensor[bs, d_latent]: latent vector
+
+            trainable bool: if True, prior will be updated by gradient descent
+        '''
         mu, logvar = self.transition.get_stats(z)
         self.set_prior_from_stats(mu, logvar, trainable)
 
     def set_prior_from_encoder(self, x, trainable=False):
+        '''
+        set_prior_from_encoder - computes a latent vector
+        from `condition` and uses it to set the model's prior
+
+        Inputs:
+
+            x: input value (depends on encoder)
+
+            trainable bool: if True, prior will be updated by gradient descent
+        '''
         decoder_input, encoder_input = self.unpack_x(x)
         assert encoder_input.shape[0]==1, "Must set prior from a single input"
         z = self.encoder(encoder_input)
@@ -200,6 +345,48 @@ class VAE(GenerativeModel):
 # Cell
 
 class LSTM_VAE(VAE):
+    '''
+    LSTM_VAE - VAE with LSTM encoder and conditional LSTM decoder.
+    Usable for text-to-text or seq-2-seq tasks or similar
+
+    Inputs:
+
+        d_vocab int: vocab size
+
+        d_embedding int: embedding dimension
+
+        d_hidden int: hidden dimension
+
+        n_layers int: number of LSTM layers (same for encoder and decoder)
+
+        d_latent int: latent variable dimension
+
+        input_dropout float: dropout percentage on inputs
+
+        lstm_dropout float: dropout on LSTM layers
+
+        condition_hidden bool: if True, latent vector is used to initialize the
+        hidden state
+
+        condition_output bool: if True, latent vector is concatenated to
+        the outputs of the embedding layer
+
+        prior Optional[nn.Module]: prior module
+
+        bos_idx int: BOS token
+
+        transition Optional[nn.Module]: transition module
+
+        forward_rollout bool: if True, run supervised training using
+        rollout with teacher forcing. This is a technique used in some
+        seq2seq models and should not be used for pure generative models
+
+        p_force float: teacher forcing probabiliy
+
+        force_decay float: rate of decay of p_force
+
+    '''
+
     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers, d_latent,
                 input_dropout=0., lstm_dropout=0.,
                 condition_hidden=True, condition_output=True,
@@ -237,6 +424,55 @@ class LSTM_VAE(VAE):
 # Cell
 
 class Conv_VAE(VAE):
+    '''
+    Conv_VAE - VAE with 1D Conv encoder and conditional LSTM decoder.
+    Usable for text-to-text or seq-2-seq tasks or similar
+
+    Inputs:
+
+        d_vocab int: vocab size
+
+        d_embedding int: embedding dimension
+
+        conv_filters list[int]: filter sizes for conv layers ie `[64, 128, 256]`
+
+        kernel_sizes list[int]: kernel sizes for conv layers ie `[5, 5, 5]`
+
+        strides list[int]: strides for conv layers ie `[2, 2, 2]`
+
+        conv_drops list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+
+        d_hidden int: hidden dimension
+
+        n_layers int: number of LSTM layers (same for encoder and decoder)
+
+        d_latent int: latent variable dimension
+
+        input_dropout float: dropout percentage on inputs
+
+        lstm_dropout float: dropout on LSTM layers
+
+        condition_hidden bool: if True, latent vector is used to initialize the
+        hidden state
+
+        condition_output bool: if True, latent vector is concatenated to
+        the outputs of the embedding layer
+
+        prior Optional[nn.Module]: prior module
+
+        bos_idx int: BOS token
+
+        transition Optional[nn.Module]: transition module
+
+        forward_rollout bool: if True, run supervised training using
+        rollout with teacher forcing. This is a technique used in some
+        seq2seq models and should not be used for pure generative models
+
+        p_force float: teacher forcing probabiliy
+
+        force_decay float: rate of decay of p_force
+
+    '''
     def __init__(self, d_vocab, d_embedding,
                  conv_filters, kernel_sizes, strides, conv_drops,
                  d_hidden, n_layers, d_latent,
@@ -275,6 +511,53 @@ class Conv_VAE(VAE):
 # Cell
 
 class MLP_VAE(VAE):
+    '''
+    MLP_VAE - VAE with MLP encoder and conditional LSTM decoder.
+    Usable for reconstructing a sequence from a vector
+
+    Inputs:
+
+        d_vocab int: vocab size
+
+        d_embedding int: embedding dimension
+
+        encoder_d_in int: encoder input dimension
+
+        encoder_dims list[int]: list of encoder layer sizes ie `[1024, 512, 256]`
+
+        encoder_drops list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+
+        d_hidden int: hidden dimension
+
+        n_layers int: number of LSTM layers (same for encoder and decoder)
+
+        d_latent int: latent variable dimension
+
+        input_dropout float: dropout percentage on inputs
+
+        lstm_dropout float: dropout on LSTM layers
+
+        condition_hidden bool: if True, latent vector is used to initialize the
+        hidden state
+
+        condition_output bool: if True, latent vector is concatenated to
+        the outputs of the embedding layer
+
+        prior Optional[nn.Module]: prior module
+
+        bos_idx int: BOS token
+
+        transition Optional[nn.Module]: transition module
+
+        forward_rollout bool: if True, run supervised training using
+        rollout with teacher forcing. This is a technique used in some
+        seq2seq models and should not be used for pure generative models
+
+        p_force float: teacher forcing probabiliy
+
+        force_decay float: rate of decay of p_force
+
+    '''
     def __init__(self, d_vocab, d_embedding, encoder_d_in, encoder_dims, encoder_drops,
                  d_hidden, n_layers, d_latent,
                  input_dropout=0., lstm_dropout=0.,
@@ -307,6 +590,13 @@ class MLP_VAE(VAE):
 # Cell
 
 class VAELoss():
+    '''
+    VAELoss - loss for VAE models
+
+    Inputs:
+
+        weight float: KL loss weight
+    '''
     def __init__(self, weight=1.):
         self.ce = CrossEntropy()
         self.weight = weight

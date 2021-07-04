@@ -53,7 +53,7 @@ nb_path: "nbs/18_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LossCallback" class="doc_header"><code>class</code> <code>LossCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/loss.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LossCallback</code>(<strong><code>loss_function</code></strong>, <strong><code>name</code></strong>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>order</code></strong>=<em><code>20</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="LossCallback" class="doc_header"><code>class</code> <code>LossCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/loss.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LossCallback</code>(<strong><code>loss_function</code></strong>, <strong><code>name</code></strong>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>order</code></strong>=<em><code>20</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -84,7 +84,7 @@ nb_path: "nbs/18_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PolicyLoss" class="doc_header"><code>class</code> <code>PolicyLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/loss.py#L40" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyLoss</code>(<strong><code>policy_function</code></strong>, <strong><code>name</code></strong>, <strong><code>value_head</code></strong>=<em><code>None</code></em>, <strong><code>v_update</code></strong>=<em><code>0.95</code></em>, <strong><code>v_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>vopt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>weight</code></strong>=<em><code>1</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a></p>
+<h2 id="PolicyLoss" class="doc_header"><code>class</code> <code>PolicyLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/loss.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyLoss</code>(<strong><code>policy_function</code></strong>, <strong><code>name</code></strong>, <strong><code>value_head</code></strong>=<em><code>None</code></em>, <strong><code>v_update</code></strong>=<em><code>0.95</code></em>, <strong><code>v_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>vopt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>weight</code></strong>=<em><code>1</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a></p>
 </blockquote>
 
 </div>
@@ -115,7 +115,7 @@ nb_path: "nbs/18_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PriorLoss" class="doc_header"><code>class</code> <code>PriorLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/loss.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PriorLoss</code>(<strong><code>prior</code></strong>, <strong><code>model</code></strong>, <strong><code>base_prior</code></strong>=<em><code>None</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>)</p>
+<h2 id="PriorLoss" class="doc_header"><code>class</code> <code>PriorLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/loss.py#L137" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PriorLoss</code>(<strong><code>prior</code></strong>, <strong><code>base_prior</code></strong>=<em><code>None</code></em>, <strong><code>clip</code></strong>=<em><code>10.0</code></em>)</p>
 </blockquote>
 
 </div>
@@ -139,9 +139,42 @@ nb_path: "nbs/18_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HistoricPriorLoss" class="doc_header"><code>class</code> <code>HistoricPriorLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/loss.py#L170" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HistoricPriorLoss</code>(<strong><code>prior_loss</code></strong>, <strong><code>dataset</code></strong>, <strong><code>percentile</code></strong>, <strong><code>n</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>frequency</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="HistoricPriorLoss" class="doc_header"><code>class</code> <code>HistoricPriorLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/loss.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HistoricPriorLoss</code>(<strong><code>prior_loss</code></strong>, <strong><code>model</code></strong>, <strong><code>dataset</code></strong>, <strong><code>percentile</code></strong>, <strong><code>n</code></strong>, <strong><code>above_percent</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>frequency</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">sum</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([2.4219, 4.9960, 3.7641, 3.5909, 4.7596])</pre>
 </div>
 
 </div>

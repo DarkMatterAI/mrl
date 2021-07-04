@@ -77,6 +77,9 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">pad_vocab</span><span class="p">(</span><span class="n">vocab</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    pads `vocab` to have a length divisible by 8 - improves fp16 performance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span><span class="o">%</span><span class="k">8</span>==0:
         <span class="n">final_length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">)</span><span class="o">*</span><span class="mi">8</span>
         <span class="n">to_add</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span> <span class="o">-</span> <span class="n">final_length</span>
@@ -215,6 +218,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 <h2 id="Vocabulary">Vocabulary<a class="anchor-link" href="#Vocabulary"> </a></h2><p>The <a href="/mrl/vocab#Vocab"><code>Vocab</code></a> class handles tokenization. <a href="/mrl/vocab#Vocab.tokenize"><code>Vocab.tokenize</code></a> breaks strings down into tokens. <a href="/mrl/vocab#Vocab.numericalize"><code>Vocab.numericalize</code></a> maps tokens to integers. <a href="/mrl/vocab#Vocab.reconstruct"><code>Vocab.reconstruct</code></a> converts integers back into strings.</p>
 <p><a href="/mrl/vocab#Vocab"><code>Vocab</code></a> holds <code>itos</code>, a list of tokens, and <code>stoi</code>, a dictionary mapping tokens to integers. <a href="/mrl/vocab#Vocab"><code>Vocab</code></a> automatically adds four special tokens <code>['bos', 'eos', 'pad', 'unk']</code> indicating beginning of sentence, end of sentence, padding and unknown.</p>
 <h3 id="Custom-Vocbulary">Custom Vocbulary<a class="anchor-link" href="#Custom-Vocbulary"> </a></h3><p>To implement custom tokenization, subclass <a href="/mrl/vocab#Vocab"><code>Vocab</code></a> and update the <code>tokenize</code>, <code>numericalize</code> and <code>reconstruct</code> methods. Use the <a href="/mrl/vocab#test_reconstruction"><code>test_reconstruction</code></a> function to verify your custom vocab can successfully reconstruct sequences.</p>
+<p>Vocabs also have <code>prefunc</code> and <code>postfunc</code> hooks for added flexibility. <code>prefunc</code> is called on the inputs to <code>tokenize</code> before tokenization. <code>postfunc</code> is called during <code>reconstruct</code> after tokens are joined.</p>
 
 </div>
 </div>
@@ -242,11 +246,11 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 <p>Vocab - base vocabulary class</p>
 <p>Inputs:</p>
 
-<pre><code>`itos` - list, list of tokens in vocabulary
+<pre><code>`itos` list: list of tokens in vocabulary
 
-`prefunc` - None, Callable, function applied to `input` before tokenization
+`prefunc` None: Callable, function applied to `input` before tokenization
 
-`postfunc` - None, Callable, function applied to `input` after reconstruction</code></pre>
+`postfunc` None: Callable, function applied to `input` after reconstruction</code></pre>
 
 </div>
 
@@ -274,11 +278,11 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 <p>CharacterVocab - tokenize by character</p>
 <p>Inputs:</p>
 
-<pre><code>`itos` - list, list of tokens in vocabulary
+<pre><code>`itos` list: list of tokens in vocabulary
 
-`prefunc` - None, Callable, function applied to `input` before tokenization
+`prefunc` None, Callable: function applied to `input` before tokenization
 
-`postfunc` - None, Callable, function applied to `input` after reconstruction</code></pre>
+`postfunc` None, Callable: function applied to `input` after reconstruction</code></pre>
 
 </div>
 
@@ -306,13 +310,13 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 <p>FuncVocab - tokenize by <code>tok_func</code></p>
 <p>Inputs:</p>
 
-<pre><code>`itos` - list, list of tokens in vocabulary
+<pre><code>`itos` list: list of tokens in vocabulary
 
-`tok_func` - Callable, tokenization function
+`tok_func` Callable: tokenization function
 
-`prefunc` - None, Callable, function applied to `input` before tokenization
+`prefunc` None, Callable: function applied to `input` before tokenization
 
-`postfunc` - None, Callable, function applied to `input` after reconstruction</code></pre>
+`postfunc` None, Callable: function applied to `input` after reconstruction</code></pre>
 
 </div>
 
@@ -340,7 +344,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 <p>SelfiesVocab - converts smiles to selfies</p>
 <p>Inputs:</p>
 
-<pre><code>`itos` - list, list of tokens in vocabulary</code></pre>
+<pre><code>`itos` list: list of tokens in vocabulary</code></pre>
 
 </div>
 
@@ -368,14 +372,14 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 <p>CharacterReplaceVocab - tokenize by character with replacement</p>
 <p>Inputs:</p>
 
-<pre><code>`itos` - list, list of tokens
+<pre><code>`itos` list: list of tokens
 
-`replace_dict` - dict, replacement dictionary of the form {multi_character_token : single_character_token}.
+`replace_dict` dict: replacement dictionary of the form {multi_character_token : single_character_token}.
 ie replace_dict={'Br':'R', 'Cl':'L'}
 
-`prefunc` - None, Callable, function applied to `input` before tokenization
+`prefunc` None, Callable: function applied to `input` before tokenization
 
-`postfunc` - None, Callable, function applied to `input` after reconstruction</code></pre>
+`postfunc` None, Callable: function applied to `input` after reconstruction</code></pre>
 
 </div>
 
@@ -403,13 +407,13 @@ ie replace_dict={'Br':'R', 'Cl':'L'}
 <p>RegexVocab - tokenize using <code>pattern</code></p>
 <p>Inputs:</p>
 
-<pre><code>`itos` - list, list of tokens
+<pre><code>`itos` list: list of tokens
 
-`pattern` - str, regex string
+`pattern` str: regex string
 
-`prefunc` - None, Callable, function applied to `input` before tokenization
+`prefunc` None: Callable, function applied to `input` before tokenization
 
-`postfunc` - None, Callable, function applied to `input` after reconstruction</code></pre>
+`postfunc` None: Callable, function applied to `input` after reconstruction</code></pre>
 
 </div>
 
@@ -540,6 +544,115 @@ ie replace_dict={'Br':'R', 'Cl':'L'}
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Vocab-Example---Removing-Stereochemistry">Vocab Example - Removing Stereochemistry<a class="anchor-link" href="#Vocab-Example---Removing-Stereochemistry"> </a></h2><p>Stereochemistry is represented in SMILES strings using the <code>@</code> character. For example, <code>C[C@H](N)C(=O)O</code> and <code>C[C@@H](N)C(=O)O</code> represent two different stereoisomers for the same compound.</p>
+<p>Stereochemistry in SMILES strings can lead to interesting outcomes for ML models. Predictive models can overfit to specific stereocenters present in training data, and generative models can fall into a form of mode collapse of predicting different stereoisomers of the same compound, or generating excessive stereocenters.</p>
+<p>For these reasons, we may wish to deal with generic SMILES strings without stereochemistry information.</p>
+<p>One way to do this is to bulk preprocess datasets to remove stereochemistry information, but this requires storing a copy of the stereochemistry-free data, which can be prohibative for large datasets.</p>
+<p>Another way would be to apply stereochemistry removal as a <code>prefunc</code> in our <a href="/mrl/vocab#Vocab"><code>Vocab</code></a>, which will remove stereochemistry on the fly before tokenization.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">V1</span> <span class="o">=</span> <span class="n">CharacterVocab</span><span class="p">(</span><span class="n">SMILES_CHAR_VOCAB</span><span class="p">)</span>
+<span class="n">V2</span> <span class="o">=</span> <span class="n">CharacterVocab</span><span class="p">(</span><span class="n">SMILES_CHAR_VOCAB</span><span class="p">,</span> <span class="n">prefunc</span><span class="o">=</span><span class="n">remove_stereo</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="s1">&#39;@&#39;</span> <span class="ow">in</span> <span class="n">V1</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="s1">&#39;C[C@H](N)C(=O)O&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="s1">&#39;@&#39;</span> <span class="ow">in</span> <span class="n">V2</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="s1">&#39;C[C@H](N)C(=O)O&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">V1</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">numericalize</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="s1">&#39;C[C@H](N)C(=O)O&#39;</span><span class="p">)))</span> <span class="o">==</span> <span class="s1">&#39;C[C@H](N)C(=O)O&#39;</span>
+<span class="k">assert</span> <span class="n">V2</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">V2</span><span class="o">.</span><span class="n">numericalize</span><span class="p">(</span><span class="n">V2</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="s1">&#39;C[C@H](N)C(=O)O&#39;</span><span class="p">)))</span> <span class="o">==</span> <span class="s1">&#39;CC(N)C(=O)O&#39;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+  return f(*args, **kwds)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Vocab-Example---SELFIES-Vocab">Vocab Example - SELFIES Vocab<a class="anchor-link" href="#Vocab-Example---SELFIES-Vocab"> </a></h2><p><a href="https://github.com/aspuru-guzik-group/selfies">SELFIES</a> is molecule text representation alternative to SMILES strings. One advantage of using SELFIES representations is token swaps in SELFIES strings always result in valid compounds.</p>
+<p>MRL is standardized around using SMILES representations for working with compounds (sorry SELFIES devs, SMILES work better with RDKit and other libraries), so we can't use SELFIES representations for RL training (unless you want to write a parallel SELFIES-compatible version of all the comp chem functions).</p>
+<p>Luckily, we can make use of <code>prefunc</code> and <code>postfunc</code> utilities to use SELFIES representations in our generative models. We can use <a href="/mrl/chem#smile_to_selfie"><code>smile_to_selfie</code></a> as a prefunc and <a href="/mrl/chem#selfie_to_smile"><code>selfie_to_smile</code></a> as a postfunc.</p>
+<p>This means we can keep all our data in SMILES forms for compatibility. When we process SMILES for the model, we first use the <code>prefunc</code> to convert SMILES to SELFIES. Then we tokenize, numericalize and train models in selfies space. Then when we reconstruct a sequence, we use the <code>postfunc</code> to convert it back into SMILES strings.</p>
+<p>From the outside perspective, the model takes in and produces SMILES strings. But internally, everything is in SELFIES space.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.chem</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">vocab</span> <span class="o">=</span> <span class="n">FuncVocab</span><span class="p">(</span><span class="n">SELFIES_VOCAB</span><span class="p">,</span> <span class="n">split_selfie</span><span class="p">,</span> 
+                  <span class="n">prefunc</span><span class="o">=</span><span class="n">smile_to_selfie</span><span class="p">,</span> <span class="n">postfunc</span><span class="o">=</span><span class="n">selfie_to_smile</span><span class="p">)</span>
+
+<span class="n">smile</span> <span class="o">=</span> <span class="s1">&#39;COc1ccc2[nH]cc(CCNC(C)=O)c2c1&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SMILE: </span><span class="si">{</span><span class="n">smile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">selfie</span> <span class="o">=</span> <span class="n">vocab</span><span class="o">.</span><span class="n">prefunc</span><span class="p">(</span><span class="n">smile</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SELFIE: </span><span class="si">{</span><span class="n">selfie</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">vocab</span><span class="o">.</span><span class="n">postfunc</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">prefunc</span><span class="p">(</span><span class="n">smile</span><span class="p">))</span> <span class="o">==</span> <span class="n">smile</span> <span class="c1"># note - only works of smile is canonicalized</span>
+
+<span class="n">full_recon</span> <span class="o">=</span> <span class="n">vocab</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">numericalize</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">smile</span><span class="p">)))</span>
+<span class="n">partial_recon</span> <span class="o">=</span> <span class="n">vocab</span><span class="o">.</span><span class="n">join_tokens</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">_reconstruct</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">numericalize</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">smile</span><span class="p">))))</span>
+
+<span class="k">assert</span> <span class="n">full_recon</span> <span class="o">==</span> <span class="n">smile</span>
+<span class="k">assert</span> <span class="n">partial_recon</span> <span class="o">==</span> <span class="n">selfie</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>SMILE: COc1ccc2[nH]cc(CCNC(C)=O)c2c1
+SELFIE: [C][O][C][C][=C][C][NHexpl][C][=C][Branch1_1][Branch2_2][C][C][N][C][Branch1_1][C][C][=O][C][Expl=Ring1][O][C][Expl=Ring1][#C]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 

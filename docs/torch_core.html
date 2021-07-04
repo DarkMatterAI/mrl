@@ -5,8 +5,8 @@ title: Torch Core
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "Core pytorch functins"
-description: "Core pytorch functins"
+summary: "Core pytorch functions"
+description: "Core pytorch functions"
 nb_path: "nbs/05_torch_core.ipynb"
 ---
 <!--
@@ -35,6 +35,17 @@ nb_path: "nbs/05_torch_core.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Device-Settings">Device Settings<a class="anchor-link" href="#Device-Settings"> </a></h2><p>These functions control what device is used for tensors.</p>
+<p><a href="/mrl/torch_core#to_device"><code>to_device</code></a> will set a tensor or Pytorch model to the passed device. If no device is passed, the detault device is used.</p>
+<p>If Cuda is available, the device defined by <code>torch.cuda.current_device()</code>. The current device can be set using Pytorch:</p>
+<p><code>torch.cuda.set_device(1)</code></p>
+<p>To disable GPU usage, set the <code>use_cuda</code> environment variable to <code>cpu</code>. <code>os.environ['use_cuda'] = 'cpu'</code></p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -55,6 +66,11 @@ nb_path: "nbs/05_torch_core.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="get_device" class="doc_header"><code>get_device</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_device</code>()</p>
 </blockquote>
+<p>get_device - returns current default device.</p>
+<p>If Cuda is available and <code>os.environ['use_cuda']=='cuda'</code>,
+<code>torch.cuda.current_device()</code> is returned.</p>
+<p>Otherwise, <code>cpu</code> is returned</p>
+<p>Returns <code>torch.device</code></p>
 
 </div>
 
@@ -77,7 +93,196 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_device" class="doc_header"><code>to_device</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L34" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_device</code>(<strong><code>tensor</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="to_device" class="doc_header"><code>to_device</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L44" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_device</code>(<strong><code>tensor</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>to_device - sets <code>tensor</code> to <code>device</code> if possible.
+If <code>device=None</code>, <code>tensor</code> is set to the default device
+returned by <a href="/mrl/torch_core#get_device"><code>get_device</code></a></p>
+<p>Inputs</p>
+
+<pre><code>`tensor` torch.Tensor: input tensor
+
+`device`</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="set_device" class="doc_header"><code>set_device</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_device</code>(<strong><code>device</code></strong>)</p>
+</blockquote>
+<p>wrapper for torch set_device</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_model_device" class="doc_header"><code>get_model_device</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L72" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_model_device</code>(<strong><code>model</code></strong>)</p>
+</blockquote>
+<p>gets device for model from first parameter</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="freeze" class="doc_header"><code>freeze</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L78" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>freeze</code>(<strong><code>module</code></strong>)</p>
+</blockquote>
+<p>freeze - freezes all parameters in <code>module</code> (requires_grad=False)</p>
+<p>Inputs:</p>
+
+<pre><code>`module` nn.Module: Pytorch module</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="unfreeze" class="doc_header"><code>unfreeze</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unfreeze</code>(<strong><code>module</code></strong>)</p>
+</blockquote>
+<p>unfreeze - unfreezes all parameters in <code>module</code> (requires_grad=True)</p>
+<p>Inputs:</p>
+
+<pre><code>`module` nn.Module: Pytorch module</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="x_to_preds" class="doc_header"><code>x_to_preds</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>x_to_preds</code>(<strong><code>x</code></strong>, <strong><code>multinomial</code></strong>=<em><code>True</code></em>)</p>
+</blockquote>
+<p>x_to_preds - helper function for converting <code>x</code>
+to log probs and taking a hard sample</p>
+<p>Inputs:</p>
+
+<pre><code>`x` torch.Tensor: input tensor
+`multinomial` bool: if True, use multinomial sampling.
+If False, use argmax sampling
+
+</code></pre>
+<p>Returns:</p>
+
+<pre><code>`idxs` torch.LongTensor: index values of hard sample
+`lps` torch.FloatTensor: log probabilities for each hard value</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gather_lps" class="doc_header"><code>gather_lps</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gather_lps</code>(<strong><code>lps</code></strong>, <strong><code>y</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -94,6 +299,13 @@ nb_path: "nbs/05_torch_core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -101,32 +313,10 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_device" class="doc_header"><code>set_device</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_device</code>(<strong><code>device</code></strong>)</p>
+<h4 id="subset_tensor" class="doc_header"><code>subset_tensor</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>subset_tensor</code>(<strong><code>x</code></strong>, <strong><code>mask</code></strong>)</p>
 </blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_model_device" class="doc_header"><code>get_model_device</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_model_device</code>(<strong><code>model</code></strong>)</p>
-</blockquote>
+<p>indexes <code>x</code> with <code>mask</code>. If <code>x</code> is a list or tuple,
+function will index all items in <code>x</code></p>
 
 </div>
 
@@ -156,148 +346,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="freeze" class="doc_header"><code>freeze</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L55" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>freeze</code>(<strong><code>module</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="unfreeze" class="doc_header"><code>unfreeze</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unfreeze</code>(<strong><code>module</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="x_to_preds" class="doc_header"><code>x_to_preds</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>x_to_preds</code>(<strong><code>x</code></strong>, <strong><code>multinomial</code></strong>=<em><code>True</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="gather_lps" class="doc_header"><code>gather_lps</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L77" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gather_lps</code>(<strong><code>lps</code></strong>, <strong><code>y</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="subset_tensor" class="doc_header"><code>subset_tensor</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L82" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>subset_tensor</code>(<strong><code>x</code></strong>, <strong><code>mask</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="merge_weights" class="doc_header"><code>merge_weights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_weights</code>(<strong><code>sd1</code></strong>, <strong><code>sd2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
+<h4 id="merge_weights" class="doc_header"><code>merge_weights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_weights</code>(<strong><code>sd1</code></strong>, <strong><code>sd2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
 </blockquote>
 <p>merges state dicts following <code>new_weight = alpha*weight_model1 + (1-alpha)*weight_model2</code></p>
 <p>New weights are returned as a new state dict</p>
@@ -323,7 +372,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="merge_models" class="doc_header"><code>merge_models</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_models</code>(<strong><code>model1</code></strong>, <strong><code>model2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
+<h4 id="merge_models" class="doc_header"><code>merge_models</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L163" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_models</code>(<strong><code>model1</code></strong>, <strong><code>model2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
 </blockquote>
 <p>merges weights following <code>new_weight = alpha*weight_model1 + (1-alpha)*weight_model2</code></p>
 <p>New weights are loaded into <code>modell</code> inplace</p>
@@ -356,7 +405,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="smooth_batches" class="doc_header"><code>smooth_batches</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L117" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>smooth_batches</code>(<strong><code>batches</code></strong>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>)</p>
+<h4 id="smooth_batches" class="doc_header"><code>smooth_batches</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>smooth_batches</code>(<strong><code>batches</code></strong>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>)</p>
 </blockquote>
 
 </div>
@@ -387,8 +436,23 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="discount_rewards" class="doc_header"><code>discount_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L130" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>discount_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>gamma</code></strong>)</p>
+<h4 id="discount_rewards" class="doc_header"><code>discount_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>discount_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>gamma</code></strong>)</p>
 </blockquote>
+<p>discount_rewards - discounts <code>rewards</code> by <code>gamma</code></p>
+<p>Inputs:</p>
+
+<pre><code>`rewards` torch.Tensor[bs,sl]: tensor of undiscounted rewards
+
+`gamma` float: discount factor
+
+</code></pre>
+<p>Returns:</p>
+
+<pre><code>`discounted` torch.Tensor[bs, sl]: tensor of discounted rewards
+
+</code></pre>
+<p>Rewards are discounted following</p>
+<p>`discounted[i] = rewards[i] + gamma*discounted[i+1]</p>
 
 </div>
 
@@ -396,6 +460,53 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rewards</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">],</span>
+                       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span>
+                       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],])</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.97</span>
+<span class="n">discounted</span> <span class="o">=</span> <span class="n">discount_rewards</span><span class="p">(</span><span class="n">rewards</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+<span class="n">discounted</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[3.6507, 3.7636, 3.8800, 4.0000],
+        [2.7380, 2.8227, 2.9100, 3.0000],
+        [1.8253, 1.8818, 1.9400, 2.0000]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -411,8 +522,26 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="whiten" class="doc_header"><code>whiten</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L138" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>whiten</code>(<strong><code>values</code></strong>, <strong><code>shift_mean</code></strong>=<em><code>True</code></em>, <strong><code>mask</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="whiten" class="doc_header"><code>whiten</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L213" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>whiten</code>(<strong><code>values</code></strong>, <strong><code>shift_mean</code></strong>=<em><code>True</code></em>, <strong><code>mask</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
+<p>whiten - whitens <code>values</code></p>
+<p>Inputs:</p>
+
+<pre><code>`values` torch.FloatTensor: values to be whitened
+
+`shift_mean` bool: if True, outputs will have zero mean.
+
+`mask` torch.BoolTensor, torch.LongTensor, None: if a mask
+is given, masked values will not contribute to calculating the
+mean and variance for whitening. Masking is done following
+`masked_values = values*mask`. For bool tensors, values where
+`mask=True` are kept. For binary float/int tensors, values
+where `mask=1` are kept.
+
+</code></pre>
+<p>Returns:</p>
+
+<pre><code>`whitened` torch.FloatTensor: whitened values</code></pre>
 
 </div>
 
@@ -428,23 +557,6 @@ nb_path: "nbs/05_torch_core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="scatter_rewards" class="doc_header"><code>scatter_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>scatter_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>mask</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -459,7 +571,38 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="compute_advantages" class="doc_header"><code>compute_advantages</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L162" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>compute_advantages</code>(<strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>gamma</code></strong>, <strong><code>lam</code></strong>)</p>
+<h4 id="scatter_rewards" class="doc_header"><code>scatter_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>scatter_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>mask</code></strong>)</p>
+</blockquote>
+<p>scatter_rewards - scatter vector of rewards to matrix
+based on <code>mask</code></p>
+<p>Inputs:</p>
+
+<pre><code>`rewards` torch.FloatTensor[bs]: vector of rewards
+
+`mask` torch.Tensor[bs, sl]: mask tensor
+
+</code></pre>
+<p>Returns:</p>
+
+<pre><code>`template`: torch.FloatTensor: scattered values
+
+</code></pre>
+<p>In molecular RL, we typically have a single reward per molecule
+evaluating the entire structure. Before our update, we need to
+discount the final reward back to all timesteps. However, we want
+to ignore padding when we do this.</p>
+<p>scatter_rewards takes a vector of rewards and a mask where
+non-padding tokens are True and padding tokens are False.
+Rewards are placed in the last <code>True</code> index</p>
+<p>rewards = torch.tensor([4., 5., 6.]).float()
+mask = torch.tensor([[True, True, True, False],
+                     [True, True, False, False],
+                     [True, True, True, True]])
+scattered = scatter_rewards(rewards, mask)</p>
+<blockquote><blockquote><p>torch.tensor([[0., 0., 4., 0.],
+                 [0., 5., 0., 0.],
+                 [0., 0., 0., 6.]])</p>
+</blockquote>
 </blockquote>
 
 </div>
@@ -479,112 +622,29 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rewards</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-<span class="n">rewards</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">rewards</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">dr</span> <span class="o">=</span> <span class="n">discount_rewards</span><span class="p">(</span><span class="n">rewards</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rewards</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+                     <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+                     <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]])</span>
+<span class="n">scattered</span> <span class="o">=</span> <span class="n">scatter_rewards</span><span class="p">(</span><span class="n">rewards</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+<span class="n">scattered</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
 <div class="output_area">
 
 
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="CrossEntropy" class="doc_header"><code>class</code> <code>CrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L181" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CrossEntropy</code>()</p>
-</blockquote>
 
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="BinaryCrossEntropy" class="doc_header"><code>class</code> <code>BinaryCrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L190" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BinaryCrossEntropy</code>()</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="HuberLoss" class="doc_header"><code>class</code> <code>HuberLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L200" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HuberLoss</code>(<strong><code>beta</code></strong>=<em><code>1.0</code></em>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="MSELoss" class="doc_header"><code>class</code> <code>MSELoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L209" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MSELoss</code>()</p>
-</blockquote>
-
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[0., 0., 4., 0.],
+        [0., 5., 0., 0.],
+        [0., 0., 0., 6.]])</pre>
 </div>
 
 </div>
@@ -613,8 +673,172 @@ nb_path: "nbs/05_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pca" class="doc_header"><code>pca</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L219" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pca</code>(<strong><code>x</code></strong>, <strong><code>k</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="compute_advantages" class="doc_header"><code>compute_advantages</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L294" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>compute_advantages</code>(<strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>gamma</code></strong>, <strong><code>lam</code></strong>)</p>
 </blockquote>
+<p>Calculate advantages according to Generalized Advantage Estimation (GAE)</p>
+<p>Inputs:</p>
+
+<pre><code>`rewards` torch.Tensor: reward tensor
+
+`values` torch.Tensor: value function predictions
+
+'gamma' float: GAE gamma factor
+
+`lam` float: GAE lambda factor
+
+</code></pre>
+<p>Returns:</p>
+
+<pre><code>`advantages` torch.Tensor: computed advantages
+
+</code></pre>
+<p>Advantages are computed according to GAE</p>
+<p>delta = rewards[i] + gamma*values[i+1] - values[i]</p>
+<p>advantages[i] = delta + gamma<em>lam</em>glv</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Loss-Functions">Loss Functions<a class="anchor-link" href="#Loss-Functions"> </a></h2><p>Pytorch losses</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="CrossEntropy" class="doc_header"><code>class</code> <code>CrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L336" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CrossEntropy</code>()</p>
+</blockquote>
+<p>CrossEntropy - cross entropy loss for sequence predictions.
+Flattens predictions and targets before computing loss</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BinaryCrossEntropy" class="doc_header"><code>class</code> <code>BinaryCrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L356" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BinaryCrossEntropy</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="HuberLoss" class="doc_header"><code>class</code> <code>HuberLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L366" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HuberLoss</code>(<strong><code>beta</code></strong>=<em><code>1.0</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="MSELoss" class="doc_header"><code>class</code> <code>MSELoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L375" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MSELoss</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="pca" class="doc_header"><code>pca</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L385" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pca</code>(<strong><code>x</code></strong>, <strong><code>k</code></strong>=<em><code>2</code></em>)</p>
+</blockquote>
+<p>pca of <code>x</code> to <code>k</code> dimensions</p>
 
 </div>
 
