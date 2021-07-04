@@ -1357,10 +1357,13 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Catalog" class="doc_header"><code>class</code> <code>Catalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L370" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Catalog</code>(<strong><code>catalog</code></strong>)</p>
+<h2 id="Catalog" class="doc_header"><code>class</code> <code>Catalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L371" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Catalog</code>(<strong><code>catalog</code></strong>)</p>
 </blockquote>
 <p>Base Class for SMARTS matching</p>
-<p>Inputs: <code>catalog</code>, RDKit <code>FilterCatalog</code></p>
+<p>Inputs:</p>
+<ul>
+<li><code>catalog FilterCatalog</code>: RDKit <code>FilterCatalog</code></li>
+</ul>
 
 </div>
 
@@ -1383,7 +1386,53 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SmartsCatalog" class="doc_header"><code>class</code> <code>SmartsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L432" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsCatalog</code>(<strong><code>smarts</code></strong>) :: <a href="/mrl/chem#Catalog"><code>Catalog</code></a></p>
+<h4 id="Catalog.__call__" class="doc_header"><code>Catalog.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L384" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Catalog.__call__</code>(<strong><code>mol</code></strong>, <strong><code>criteria</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p><strong>call</strong> - run <code>mol</code> against <code>self.catalog</code></p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>mol [Chem.Mol, list[Chem.Mol]]</code>: input mols</p>
+</li>
+<li><p><code>criteria ['any', 'all', float, int]</code>: match criteria.
+(match any filter, match all filters, match float percent of filters,
+match int number of filters)</p>
+</li>
+</ul>
+<p>If <code>any</code>, returns <code>True</code> if any smarts match.</p>
+<p>If <code>all</code>, returns <code>True</code> if all smarts match.</p>
+<p>If <code>float</code>, returns <code>True</code> if more than <code>float</code> percent (inclusive)
+of smarts match.</p>
+<p>If <code>int</code>, returns <code>True</code> if more than <code>int</code> total (inclusive) smarts match</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SmartsCatalog" class="doc_header"><code>class</code> <code>SmartsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L445" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsCatalog</code>(<strong><code>smarts</code></strong>) :: <a href="/mrl/chem#Catalog"><code>Catalog</code></a></p>
 </blockquote>
 <p>Class for SMARTS matching</p>
 <p>Inputs: <code>smarts</code>, list of smarts</p>
@@ -1409,7 +1458,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ParamsCatalog" class="doc_header"><code>class</code> <code>ParamsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L452" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamsCatalog</code>(<strong><code>params</code></strong>) :: <a href="/mrl/chem#Catalog"><code>Catalog</code></a></p>
+<h2 id="ParamsCatalog" class="doc_header"><code>class</code> <code>ParamsCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L465" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamsCatalog</code>(<strong><code>params</code></strong>) :: <a href="/mrl/chem#Catalog"><code>Catalog</code></a></p>
 </blockquote>
 <p>Generates <code>CatalogMatch</code> object from <code>params</code>, a <code>FilterCatalogParams</code> object</p>
 
@@ -1434,7 +1483,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSCatalog" class="doc_header"><code>class</code> <code>PAINSCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L462" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="PAINSCatalog" class="doc_header"><code>class</code> <code>PAINSCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L475" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>Full PAINS filter matching</p>
 
@@ -1459,7 +1508,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSACatalog" class="doc_header"><code>class</code> <code>PAINSACatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L467" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSACatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="PAINSACatalog" class="doc_header"><code>class</code> <code>PAINSACatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L480" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSACatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS A filter matching</p>
 
@@ -1484,7 +1533,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSBCatalog" class="doc_header"><code>class</code> <code>PAINSBCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L472" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSBCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="PAINSBCatalog" class="doc_header"><code>class</code> <code>PAINSBCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L485" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSBCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS B filter matching</p>
 
@@ -1509,7 +1558,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSCCatalog" class="doc_header"><code>class</code> <code>PAINSCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L477" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="PAINSCCatalog" class="doc_header"><code>class</code> <code>PAINSCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L490" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>PAINS C filter matching</p>
 
@@ -1534,7 +1583,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ZINCCatalog" class="doc_header"><code>class</code> <code>ZINCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L482" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZINCCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="ZINCCatalog" class="doc_header"><code>class</code> <code>ZINCCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L495" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZINCCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>ZINC filter matching</p>
 
@@ -1559,7 +1608,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BRENKCatalog" class="doc_header"><code>class</code> <code>BRENKCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L487" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BRENKCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="BRENKCatalog" class="doc_header"><code>class</code> <code>BRENKCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L500" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BRENKCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>BRENK filter matching</p>
 
@@ -1584,7 +1633,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NIHCatalog" class="doc_header"><code>class</code> <code>NIHCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L492" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NIHCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
+<h2 id="NIHCatalog" class="doc_header"><code>class</code> <code>NIHCatalog</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L505" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NIHCatalog</code>() :: <a href="/mrl/chem#ParamsCatalog"><code>ParamsCatalog</code></a></p>
 </blockquote>
 <p>NIH filter matching</p>
 
@@ -1663,7 +1712,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="morgan_fp" class="doc_header"><code>morgan_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L499" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>morgan_fp</code>(<strong><code>mol</code></strong>, <strong><code>radius</code></strong>=<em><code>3</code></em>, <strong><code>nbits</code></strong>=<em><code>2048</code></em>, <strong><code>use_features</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="morgan_fp" class="doc_header"><code>morgan_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L512" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>morgan_fp</code>(<strong><code>mol</code></strong>, <strong><code>radius</code></strong>=<em><code>3</code></em>, <strong><code>nbits</code></strong>=<em><code>2048</code></em>, <strong><code>use_features</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>morgan fingerprint</p>
 
@@ -1688,7 +1737,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ECFP4" class="doc_header"><code>ECFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L505" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP4</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="ECFP4" class="doc_header"><code>ECFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L518" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP4</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>ECFP4 Fingerprint</p>
 
@@ -1713,7 +1762,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ECFP6" class="doc_header"><code>ECFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L509" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP6</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="ECFP6" class="doc_header"><code>ECFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L522" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ECFP6</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>ECFP6 Fingerprint</p>
 
@@ -1738,7 +1787,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FCFP4" class="doc_header"><code>FCFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L513" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP4</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="FCFP4" class="doc_header"><code>FCFP4</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L526" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP4</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>FCFP4 Fingerprint</p>
 
@@ -1763,7 +1812,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FCFP6" class="doc_header"><code>FCFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L517" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP6</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="FCFP6" class="doc_header"><code>FCFP6</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L530" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FCFP6</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>FCFP6 Fingerprint</p>
 
@@ -1788,7 +1837,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="failsafe_fp" class="doc_header"><code>failsafe_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L521" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>failsafe_fp</code>(<strong><code>mol</code></strong>, <strong><code>fp_function</code></strong>)</p>
+<h4 id="failsafe_fp" class="doc_header"><code>failsafe_fp</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L534" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>failsafe_fp</code>(<strong><code>mol</code></strong>, <strong><code>fp_function</code></strong>)</p>
 </blockquote>
 <p>Returns vector of zeros if failure</p>
 
@@ -1813,7 +1862,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fp_to_array" class="doc_header"><code>fp_to_array</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L534" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_to_array</code>(<strong><code>fp</code></strong>)</p>
+<h4 id="fp_to_array" class="doc_header"><code>fp_to_array</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L547" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fp_to_array</code>(<strong><code>fp</code></strong>)</p>
 </blockquote>
 <p>Converts RDKit <code>ExplicitBitVec</code> to numpy array</p>
 
@@ -1838,7 +1887,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tanimoto" class="doc_header"><code>tanimoto</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L546" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="tanimoto" class="doc_header"><code>tanimoto</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L559" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Tanimoto similarity</p>
 
@@ -1863,7 +1912,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tanimoto_rd" class="doc_header"><code>tanimoto_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L550" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="tanimoto_rd" class="doc_header"><code>tanimoto_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L563" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tanimoto_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1887,7 +1936,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice" class="doc_header"><code>dice</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L553" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="dice" class="doc_header"><code>dice</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L566" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Dice similarity</p>
 
@@ -1912,7 +1961,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice_rd" class="doc_header"><code>dice_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L557" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="dice_rd" class="doc_header"><code>dice_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L570" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dice_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1936,7 +1985,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cosine" class="doc_header"><code>cosine</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L560" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
+<h4 id="cosine" class="doc_header"><code>cosine</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L573" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>)</p>
 </blockquote>
 <p>Cosine similarity</p>
 
@@ -1961,7 +2010,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cosine_rd" class="doc_header"><code>cosine_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L564" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
+<h4 id="cosine_rd" class="doc_header"><code>cosine_rd</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L577" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cosine_rd</code>(<strong><code>fp</code></strong>, <strong><code>fps</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2003,7 +2052,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP" class="doc_header"><code>class</code> <code>FP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L569" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP</code>()</p>
+<h2 id="FP" class="doc_header"><code>class</code> <code>FP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L582" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP</code>()</p>
 </blockquote>
 <p>FP - class for manipulating molecular fingerprints</p>
 <p><code>fp = FP()</code></p>
@@ -2030,7 +2079,93 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_fingerprint" class="doc_header"><code>get_fingerprint</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L678" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_fingerprint</code>(<strong><code>mol</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>output_type</code></strong>=<em><code>'rdkit'</code></em>)</p>
+<h4 id="FP.get_fingerprint" class="doc_header"><code>FP.get_fingerprint</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L605" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FP.get_fingerprint</code>(<strong><code>mol</code></strong>, <strong><code>fp_type</code></strong>=<em><code>'ECFP6'</code></em>, <strong><code>output_type</code></strong>=<em><code>'rdkit'</code></em>)</p>
+</blockquote>
+<p>get_fingerprint - Generates fingerprint for <code>mol</code>.</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>mol [Chem.Mol, list[Chem.Mol]]</code> - input mols</p>
+</li>
+<li><p><code>fp_type str</code>: Fingerprint type, must be a key of <a href="/mrl/chem#FP.fps"><code>FP.fps</code></a></p>
+</li>
+<li><p><code>output_type str['rdkit', 'numpy']</code>: Output datatype. Numpy
+<code>ndarray</code> or RDKit <code>ExplicitBitVec</code></p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="FP.fingerprint_similarity" class="doc_header"><code>FP.fingerprint_similarity</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L627" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FP.fingerprint_similarity</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>, <strong><code>metric</code></strong>)</p>
+</blockquote>
+<p>fingerprint_similarity - Computes the similarity
+between <code>fps1</code> and <code>fps2</code> using <code>metric</code></p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>fps1 [ndarray, ExplicitBitVect]</code>: first fingerprint set</p>
+</li>
+<li><p><code>fps2 [ndarray, ExplicitBitVect]</code>: second fingerprint set</p>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><code>similarities [ndarray]</code>: matrix of similarities between all
+fingerprints in <code>fps1</code> and all fingerprints in <code>fps2</code></li>
+</ul>
+<p>Fingerprints can either be a Numpy <code>ndarray</code> or an RDKit <code>ExplicitBitVec</code>.
+Both fingerprint inputs must be the same datatype.</p>
+<p>Numpy fingerprints can eiher be a 1D vector or a 2D matrix
+of stacked fingerprints</p>
+<p>RDKit fingerprints can either be an <code>ExplicitBitVec</code> or a list of
+<code>ExplicitBitVec</code> objects.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_fingerprint" class="doc_header"><code>get_fingerprint</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L715" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_fingerprint</code>(<strong><code>mol</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>output_type</code></strong>=<em><code>'rdkit'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2054,7 +2189,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fingerprint_similarities" class="doc_header"><code>fingerprint_similarities</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L682" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fingerprint_similarities</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>, <strong><code>metric</code></strong>)</p>
+<h4 id="fingerprint_similarities" class="doc_header"><code>fingerprint_similarities</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L719" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fingerprint_similarities</code>(<strong><code>fps1</code></strong>, <strong><code>fps2</code></strong>, <strong><code>metric</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2206,7 +2341,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fragment_mol" class="doc_header"><code>fragment_mol</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L689" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_mol</code>(<strong><code>mol</code></strong>, <strong><code>max_cuts</code></strong>, <strong><code>return_mols</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="fragment_mol" class="doc_header"><code>fragment_mol</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L725" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_mol</code>(<strong><code>mol</code></strong>, <strong><code>max_cuts</code></strong>, <strong><code>return_mols</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Wrapper for RDKit mol fragmentation</p>
 
@@ -2231,13 +2366,13 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fragment_smile" class="doc_header"><code>fragment_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L693" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smile</code>(<strong><code>smile</code></strong>, <strong><code>cuts</code></strong>)</p>
+<h4 id="fragment_smile" class="doc_header"><code>fragment_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L729" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smile</code>(<strong><code>smile</code></strong>, <strong><code>cuts</code></strong>)</p>
 </blockquote>
 <p>fragment_smile - fragment <code>smile</code> based on <code>cuts</code></p>
-<p><code>smile</code> - str, smiles string to fragment</p>
-<p><code>cuts</code> - int, list of ints. Number of cuts to make. If list,
- code iterates over items in <code>cuts</code> and generates fragments from each value.
- Note that the RDKit fragmentation uses only a single cut value. So fragmenting with
+<p><code>smile str</code>: smiles string to fragment</p>
+<p><code>cuts [int, list[int]]</code>: Number of cuts to make. If list,
+ code iterates over items in <code>cuts</code> and generates fragments from each value.</p>
+<p>Note that the RDKit fragmentation uses only a single cut value. So fragmenting with
  5 cuts will not include the result of fragmenting with 4 cuts</p>
 
 </div>
@@ -2261,7 +2396,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fragment_smiles" class="doc_header"><code>fragment_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L739" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>cuts</code></strong>)</p>
+<h4 id="fragment_smiles" class="doc_header"><code>fragment_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L776" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fragment_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>cuts</code></strong>)</p>
 </blockquote>
 <p>fragment and deduplicate a list of smiles</p>
 
@@ -2297,7 +2432,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;*CCCCCC&#39;, &#39;*CCCCCCC&#39;, &#39;*CCCCC&#39;, &#39;*C&#39;, &#39;*CCCC&#39;, &#39;*CC&#39;, &#39;*CCC&#39;]</pre>
+<pre>[&#39;*CC&#39;, &#39;*CCCCCC&#39;, &#39;*CCC&#39;, &#39;*CCCCC&#39;, &#39;*CCCCCCC&#39;, &#39;*C&#39;, &#39;*CCCC&#39;]</pre>
 </div>
 
 </div>
@@ -2326,14 +2461,21 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuse_on_atom_mapping" class="doc_header"><code>fuse_on_atom_mapping</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L746" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_atom_mapping</code>(<strong><code>fragment_string</code></strong>)</p>
+<h4 id="fuse_on_atom_mapping" class="doc_header"><code>fuse_on_atom_mapping</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L783" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_atom_mapping</code>(<strong><code>fragment_string</code></strong>)</p>
 </blockquote>
-<p>Inputs: <code>fragment_string</code>, str or Chem.Mol</p>
-<p>Outputs: str</p>
-<p>Merges a series of molecular fragments into a single compound by atom mapping</p>
+<p>fuse_on_atom_mapping - Merges a series of molecular fragments
+into a single compound by atom mapping</p>
 <p>ie <code>R1-[*:1].R2-[*:1] &gt;&gt; R1-R2</code></p>
 <p>Fragments with paired atom mappings will be fused on the atoms connected to the mapped dummies.
 Mappings that occur once or more than 2 times are ignored</p>
+<p>Inputs:</p>
+<ul>
+<li><code>fragment_string [str, Chem.Mol]</code>: input molecule fragments</li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><code>new_smile str</code>: fused molecule</li>
+</ul>
 
 </div>
 
@@ -2382,15 +2524,25 @@ Mappings that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuse_on_link" class="doc_header"><code>fuse_on_link</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L817" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_link</code>(<strong><code>fragment_string</code></strong>, <strong><code>links</code></strong>)</p>
+<h4 id="fuse_on_link" class="doc_header"><code>fuse_on_link</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L859" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fuse_on_link</code>(<strong><code>fragment_string</code></strong>, <strong><code>links</code></strong>)</p>
 </blockquote>
-<p>Inputs: <code>fragment_string</code>, str or Chem.Mol, <code>links</code>, list of defines linkages</p>
-<p>Outputs: str</p>
-<p>Merges a series of molecular fragments into a single compound by <code>links</code></p>
+<p>fuse_on_link -  Merges a series of molecular fragments
+into a single compound by <code>links</code></p>
 <p>ie <code>fuse_on_link('R1-[Rb].R2-[Rb]', ['[Rb]']) &gt;&gt; 'R1-R2'</code></p>
 <p>Fragments matching a given link are defined by substring searching.
 Links that occur once or more than 2 times are ignored</p>
 <p>Note: inputs with RDKit atom mapping (ie <code>[*:1]CC</code>) will fail</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>fragment_string [str, Chem.Mol]</code>: input molecule</p>
+</li>
+<li><p><code>links list</code>: list of defines linkages</p>
+</li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><code>str</code>: fused molecule</li>
+</ul>
 
 </div>
 
@@ -2520,7 +2672,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_map_nums" class="doc_header"><code>add_map_nums</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L848" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_map_nums</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="add_map_nums" class="doc_header"><code>add_map_nums</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L898" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_map_nums</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>Adds map numbers to all atoms in <code>mol</code></p>
 
@@ -2545,7 +2697,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="check_ring_bonds" class="doc_header"><code>check_ring_bonds</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L857" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_ring_bonds</code>(<strong><code>smile</code></strong>)</p>
+<h4 id="check_ring_bonds" class="doc_header"><code>check_ring_bonds</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L907" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>check_ring_bonds</code>(<strong><code>smile</code></strong>)</p>
 </blockquote>
 <p>Looks for SP hybridized atoms in rings</p>
 
@@ -2570,7 +2722,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decorate_smile" class="doc_header"><code>decorate_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L867" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smile</code>(<strong><code>smile</code></strong>, <strong><code>num_attachments</code></strong>)</p>
+<h4 id="decorate_smile" class="doc_header"><code>decorate_smile</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L917" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smile</code>(<strong><code>smile</code></strong>, <strong><code>num_attachments</code></strong>)</p>
 </blockquote>
 <p>decorate_smiles - adds wildcard atoms to smile based on num_attachments.
  If there are N atoms with at lest one implicit hydrogen, N choose num_attachments
@@ -2597,7 +2749,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decorate_smiles" class="doc_header"><code>decorate_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L896" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>num_attachments</code></strong>)</p>
+<h4 id="decorate_smiles" class="doc_header"><code>decorate_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L946" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decorate_smiles</code>(<strong><code>smiles</code></strong>, <strong><code>num_attachments</code></strong>)</p>
 </blockquote>
 <p>Decorate all items in <code>smiles</code> and cleans results</p>
 
@@ -2622,7 +2774,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="remove_atom" class="doc_header"><code>remove_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L904" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>remove_atom</code>(<strong><code>rwmol</code></strong>, <strong><code>atom_idx</code></strong>, <strong><code>add_bond</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="remove_atom" class="doc_header"><code>remove_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L954" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>remove_atom</code>(<strong><code>rwmol</code></strong>, <strong><code>atom_idx</code></strong>, <strong><code>add_bond</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>remove_atom - removes atom based on <code>atom_idx</code>. If <code>add_bond</code> and the removed
  atom is connected to two other heavy atoms, a single bond is formed between neighbors</p>
@@ -2648,7 +2800,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="generate_spec_template" class="doc_header"><code>generate_spec_template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L925" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_spec_template</code>(<strong><code>mol</code></strong>)</p>
+<h4 id="generate_spec_template" class="doc_header"><code>generate_spec_template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L975" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_spec_template</code>(<strong><code>mol</code></strong>)</p>
 </blockquote>
 <p>generates blank atom_spec and bond_spec for mol. returns blank specs and matching smarts</p>
 
@@ -2666,6 +2818,13 @@ Links that occur once or more than 2 times are ignored</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -2673,54 +2832,27 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StructureEnumerator" class="doc_header"><code>class</code> <code>StructureEnumerator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L936" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureEnumerator</code>(<strong><code>smarts</code></strong>, <strong><code>atom_spec</code></strong>, <strong><code>bond_spec</code></strong>, <strong><code>max_num</code></strong>=<em><code>1000000</code></em>, <strong><code>substitute_bonds</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="StructureEnumerator" class="doc_header"><code>class</code> <code>StructureEnumerator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L987" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureEnumerator</code>(<strong><code>smarts</code></strong>, <strong><code>atom_spec</code></strong>, <strong><code>bond_spec</code></strong>, <strong><code>max_num</code></strong>=<em><code>1000000</code></em>, <strong><code>substitute_bonds</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>StructureEnumerator - class for enumerating molecular structures</p>
 <p>Inputs:</p>
-
-<pre><code>`smarts` - str, base smarts string to enumerate
-
-`atom_spec` - dict of the form `{atom_map_num:[allowed_atom_types]}` where elements in
- `allowed_atom_types` match keys in `self.atom_types`
-
-`bond_spec` - dict of the form `{(bond_start_map_num, bond_end_map_num) : [possible_bond_types]}`
- where elements in `possible_bond_types` match keys in `self.bond_types`
-
- `max_num` - int, max number of combinations to iterate
-
- `substitute_bonds` - None, list. List of bond types for new bonds formed from removing atoms.
-  Bond types should match keys in `self.bond_types`. If None, all keys in `self.bond_types` are used</code></pre>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_one_atom" class="doc_header"><code>add_one_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1234" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_one_atom</code>(<strong><code>inputs</code></strong>)</p>
-</blockquote>
+<ul>
+<li><p><code>smarts str</code>: base smarts string to enumerate</p>
+</li>
+<li><p><code>atom_spec dict</code>: dict of the form <code>{atom_map_num:[allowed_atom_types]}</code>
+where elements in <code>allowed_atom_types</code> match keys in <code>self.atom_types</code></p>
+</li>
+<li><p><code>bond_spec dict</code>: dict of the form
+<code>{(bond_start_map_num, bond_end_map_num) : [possible_bond_types]}</code>
+where elements in <code>possible_bond_types</code> match keys in <code>self.bond_types</code></p>
+</li>
+<li><p><code>max_num int</code>: max number of combinations to iterate</p>
+</li>
+<li><p><code>substitute_bonds Optional[List]</code>: List of bond types for new bonds
+formed from removing atoms. Bond types should match keys in <code>self.bond_types</code>.
+If None, all keys in <code>self.bond_types</code> are used</p>
+</li>
+</ul>
 
 </div>
 
@@ -2750,8 +2882,56 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_atom_combi" class="doc_header"><code>add_atom_combi</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1272" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_atom_combi</code>(<strong><code>smile</code></strong>, <strong><code>atom_types</code></strong>, <strong><code>cpus</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="add_one_atom" class="doc_header"><code>add_one_atom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1287" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_one_atom</code>(<strong><code>inputs</code></strong>)</p>
 </blockquote>
+<p>helper function for <a href="/mrl/chem#add_atom_combi"><code>add_atom_combi</code></a></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="add_atom_combi" class="doc_header"><code>add_atom_combi</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1325" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_atom_combi</code>(<strong><code>smile</code></strong>, <strong><code>atom_types</code></strong>, <strong><code>cpus</code></strong>=<em><code>0</code></em>)</p>
+</blockquote>
+<p>add_atom_combi - creates variants of <code>smile</code> with one atom
+added or removed, defined by <code>atom_types</code></p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>smile str</code>: smiles string to modify</p>
+</li>
+<li><p><code>atom_types list[str, int]</code>: list of allowed atom types to add.
+If <code>-1</code> is in the list, variants of <code>smile</code> with one atom removed
+will be generated. If <code>-2</code> is in the list, the code will look for
+atoms with two neighbors, remove the center atom and bond the
+neighbors (ie ring contraction)</p>
+</li>
+<li><p><code>cpus Optional[int]</code>: number of cpus to use for multiprocessing.
+If None, serial processing is used</p>
+</li>
+</ul>
 
 </div>
 
@@ -2798,8 +2978,20 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_bond_combi" class="doc_header"><code>add_bond_combi</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1311" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_bond_combi</code>(<strong><code>smile</code></strong>, <strong><code>max_ring_size</code></strong>=<em><code>8</code></em>, <strong><code>cpus</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="add_bond_combi" class="doc_header"><code>add_bond_combi</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1381" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_bond_combi</code>(<strong><code>smile</code></strong>, <strong><code>max_ring_size</code></strong>=<em><code>8</code></em>, <strong><code>cpus</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
+<p>add_bond_combi - creates variants of <code>smile</code> with a single
+bond added or removed</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>smile str</code>: smiles string to modify</p>
+</li>
+<li><p><a href="/mrl/chem#max_ring_size"><code>max_ring_size</code></a>: maximum allowed ring size</p>
+</li>
+<li><p><code>cpus Optional[int]</code>: number of cpus to use for multiprocessing.
+If None, serial processing is used</p>
+</li>
+</ul>
 
 </div>
 
@@ -2822,7 +3014,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_one_bond" class="doc_header"><code>add_one_bond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1378" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_one_bond</code>(<strong><code>inputs</code></strong>)</p>
+<h4 id="add_one_bond" class="doc_header"><code>add_one_bond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1461" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_one_bond</code>(<strong><code>inputs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2879,7 +3071,57 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_protein" class="doc_header"><code>to_protein</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1412" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_protein</code>(<strong><code>sequence_or_mol</code></strong>)</p>
+<h4 id="to_protein" class="doc_header"><code>to_protein</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1495" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_protein</code>(<strong><code>sequence_or_mol</code></strong>)</p>
+</blockquote>
+<p>Convert amino acid sequence to Chem.Mol</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_sequence" class="doc_header"><code>to_sequence</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1511" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_sequence</code>(<strong><code>sequence_or_mol</code></strong>)</p>
+</blockquote>
+<p>Converts sequence Mol into string</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_proteins" class="doc_header"><code>to_proteins</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1522" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_proteins</code>(<strong><code>list_of_inputs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2903,55 +3145,7 @@ Links that occur once or more than 2 times are ignored</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_sequence" class="doc_header"><code>to_sequence</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1425" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_sequence</code>(<strong><code>sequence_or_mol</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_proteins" class="doc_header"><code>to_proteins</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1434" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_proteins</code>(<strong><code>list_of_inputs</code></strong>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_sequences" class="doc_header"><code>to_sequences</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1437" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_sequences</code>(<strong><code>list_of_inputs</code></strong>)</p>
+<h4 id="to_sequences" class="doc_header"><code>to_sequences</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/chem.py#L1525" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_sequences</code>(<strong><code>list_of_inputs</code></strong>)</p>
 </blockquote>
 
 </div>

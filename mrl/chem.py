@@ -367,11 +367,14 @@ def penalized_logp(mol):
     return normalized_log_p + normalized_SA + normalized_cycle
 
 # Cell
+
 class Catalog():
     '''
     Base Class for SMARTS matching
 
-    Inputs: `catalog`, RDKit `FilterCatalog`
+    Inputs:
+
+    - `catalog FilterCatalog`: RDKit `FilterCatalog`
     '''
     def __init__(self, catalog):
         self.catalog = catalog
@@ -384,12 +387,20 @@ class Catalog():
 
         Inputs:
 
-            `mol` - (Chem.Mol, list[Chem.Mol]), input mols
+        - `mol [Chem.Mol, list[Chem.Mol]]`: input mols
 
-            `criteria` - ('any', 'all', float, int). If 'any', returns `True` if
-            any smarts match. If `all`, returns `True` if all smarts match. If `float`,
-            returns `True` if more than `float` percent (inclusive) of smarts match.
-            If `int`, returns `True` if more than `int` total (inclusive) smarts match
+        - `criteria ['any', 'all', float, int]`: match criteria.
+        (match any filter, match all filters, match float percent of filters,
+        match int number of filters)
+
+        If `any`, returns `True` if any smarts match.
+
+        If `all`, returns `True` if all smarts match.
+
+        If `float`, returns `True` if more than `float` percent (inclusive)
+        of smarts match.
+
+        If `int`, returns `True` if more than `int` total (inclusive) smarts match
         '''
 
         if type(mol)==Chem.Mol:
@@ -428,6 +439,8 @@ class Catalog():
     def percent_matches(self, mol):
         num_matches = self.num_matches(mol)
         return num_matches/len(self.names)
+
+# Cell
 
 class SmartsCatalog(Catalog):
     '''
@@ -591,9 +604,16 @@ class FP():
 
     def get_fingerprint(self, mol, fp_type='ECFP6', output_type='rdkit'):
         '''
-        Generates fingerprint for `mol`.
+        get_fingerprint - Generates fingerprint for `mol`.
 
-        `mol` can either be a `Mol` object or a list of `Mol` objects
+        Inputs:
+
+        - `mol [Chem.Mol, list[Chem.Mol]]` - input mols
+
+        - `fp_type str`: Fingerprint type, must be a key of `FP.fps`
+
+        - `output_type str['rdkit', 'numpy']`: Output datatype. Numpy
+        `ndarray` or RDKit `ExplicitBitVec`
         '''
         method = self.fps[fp_type]
 
@@ -606,15 +626,29 @@ class FP():
 
     def fingerprint_similarity(self, fps1, fps2, metric):
         '''
-        Computes the similarity between `fps1` and `fps2` using `metric`
+        fingerprint_similarity - Computes the similarity
+        between `fps1` and `fps2` using `metric`
 
-        Inputs `fps1` and `fps2` can be any of the following:
-            `ndarray` Numpy vector (ndim=1) single fingerprint
-            `ndarray` Numpy matrix (ndim=2) of stacked fingerprints
-            `ExplicitBitVect` RDKit explicit bit vec
-            `list` of `ExplicitBitVect`
+        Inputs:
 
-        Both `fps1` and `fps2` should have the same array type (`ndarray` or `ExplicitBitVec`)
+        - `fps1 [ndarray, ExplicitBitVect]`: first fingerprint set
+
+        - `fps2 [ndarray, ExplicitBitVect]`: second fingerprint set
+
+        Returns:
+
+        - `similarities [ndarray]`: matrix of similarities between all
+        fingerprints in `fps1` and all fingerprints in `fps2`
+
+        Fingerprints can either be a Numpy `ndarray` or an RDKit `ExplicitBitVec`.
+        Both fingerprint inputs must be the same datatype.
+
+        Numpy fingerprints can eiher be a 1D vector or a 2D matrix
+        of stacked fingerprints
+
+        RDKit fingerprints can either be an `ExplicitBitVec` or a list of
+        `ExplicitBitVec` objects.
+
         '''
         input_type = self._np_or_rd(fps1)
 
@@ -675,6 +709,9 @@ class FP():
 
         return output
 
+
+# Cell
+
 def get_fingerprint(mol, fp_type, output_type='rdkit'):
     fp = FP()
     return fp.get_fingerprint(mol, fp_type, output_type=output_type)
@@ -682,7 +719,6 @@ def get_fingerprint(mol, fp_type, output_type='rdkit'):
 def fingerprint_similarities(fps1, fps2, metric):
     fp = FP()
     return fp.fingerprint_similarity(fps1, fps2, metric)
-
 
 # Cell
 
@@ -694,10 +730,11 @@ def fragment_smile(smile, cuts):
     '''
     fragment_smile - fragment `smile` based on `cuts`
 
-    `smile` - str, smiles string to fragment
+    `smile str`: smiles string to fragment
 
-    `cuts` - int, list of ints. Number of cuts to make. If list,
+    `cuts [int, list[int]]`: Number of cuts to make. If list,
      code iterates over items in `cuts` and generates fragments from each value.
+
      Note that the RDKit fragmentation uses only a single cut value. So fragmenting with
      5 cuts will not include the result of fragmenting with 4 cuts
     '''
@@ -745,16 +782,21 @@ def fragment_smiles(smiles, cuts):
 # Cell
 def fuse_on_atom_mapping(fragment_string):
     '''
-    Inputs: `fragment_string`, str or Chem.Mol
-
-    Outputs: str
-
-    Merges a series of molecular fragments into a single compound by atom mapping
+    fuse_on_atom_mapping - Merges a series of molecular fragments
+    into a single compound by atom mapping
 
     ie `R1-[*:1].R2-[*:1] >> R1-R2`
 
     Fragments with paired atom mappings will be fused on the atoms connected to the mapped dummies.
     Mappings that occur once or more than 2 times are ignored
+
+    Inputs:
+
+    - `fragment_string [str, Chem.Mol]`: input molecule fragments
+
+    Outputs:
+
+    - `new_smile str`: fused molecule
     '''
 
     mol = to_mol(fragment_string)
@@ -816,11 +858,8 @@ def fuse_on_atom_mapping(fragment_string):
 # Cell
 def fuse_on_link(fragment_string, links):
     '''
-    Inputs: `fragment_string`, str or Chem.Mol, `links`, list of defines linkages
-
-    Outputs: str
-
-    Merges a series of molecular fragments into a single compound by `links`
+    fuse_on_link -  Merges a series of molecular fragments
+    into a single compound by `links`
 
     ie `fuse_on_link('R1-[Rb].R2-[Rb]', ['[Rb]']) >> 'R1-R2'`
 
@@ -828,6 +867,17 @@ def fuse_on_link(fragment_string, links):
     Links that occur once or more than 2 times are ignored
 
     Note: inputs with RDKit atom mapping (ie `[*:1]CC`) will fail
+
+    Inputs:
+
+    - `fragment_string [str, Chem.Mol]`: input molecule
+
+    - `links list`: list of defines linkages
+
+    Outputs:
+
+    - `str`: fused molecule
+
     '''
     fragment_string = to_smile(fragment_string)
     fragments = fragment_string.split('.')
@@ -932,6 +982,7 @@ def generate_spec_template(mol):
 
     return atom_spec, bond_spec, to_smart(mol)
 
+# Cell
 
 class StructureEnumerator():
     '''
@@ -939,18 +990,20 @@ class StructureEnumerator():
 
     Inputs:
 
-        `smarts` - str, base smarts string to enumerate
+    - `smarts str`: base smarts string to enumerate
 
-        `atom_spec` - dict of the form `{atom_map_num:[allowed_atom_types]}` where elements in
-         `allowed_atom_types` match keys in `self.atom_types`
+    - `atom_spec dict`: dict of the form `{atom_map_num:[allowed_atom_types]}`
+    where elements in `allowed_atom_types` match keys in `self.atom_types`
 
-        `bond_spec` - dict of the form `{(bond_start_map_num, bond_end_map_num) : [possible_bond_types]}`
-         where elements in `possible_bond_types` match keys in `self.bond_types`
+    - `bond_spec dict`: dict of the form
+    `{(bond_start_map_num, bond_end_map_num) : [possible_bond_types]}`
+    where elements in `possible_bond_types` match keys in `self.bond_types`
 
-         `max_num` - int, max number of combinations to iterate
+    - `max_num int`: max number of combinations to iterate
 
-         `substitute_bonds` - None, list. List of bond types for new bonds formed from removing atoms.
-          Bond types should match keys in `self.bond_types`. If None, all keys in `self.bond_types` are used
+    - `substitute_bonds Optional[List]`: List of bond types for new bonds
+    formed from removing atoms. Bond types should match keys in `self.bond_types`.
+    If None, all keys in `self.bond_types` are used
     '''
     atomic_types = {
                     'H':1,
@@ -1081,8 +1134,8 @@ class StructureEnumerator():
         check_removals
 
         If atoms removals are possible in the given atom_spec, a new bond may be added.
-         If the removed atom has the form `R1-atom_to_remove-R2`, the ouput will be `R1-R2`.
-         This function determines the map numbers of the removed bonds and the added bonds
+        If the removed atom has the form `R1-atom_to_remove-R2`, the ouput will be `R1-R2`.
+        This function determines the map numbers of the removed bonds and the added bonds
         '''
         self.removal_dict = {}
 
@@ -1104,7 +1157,7 @@ class StructureEnumerator():
     def check_combo(self, combo):
         '''
         If a combination contains atom removal, the combination is updated to remove
-         deleted bonds and create a new bond
+        deleted bonds and create a new bond
         '''
         c_out = []
         for removal_num in self.removal_dict.keys():
@@ -1232,7 +1285,7 @@ class StructureEnumerator():
 # Cell
 
 def add_one_atom(inputs):
-
+    'helper function for `add_atom_combi`'
     mol, source_idx, target_atom, bond_type = inputs
     new_mol = Chem.RWMol(mol)
 
@@ -1270,6 +1323,23 @@ def add_one_atom(inputs):
 # Cell
 
 def add_atom_combi(smile, atom_types, cpus=0):
+    '''
+    add_atom_combi - creates variants of `smile` with one atom
+    added or removed, defined by `atom_types`
+
+    Inputs:
+
+    - `smile str`: smiles string to modify
+
+    - `atom_types list[str, int]`: list of allowed atom types to add.
+    If `-1` is in the list, variants of `smile` with one atom removed
+    will be generated. If `-2` is in the list, the code will look for
+    atoms with two neighbors, remove the center atom and bond the
+    neighbors (ie ring contraction)
+
+    - `cpus Optional[int]`: number of cpus to use for multiprocessing.
+    If None, serial processing is used
+    '''
 
     bond_to_valence = {
         Chem.rdchem.BondType.SINGLE:1,
@@ -1309,6 +1379,19 @@ def add_atom_combi(smile, atom_types, cpus=0):
 # Cell
 
 def add_bond_combi(smile, max_ring_size=8, cpus=0):
+    '''
+    add_bond_combi - creates variants of `smile` with a single
+    bond added or removed
+
+    Inputs:
+
+    - `smile str`: smiles string to modify
+
+    - `max_ring_size`: maximum allowed ring size
+
+    - `cpus Optional[int]`: number of cpus to use for multiprocessing.
+    If None, serial processing is used
+    '''
 
     bond_to_valence = {
         Chem.rdchem.BondType.SINGLE:1,
@@ -1410,6 +1493,9 @@ def add_one_bond(inputs):
 # Cell
 
 def to_protein(sequence_or_mol):
+    '''
+    Convert amino acid sequence to Chem.Mol
+    '''
     if (type(sequence_or_mol) == str) or (type(sequence_or_mol) == np.str_):
         mol = Chem.MolFromFASTA(sequence_or_mol)
         if mol is not None:
@@ -1423,7 +1509,9 @@ def to_protein(sequence_or_mol):
     return mol
 
 def to_sequence(sequence_or_mol):
-
+    '''
+    Converts sequence Mol into string
+    '''
     if type(sequence_or_mol)==Chem.Mol:
         sequence = Chem.MolToSequence(sequence_or_mol)
     else:

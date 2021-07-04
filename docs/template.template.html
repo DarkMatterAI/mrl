@@ -108,21 +108,24 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 <h2 id="Template" class="doc_header"><code>class</code> <code>Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Template</code>(<strong><code>hard_filters</code></strong>, <strong><code>soft_filters</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>False</code></em>, <strong><code>use_lookup</code></strong>=<em><code>True</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>, <strong><code>cpus</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>'smile'</code></em>)</p>
 </blockquote>
 <p>Template - class for managing hard and soft filters</p>
-<p>Inputs:
-    <code>hard_filters</code> - (list), list of <a href="/mrl/template.filters#Filter"><code>Filter</code></a> objects used for pass/fail screening</p>
-
-<pre><code>`soft_filters` - (list), list of [`Filter`](/mrl/template.filters#Filter) objects used for soft scoring
-
-`log` - (bool), if True, template will log screened compounds
-
-`use_lookup` - (bool), if True, filter results are stored in a lookup table. If a compound
-    is re-screened, the lookup value is returned
-
-`fail_score` - (float), placeholder score for compounds that fail to pass hard filters
-
-`cpus` - (int, None), number of CPUs to use. If None, defaults to `os.environ['ncpus']`
-
-`mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects</code></pre>
+<p>Inputs:</p>
+<ul>
+<li><p><code>hard_filters list[Filter]</code>: list of <a href="/mrl/template.filters#Filter"><code>Filter</code></a> objects used for pass/fail screening</p>
+</li>
+<li><p><code>soft_filters list[Filter]</code>: list of <a href="/mrl/template.filters#Filter"><code>Filter</code></a> objects used for soft scoring</p>
+</li>
+<li><p><code>log bool</code>: if True, template will log screened compounds</p>
+</li>
+<li><p><code>use_lookup bool</code>: if True, filter results are stored in a lookup table. If a compound
+is re-screened, the lookup value is returned</p>
+</li>
+<li><p><code>fail_score float</code>: placeholder score for compounds that fail to pass hard filters</p>
+</li>
+<li><p><code>cpus Optional[int]</code>: number of CPUs to use. If None, defaults to <code>os.environ['ncpus']</code></p>
+</li>
+<li><p><code>mode str</code>: <code>smile</code> or <code>protein</code>, determines how inputs are converted to Mol objects</p>
+</li>
+</ul>
 
 </div>
 
@@ -152,7 +155,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BlankTemplate" class="doc_header"><code>class</code> <code>BlankTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlankTemplate</code>(<strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
+<h2 id="BlankTemplate" class="doc_header"><code>class</code> <code>BlankTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L320" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlankTemplate</code>(<strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Empty template (no hard or soft filters)</p>
 
@@ -177,7 +180,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ValidMoleculeTemplate" class="doc_header"><code>class</code> <code>ValidMoleculeTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L324" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidMoleculeTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
+<h2 id="ValidMoleculeTemplate" class="doc_header"><code>class</code> <code>ValidMoleculeTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L325" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidMoleculeTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for checking if an input is a single valid chemical structure</p>
 
@@ -202,7 +205,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RuleOf5Template" class="doc_header"><code>class</code> <code>RuleOf5Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L346" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf5Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
+<h2 id="RuleOf5Template" class="doc_header"><code>class</code> <code>RuleOf5Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L347" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf5Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Lipinski's rule of 5 (en.wikipedia.org/wiki/Lipinski%27s_rule_of_five)</p>
 
@@ -227,7 +230,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GhoseTemplate" class="doc_header"><code>class</code> <code>GhoseTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L372" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GhoseTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
+<h2 id="GhoseTemplate" class="doc_header"><code>class</code> <code>GhoseTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L373" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GhoseTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Ghose filters (doi.org/10.1021/cc9800071)</p>
 
@@ -252,7 +255,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VeberTemplate" class="doc_header"><code>class</code> <code>VeberTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L398" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VeberTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
+<h2 id="VeberTemplate" class="doc_header"><code>class</code> <code>VeberTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L399" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VeberTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Veber filters (doi.org/10.1021/jm020017n)</p>
 
@@ -277,7 +280,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="REOSTemplate" class="doc_header"><code>class</code> <code>REOSTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L420" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>REOSTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
+<h2 id="REOSTemplate" class="doc_header"><code>class</code> <code>REOSTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L421" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>REOSTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for REOS filters (10.1016/s0169-409x(02)00003-0)</p>
 
@@ -302,7 +305,7 @@ Substructure Match: '[#6]1:[#6]:[#7]:[#7]:[#7]:[#6]:1' (-1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RuleOf3Template" class="doc_header"><code>class</code> <code>RuleOf3Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L452" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf3Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
+<h2 id="RuleOf3Template" class="doc_header"><code>class</code> <code>RuleOf3Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L453" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf3Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for rule of 5 filter (doi.org/10.1016/S1359-6446(03)02831-9)</p>
 

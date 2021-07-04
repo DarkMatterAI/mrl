@@ -19,17 +19,17 @@ class LinearBlock(nn.Module):
 
     Inputs:
 
-        d_in int: number of input dimensions
+    - `d_in int`: number of input dimensions
 
-        d_out int: number of output dimensions
+    - `d_out int`: number of output dimensions
 
-        act bool: if True, applies a ReLU activation
+    - `act bool`: if True, applies a ReLU activation
 
-        bn bool: if True, applies 1d batchnorm
+    - `bn bool`: if True, applies 1d batchnorm
 
-        dropout float: dropout percentage
+    - `dropout float`: dropout percentage
 
-        **lin_kwargs dict: keyword args passed to nn.Linear
+    - `**lin_kwargs dict`: keyword args passed to nn.Linear
     '''
 
     def __init__(self, d_in, d_out, act=True, bn=False, dropout=0., **lin_kwargs):
@@ -59,7 +59,7 @@ class ValueHead(nn.Module):
 
     Inputs:
 
-        d_in int: number of input dimensions
+    - `d_in int`: number of input dimensions
 
     '''
     def __init__(self, d_in, dropout=0.):
@@ -79,25 +79,25 @@ class Conv(nn.Module):
 
     Inputs:
 
-        d_in int: number of input dimensions
+    - `d_in int`: number of input dimensions
 
-        d_out int: number of output dimensions
+    - `d_out int`: number of output dimensions
 
-        ks int: kernel size
+    - `ks int`: kernel size
 
-        stride int: stride
+    - `stride int`: stride
 
-        padding int, None: padding. If None, derived from kernel size
+    - `padding [int, None]`: padding. If None, derived from kernel size
 
-        ndim int: conv dimension (1D conv, 2D conv, 3D conv)
+    - `ndim int`: conv dimension (1D conv, 2D conv, 3D conv)
 
-        act bool: if True, applies a ReLU activation
+    - `act bool`: if True, applies a ReLU activation
 
-        bn bool: if True, applies batchnorm consistent with `ndim`
+    - `bn bool`: if True, applies batchnorm consistent with `ndim`
 
-        dropout float: dropout percentage
+    - `dropout float`: dropout percentage
 
-        **conv_kwargs dict: keyword args passed to nn.Conv
+    - `**conv_kwargs dict`: keyword args passed to nn.Conv
     '''
     def __init__(self, d_in, d_out, ks=3, stride=1, padding=None, ndim=2,
                  act=True, bn=False, dropout=0., **conv_kwargs):
@@ -138,23 +138,23 @@ class Conv1d(Conv):
 
     Inputs:
 
-        d_in int: number of input dimensions
+    - `d_in int`: number of input dimensions
 
-        d_out int: number of output dimensions
+    - `d_out int`: number of output dimensions
 
-        ks int: kernel size
+    - `ks int`: kernel size
 
-        stride int: stride
+    - `stride int`: stride
 
-        padding int, None: padding. If None, derived from kernel size
+    - `padding [int, None]`: padding. If None, derived from kernel size
 
-        act bool: if True, applies a ReLU activation
+    - `act bool`: if True, applies a ReLU activation
 
-        bn bool: if True, applies batchnorm consistent with `ndim`
+    - `bn bool`: if True, applies batchnorm consistent with `ndim`
 
-        dropout float: dropout percentage
+    - `dropout float`: dropout percentage
 
-        **conv_kwargs dict: keyword args passed to nn.Conv
+    - `**conv_kwargs dict`: keyword args passed to nn.Conv1D
     '''
     def __init__(self, d_in, d_out, ks=3, stride=1, padding=None,
                  act=True, bn=False, dropout=0., **conv_kwargs):
@@ -167,23 +167,23 @@ class Conv2d(Conv):
 
     Inputs:
 
-        d_in int: number of input dimensions
+    - `d_in int`: number of input dimensions
 
-        d_out int: number of output dimensions
+    - `d_out int`: number of output dimensions
 
-        ks int: kernel size
+    - `ks int`: kernel size
 
-        stride int: stride
+    - `stride int`: stride
 
-        padding int, None: padding. If None, derived from kernel size
+    - `padding [int, None]`: padding. If None, derived from kernel size
 
-        act bool: if True, applies a ReLU activation
+    - `act bool`: if True, applies a ReLU activation
 
-        bn bool: if True, applies batchnorm consistent with `ndim`
+    - `bn bool`: if True, applies batchnorm consistent with `ndim`
 
-        dropout float: dropout percentage
+    - `dropout float`: dropout percentage
 
-        **conv_kwargs dict: keyword args passed to nn.Conv
+    - `**conv_kwargs dict`: keyword args passed to nn.Conv2D
     '''
     def __init__(self, d_in, d_out, ks=3, stride=1, padding=None,
                  act=True, bn=False, dropout=0., **conv_kwargs):
@@ -196,23 +196,23 @@ class Conv3d(Conv):
 
     Inputs:
 
-        d_in int: number of input dimensions
+    - `d_in int`: number of input dimensions
 
-        d_out int: number of output dimensions
+    - `d_out int`: number of output dimensions
 
-        ks int: kernel size
+    - `ks int`: kernel size
 
-        stride int: stride
+    - `stride int`: stride
 
-        padding int, None: padding. If None, derived from kernel size
+    - `padding [int, None]`: padding. If None, derived from kernel size
 
-        act bool: if True, applies a ReLU activation
+    - `act bool`: if True, applies a ReLU activation
 
-        bn bool: if True, applies batchnorm consistent with `ndim`
+    - `bn bool`: if True, applies batchnorm consistent with `ndim`
 
-        dropout float: dropout percentage
+    - `dropout float`: dropout percentage
 
-        **conv_kwargs dict: keyword args passed to nn.Conv
+    - `**conv_kwargs dict`: keyword args passed to nn.Conv3D
     '''
     def __init__(self, d_in, d_out, ks=3, stride=1, padding=None,
                  act=True, bn=False, dropout=0., **conv_kwargs):
@@ -227,9 +227,9 @@ class SphericalDistribution(torch.distributions.Distribution):
 
     Inputs:
 
-        loc torch.Tensor: vector of means
+    - `loc torch.Tensor`: vector of means
 
-        scale torch.Tensor: vector of variances
+    - `scale torch.Tensor`: vector of variances
     '''
     def __init__(self, loc, scale, validate_args=False):
         super().__init__(loc.shape[0], validate_args=validate_args)
@@ -284,11 +284,11 @@ class NormalPrior(Prior):
 
     Inputs:
 
-        loc torch.Tensor: vector of means
+    - `loc torch.Tensor`: vector of means
 
-        log_scale torch.Tensor: vector of log-variances
+    - `log_scale torch.Tensor`: vector of log-variances
 
-        trainable bool: if True, `loc` and `scale` are trainable
+    - `trainable bool`: if True, `loc` and `scale` are trainable
 
     Note that log-variances are used for stability. Optimizing
     the variance directly can cause issues with gradient descent
@@ -320,11 +320,11 @@ class SphericalPrior(NormalPrior):
 
     Inputs:
 
-        loc torch.Tensor: vector of means
+    - `loc torch.Tensor`: vector of means
 
-        log_scale torch.Tensor: vector of log-variances
+    - `log_scale torch.Tensor`: vector of log-variances
 
-        trainable bool: if True, `loc` and `scale` are trainable
+    - `trainable bool`: if True, `loc` and `scale` are trainable
 
     Note that log-variances are used for stability. Optimizing
     the variance directly can cause issues with gradient descent
@@ -344,9 +344,9 @@ class SequenceDropout(nn.Module):
 
     Inputs:
 
-        p float: dropout probability
+    - `p float`: dropout probability
 
-        batch_first bool: if batch dimension is first in input tensors
+    - `batch_first bool`: if batch dimension is first in input tensors
 
     Samples a dropout mask that is constant in the sequence dimension
 
@@ -378,28 +378,28 @@ class Conditional_LSTM(nn.Module):
 
     Inputs:
 
-        d_embedding int: embedding dimension
+    - `d_embedding int`: embedding dimension
 
-        d_hidden int: hidden dimension
+    - `d_hidden int`: hidden dimension
 
-        d_output int: output dimension
+    - `d_output int`: output dimension
 
-        d_latent int: latent vector dimension
+    - `d_latent int`: latent vector dimension
 
-        n_layers int: number of layers
+    - `n_layers int`: number of layers
 
-        condition_hidden bool: if True, latent vector is used to initialize the
-        hidden state
+    - `condition_hidden bool`: if True, latent vector is used to initialize the
+    hidden state
 
-        condition_output bool: if True, latent vector is concatenated to inputs
+    - `condition_output bool`: if True, latent vector is concatenated to inputs
 
-        bidir bool: if the LSTM should be bidirectional
+    - `bidir bool`: if the LSTM should be bidirectional
 
-        input_dropout float: dropout percentage on inputs
+    - `input_dropout float`: dropout percentage on inputs
 
-        lstm_dropout float: dropout on LSTM layers
+    - `lstm_dropout float`: dropout on LSTM layers
 
-        batch_first bool: if batch dimension is first on input tensors
+    - `batch_first bool`: if batch dimension is first on input tensors
     '''
     def __init__(self, d_embedding, d_hidden, d_output, d_latent, n_layers,
                  condition_hidden=True, condition_output=True,
@@ -452,12 +452,12 @@ class Conditional_LSTM(nn.Module):
         '''
         Inputs:
 
-            `x` torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]: input tensor
+        - `x torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]`: input tensor
 
-            `z` torch.Tensor[bs, d_latent]: latent vector
+        - `z torch.Tensor[bs, d_latent]`: latent vector
 
-            `hiddens` list[(hidden_state, cell_state)], None: hidden state. If None,
-            a new hidden state is initialized
+        - `hiddens Optional[list[(hidden_state, cell_state)]]`: hidden state. If None,
+        a new hidden state is initialized
 
         '''
 
@@ -554,21 +554,21 @@ class LSTM(Conditional_LSTM):
 
     Inputs:
 
-        d_embedding int: embedding dimension
+    - `d_embedding int`: embedding dimension
 
-        d_hidden int: hidden dimension
+    - `d_hidden int`: hidden dimension
 
-        d_output int: output dimension
+    - `d_output int`: output dimension
 
-        n_layers int: number of layers
+    - `n_layers int`: number of layers
 
-        bidir bool: if the LSTM should be bidirectional
+    - `bidir bool`: if the LSTM should be bidirectional
 
-        input_dropout float: dropout percentage on inputs
+    - `input_dropout float`: dropout percentage on inputs
 
-        lstm_dropout float: dropout on LSTM layers
+    - `lstm_dropout float`: dropout on LSTM layers
 
-        batch_first bool: if batch dimension is first on input tensors
+    - `batch_first bool`: if batch dimension is first on input tensors
     '''
     def __init__(self, d_embedding, d_hidden, d_output, n_layers,
                  bidir=False, input_dropout=0., lstm_dropout=0.,
@@ -583,10 +583,10 @@ class LSTM(Conditional_LSTM):
         '''
         Inputs:
 
-            `x` torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]: input tensor
+        - `x torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]:` input tensor
 
-            `hiddens` list[(hidden_state, cell_state)], None: hidden state. If None,
-            a new hidden state is initialized
+        - `hiddens Optional[list[(hidden_state, cell_state)]]`: hidden state. If None,
+        a new hidden state is initialized
 
         '''
 
@@ -603,35 +603,35 @@ class Conditional_LSTM_Block(nn.Module):
 
     Inputs:
 
-        d_vocab int: vocab size
+    - `d_vocab int`: vocab size
 
-        d_embedding int: embedding dimension
+    - `d_embedding int`: embedding dimension
 
-        d_hidden int: hidden dimension
+    - `d_hidden int`: hidden dimension
 
-        d_output int: output dimension
+    - `d_output int`: output dimension
 
-        d_latent int: latent vector dimension
+    - `d_latent int`: latent vector dimension
 
-        n_layers int: number of layers
+    - `n_layers int`: number of layers
 
-        input_dropout float: dropout percentage on inputs
+    - `input_dropout float`: dropout percentage on inputs
 
-        lstm_dropout float: dropout on LSTM layers
+    - `lstm_dropout float`: dropout on LSTM layers
 
-        bidir bool: if the LSTM should be bidirectional
+    - `bidir bool`: if the LSTM should be bidirectional
 
-        condition_hidden bool: if True, latent vector is used to initialize the
-        hidden state
+    - `condition_hidden bool`: if True, latent vector is used to initialize the
+    hidden state
 
-        condition_output bool: if True, latent vector is concatenated to inputs
+    - `condition_output bool`: if True, latent vector is concatenated to inputs
 
-        forward_rollout bool: if model should generate outputs through rollout
-        with teacher forcing
+    - `forward_rollout bool`: if model should generate outputs through rollout
+    with teacher forcing
 
-        p_force float: teacher forcing frequency
+    - `p_force float`: teacher forcing frequency
 
-        p_force_decay float: teacher forcing decay rate
+    - `p_force_decay float`: teacher forcing decay rate
     '''
     def __init__(self, d_vocab, d_embedding, d_hidden, d_output, d_latent, n_layers,
                  input_dropout=0., lstm_dropout=0., bidir=False,
@@ -653,13 +653,12 @@ class Conditional_LSTM_Block(nn.Module):
         '''
         Inputs:
 
-            `x` torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]: input tensor
+        - `x torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]`: input tensor
 
-            `z` torch.Tensor[bs, d_latent]: latent vector
+        - `z torch.Tensor[bs, d_latent]`: latent vector
 
-            `hiddens` list[(hidden_state, cell_state)], None: hidden state. If None,
-            a new hidden state is initialized
-
+        - `hiddens Optional[list[(hidden_state, cell_state)]]`: hidden state. If None,
+        a new hidden state is initialized
         '''
         if self.forward_rollout:
             output, hiddens, encoded = self._forward_rollout(x,z,hiddens)
@@ -717,21 +716,21 @@ class LSTM_Block(nn.Module):
 
     Inputs:
 
-        d_vocab int: vocab size
+    - `d_vocab int`: vocab size
 
-        d_embedding int: embedding dimension
+    - `d_embedding int`: embedding dimension
 
-        d_hidden int: hidden dimension
+    - `d_hidden int`: hidden dimension
 
-        d_output int: output dimension
+    - `d_output int`: output dimension
 
-        n_layers int: number of layers
+    - `n_layers int`: number of LSTM layers
 
-        input_dropout float: dropout percentage on inputs
+    - `input_dropout float`: dropout percentage on inputs
 
-        lstm_dropout float: dropout on LSTM layers
+    - `lstm_dropout float`: dropout on LSTM layers
 
-        bidir bool: if the LSTM should be bidirectional
+    - `bidir bool`: if the LSTM should be bidirectional
     '''
     def __init__(self, d_vocab, d_embedding, d_hidden, d_output, n_layers,
                  input_dropout=0., lstm_dropout=0., bidir=False):
@@ -747,10 +746,10 @@ class LSTM_Block(nn.Module):
         '''
         Inputs:
 
-            `x` torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]: input tensor
+        - `x torch.Tensor[(bs, sl, d_embedding) or (sl, bs, d_embedding)]`: input tensor
 
-            `hiddens` list[(hidden_state, cell_state)], None: hidden state. If None,
-            a new hidden state is initialized
+        - `hiddens Optional[list[(hidden_state, cell_state)]]`: hidden state. If None,
+        a new hidden state is initialized
 
         '''
         x = self.embedding(x)
@@ -775,19 +774,20 @@ class LSTM_Encoder(Encoder):
 
     Inputs:
 
-        d_vocab int: vocab size
 
-        d_embedding int: embedding dimension
+    - `d_vocab int`: vocab size
 
-        d_hidden int: hidden dimension
+    - `d_embedding int`: embedding dimension
 
-        n_layers int: number of layers
+    - `d_hidden int`: hidden dimension
 
-        d_latent int: latent vector dimension
+    - `n_layers int`: number of LSTM layers
 
-        input_dropout float: dropout percentage on inputs
+    - `d_latent int`: latent space dimension
 
-        lstm_dropout float: dropout on LSTM layers
+    - `input_dropout float`: dropout percentage on inputs
+
+    - `lstm_dropout float`: dropout on LSTM layers
 
     Generates latent vector from hidden states from the last LSTM layer
     '''
@@ -815,11 +815,11 @@ class MLP_Encoder(Encoder):
 
     Inputs:
 
-        d_in int: number of input dimensions
+    - `d_in int`: number of input dimensions
 
-        dims list[int]: list of layer sizes ie `[1024, 512, 256]`
+    - `dims list[int]`: list of layer sizes ie `[1024, 512, 256]`
 
-        dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+    - `dropouts list[float]`: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
     '''
     def __init__(self, d_in, dims, d_latent, dropouts):
         super().__init__(d_latent)
@@ -846,19 +846,19 @@ class Conv_Encoder(Encoder):
 
     Inputs:
 
-        d_vocab int: vocab size
+    - `d_vocab int`: vocab size
 
-        d_embedding int: embedding dimension
+    - `d_embedding int`: embedding dimension
 
-        d_latent int: latent vector dimension
+    - `d_latent int`: latent vector dimension
 
-        filters list[int]: filter sizes for conv layers ie `[64, 128, 256]`
+    - `filters list[int]`: filter sizes for conv layers ie `[64, 128, 256]`
 
-        kernel_sizes list[int]: kernel sizes for conv layers ie `[5, 5, 5]`
+    - `kernel_sizes list[int]`: kernel sizes for conv layers ie `[5, 5, 5]`
 
-        strides list[int]: strides for conv layers ie `[2, 2, 2]`
+    - `strides list[int]`: strides for conv layers ie `[2, 2, 2]`
 
-        dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+    - `dropouts list[float]`: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
     '''
     def __init__(self, d_vocab, d_embedding, d_latent, filters, kernel_sizes, strides, dropouts):
         super().__init__(d_latent)
@@ -891,16 +891,16 @@ class MLP(nn.Module):
 
     Inputs:
 
-        d_in int: number of input dimensions
+    - `d_in int`: number of input dimensions
 
-        dims list[int]: list of layer sizes ie `[1024, 512, 256]`
+    - `dims list[int]`: list of layer sizes ie `[1024, 512, 256]`
 
-        d_out int: number of output dimensions
+    - `d_out int`: number of output dimensions
 
-        drops list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+    - `drops list[float]`: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
 
-        outrange list[float], None: squashes the output to be between `outrange[0]`
-        and `outrange[1]`
+    - `outrange Optional[list[float]]`: squashes the output to be between `outrange[0]`
+    and `outrange[1]`
     '''
     def __init__(self, d_in, dims, d_out, drops, outrange=None):
         super().__init__()

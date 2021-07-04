@@ -15,46 +15,87 @@ entries:
     - output: web,pdf
       title: Overview
       url: tutorials.html
-    - output: web,pdf
-      title: Structure Enumeration
-      url: tutorials.structure_enumeration.html
-    - output: web,pdf
-      title: Templates (Beginner)
-      url: tutorials.template.beginner.html
-    - output: web,pdf
-      title: Templates (Intermediate)
-      url: tutorials.template.intermediate.html
-    - output: web,pdf
-      title: Templates (Advanced)
-      url: tutorials.template.advanced.html
+      subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Structure Enumeration
+          url: tutorials.structure_enumeration.html
+        - output: web,pdf
+          title: Templates (Beginner)
+          url: tutorials.template.beginner.html
+        - output: web,pdf
+          title: Templates (Intermediate)
+          url: tutorials.template.intermediate.html
+        - output: web,pdf
+          title: Templates (Advanced)
+          url: tutorials.template.advanced.html
+        title: Comp Chem
     output: web
     title: Tutorials
   - folderitems:
     - output: web,pdf
-      title: Core
-      url: core.html
-    output: web
-    title: Core
-  - folderitems:
-    - output: web,pdf
-      title: Chem
-      url: chem.html
-    output: web
-    title: Chem
-  - folderitems:
-    - output: web,pdf
       title: Overview
-      url: template.overview.html
-    - output: web,pdf
-      title: Filters
-      url: template.filters.html
-    - output: web,pdf
-      title: Templates
-      url: template.template.html
-    - output: web,pdf
-      title: Blocks
-      url: template.blocks.html
+      url: library_index.html
+      subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Core
+          url: core.html
+        title: Core
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Chem
+          url: chem.html
+        title: Chem
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Overview
+          url: template.overview.html
+        - output: web,pdf
+          title: Filters
+          url: template.filters.html
+        - output: web,pdf
+          title: Templates
+          url: template.template.html
+        - output: web,pdf
+          title: Blocks
+          url: template.blocks.html
+        title: Templates
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Torch Core
+          url: torch_core.html
+        - output: web,pdf
+          title: Layers
+          url: layers.html
+        title: Torch
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Vocab
+          url: vocab.html
+        - output: web,pdf
+          title: Dataloaders
+          url: dataloaders.html
+        title: Data
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Generative Base
+          url: generative_models.generative_base.html
+        - output: web,pdf
+          title: LSTM Language Models
+          url: generative_models.lstm_lm.html
+        - output: web,pdf
+          title: VAE Models
+          url: generative_models.vae.html
+        title: Generative Models
     output: web
-    title: Tempates
+    title: Library
   output: web
   title: Sidebar

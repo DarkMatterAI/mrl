@@ -49,9 +49,9 @@ def to_device(tensor, device=None):
 
     Inputs
 
-        `tensor` torch.Tensor: input tensor
+    - `tensor torch.Tensor`: input tensor
 
-        `device`
+    - `device [str, torch.Device]`: device
     '''
     if device is None:
         device = get_device()
@@ -81,7 +81,7 @@ def freeze(module):
 
     Inputs:
 
-        `module` nn.Module: Pytorch module
+    - `module nn.Module`: Pytorch module
     '''
     for p in module.parameters():
         p.requires_grad_(False)
@@ -92,7 +92,7 @@ def unfreeze(module):
 
     Inputs:
 
-        `module` nn.Module: Pytorch module
+    - `module nn.Module`: Pytorch module
     '''
     for p in module.parameters():
         p.requires_grad_(True)
@@ -106,14 +106,16 @@ def x_to_preds(x, multinomial=True):
 
     Inputs:
 
-        `x` torch.Tensor: input tensor
-        `multinomial` bool: if True, use multinomial sampling.
-        If False, use argmax sampling
+    - `x torch.Tensor`: input tensor
+
+    - `multinomial bool`: if True, use multinomial sampling.
+    If False, use argmax sampling
 
     Returns:
 
-        `idxs` torch.LongTensor: index values of hard sample
-        `lps` torch.FloatTensor: log probabilities for each hard value
+    - `idxs torch.LongTensor`: index values of hard sample
+
+    - `lps torch.FloatTensor`: log probabilities for each hard value
     '''
     log_probs = F.log_softmax(x, -1).squeeze(1)
     probs = log_probs.detach().exp()
@@ -189,13 +191,13 @@ def discount_rewards(rewards, gamma):
 
     Inputs:
 
-        `rewards` torch.Tensor[bs,sl]: tensor of undiscounted rewards
+    - `rewards torch.Tensor[bs,sl]`: tensor of undiscounted rewards
 
-        `gamma` float: discount factor
+    - `gamma float`: discount factor
 
     Returns:
 
-        `discounted` torch.Tensor[bs, sl]: tensor of discounted rewards
+    - `discounted torch.Tensor[bs, sl]`: tensor of discounted rewards
 
     Rewards are discounted following
 
@@ -216,20 +218,20 @@ def whiten(values, shift_mean=True, mask=None):
 
     Inputs:
 
-        `values` torch.FloatTensor: values to be whitened
+    - `values torch.FloatTensor`: values to be whitened
 
-        `shift_mean` bool: if True, outputs will have zero mean.
+    - `shift_mean bool`: if True, outputs will have zero mean.
 
-        `mask` torch.BoolTensor, torch.LongTensor, None: if a mask
-        is given, masked values will not contribute to calculating the
-        mean and variance for whitening. Masking is done following
-        `masked_values = values*mask`. For bool tensors, values where
-        `mask=True` are kept. For binary float/int tensors, values
-        where `mask=1` are kept.
+    - `mask [torch.BoolTensor, torch.LongTensor, None]`: if a mask
+    is given, masked values will not contribute to calculating the
+    mean and variance for whitening. Masking is done following
+    `masked_values = values*mask`. For bool tensors, values where
+    `mask=True` are kept. For binary float/int tensors, values
+    where `mask=1` are kept.
 
     Returns:
 
-        `whitened` torch.FloatTensor: whitened values
+    - `whitened torch.FloatTensor`: whitened values
     '''
     if mask is None:
         mean = values.mean()
@@ -257,13 +259,13 @@ def scatter_rewards(rewards, mask):
 
     Inputs:
 
-        `rewards` torch.FloatTensor[bs]: vector of rewards
+    - `rewards torch.FloatTensor[bs]`: vector of rewards
 
-        `mask` torch.Tensor[bs, sl]: mask tensor
+    - `mask torch.Tensor[bs, sl]`: mask tensor
 
     Returns:
 
-        `template`: torch.FloatTensor: scattered values
+    - `template torch.FloatTensor`: scattered values
 
     In molecular RL, we typically have a single reward per molecule
     evaluating the entire structure. Before our update, we need to
@@ -297,17 +299,17 @@ def compute_advantages(rewards, values, gamma, lam):
 
     Inputs:
 
-        `rewards` torch.Tensor: reward tensor
+    - `rewards torch.Tensor`: reward tensor
 
-        `values` torch.Tensor: value function predictions
+    - `values torch.Tensor`: value function predictions
 
-        'gamma' float: GAE gamma factor
+    - 'gamma float`: GAE gamma factor
 
-        `lam` float: GAE lambda factor
+    - `lam float`: GAE lambda factor
 
     Returns:
 
-        `advantages` torch.Tensor: computed advantages
+    - `advantages torch.Tensor`: computed advantages
 
     Advantages are computed according to GAE
 
@@ -345,9 +347,9 @@ class CrossEntropy():
         '''
         Inputs:
 
-            `output` torch.FloatTensor[bs, sl, n]: predictions
+        - `output torch.FloatTensor[bs, sl, n]`: predictions
 
-            `target` torch.LongTensor[bs, sl]: target integer values
+        - `target torch.LongTensor[bs, sl]`: target integer values
         '''
         output = output.view(-1, output.shape[-1])
         target = target.view(-1).long()

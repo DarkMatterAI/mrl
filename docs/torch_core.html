@@ -99,10 +99,12 @@ nb_path: "nbs/05_torch_core.ipynb"
 If <code>device=None</code>, <code>tensor</code> is set to the default device
 returned by <a href="/mrl/torch_core#get_device"><code>get_device</code></a></p>
 <p>Inputs</p>
-
-<pre><code>`tensor` torch.Tensor: input tensor
-
-`device`</code></pre>
+<ul>
+<li><p><code>tensor torch.Tensor</code>: input tensor</p>
+</li>
+<li><p><code>device [str, torch.Device]</code>: device</p>
+</li>
+</ul>
 
 </div>
 
@@ -186,8 +188,9 @@ returned by <a href="/mrl/torch_core#get_device"><code>get_device</code></a></p>
 </blockquote>
 <p>freeze - freezes all parameters in <code>module</code> (requires_grad=False)</p>
 <p>Inputs:</p>
-
-<pre><code>`module` nn.Module: Pytorch module</code></pre>
+<ul>
+<li><code>module nn.Module</code>: Pytorch module</li>
+</ul>
 
 </div>
 
@@ -214,8 +217,9 @@ returned by <a href="/mrl/torch_core#get_device"><code>get_device</code></a></p>
 </blockquote>
 <p>unfreeze - unfreezes all parameters in <code>module</code> (requires_grad=True)</p>
 <p>Inputs:</p>
-
-<pre><code>`module` nn.Module: Pytorch module</code></pre>
+<ul>
+<li><code>module nn.Module</code>: Pytorch module</li>
+</ul>
 
 </div>
 
@@ -250,16 +254,20 @@ returned by <a href="/mrl/torch_core#get_device"><code>get_device</code></a></p>
 <p>x_to_preds - helper function for converting <code>x</code>
 to log probs and taking a hard sample</p>
 <p>Inputs:</p>
-
-<pre><code>`x` torch.Tensor: input tensor
-`multinomial` bool: if True, use multinomial sampling.
-If False, use argmax sampling
-
-</code></pre>
+<ul>
+<li><p><code>x torch.Tensor</code>: input tensor</p>
+</li>
+<li><p><code>multinomial bool</code>: if True, use multinomial sampling.
+If False, use argmax sampling</p>
+</li>
+</ul>
 <p>Returns:</p>
-
-<pre><code>`idxs` torch.LongTensor: index values of hard sample
-`lps` torch.FloatTensor: log probabilities for each hard value</code></pre>
+<ul>
+<li><p><code>idxs torch.LongTensor</code>: index values of hard sample</p>
+</li>
+<li><p><code>lps torch.FloatTensor</code>: log probabilities for each hard value</p>
+</li>
+</ul>
 
 </div>
 
@@ -282,7 +290,7 @@ If False, use argmax sampling
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gather_lps" class="doc_header"><code>gather_lps</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gather_lps</code>(<strong><code>lps</code></strong>, <strong><code>y</code></strong>)</p>
+<h4 id="gather_lps" class="doc_header"><code>gather_lps</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L131" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gather_lps</code>(<strong><code>lps</code></strong>, <strong><code>y</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -313,7 +321,7 @@ If False, use argmax sampling
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="subset_tensor" class="doc_header"><code>subset_tensor</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>subset_tensor</code>(<strong><code>x</code></strong>, <strong><code>mask</code></strong>)</p>
+<h4 id="subset_tensor" class="doc_header"><code>subset_tensor</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>subset_tensor</code>(<strong><code>x</code></strong>, <strong><code>mask</code></strong>)</p>
 </blockquote>
 <p>indexes <code>x</code> with <code>mask</code>. If <code>x</code> is a list or tuple,
 function will index all items in <code>x</code></p>
@@ -346,7 +354,7 @@ function will index all items in <code>x</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="merge_weights" class="doc_header"><code>merge_weights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_weights</code>(<strong><code>sd1</code></strong>, <strong><code>sd2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
+<h4 id="merge_weights" class="doc_header"><code>merge_weights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_weights</code>(<strong><code>sd1</code></strong>, <strong><code>sd2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
 </blockquote>
 <p>merges state dicts following <code>new_weight = alpha*weight_model1 + (1-alpha)*weight_model2</code></p>
 <p>New weights are returned as a new state dict</p>
@@ -372,7 +380,7 @@ function will index all items in <code>x</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="merge_models" class="doc_header"><code>merge_models</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L163" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_models</code>(<strong><code>model1</code></strong>, <strong><code>model2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
+<h4 id="merge_models" class="doc_header"><code>merge_models</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L165" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>merge_models</code>(<strong><code>model1</code></strong>, <strong><code>model2</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>)</p>
 </blockquote>
 <p>merges weights following <code>new_weight = alpha*weight_model1 + (1-alpha)*weight_model2</code></p>
 <p>New weights are loaded into <code>modell</code> inplace</p>
@@ -405,7 +413,7 @@ function will index all items in <code>x</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="smooth_batches" class="doc_header"><code>smooth_batches</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>smooth_batches</code>(<strong><code>batches</code></strong>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>)</p>
+<h4 id="smooth_batches" class="doc_header"><code>smooth_batches</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L176" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>smooth_batches</code>(<strong><code>batches</code></strong>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>)</p>
 </blockquote>
 
 </div>
@@ -436,21 +444,20 @@ function will index all items in <code>x</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="discount_rewards" class="doc_header"><code>discount_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>discount_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>gamma</code></strong>)</p>
+<h4 id="discount_rewards" class="doc_header"><code>discount_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L188" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>discount_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>gamma</code></strong>)</p>
 </blockquote>
 <p>discount_rewards - discounts <code>rewards</code> by <code>gamma</code></p>
 <p>Inputs:</p>
-
-<pre><code>`rewards` torch.Tensor[bs,sl]: tensor of undiscounted rewards
-
-`gamma` float: discount factor
-
-</code></pre>
+<ul>
+<li><p><code>rewards torch.Tensor[bs,sl]</code>: tensor of undiscounted rewards</p>
+</li>
+<li><p><code>gamma float</code>: discount factor</p>
+</li>
+</ul>
 <p>Returns:</p>
-
-<pre><code>`discounted` torch.Tensor[bs, sl]: tensor of discounted rewards
-
-</code></pre>
+<ul>
+<li><code>discounted torch.Tensor[bs, sl]</code>: tensor of discounted rewards</li>
+</ul>
 <p>Rewards are discounted following</p>
 <p>`discounted[i] = rewards[i] + gamma*discounted[i+1]</p>
 
@@ -522,26 +529,27 @@ function will index all items in <code>x</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="whiten" class="doc_header"><code>whiten</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L213" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>whiten</code>(<strong><code>values</code></strong>, <strong><code>shift_mean</code></strong>=<em><code>True</code></em>, <strong><code>mask</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="whiten" class="doc_header"><code>whiten</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L215" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>whiten</code>(<strong><code>values</code></strong>, <strong><code>shift_mean</code></strong>=<em><code>True</code></em>, <strong><code>mask</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>whiten - whitens <code>values</code></p>
 <p>Inputs:</p>
-
-<pre><code>`values` torch.FloatTensor: values to be whitened
-
-`shift_mean` bool: if True, outputs will have zero mean.
-
-`mask` torch.BoolTensor, torch.LongTensor, None: if a mask
+<ul>
+<li><p><code>values torch.FloatTensor</code>: values to be whitened</p>
+</li>
+<li><p><code>shift_mean bool</code>: if True, outputs will have zero mean.</p>
+</li>
+<li><p><code>mask [torch.BoolTensor, torch.LongTensor, None]</code>: if a mask
 is given, masked values will not contribute to calculating the
 mean and variance for whitening. Masking is done following
-`masked_values = values*mask`. For bool tensors, values where
-`mask=True` are kept. For binary float/int tensors, values
-where `mask=1` are kept.
-
-</code></pre>
+<code>masked_values = values*mask</code>. For bool tensors, values where
+<code>mask=True</code> are kept. For binary float/int tensors, values
+where <code>mask=1</code> are kept.</p>
+</li>
+</ul>
 <p>Returns:</p>
-
-<pre><code>`whitened` torch.FloatTensor: whitened values</code></pre>
+<ul>
+<li><code>whitened torch.FloatTensor</code>: whitened values</li>
+</ul>
 
 </div>
 
@@ -571,22 +579,21 @@ where `mask=1` are kept.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="scatter_rewards" class="doc_header"><code>scatter_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>scatter_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>mask</code></strong>)</p>
+<h4 id="scatter_rewards" class="doc_header"><code>scatter_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L255" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>scatter_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>mask</code></strong>)</p>
 </blockquote>
 <p>scatter_rewards - scatter vector of rewards to matrix
 based on <code>mask</code></p>
 <p>Inputs:</p>
-
-<pre><code>`rewards` torch.FloatTensor[bs]: vector of rewards
-
-`mask` torch.Tensor[bs, sl]: mask tensor
-
-</code></pre>
+<ul>
+<li><p><code>rewards torch.FloatTensor[bs]</code>: vector of rewards</p>
+</li>
+<li><p><code>mask torch.Tensor[bs, sl]</code>: mask tensor</p>
+</li>
+</ul>
 <p>Returns:</p>
-
-<pre><code>`template`: torch.FloatTensor: scattered values
-
-</code></pre>
+<ul>
+<li><code>template torch.FloatTensor</code>: scattered values</li>
+</ul>
 <p>In molecular RL, we typically have a single reward per molecule
 evaluating the entire structure. Before our update, we need to
 discount the final reward back to all timesteps. However, we want
@@ -673,25 +680,24 @@ scattered = scatter_rewards(rewards, mask)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="compute_advantages" class="doc_header"><code>compute_advantages</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L294" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>compute_advantages</code>(<strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>gamma</code></strong>, <strong><code>lam</code></strong>)</p>
+<h4 id="compute_advantages" class="doc_header"><code>compute_advantages</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L296" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>compute_advantages</code>(<strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>gamma</code></strong>, <strong><code>lam</code></strong>)</p>
 </blockquote>
 <p>Calculate advantages according to Generalized Advantage Estimation (GAE)</p>
 <p>Inputs:</p>
-
-<pre><code>`rewards` torch.Tensor: reward tensor
-
-`values` torch.Tensor: value function predictions
-
-'gamma' float: GAE gamma factor
-
-`lam` float: GAE lambda factor
-
-</code></pre>
+<ul>
+<li><p><code>rewards torch.Tensor</code>: reward tensor</p>
+</li>
+<li><p><code>values torch.Tensor</code>: value function predictions</p>
+</li>
+<li><p>'gamma float`: GAE gamma factor</p>
+</li>
+<li><p><code>lam float</code>: GAE lambda factor</p>
+</li>
+</ul>
 <p>Returns:</p>
-
-<pre><code>`advantages` torch.Tensor: computed advantages
-
-</code></pre>
+<ul>
+<li><code>advantages torch.Tensor</code>: computed advantages</li>
+</ul>
 <p>Advantages are computed according to GAE</p>
 <p>delta = rewards[i] + gamma*values[i+1] - values[i]</p>
 <p>advantages[i] = delta + gamma<em>lam</em>glv</p>
@@ -731,7 +737,7 @@ scattered = scatter_rewards(rewards, mask)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CrossEntropy" class="doc_header"><code>class</code> <code>CrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L336" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CrossEntropy</code>()</p>
+<h2 id="CrossEntropy" class="doc_header"><code>class</code> <code>CrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L338" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CrossEntropy</code>()</p>
 </blockquote>
 <p>CrossEntropy - cross entropy loss for sequence predictions.
 Flattens predictions and targets before computing loss</p>
@@ -757,7 +763,7 @@ Flattens predictions and targets before computing loss</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BinaryCrossEntropy" class="doc_header"><code>class</code> <code>BinaryCrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L356" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BinaryCrossEntropy</code>()</p>
+<h2 id="BinaryCrossEntropy" class="doc_header"><code>class</code> <code>BinaryCrossEntropy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L358" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BinaryCrossEntropy</code>()</p>
 </blockquote>
 
 </div>
@@ -781,7 +787,7 @@ Flattens predictions and targets before computing loss</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HuberLoss" class="doc_header"><code>class</code> <code>HuberLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L366" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HuberLoss</code>(<strong><code>beta</code></strong>=<em><code>1.0</code></em>)</p>
+<h2 id="HuberLoss" class="doc_header"><code>class</code> <code>HuberLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L368" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HuberLoss</code>(<strong><code>beta</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 
 </div>
@@ -805,7 +811,7 @@ Flattens predictions and targets before computing loss</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MSELoss" class="doc_header"><code>class</code> <code>MSELoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L375" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MSELoss</code>()</p>
+<h2 id="MSELoss" class="doc_header"><code>class</code> <code>MSELoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L377" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MSELoss</code>()</p>
 </blockquote>
 
 </div>
@@ -836,7 +842,7 @@ Flattens predictions and targets before computing loss</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pca" class="doc_header"><code>pca</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L385" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pca</code>(<strong><code>x</code></strong>, <strong><code>k</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="pca" class="doc_header"><code>pca</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/torch_core.py#L387" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pca</code>(<strong><code>x</code></strong>, <strong><code>k</code></strong>=<em><code>2</code></em>)</p>
 </blockquote>
 <p>pca of <code>x</code> to <code>k</code> dimensions</p>
 

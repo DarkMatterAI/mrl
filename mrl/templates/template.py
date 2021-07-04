@@ -16,20 +16,21 @@ class Template():
     Template - class for managing hard and soft filters
 
     Inputs:
-        `hard_filters` - (list), list of `Filter` objects used for pass/fail screening
 
-        `soft_filters` - (list), list of `Filter` objects used for soft scoring
+    - `hard_filters list[Filter]`: list of `Filter` objects used for pass/fail screening
 
-        `log` - (bool), if True, template will log screened compounds
+    - `soft_filters list[Filter]`: list of `Filter` objects used for soft scoring
 
-        `use_lookup` - (bool), if True, filter results are stored in a lookup table. If a compound
-            is re-screened, the lookup value is returned
+    - `log bool`: if True, template will log screened compounds
 
-        `fail_score` - (float), placeholder score for compounds that fail to pass hard filters
+    - `use_lookup bool`: if True, filter results are stored in a lookup table. If a compound
+    is re-screened, the lookup value is returned
 
-        `cpus` - (int, None), number of CPUs to use. If None, defaults to `os.environ['ncpus']`
+    - `fail_score float`: placeholder score for compounds that fail to pass hard filters
 
-        `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `cpus Optional[int]`: number of CPUs to use. If None, defaults to `os.environ['ncpus']`
+
+    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
 
     '''
     def __init__(self, hard_filters, soft_filters=None, log=False, use_lookup=True, fail_score=0.,

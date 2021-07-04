@@ -174,13 +174,13 @@ class Filter():
 
     Inputs:
 
-        `score` - one of (None, int, float, ScoreFunction), see `set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-        `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
     '''
     def __init__(self, score=None, name=None, fail_score=0., mode='smile'):
         self.score_function = self.set_score(score, fail_score)
@@ -262,13 +262,13 @@ class ValidityFilter(Filter):
 
     Inputs:
 
-        `score` - one of (None, int, float, ScoreFunction), see `set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-        `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
     '''
     def __init__(self, score=None, name=None, fail_score=0., mode='smile'):
         if name is None:
@@ -310,19 +310,20 @@ class PropertyFilter(Filter):
 
     Inputs:
 
-        `mol_function` - any function that takes as input a `Mol` object and returns a single numeric value
+    - `mol_function Callable`: any function that takes as input a `Mol` object and
+    returns a single numeric value
 
-        `min_val` - (None, int, float), inclusive lower bound for filter (ignored if None)
+    - `min_val Optional[float, int]`: inclusive lower bound for filter (ignored if None)
 
-        `max_val` - (None, int, float), inclusive upper bound for filter (ignored if None)
+    - `max_val Optional[float, int]`: inclusive upper bound for filter (ignored if None)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-        `mode` - (str), `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
     '''
     def __init__(self, mol_function, min_val=None, max_val=None, score=None,
                  fail_score=0., name=None, mode='smile'):
@@ -474,25 +475,26 @@ def criteria_check(criteria):
     criteria_check3 = (type(criteria)==int)
     return any([criteria_check1, criteria_check2, criteria_check3])
 
+
 class StructureFilter(Filter):
     '''
     StructureFilter - filters mols based on structures in `smarts`
 
     Inputs:
 
-        `smarts` - (list, Catalog), list of smarts strings for filtering or `SmartsCatalog`
+    - `smarts [list, SmartsCatalog]`: list of smarts strings for filtering or `SmartsCatalog`
 
-        `exclude` - if True, filter returns `False` when a structure match is found
+    - `exclude bool`: if True, filter returns `False` when a structure match is found
 
-        `criteria` - ('any', 'all', float, int), match criteria
-        (match any filter, match all filters, match float percent of filters,
-         match int number of filters)
+    - `criteria ['any', 'all', float, int]`: match criteria.
+    (match any filter, match all filters, match float percent of filters,
+    match int number of filters)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
     '''
     def __init__(self, smarts, exclude=True, criteria='any', score=None, name=None, fail_score=0.):
 
@@ -539,17 +541,17 @@ class ExclusionFilter(StructureFilter):
 
     Inputs:
 
-        `smarts` - (list, Catalog), list of smarts strings for filtering or `SmartsCatalog`
+    - `smarts [list, SmartsCatalog]`: list of smarts strings for filtering or `SmartsCatalog`
 
-        `criteria` - ('any', 'all', float, int), match criteria
-        (match any filter, match all filters, match float percent of filters,
-         match int number of filters)
+    - `criteria ['any', 'all', float, int]`: match criteria.
+    (match any filter, match all filters, match float percent of filters,
+    match int number of filters)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
     '''
     def __init__(self, smarts, criteria='any', score=None, name=None, fail_score=0.):
 
@@ -565,17 +567,17 @@ class KeepFilter(StructureFilter):
 
     Inputs:
 
-        `smarts` - (list, Catalog), list of smarts strings for filtering or `SmartsCatalog`
+    - `smarts [list, SmartsCatalog]`: list of smarts strings for filtering or `SmartsCatalog`
 
-        `criteria` - ('any', 'all', float, int), match criteria
-        (match any filter, match all filters, match float percent of filters,
-         match int number of filters)
+    - `criteria ['any', 'all', float, int]`: match criteria.
+    (match any filter, match all filters, match float percent of filters,
+    match int number of filters)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
     '''
     def __init__(self, smarts, criteria='any', score=None, name=None, fail_score=0.):
 
@@ -593,15 +595,15 @@ class PAINSFilter(ExclusionFilter):
 
     Inputs:
 
-        `criteria` - ('any', 'all', float, int), match criteria
-        (match any filter, match all filters, match float percent of filters,
-         match int number of filters)
+    - `criteria ['any', 'all', float, int]`: match criteria.
+    (match any filter, match all filters, match float percent of filters,
+    match int number of filters)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
     '''
     def __init__(self, criteria='any', score=None, name=None, fail_score=0.):
         super().__init__(PAINSCatalog(), criteria, score, name, fail_score)
@@ -613,15 +615,15 @@ class PAINSAFilter(ExclusionFilter):
 
     Inputs:
 
-        `criteria` - ('any', 'all', float, int), match criteria
-        (match any filter, match all filters, match float percent of filters,
-         match int number of filters)
+    - `criteria ['any', 'all', float, int]`: match criteria.
+    (match any filter, match all filters, match float percent of filters,
+    match int number of filters)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
     '''
     def __init__(self, criteria='any', score=None, name=None, fail_score=0.):
         super().__init__(PAINSACatalog(), criteria, score, name, fail_score)
@@ -632,15 +634,15 @@ class PAINSBFilter(ExclusionFilter):
 
     Inputs:
 
-        `criteria` - ('any', 'all', float, int), match criteria
-        (match any filter, match all filters, match float percent of filters,
-         match int number of filters)
+    - `criteria ['any', 'all', float, int]`: match criteria.
+    (match any filter, match all filters, match float percent of filters,
+    match int number of filters)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
     '''
     def __init__(self, criteria='any', score=None, name=None, fail_score=0.):
         super().__init__(PAINSBCatalog(), criteria, score, name, fail_score)
@@ -652,15 +654,15 @@ class PAINSCFilter(ExclusionFilter):
 
     Inputs:
 
-        `criteria` - ('any', 'all', float, int), match criteria
-        (match any filter, match all filters, match float percent of filters,
-         match int number of filters)
+    - `criteria ['any', 'all', float, int]`: match criteria.
+    (match any filter, match all filters, match float percent of filters,
+    match int number of filters)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
     '''
     def __init__(self, criteria='any', score=None, name=None, fail_score=0.):
         super().__init__(PAINSCCatalog(), criteria, score, name, fail_score)
@@ -675,23 +677,23 @@ class FPFilter(Filter):
 
     Inputs:
 
-        `reference_smiles` - (list), list of smiles or `Mol` objects for comparison
+    - `reference_smiles list`list of smiles or `Mol` objects for comparison
 
-        `fp_type` - fingerprint function. see `FP`
+    - `fp_type str`: fingerprint function. see `FP` for available functions
 
-        `fp_metric` - fingerprint similarity metric. see `FP`
+    - `fp_metric str`: fingerprint similarity metric. see `FP` for available metrics
 
-        `criteria` - ('any', 'all', float, int), match criteria
-        (match any filter, match all filters, match float percent of filters,
-         match int number of filters)
+    - `criteria ['any', 'all', float, int]`: match criteria.
+    (match any filter, match all filters, match float percent of filters,
+    match int number of filters)
 
-        `fp_thresh` - float, fingerprint similarity cutoff for defining a match
+    - `fp_thresh float`: fingerprint similarity cutoff for defining a match
 
-        `name` - (str, None), filter name used for repr
+    - `name Optional[str]`: filter name used for repr
 
-        `fail_score` - (float, int), used in `set_score` if `score_function` is (int, float)
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-        `score` - one of (None, int, float, ScoreFunction), see `FilterFunction.set_score`
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
     '''
     def __init__(self, reference_fps, fp_type, fp_metric, criteria='any',
                 fp_thresh=0., score=None, name=None, fail_score=0.):

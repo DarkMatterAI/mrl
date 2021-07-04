@@ -129,14 +129,16 @@ block_template = BlockTemplate(main_block)</code></pre>
 </blockquote>
 <p>Block - base class for Blocks</p>
 <p>Inputs:</p>
-
-<pre><code>`template` - [`Template`](/mrl/template.template#Template) subclass
-
-`links` - list, defines links between this block and other blocks
-
-`name` - str, block name
-
-`subblocks` - list, list of [`Block`](/mrl/template.blocks#Block) classes nested within this block</code></pre>
+<ul>
+<li><p><code>template Template</code>: <a href="/mrl/template.template#Template"><code>Template</code></a> subclass</p>
+</li>
+<li><p><code>links list[str]</code>: list, defines links between this block and other blocks</p>
+</li>
+<li><p><code>name str</code>: block name</p>
+</li>
+<li><p><code>subblocks list[Block]</code>: list of <a href="/mrl/template.blocks#Block"><code>Block</code></a> classes nested within this block</p>
+</li>
+</ul>
 
 </div>
 
@@ -199,27 +201,29 @@ SMILES strings automatically.</p>
 <p>recurse_fragments - recursively evlauates <code>fragments</code> against <code>self.template</code>
 and all blocks in <code>self.subblocks</code></p>
 <p>Inputs:</p>
-
-<pre><code>`fragments` - fragments to process. Can either be a single string of the form `'f1.f2.f3'`
-or a list of the form `['f1','f2','f3']`
-
-`add_constant` - bool, if True, constant sequences in any [`ConstantBlock`](/mrl/template.blocks#ConstantBlock) subclasses
-are added to `fragments` during evaluation. Should be `True` if constant sequences are
-missing from `fragments` or False if they are present
-
-</code></pre>
+<ul>
+<li><p><code>fragments [str, list[str]]</code>: fragments to process.
+Can either be a single string of the form <code>'f1.f2.f3'</code>
+or a list of the form <code>['f1','f2','f3']</code>. All items in
+<code>fragments</code> should correspond to the same final molecule.</p>
+</li>
+<li><p><code>add_constant bool</code>: If True, constant sequences in any <a href="/mrl/template.blocks#ConstantBlock"><code>ConstantBlock</code></a> subclasses
+are added to <code>fragments</code> during evaluation. Should be <code>True</code> if constant sequences are
+missing from <code>fragments</code> or False if they are present</p>
+</li>
+</ul>
 <p>Returns:</p>
-
-<pre><code>`fused` - str, fragments fused at this stage
-
-`total_pass` - bool, True if `fragments` passed all subblock templates and `fused` passed
-`self.template`
-
-`total_score` - float, sum of scores from `self.template.soft_filters` and subblock template soft filters
-
-`output_dicts` - list, list of dictionaries holding information from this block and subblocks
-
-</code></pre>
+<ul>
+<li><p><code>fused str</code>: fragments fused at this stage</p>
+</li>
+<li><p><code>total_pass bool</code>: True if <code>fragments</code> passed all subblock
+templates and <code>fused</code> passed <code>self.template</code></p>
+</li>
+<li><p><code>total_score float</code>: sum of scores from <code>self.template.soft_filters</code> and subblock template soft filters</p>
+</li>
+<li><p><code>output_dicts list[dict]</code>: list of dictionaries holding information from this block and subblocks</p>
+</li>
+</ul>
 <p>Recurse fragments works in the following way:</p>
 
 <pre><code>1. Fragments are decomposed based on `self.decompose_fragments`
@@ -257,7 +261,7 @@ missing from `fragments` or False if they are present
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L370" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
+<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L372" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
 </blockquote>
 <p>ConstantBlock - base block class for constant sequence</p>
 
@@ -282,7 +286,7 @@ missing from `fragments` or False if they are present
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L400" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>, <strong><code>links</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks#ConstantBlock"><code>ConstantBlock</code></a></p>
+<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L402" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>, <strong><code>links</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks#ConstantBlock"><code>ConstantBlock</code></a></p>
 </blockquote>
 <p>ConstantMolBlock - constant block for SMILES sequence</p>
 
@@ -314,7 +318,7 @@ missing from `fragments` or False if they are present
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BlockTemplate" class="doc_header"><code>class</code> <code>BlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L428" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTemplate</code>(<strong><code>head_block</code></strong>, <strong><code>lookup</code></strong>=<em><code>True</code></em>)</p>
+<h2 id="BlockTemplate" class="doc_header"><code>class</code> <code>BlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L430" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTemplate</code>(<strong><code>head_block</code></strong>, <strong><code>lookup</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>BlockTemplate - base class for handling nested blocks. Takes care of running fragment strings and logging outputs</p>
 
@@ -346,17 +350,19 @@ missing from `fragments` or False if they are present
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RGroupBlockTemplate" class="doc_header"><code>class</code> <code>RGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L626" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>replace_wildcard</code></strong>=<em><code>True</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="RGroupBlockTemplate" class="doc_header"><code>class</code> <code>RGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L628" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>replace_wildcard</code></strong>=<em><code>True</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>RGroupBlockTemplate - block template for r-group screening</p>
 <p>Inputs:</p>
-
-<pre><code>`base_smile` - str, base smile to attach r-group to. Should have a single unmapped wildcard
-atom, ie `*CCCC`
-
-`rgroup_template` - [`Template`](/mrl/template.template#Template), template for screening r-groups
-
-`full_molecule_template` - [`Template`](/mrl/template.template#Template), None. Optional template for full molecule</code></pre>
+<ul>
+<li><p><code>base_smile str</code>: base smile to attach r-group to.
+Should have a single unmapped wildcard atom, ie <code>*CCCC</code></p>
+</li>
+<li><p><code>rgroup_template Template</code>: template for screening r-groups</p>
+</li>
+<li><p><code>full_molecule_template Optional[Template]</code>: Optional template for full molecule</p>
+</li>
+</ul>
 
 </div>
 
@@ -372,6 +378,13 @@ atom, ie `*CCCC`
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -379,20 +392,23 @@ atom, ie `*CCCC`
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DoubleRGroupBlockTemplate" class="doc_header"><code>class</code> <code>DoubleRGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L687" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="DoubleRGroupBlockTemplate" class="doc_header"><code>class</code> <code>DoubleRGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L691" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>DoubleRGroupBlockTemplate - block template for screening two r-groups</p>
 <p>Inputs:</p>
-
-<pre><code>`base_smile` - str, base smile to attach r-group to. Should have two mapped wildcard atoms,
-ie `'c1nc2c([1*:1])cncc2cc1[1*:2]'`. Rgroup1 will be fused to wildcard `1*:1` and Rgroup 2
-will be fused to wildcard `1*:2`
-
-`r1_template` - [`Template`](/mrl/template.template#Template), template for screening rgroup 1
-
-`r2_template` - [`Template`](/mrl/template.template#Template), template for screening rgroup 2
-
-`full_molecule_template` - [`Template`](/mrl/template.template#Template), None. Optional template for full molecule</code></pre>
+<ul>
+<li><p><code>base_smile str</code>: base smile to attach r-group to.
+Should have two mapped wildcard atoms, ie <code>'c1nc2c([1*:1])cncc2cc1[1*:2]'</code>.
+Rgroup1 will be fused to wildcard <code>1*:1</code> and Rgroup 2
+will be fused to wildcard <code>1*:2</code></p>
+</li>
+<li><p><code>r1_template Template</code>: template for screening rgroup 1</p>
+</li>
+<li><p><code>r2_template Template</code>: template for screening rgroup 2</p>
+</li>
+<li><p><code>full_molecule_template Optional[Template]</code>: Optional template for full molecule</p>
+</li>
+</ul>
 
 </div>
 
@@ -408,6 +424,13 @@ will be fused to wildcard `1*:2`
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -415,20 +438,22 @@ will be fused to wildcard `1*:2`
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LinkerBlockTemplate" class="doc_header"><code>class</code> <code>LinkerBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L730" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinkerBlockTemplate</code>(<strong><code>smile1</code></strong>, <strong><code>smile2</code></strong>, <strong><code>linker_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="LinkerBlockTemplate" class="doc_header"><code>class</code> <code>LinkerBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L737" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinkerBlockTemplate</code>(<strong><code>smile1</code></strong>, <strong><code>smile2</code></strong>, <strong><code>linker_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>LinkerBlockTemplate - block template for screening linkers</p>
 <p>Inputs:</p>
-
-<pre><code>`smile1` - str, left-side linker attachment. Should have a single unmapped wildcard,
-ie `*CCCC`
-
-`smile2` - str, right-side linker attachment. Should have a single unmapped wildcard,
-ie `*CCCC`
-
-`linker_template` - [`Template`](/mrl/template.template#Template), template for screening the linker
-
-`full_molecule_template` - [`Template`](/mrl/template.template#Template), None. Optional template for full molecule</code></pre>
+<ul>
+<li><p><code>smile1 str</code>: left-side linker attachment.
+Should have a single unmapped wildcard, ie <code>*CCCC</code></p>
+</li>
+<li><p><code>smile2 str</code>: right-side linker attachment.
+Should have a single unmapped wildcard, ie <code>*CCCC</code></p>
+</li>
+<li><p><code>linker_template Template</code>: template for screening the linker</p>
+</li>
+<li><p><code>full_molecule_template Optional[Template]</code>: Optional template for full molecule</p>
+</li>
+</ul>
 
 </div>
 
@@ -444,6 +469,13 @@ ie `*CCCC`
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -451,17 +483,21 @@ ie `*CCCC`
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ScaffoldBlockTemplate" class="doc_header"><code>class</code> <code>ScaffoldBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L785" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaffoldBlockTemplate</code>(<strong><code>attachments</code></strong>, <strong><code>scaffold_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="ScaffoldBlockTemplate" class="doc_header"><code>class</code> <code>ScaffoldBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L794" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaffoldBlockTemplate</code>(<strong><code>attachments</code></strong>, <strong><code>scaffold_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>ScaffoldBlockTemplate - block template for screening scaffolds or rings with multiple attachments</p>
 <p>Inputs:</p>
-
-<pre><code>`attachments` - list, list of mapped attachments. All attachments should have a single wildcard
-atom mapped following the format `[{isotope}*:{map_num}]`, ie `['[1:*1]CC', '[1:*2]CCC']`
-
-`scaffold_template` - [`Template`](/mrl/template.template#Template), template for screening the scaffold
-
-`full_molecule_template` - [`Template`](/mrl/template.template#Template), None. Optional template for full molecule</code></pre>
+<ul>
+<li><p><code>attachments list</code>: list of mapped attachments.
+All attachments should have a single wildcard
+atom mapped following the format <code>[{isotope}*:{map_num}]</code>,
+ie <code>['[1:*1]CC', '[1:*2]CCC']</code></p>
+</li>
+<li><p><code>scaffold_template Template</code>: template for screening the scaffold</p>
+</li>
+<li><p><code>full_molecule_template Optional[Template]</code>: Optional template for full molecule</p>
+</li>
+</ul>
 
 </div>
 
@@ -644,7 +680,7 @@ atom mapped following the format `[{isotope}*:{map_num}]`, ie `['[1:*1]CC', '[1:
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">lookup_table</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -659,70 +695,10 @@ atom mapped following the format `[{isotope}*:{map_num}]`, ie `['[1:*1]CC', '[1:
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{&#39;CC(C)(C)SC[1*:3].Cc1cc([2*:3])c([2*:2])n1C[2*:4].Cc1noc(C)c1CO[2*:1]&#39;: [&#39;CC(C)(C)SC[1*:3].Cc1cc([2*:3])c([2*:2])n1C[2*:4].Cc1noc(C)c1CO[2*:1]&#39;,
-  &#39;Cc1noc(C)c1COc1cnc2c(-c3c(CSC(C)(C)C)cc(C)n3CC(=O)O)cncc2c1&#39;,
-  True,
-  3.0],
- &#39;C=C(C)C[1*:3].Nc1c(N([2*:2])[2*:4])ncnc1[2*:3].Cc1ccc([2*:1])cc1[N+](=O)[O-]&#39;: [&#39;C=C(C)C[1*:3].Nc1c(N([2*:2])[2*:4])ncnc1[2*:3].Cc1ccc([2*:1])cc1[N+](=O)[O-]&#39;,
-  &#39;C=C(C)Cc1ncnc(N(C(=O)O)c2cncc3cc(-c4ccc(C)c([N+](=O)[O-])c4)cnc23)c1N&#39;,
-  True,
-  3.0],
- &#39;CCSCC[1*:3].Cc1ccc(N(C(=O)[2*:4])[2*:3])c([2*:2])c1.Clc1ncccc1N[2*:1]&#39;: [&#39;CCSCC[1*:3].Cc1ccc(N(C(=O)[2*:4])[2*:3])c([2*:2])c1.Clc1ncccc1N[2*:1]&#39;,
-  &#39;CCSCCN(C(=O)C(=O)O)c1ccc(C)cc1-c1cncc2cc(Nc3cccnc3Cl)cnc12&#39;,
-  True,
-  1.0],
- &#39;C#CCO[1*:3].O=c1n([2*:3])nc([2*:2])n1[2*:4].O=c1ccccn1C[2*:1]&#39;: [&#39;C#CCO[1*:3].O=c1n([2*:3])nc([2*:2])n1[2*:4].O=c1ccccn1C[2*:1]&#39;,
-  &#39;C#CCOn1nc(-c2cncc3cc(Cn4ccccc4=O)cnc23)n(C(=O)O)c1=O&#39;,
-  True,
-  4.0]}</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outputs</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[[&#39;CC(C)(C)SC[1*:3].Cc1cc([2*:3])c([2*:2])n1C[2*:4].Cc1noc(C)c1CO[2*:1]&#39;,
-  &#39;Cc1noc(C)c1COc1cnc2c(-c3c(CSC(C)(C)C)cc(C)n3CC(=O)O)cncc2c1&#39;,
-  True,
-  3.0],
- [&#39;C=C(C)C[1*:3].Nc1c(N([2*:2])[2*:4])ncnc1[2*:3].Cc1ccc([2*:1])cc1[N+](=O)[O-]&#39;,
-  &#39;C=C(C)Cc1ncnc(N(C(=O)O)c2cncc3cc(-c4ccc(C)c([N+](=O)[O-])c4)cnc23)c1N&#39;,
-  True,
-  3.0],
- [&#39;CCSCC[1*:3].Cc1ccc(N(C(=O)[2*:4])[2*:3])c([2*:2])c1.Clc1ncccc1N[2*:1]&#39;,
-  &#39;CCSCCN(C(=O)C(=O)O)c1ccc(C)cc1-c1cncc2cc(Nc3cccnc3Cl)cnc12&#39;,
-  True,
-  1.0],
- [&#39;C#CCO[1*:3].O=c1n([2*:3])nc([2*:2])n1[2*:4].O=c1ccccn1C[2*:1]&#39;,
-  &#39;C#CCOn1nc(-c2cncc3cc(Cn4ccccc4=O)cnc23)n(C(=O)O)c1=O&#39;,
-  True,
-  4.0]]</pre>
+<pre>[&#39;CC(C)(C)SC[1*:3].Cc1cc([2*:3])c([2*:2])n1C[2*:4].Cc1noc(C)c1CO[2*:1]&#39;,
+ &#39;Cc1noc(C)c1COc1cnc2c(-c3c(CSC(C)(C)C)cc(C)n3CC(=O)O)cncc2c1&#39;,
+ True,
+ 3.0]</pre>
 </div>
 
 </div>
@@ -871,162 +847,6 @@ atom mapped following the format `[{isotope}*:{map_num}]`, ie `['[1:*1]CC', '[1:
   &#39;Cc1c(CS(C)(=O)=O)cccc1NC(=O)Nc1cnc2ccncc2c1&#39;,
   True,
   0.0]]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ncpus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">([</span><span class="kc">None</span><span class="p">],</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[[None, &#39;&#39;, False, -1]]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="p">([</span><span class="s1">&#39;Cc1c(CS(C)(=O)=O)cccc1NC(=O)N*&#39;</span><span class="p">,</span> 
-                         <span class="s1">&#39;Cc1c(CS(C)(=O)=O)ccc1NC(=O)N*&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">filter_type</span><span class="o">=</span><span class="s1">&#39;hard&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[True, False, False]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">([</span><span class="s1">&#39;Cc1c(CS(C)(=O)=O)cccc1NC(=O)N*&#39;</span><span class="p">,</span> 
-                         <span class="s1">&#39;Cc1c(CS(C)(=O)=O)ccc1NC(=O)N*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[[&#39;Cc1c(CS(C)(=O)=O)cccc1NC(=O)N[2*:1]&#39;,
-  &#39;Cc1c(CS(C)(=O)=O)cccc1NC(=O)Nc1cnc2ccncc2c1&#39;,
-  True,
-  0.0],
- [&#39;Cc1c(CS(C)(=O)=O)ccc1NC(=O)N*&#39;, &#39;&#39;, False, -1],
- [&#39;&#39;, &#39;c1cc2ncc([1*:1])cc2cn1.&#39;, False, -1.0]]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">block_template</span><span class="o">.</span><span class="n">recurse_fragments</span><span class="p">([</span><span class="s1">&#39;****&#39;</span><span class="p">],</span> <span class="n">add_constant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[[&#39;****&#39;, &#39;****.c1cc2ncc([1*:1])cc2cn1&#39;, False, -1.0]]</pre>
 </div>
 
 </div>

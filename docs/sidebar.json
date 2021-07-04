@@ -1,25 +1,46 @@
 {
-    "MRL": {
+    "MRL" : {
         "Overview" : "/"
     },
-    "Tutorials": {
+    "Tutorials" : {
         "Overview" : "tutorials.html",
-        "Structure Enumeration" : "tutorials.structure_enumeration.html",
-        "Templates (Beginner)" : "tutorials.template.beginner.html",
-        "Templates (Intermediate)" : "tutorials.template.intermediate.html",
-        "Templates (Advanced)" : "tutorials.template.advanced.html"
+        "" : {
+            "Comp Chem" : {
+                "Structure Enumeration" : "tutorials.structure_enumeration.html",
+                "Templates (Beginner)" : "tutorials.template.beginner.html",
+                "Templates (Intermediate)" : "tutorials.template.intermediate.html",
+                "Templates (Advanced)" : "tutorials.template.advanced.html"
+            }
+        }
     },
-    "Core" : {
-        "Core" : "core.html"
-    },
-    "Chem" : {
-        "Chem" : "chem.html"
-    },
-    "Tempates" : {
-        "Overview" : "template.overview.html",
-        "Filters" : "template.filters.html",
-        "Templates" : "template.template.html",
-        "Blocks" : "template.blocks.html"
+    "Library" : {
+        "Overview" : "library_index.html",
+        "" : {
+            "Core" : {
+                "Core" : "core.html"
+            },
+            "Chem" : {
+                "Chem" : "chem.html"
+            },
+            "Templates" : {
+                "Overview" : "template.overview.html",
+                "Filters" : "template.filters.html",
+                "Templates" : "template.template.html",
+                "Blocks" : "template.blocks.html"
+            },
+            "Torch" : {
+                "Torch Core" : "torch_core.html",
+                "Layers" : "layers.html"
+            },
+            "Data" : {
+                "Vocab" : "vocab.html",
+                "Dataloaders" : "dataloaders.html"
+            },
+            "Generative Models" : {
+                "Generative Base" : "generative_models.generative_base.html",
+                "LSTM Language Models" : "generative_models.lstm_lm.html",
+                "VAE Models" : "generative_models.vae.html"
+            }
+        }
     }
-    
 }

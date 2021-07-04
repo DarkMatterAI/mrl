@@ -18,13 +18,13 @@ class Block():
 
     Inputs:
 
-        `template` - `Template` subclass
+    - `template Template`: `Template` subclass
 
-        `links` - list, defines links between this block and other blocks
+    - `links list[str]`: list, defines links between this block and other blocks
 
-        `name` - str, block name
+    - `name str`: block name
 
-        `subblocks` - list, list of `Block` classes nested within this block
+    - `subblocks list[Block]`: list of `Block` classes nested within this block
     '''
     def __init__(self, template, links, name, subblocks=None):
         if subblocks is None:
@@ -269,23 +269,25 @@ class MolBlock(Block):
 
         Inputs:
 
-            `fragments` - fragments to process. Can either be a single string of the form `'f1.f2.f3'`
-            or a list of the form `['f1','f2','f3']`
+        - `fragments [str, list[str]]`: fragments to process.
+        Can either be a single string of the form `'f1.f2.f3'`
+        or a list of the form `['f1','f2','f3']`. All items in
+        `fragments` should correspond to the same final molecule.
 
-            `add_constant` - bool, if True, constant sequences in any `ConstantBlock` subclasses
-            are added to `fragments` during evaluation. Should be `True` if constant sequences are
-            missing from `fragments` or False if they are present
+        - `add_constant bool`: If True, constant sequences in any `ConstantBlock` subclasses
+        are added to `fragments` during evaluation. Should be `True` if constant sequences are
+        missing from `fragments` or False if they are present
 
         Returns:
 
-            `fused` - str, fragments fused at this stage
+        - `fused str`: fragments fused at this stage
 
-            `total_pass` - bool, True if `fragments` passed all subblock templates and `fused` passed
-            `self.template`
+        - `total_pass bool`: True if `fragments` passed all subblock
+        templates and `fused` passed `self.template`
 
-            `total_score` - float, sum of scores from `self.template.soft_filters` and subblock template soft filters
+        - `total_score float`: sum of scores from `self.template.soft_filters` and subblock template soft filters
 
-            `output_dicts` - list, list of dictionaries holding information from this block and subblocks
+        - `output_dicts list[dict]`: list of dictionaries holding information from this block and subblocks
 
         Recurse fragments works in the following way:
 
@@ -576,9 +578,9 @@ class BlockTemplate():
 
         Inputs
 
-            'filename' - str, save filename
+        - 'filename str': save filename
 
-            `with_data` - bool, if True BlockTemplate is saved with logged data
+        - `with_data bool`: if True BlockTemplate is saved with logged data
         '''
 
         if not with_data:
@@ -629,12 +631,12 @@ class RGroupBlockTemplate(BlockTemplate):
 
     Inputs:
 
-        `base_smile` - str, base smile to attach r-group to. Should have a single unmapped wildcard
-        atom, ie `*CCCC`
+    - `base_smile str`: base smile to attach r-group to.
+    Should have a single unmapped wildcard atom, ie `*CCCC`
 
-        `rgroup_template` - `Template`, template for screening r-groups
+    - `rgroup_template Template`: template for screening r-groups
 
-        `full_molecule_template` - `Template`, None. Optional template for full molecule
+    - `full_molecule_template Optional[Template]`: Optional template for full molecule
     '''
     def __init__(self, base_smile, rgroup_template, full_molecule_template=None,
                 replace_wildcard=True, lookup=True):
@@ -684,21 +686,24 @@ class RGroupBlockTemplate(BlockTemplate):
         return super().recurse_fragments(fragments, add_constant=add_constant)
 
 
+# Cell
+
 class DoubleRGroupBlockTemplate(BlockTemplate):
     '''
     DoubleRGroupBlockTemplate - block template for screening two r-groups
 
     Inputs:
 
-        `base_smile` - str, base smile to attach r-group to. Should have two mapped wildcard atoms,
-        ie `'c1nc2c([1*:1])cncc2cc1[1*:2]'`. Rgroup1 will be fused to wildcard `1*:1` and Rgroup 2
-        will be fused to wildcard `1*:2`
+    - `base_smile str`: base smile to attach r-group to.
+    Should have two mapped wildcard atoms, ie `'c1nc2c([1*:1])cncc2cc1[1*:2]'`.
+    Rgroup1 will be fused to wildcard `1*:1` and Rgroup 2
+    will be fused to wildcard `1*:2`
 
-        `r1_template` - `Template`, template for screening rgroup 1
+    - `r1_template Template`: template for screening rgroup 1
 
-        `r2_template` - `Template`, template for screening rgroup 2
+    - `r2_template Template`: template for screening rgroup 2
 
-        `full_molecule_template` - `Template`, None. Optional template for full molecule
+    - `full_molecule_template Optional[Template]`: Optional template for full molecule
     '''
     def __init__(self, base_smile, r1_template, r2_template,
                  full_molecule_template=None, lookup=True):
@@ -727,21 +732,23 @@ class DoubleRGroupBlockTemplate(BlockTemplate):
 
         super().__init__(head_block, lookup)
 
+# Cell
+
 class LinkerBlockTemplate(BlockTemplate):
     '''
     LinkerBlockTemplate - block template for screening linkers
 
     Inputs:
 
-        `smile1` - str, left-side linker attachment. Should have a single unmapped wildcard,
-        ie `*CCCC`
+    - `smile1 str`: left-side linker attachment.
+    Should have a single unmapped wildcard, ie `*CCCC`
 
-        `smile2` - str, right-side linker attachment. Should have a single unmapped wildcard,
-        ie `*CCCC`
+    - `smile2 str`: right-side linker attachment.
+    Should have a single unmapped wildcard, ie `*CCCC`
 
-        `linker_template` - `Template`, template for screening the linker
+    - `linker_template Template`: template for screening the linker
 
-        `full_molecule_template` - `Template`, None. Optional template for full molecule
+    - `full_molecule_template Optional[Template]`: Optional template for full molecule
     '''
     def __init__(self, smile1, smile2, linker_template,
                  full_molecule_template=None, lookup=True):
@@ -782,18 +789,22 @@ class LinkerBlockTemplate(BlockTemplate):
 
         super().__init__(head_block, lookup)
 
+# Cell
+
 class ScaffoldBlockTemplate(BlockTemplate):
     '''
     ScaffoldBlockTemplate - block template for screening scaffolds or rings with multiple attachments
 
     Inputs:
 
-        `attachments` - list, list of mapped attachments. All attachments should have a single wildcard
-        atom mapped following the format `[{isotope}*:{map_num}]`, ie `['[1:*1]CC', '[1:*2]CCC']`
+    - `attachments list`: list of mapped attachments.
+    All attachments should have a single wildcard
+    atom mapped following the format `[{isotope}*:{map_num}]`,
+    ie `['[1:*1]CC', '[1:*2]CCC']`
 
-        `scaffold_template` - `Template`, template for screening the scaffold
+    - `scaffold_template Template`: template for screening the scaffold
 
-        `full_molecule_template` - `Template`, None. Optional template for full molecule
+    - `full_molecule_template Optional[Template]`: Optional template for full molecule
     '''
 
     def __init__(self, attachments, scaffold_template,

@@ -59,18 +59,20 @@ nb_path: "nbs/06_layers.ipynb"
 Layers are executed in the order linear, batchnorm, ReLU, dropout.
 Batchnorm, activation and dropout layers are optional</p>
 <p>Inputs:</p>
-
-<pre><code>d_in int: number of input dimensions
-
-d_out int: number of output dimensions
-
-act bool: if True, applies a ReLU activation
-
-bn bool: if True, applies 1d batchnorm
-
-dropout float: dropout percentage
-
-**lin_kwargs dict: keyword args passed to nn.Linear</code></pre>
+<ul>
+<li><p><code>d_in int</code>: number of input dimensions</p>
+</li>
+<li><p><code>d_out int</code>: number of output dimensions</p>
+</li>
+<li><p><code>act bool</code>: if True, applies a ReLU activation</p>
+</li>
+<li><p><code>bn bool</code>: if True, applies 1d batchnorm</p>
+</li>
+<li><p><code>dropout float</code>: dropout percentage</p>
+</li>
+<li><p><code>**lin_kwargs dict</code>: keyword args passed to nn.Linear</p>
+</li>
+</ul>
 
 </div>
 
@@ -122,8 +124,9 @@ dropout float: dropout percentage
 </blockquote>
 <p>ValueHead - used in RL algorithms to predict state values</p>
 <p>Inputs:</p>
-
-<pre><code>d_in int: number of input dimensions</code></pre>
+<ul>
+<li><code>d_in int</code>: number of input dimensions</li>
+</ul>
 
 </div>
 
@@ -157,26 +160,28 @@ dropout float: dropout percentage
 </blockquote>
 <p>Conv - base module for convolutions</p>
 <p>Inputs:</p>
-
-<pre><code>d_in int: number of input dimensions
-
-d_out int: number of output dimensions
-
-ks int: kernel size
-
-stride int: stride
-
-padding int, None: padding. If None, derived from kernel size
-
-ndim int: conv dimension (1D conv, 2D conv, 3D conv)
-
-act bool: if True, applies a ReLU activation
-
-bn bool: if True, applies batchnorm consistent with `ndim`
-
-dropout float: dropout percentage
-
-**conv_kwargs dict: keyword args passed to nn.Conv</code></pre>
+<ul>
+<li><p><code>d_in int</code>: number of input dimensions</p>
+</li>
+<li><p><code>d_out int</code>: number of output dimensions</p>
+</li>
+<li><p><code>ks int</code>: kernel size</p>
+</li>
+<li><p><code>stride int</code>: stride</p>
+</li>
+<li><p><code>padding [int, None]</code>: padding. If None, derived from kernel size</p>
+</li>
+<li><p><code>ndim int</code>: conv dimension (1D conv, 2D conv, 3D conv)</p>
+</li>
+<li><p><code>act bool</code>: if True, applies a ReLU activation</p>
+</li>
+<li><p><code>bn bool</code>: if True, applies batchnorm consistent with <code>ndim</code></p>
+</li>
+<li><p><code>dropout float</code>: dropout percentage</p>
+</li>
+<li><p><code>**conv_kwargs dict</code>: keyword args passed to nn.Conv</p>
+</li>
+</ul>
 
 </div>
 
@@ -203,24 +208,26 @@ dropout float: dropout percentage
 </blockquote>
 <p>Conv1d - 1D convolution</p>
 <p>Inputs:</p>
-
-<pre><code>d_in int: number of input dimensions
-
-d_out int: number of output dimensions
-
-ks int: kernel size
-
-stride int: stride
-
-padding int, None: padding. If None, derived from kernel size
-
-act bool: if True, applies a ReLU activation
-
-bn bool: if True, applies batchnorm consistent with `ndim`
-
-dropout float: dropout percentage
-
-**conv_kwargs dict: keyword args passed to nn.Conv</code></pre>
+<ul>
+<li><p><code>d_in int</code>: number of input dimensions</p>
+</li>
+<li><p><code>d_out int</code>: number of output dimensions</p>
+</li>
+<li><p><code>ks int</code>: kernel size</p>
+</li>
+<li><p><code>stride int</code>: stride</p>
+</li>
+<li><p><code>padding [int, None]</code>: padding. If None, derived from kernel size</p>
+</li>
+<li><p><code>act bool</code>: if True, applies a ReLU activation</p>
+</li>
+<li><p><code>bn bool</code>: if True, applies batchnorm consistent with <code>ndim</code></p>
+</li>
+<li><p><code>dropout float</code>: dropout percentage</p>
+</li>
+<li><p><code>**conv_kwargs dict</code>: keyword args passed to nn.Conv1D</p>
+</li>
+</ul>
 
 </div>
 
@@ -247,24 +254,26 @@ dropout float: dropout percentage
 </blockquote>
 <p>Conv2d - 2D convolution</p>
 <p>Inputs:</p>
-
-<pre><code>d_in int: number of input dimensions
-
-d_out int: number of output dimensions
-
-ks int: kernel size
-
-stride int: stride
-
-padding int, None: padding. If None, derived from kernel size
-
-act bool: if True, applies a ReLU activation
-
-bn bool: if True, applies batchnorm consistent with `ndim`
-
-dropout float: dropout percentage
-
-**conv_kwargs dict: keyword args passed to nn.Conv</code></pre>
+<ul>
+<li><p><code>d_in int</code>: number of input dimensions</p>
+</li>
+<li><p><code>d_out int</code>: number of output dimensions</p>
+</li>
+<li><p><code>ks int</code>: kernel size</p>
+</li>
+<li><p><code>stride int</code>: stride</p>
+</li>
+<li><p><code>padding [int, None]</code>: padding. If None, derived from kernel size</p>
+</li>
+<li><p><code>act bool</code>: if True, applies a ReLU activation</p>
+</li>
+<li><p><code>bn bool</code>: if True, applies batchnorm consistent with <code>ndim</code></p>
+</li>
+<li><p><code>dropout float</code>: dropout percentage</p>
+</li>
+<li><p><code>**conv_kwargs dict</code>: keyword args passed to nn.Conv2D</p>
+</li>
+</ul>
 
 </div>
 
@@ -291,24 +300,26 @@ dropout float: dropout percentage
 </blockquote>
 <p>Conv3d - 3D convolution</p>
 <p>Inputs:</p>
-
-<pre><code>d_in int: number of input dimensions
-
-d_out int: number of output dimensions
-
-ks int: kernel size
-
-stride int: stride
-
-padding int, None: padding. If None, derived from kernel size
-
-act bool: if True, applies a ReLU activation
-
-bn bool: if True, applies batchnorm consistent with `ndim`
-
-dropout float: dropout percentage
-
-**conv_kwargs dict: keyword args passed to nn.Conv</code></pre>
+<ul>
+<li><p><code>d_in int</code>: number of input dimensions</p>
+</li>
+<li><p><code>d_out int</code>: number of output dimensions</p>
+</li>
+<li><p><code>ks int</code>: kernel size</p>
+</li>
+<li><p><code>stride int</code>: stride</p>
+</li>
+<li><p><code>padding [int, None]</code>: padding. If None, derived from kernel size</p>
+</li>
+<li><p><code>act bool</code>: if True, applies a ReLU activation</p>
+</li>
+<li><p><code>bn bool</code>: if True, applies batchnorm consistent with <code>ndim</code></p>
+</li>
+<li><p><code>dropout float</code>: dropout percentage</p>
+</li>
+<li><p><code>**conv_kwargs dict</code>: keyword args passed to nn.Conv3D</p>
+</li>
+</ul>
 
 </div>
 
@@ -342,10 +353,12 @@ dropout float: dropout percentage
 </blockquote>
 <p>SphericalDistribution - samples from points on the surface of a sphere</p>
 <p>Inputs:</p>
-
-<pre><code>loc torch.Tensor: vector of means
-
-scale torch.Tensor: vector of variances</code></pre>
+<ul>
+<li><p><code>loc torch.Tensor</code>: vector of means</p>
+</li>
+<li><p><code>scale torch.Tensor</code>: vector of variances</p>
+</li>
+</ul>
 
 </div>
 
@@ -411,14 +424,14 @@ scale torch.Tensor: vector of variances</code></pre>
 </blockquote>
 <p>NormalPrior - normal distribution prior</p>
 <p>Inputs:</p>
-
-<pre><code>loc torch.Tensor: vector of means
-
-log_scale torch.Tensor: vector of log-variances
-
-trainable bool: if True, `loc` and `scale` are trainable
-
-</code></pre>
+<ul>
+<li><p><code>loc torch.Tensor</code>: vector of means</p>
+</li>
+<li><p><code>log_scale torch.Tensor</code>: vector of log-variances</p>
+</li>
+<li><p><code>trainable bool</code>: if True, <code>loc</code> and <code>scale</code> are trainable</p>
+</li>
+</ul>
 <p>Note that log-variances are used for stability. Optimizing
 the variance directly can cause issues with gradient descent
 sending variance values negative</p>
@@ -448,14 +461,14 @@ sending variance values negative</p>
 </blockquote>
 <p>SphericalPrior - spherical distribution prior</p>
 <p>Inputs:</p>
-
-<pre><code>loc torch.Tensor: vector of means
-
-log_scale torch.Tensor: vector of log-variances
-
-trainable bool: if True, `loc` and `scale` are trainable
-
-</code></pre>
+<ul>
+<li><p><code>loc torch.Tensor</code>: vector of means</p>
+</li>
+<li><p><code>log_scale torch.Tensor</code>: vector of log-variances</p>
+</li>
+<li><p><code>trainable bool</code>: if True, <code>loc</code> and <code>scale</code> are trainable</p>
+</li>
+</ul>
 <p>Note that log-variances are used for stability. Optimizing
 the variance directly can cause issues with gradient descent
 sending variance values negative</p>
@@ -515,12 +528,12 @@ sending variance values negative</p>
 </blockquote>
 <p>SequenceDropout - dropout along the sequence dimension</p>
 <p>Inputs:</p>
-
-<pre><code>p float: dropout probability
-
-batch_first bool: if batch dimension is first in input tensors
-
-</code></pre>
+<ul>
+<li><p><code>p float</code>: dropout probability</p>
+</li>
+<li><p><code>batch_first bool</code>: if batch dimension is first in input tensors</p>
+</li>
+</ul>
 <p>Samples a dropout mask that is constant in the sequence dimension</p>
 
 </div>
@@ -555,29 +568,31 @@ batch_first bool: if batch dimension is first in input tensors
 </blockquote>
 <p>Conditional_LSTM - Conditional LSTM module</p>
 <p>Inputs:</p>
-
-<pre><code>d_embedding int: embedding dimension
-
-d_hidden int: hidden dimension
-
-d_output int: output dimension
-
-d_latent int: latent vector dimension
-
-n_layers int: number of layers
-
-condition_hidden bool: if True, latent vector is used to initialize the
-hidden state
-
-condition_output bool: if True, latent vector is concatenated to inputs
-
-bidir bool: if the LSTM should be bidirectional
-
-input_dropout float: dropout percentage on inputs
-
-lstm_dropout float: dropout on LSTM layers
-
-batch_first bool: if batch dimension is first on input tensors</code></pre>
+<ul>
+<li><p><code>d_embedding int</code>: embedding dimension</p>
+</li>
+<li><p><code>d_hidden int</code>: hidden dimension</p>
+</li>
+<li><p><code>d_output int</code>: output dimension</p>
+</li>
+<li><p><code>d_latent int</code>: latent vector dimension</p>
+</li>
+<li><p><code>n_layers int</code>: number of layers</p>
+</li>
+<li><p><code>condition_hidden bool</code>: if True, latent vector is used to initialize the
+hidden state</p>
+</li>
+<li><p><code>condition_output bool</code>: if True, latent vector is concatenated to inputs</p>
+</li>
+<li><p><code>bidir bool</code>: if the LSTM should be bidirectional</p>
+</li>
+<li><p><code>input_dropout float</code>: dropout percentage on inputs</p>
+</li>
+<li><p><code>lstm_dropout float</code>: dropout on LSTM layers</p>
+</li>
+<li><p><code>batch_first bool</code>: if batch dimension is first on input tensors</p>
+</li>
+</ul>
 
 </div>
 
@@ -738,22 +753,24 @@ batch_first bool: if batch dimension is first on input tensors</code></pre>
 </blockquote>
 <p>LSTM - LSTM module</p>
 <p>Inputs:</p>
-
-<pre><code>d_embedding int: embedding dimension
-
-d_hidden int: hidden dimension
-
-d_output int: output dimension
-
-n_layers int: number of layers
-
-bidir bool: if the LSTM should be bidirectional
-
-input_dropout float: dropout percentage on inputs
-
-lstm_dropout float: dropout on LSTM layers
-
-batch_first bool: if batch dimension is first on input tensors</code></pre>
+<ul>
+<li><p><code>d_embedding int</code>: embedding dimension</p>
+</li>
+<li><p><code>d_hidden int</code>: hidden dimension</p>
+</li>
+<li><p><code>d_output int</code>: output dimension</p>
+</li>
+<li><p><code>n_layers int</code>: number of layers</p>
+</li>
+<li><p><code>bidir bool</code>: if the LSTM should be bidirectional</p>
+</li>
+<li><p><code>input_dropout float</code>: dropout percentage on inputs</p>
+</li>
+<li><p><code>lstm_dropout float</code>: dropout on LSTM layers</p>
+</li>
+<li><p><code>batch_first bool</code>: if batch dimension is first on input tensors</p>
+</li>
+</ul>
 
 </div>
 
@@ -814,36 +831,38 @@ batch_first bool: if batch dimension is first on input tensors</code></pre>
 <p>Conditional_LSTM_Block - combines Embedding, Conditional LSTM,
 and output layer</p>
 <p>Inputs:</p>
-
-<pre><code>d_vocab int: vocab size
-
-d_embedding int: embedding dimension
-
-d_hidden int: hidden dimension
-
-d_output int: output dimension
-
-d_latent int: latent vector dimension
-
-n_layers int: number of layers
-
-input_dropout float: dropout percentage on inputs
-
-lstm_dropout float: dropout on LSTM layers
-
-bidir bool: if the LSTM should be bidirectional
-
-condition_hidden bool: if True, latent vector is used to initialize the
-hidden state
-
-condition_output bool: if True, latent vector is concatenated to inputs
-
-forward_rollout bool: if model should generate outputs through rollout
-with teacher forcing
-
-p_force float: teacher forcing frequency
-
-p_force_decay float: teacher forcing decay rate</code></pre>
+<ul>
+<li><p><code>d_vocab int</code>: vocab size</p>
+</li>
+<li><p><code>d_embedding int</code>: embedding dimension</p>
+</li>
+<li><p><code>d_hidden int</code>: hidden dimension</p>
+</li>
+<li><p><code>d_output int</code>: output dimension</p>
+</li>
+<li><p><code>d_latent int</code>: latent vector dimension</p>
+</li>
+<li><p><code>n_layers int</code>: number of layers</p>
+</li>
+<li><p><code>input_dropout float</code>: dropout percentage on inputs</p>
+</li>
+<li><p><code>lstm_dropout float</code>: dropout on LSTM layers</p>
+</li>
+<li><p><code>bidir bool</code>: if the LSTM should be bidirectional</p>
+</li>
+<li><p><code>condition_hidden bool</code>: if True, latent vector is used to initialize the
+hidden state</p>
+</li>
+<li><p><code>condition_output bool</code>: if True, latent vector is concatenated to inputs</p>
+</li>
+<li><p><code>forward_rollout bool</code>: if model should generate outputs through rollout
+with teacher forcing</p>
+</li>
+<li><p><code>p_force float</code>: teacher forcing frequency</p>
+</li>
+<li><p><code>p_force_decay float</code>: teacher forcing decay rate</p>
+</li>
+</ul>
 
 </div>
 
@@ -873,26 +892,28 @@ p_force_decay float: teacher forcing decay rate</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_Block" class="doc_header"><code>class</code> <code>LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L714" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="LSTM_Block" class="doc_header"><code>class</code> <code>LSTM_Block</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L713" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Block</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>LSTM_Block - combines Embedding, LSTM, and output layer</p>
 <p>Inputs:</p>
-
-<pre><code>d_vocab int: vocab size
-
-d_embedding int: embedding dimension
-
-d_hidden int: hidden dimension
-
-d_output int: output dimension
-
-n_layers int: number of layers
-
-input_dropout float: dropout percentage on inputs
-
-lstm_dropout float: dropout on LSTM layers
-
-bidir bool: if the LSTM should be bidirectional</code></pre>
+<ul>
+<li><p><code>d_vocab int</code>: vocab size</p>
+</li>
+<li><p><code>d_embedding int</code>: embedding dimension</p>
+</li>
+<li><p><code>d_hidden int</code>: hidden dimension</p>
+</li>
+<li><p><code>d_output int</code>: output dimension</p>
+</li>
+<li><p><code>n_layers int</code>: number of LSTM layers</p>
+</li>
+<li><p><code>input_dropout float</code>: dropout percentage on inputs</p>
+</li>
+<li><p><code>lstm_dropout float</code>: dropout on LSTM layers</p>
+</li>
+<li><p><code>bidir bool</code>: if the LSTM should be bidirectional</p>
+</li>
+</ul>
 
 </div>
 
@@ -922,7 +943,7 @@ bidir bool: if the LSTM should be bidirectional</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Encoder" class="doc_header"><code>class</code> <code>Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L763" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder</code>(<strong><code>d_latent</code></strong>) :: <code>Module</code></p>
+<h2 id="Encoder" class="doc_header"><code>class</code> <code>Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L762" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder</code>(<strong><code>d_latent</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Base encoder module. All encoders have a
 d_latent attribute which is referenced by other modules</p>
@@ -948,26 +969,26 @@ d_latent attribute which is referenced by other modules</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_Encoder" class="doc_header"><code>class</code> <code>LSTM_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L772" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
+<h2 id="LSTM_Encoder" class="doc_header"><code>class</code> <code>LSTM_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L771" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>LSTM_Encoder - LSTM-based encoder</p>
 <p>Inputs:</p>
-
-<pre><code>d_vocab int: vocab size
-
-d_embedding int: embedding dimension
-
-d_hidden int: hidden dimension
-
-n_layers int: number of layers
-
-d_latent int: latent vector dimension
-
-input_dropout float: dropout percentage on inputs
-
-lstm_dropout float: dropout on LSTM layers
-
-</code></pre>
+<ul>
+<li><p><code>d_vocab int</code>: vocab size</p>
+</li>
+<li><p><code>d_embedding int</code>: embedding dimension</p>
+</li>
+<li><p><code>d_hidden int</code>: hidden dimension</p>
+</li>
+<li><p><code>n_layers int</code>: number of LSTM layers</p>
+</li>
+<li><p><code>d_latent int</code>: latent space dimension</p>
+</li>
+<li><p><code>input_dropout float</code>: dropout percentage on inputs</p>
+</li>
+<li><p><code>lstm_dropout float</code>: dropout on LSTM layers</p>
+</li>
+</ul>
 <p>Generates latent vector from hidden states from the last LSTM layer</p>
 
 </div>
@@ -1021,12 +1042,14 @@ lstm_dropout float: dropout on LSTM layers
 </blockquote>
 <p>MLP_Encoder - MLP-based encoder</p>
 <p>Inputs:</p>
-
-<pre><code>d_in int: number of input dimensions
-
-dims list[int]: list of layer sizes ie `[1024, 512, 256]`
-
-dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`</code></pre>
+<ul>
+<li><p><code>d_in int</code>: number of input dimensions</p>
+</li>
+<li><p><code>dims list[int]</code>: list of layer sizes ie <code>[1024, 512, 256]</code></p>
+</li>
+<li><p><code>dropouts list[float]</code>: list of dropout pobabilities ie <code>[0.2, 0.2, 0.3]</code></p>
+</li>
+</ul>
 
 </div>
 
@@ -1078,20 +1101,22 @@ dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`</code></
 </blockquote>
 <p>Conv_Encoder - 1D conv encoder</p>
 <p>Inputs:</p>
-
-<pre><code>d_vocab int: vocab size
-
-d_embedding int: embedding dimension
-
-d_latent int: latent vector dimension
-
-filters list[int]: filter sizes for conv layers ie `[64, 128, 256]`
-
-kernel_sizes list[int]: kernel sizes for conv layers ie `[5, 5, 5]`
-
-strides list[int]: strides for conv layers ie `[2, 2, 2]`
-
-dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`</code></pre>
+<ul>
+<li><p><code>d_vocab int</code>: vocab size</p>
+</li>
+<li><p><code>d_embedding int</code>: embedding dimension</p>
+</li>
+<li><p><code>d_latent int</code>: latent vector dimension</p>
+</li>
+<li><p><code>filters list[int]</code>: filter sizes for conv layers ie <code>[64, 128, 256]</code></p>
+</li>
+<li><p><code>kernel_sizes list[int]</code>: kernel sizes for conv layers ie <code>[5, 5, 5]</code></p>
+</li>
+<li><p><code>strides list[int]</code>: strides for conv layers ie <code>[2, 2, 2]</code></p>
+</li>
+<li><p><code>dropouts list[float]</code>: list of dropout pobabilities ie <code>[0.2, 0.2, 0.3]</code></p>
+</li>
+</ul>
 
 </div>
 
@@ -1143,17 +1168,19 @@ dropouts list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`</code></
 </blockquote>
 <p>MLP - multi-layer perceptron</p>
 <p>Inputs:</p>
-
-<pre><code>d_in int: number of input dimensions
-
-dims list[int]: list of layer sizes ie `[1024, 512, 256]`
-
-d_out int: number of output dimensions
-
-drops list[float]: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
-
-outrange list[float], None: squashes the output to be between `outrange[0]`
-and `outrange[1]`</code></pre>
+<ul>
+<li><p><code>d_in int</code>: number of input dimensions</p>
+</li>
+<li><p><code>dims list[int]</code>: list of layer sizes ie <code>[1024, 512, 256]</code></p>
+</li>
+<li><p><code>d_out int</code>: number of output dimensions</p>
+</li>
+<li><p><code>drops list[float]</code>: list of dropout pobabilities ie <code>[0.2, 0.2, 0.3]</code></p>
+</li>
+<li><p><code>outrange Optional[list[float]]</code>: squashes the output to be between <code>outrange[0]</code>
+and <code>outrange[1]</code></p>
+</li>
+</ul>
 
 </div>
 
