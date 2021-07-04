@@ -12,6 +12,9 @@ from ..layers import *
 # Cell
 
 class GenerativeModel(nn.Module):
+    '''
+    GenerativeModel - base generative model class
+    '''
     def __init__(self):
         super().__init__()
 
@@ -19,21 +22,63 @@ class GenerativeModel(nn.Module):
         raise NotImplementedError
 
     def x_to_latent(self, x):
+        '''
+        x_to_latent - convert `x` to a latent vector
+
+        Inputs:
+
+            `x`: `x` comes from a Dataloader. The specific
+            form of `x` depends on the dataloader used
+
+        Returns:
+
+            If the model in question makes use of latent vectors
+            for sampling or reconstruction, the function should
+            return a batch of latent vectors. If latent vectors
+            are not compatible, the function should return None
+
+        '''
         raise NotImplementedError
 
     def sample(self, **sample_kwargs):
+        '''
+        sample - sample items from tthe model
+        '''
         raise NotImplementedError
 
     def sample_no_grad(self, **sample_kwargs):
+        'no grad wrapper for sample'
         with torch.no_grad():
             return self.sample(**sample_kwargs)
 
     def get_rl_tensors(self):
+        '''
+        get_rl_tensors - generate tensors needed in the training loop
+        '''
         raise NotImplementedError
 
 # Cell
 
 def beam_search(model, seed_ints, k, beam_size, sl, temperature, pad_idx=None):
+    '''
+    beam_search - perform beam search using `model`
+
+    Inputs:
+
+        `model` nn.Module: model
+
+        `seed_ints` torch.Longtensor: seed sequence
+
+        `k` int: top k beam sampling
+
+        `beam_size` int: maximum number of beams to retain
+
+        `sl` int: max sequence length
+
+        `temperature` float: sample temperature
+
+        `pad_idx` int, None: pad index if applicable
+    '''
 
     # currently only works for LSTM_LM. TODO: work for all generative models
 
