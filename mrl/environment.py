@@ -14,6 +14,9 @@ class Environment():
     def __init__(self, agent_cb, template_cb=None, samplers=None, reward_cbs=None, loss_cbs=None,
                  cbs=None, buffer_p_batch=None, log=None):
 
+        if template_cb is None:
+            template_cb = TemplateCallback()
+
         if samplers is None:
             samplers = []
 
@@ -30,7 +33,7 @@ class Environment():
             log = Log()
 
         self.agent_cb = agent_cb
-        self.template_cb = template_cb if template_cb is not None else TemplateCallback()
+        self.template_cb = template_cb
         self.samplers = samplers
         self.reward_cbs = reward_cbs
         self.loss_cbs = loss_cbs

@@ -450,6 +450,8 @@ class SettrDict(dict):
         for k,v in update_dict.items():
             self[k] = v
 
+# Cell
+
 class BatchState(SettrDict):
     def __init__(self):
         super().__init__()

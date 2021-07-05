@@ -44,8 +44,6 @@ class Log(Callback):
         self.report = 1
         self.unique_samples = {}
 
-        self.log_df = None
-
         self.add_metric('rewards')
         self.add_metric('rewards_final')
         self.add_metric('new')
@@ -175,7 +173,24 @@ class Log(Callback):
 # Cell
 
 class StatsCallback(Callback):
-    # grabs from batch_state based on name
+    '''
+    StatsCallback - base class for callbacks related to calculating
+    stats from batches
+
+    Inputs:
+
+    - `batch_attribute str`: attribute to grab from the log
+
+    - `grabname Optional[str]`: if passed, the `batch_attribute` values
+    will be subset for those where `source==grabname`
+
+    - `include_buffer bool`: if True, values sourced from the buffer
+    that match `grabname` will be included
+
+    - `name str`: callback name
+
+    - `order int`: callback order
+    '''
     def __init__(self, batch_attribute, grabname=None, include_buffer=True,
                      name='stats', order=20):
         super().__init__(name=name, order=order)
@@ -205,7 +220,24 @@ class StatsCallback(Callback):
 
         return values
 
+# Cell
+
 class MaxCallback(StatsCallback):
+    '''
+    MaxCallback - adds a metric tracking the maximum of
+    `batch_attribute`, subset by `grabname`, printed every
+    batch report
+
+    Inputs:
+
+    - `batch_attribute str`: attribute to grab from the log
+
+    - `grabname Optional[str]`: if passed, the `batch_attribute` values
+    will be subset for those where `source==grabname`
+
+    - `include_buffer bool`: if True, values sourced from the buffer
+    that match `grabname` will be included
+    '''
     def __init__(self, batch_attribute, grabname, include_buffer=True):
 
         if grabname is None:
@@ -226,13 +258,30 @@ class MaxCallback(StatsCallback):
         values = self.get_values()
         self.environment.log.update_metric(self.name, values.max())
 
+# Cell
+
 class MinCallback(StatsCallback):
+    '''
+    MinCallback - adds a metric tracking the minimum of
+    `batch_attribute`, subset by `grabname`, printed every
+    batch report
+
+    Inputs:
+
+    - `batch_attribute str`: attribute to grab from the log
+
+    - `grabname Optional[str]`: if passed, the `batch_attribute` values
+    will be subset for those where `source==grabname`
+
+    - `include_buffer bool`: if True, values sourced from the buffer
+    that match `grabname` will be included
+    '''
     def __init__(self, batch_attribute, grabname, include_buffer=True):
 
         if grabname is None:
-            name = f'{batch_attribute}_max'
+            name = f'{batch_attribute}_min'
         else:
-            name = f'{batch_attribute}_{grabname}_max'
+            name = f'{batch_attribute}_{grabname}_min'
 
         super().__init__(batch_attribute, grabname,
                          include_buffer=include_buffer, name=name)
@@ -247,7 +296,24 @@ class MinCallback(StatsCallback):
         values = self.get_values()
         self.environment.log.update_metric(self.name, values.min())
 
+# Cell
+
 class MeanCallback(StatsCallback):
+    '''
+    MeanCallback - adds a metric tracking the mean of
+    `batch_attribute`, subset by `grabname`, printed every
+    batch report
+
+    Inputs:
+
+    - `batch_attribute str`: attribute to grab from the log
+
+    - `grabname Optional[str]`: if passed, the `batch_attribute` values
+    will be subset for those where `source==grabname`
+
+    - `include_buffer bool`: if True, values sourced from the buffer
+    that match `grabname` will be included
+    '''
     def __init__(self, batch_attribute, grabname, include_buffer=True):
 
         if grabname is None:
@@ -268,7 +334,26 @@ class MeanCallback(StatsCallback):
         values = self.get_values()
         self.environment.log.update_metric(self.name, values.mean())
 
+# Cell
+
 class PercentileCallback(StatsCallback):
+    '''
+    PercentileCallback - adds a metric tracking the `percentile`
+    percentile value of `batch_attribute`, subset by `grabname`,
+    printed every batch report
+
+    Inputs:
+
+    - `batch_attribute str`: attribute to grab from the log
+
+    - `grabname Optional[str]`: if passed, the `batch_attribute` values
+    will be subset for those where `source==grabname`
+
+    - `percentile str`: what percentile value to use
+
+    - `include_buffer bool`: if True, values sourced from the buffer
+    that match `grabname` will be included
+    '''
     def __init__(self, batch_attribute, grabname, percentile, include_buffer=True):
 
         if grabname is None:
