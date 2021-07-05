@@ -239,8 +239,9 @@ batch for next-token prediction</p>
 </blockquote>
 <p>BaseDataset - base dataset</p>
 <p>Inputs:</p>
-
-<pre><code>`collate_function` Callable: batch collate function for the particular dataset class</code></pre>
+<ul>
+<li><code>collate_function Callable</code>: batch collate function for the particular dataset class</li>
+</ul>
 
 </div>
 
@@ -283,14 +284,14 @@ batch for next-token prediction</p>
 </blockquote>
 <p>Text_Dataset - base dataset for language modes</p>
 <p>Inputs:</p>
-
-<pre><code>`sequences` list[str], list[tuple]: list of text sequences or text tuples (source, target)
-
-[`vocab`](/mrl/vocab) Vocab: vocabuary for tokenization/numericaization
-
-`collate_function` Callable: batch collate function. If None, defauts to [`lm_collate`](/mrl/dataloaders#lm_collate)
-
-</code></pre>
+<ul>
+<li><p><code>sequences [list[str], list[tuple]]</code>: list of text sequences or text tuples (source, target)</p>
+</li>
+<li><p><code>vocab Vocab</code>: vocabuary for tokenization/numericaization</p>
+</li>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#lm_collate"><code>lm_collate</code></a></p>
+</li>
+</ul>
 <p>If <code>sequences</code> is a list of strings, <code>__getitem__</code> returns a tuple of <code>(sequence_ints, None)</code>.
 This is suitable for language modeling where the goal is to predict the input sequence.</p>
 <p>If <code>sequences</code> is a list of tuples, <code>__getitem__</code> returns a tuple of
@@ -376,16 +377,16 @@ the predicted sequence is different from the input sequence</p>
 </blockquote>
 <p>Text_Prediction_Dataset - base dataset for predicting from text strings</p>
 <p>Inputs:</p>
-
-<pre><code>`sequences` list[str]: list of text sequences
-
-`y_vals` list[int, float]: list of paired output values
-
-[`vocab`](/mrl/vocab) Vocab: vocabuary for tokenization/numericaization
-
-`collate_function` Callable: batch collate function. If None, defauts to [`sequence_prediction_collate`](/mrl/dataloaders#sequence_prediction_collate)
-
-</code></pre>
+<ul>
+<li><p><code>sequences list[str]</code>: list of text sequences</p>
+</li>
+<li><p><code>y_vals list[int, float]</code>: list of paired output values</p>
+</li>
+<li><p><code>vocab Vocab</code>: vocabuary for tokenization/numericaization</p>
+</li>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#sequence_prediction_collate"><code>sequence_prediction_collate</code></a></p>
+</li>
+</ul>
 <p><code>__getitem__</code> returns a tuple of <code>(sequence_ints, y_vals)</code> suitable for predicting
 regressions or classifications from the sequence</p>
 
@@ -451,12 +452,14 @@ regressions or classifications from the sequence</p>
 </blockquote>
 <p>Vector_Dataset - base dataset for molecule-derived vectors</p>
 <p>Inputs:</p>
-
-<pre><code>`sequences` list[str]: list of text sequences
-
-`vec_function` Callable: function to convert sequence to a vector
-
-`collate_function` Callable: batch collate function. If None, defauts to [`vector_collate`](/mrl/dataloaders#vector_collate)</code></pre>
+<ul>
+<li><p><code>sequences list[str]</code>: list of text sequences</p>
+</li>
+<li><p><code>vec_function Callable</code>: function to convert sequence to a vector</p>
+</li>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#vector_collate"><code>vector_collate</code></a></p>
+</li>
+</ul>
 
 </div>
 
@@ -532,16 +535,16 @@ regressions or classifications from the sequence</p>
 </blockquote>
 <p>Vec_To_Text_Dataset - base dataset for predicting text sequences from vectors</p>
 <p>Inputs:</p>
-
-<pre><code>`sequences` list[str], list[tuple]: list of text sequences or text tuples (source, target)
-
-[`vocab`](/mrl/vocab) Vocab: vocabuary for tokenization/numericaization
-
-`vec_function` Callable: function to convert a sequence to a vector
-
-`collate_function` Callable: batch collate function. If None, defauts to [`vec_to_text_collate`](/mrl/dataloaders#vec_to_text_collate)
-
-</code></pre>
+<ul>
+<li><p><code>sequences [list[str], list[tuple]]</code>: list of text sequences or text tuples (source, target)</p>
+</li>
+<li><p><code>vocab Vocab</code>: vocabuary for tokenization/numericaization</p>
+</li>
+<li><p><code>vec_function Callable</code>: function to convert a sequence to a vector</p>
+</li>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#vec_to_text_collate"><code>vec_to_text_collate</code></a></p>
+</li>
+</ul>
 <p><code>__getitem__</code> returns a tuple of <code>(sequence_vector, sequence_ints)</code>.</p>
 <p>If <code>sequences</code> is a list of strings, both <code>sequence_vector</code> and <code>sequence_ints</code>
 will be derived from the same sequence.</p>
@@ -587,8 +590,9 @@ and <code>sequence_ints</code> will be derived from the second sequence</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">Vec_To_Text_Dataset</span><span class="p">([(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span> 
-                         <span class="n">vocab</span><span class="p">,</span> <span class="n">ECFP6</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">Vec_To_Text_Dataset</span><span class="p">(</span>
+    <span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span> 
+    <span class="n">vocab</span><span class="p">,</span> <span class="n">ECFP6</span><span class="p">)</span>
 <span class="n">dl</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">))</span>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span>
@@ -623,14 +627,16 @@ and <code>sequence_ints</code> will be derived from the second sequence</p>
 </blockquote>
 <p>Vec_Prediction_Dataset - base dataset for predicting y_vals from vectors</p>
 <p>Inputs:</p>
-
-<pre><code>`sequences` list[str]: list of text sequences
-
-`y_vals` list[int, float]: list of paired output values
-
-`vec_function` Callable: function to convert a sequence to a vector
-
-`collate_function` Callable: batch collate function. If None, defauts to [`vector_prediction_collate`](/mrl/dataloaders#vector_prediction_collate)</code></pre>
+<ul>
+<li><p><code>sequences list[str]</code>: list of text sequences</p>
+</li>
+<li><p><code>y_vals list[int, float]</code>: list of paired output values</p>
+</li>
+<li><p><code>vec_function Callable</code>: function to convert a sequence to a vector</p>
+</li>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#vector_prediction_collate"><code>vector_prediction_collate</code></a></p>
+</li>
+</ul>
 
 </div>
 

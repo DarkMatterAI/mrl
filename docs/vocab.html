@@ -245,12 +245,14 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 </blockquote>
 <p>Vocab - base vocabulary class</p>
 <p>Inputs:</p>
-
-<pre><code>`itos` list: list of tokens in vocabulary
-
-`prefunc` None: Callable, function applied to `input` before tokenization
-
-`postfunc` None: Callable, function applied to `input` after reconstruction</code></pre>
+<ul>
+<li><p><code>itos list</code>: list of tokens in vocabulary</p>
+</li>
+<li><p><code>prefunc Optional[Callable]</code>: function applied to <code>input</code> before tokenization</p>
+</li>
+<li><p><code>postfunc Optional[Callable]</code>: function applied to <code>input</code> after reconstruction</p>
+</li>
+</ul>
 
 </div>
 
@@ -277,12 +279,14 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 </blockquote>
 <p>CharacterVocab - tokenize by character</p>
 <p>Inputs:</p>
-
-<pre><code>`itos` list: list of tokens in vocabulary
-
-`prefunc` None, Callable: function applied to `input` before tokenization
-
-`postfunc` None, Callable: function applied to `input` after reconstruction</code></pre>
+<ul>
+<li><p><code>itos list</code>: list of tokens in vocabulary</p>
+</li>
+<li><p><code>prefunc Optional[Callable]</code>: function applied to <code>input</code> before tokenization</p>
+</li>
+<li><p><code>postfunc Optional[Callable]</code>: function applied to <code>input</code> after reconstruction</p>
+</li>
+</ul>
 
 </div>
 
@@ -309,14 +313,16 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 </blockquote>
 <p>FuncVocab - tokenize by <code>tok_func</code></p>
 <p>Inputs:</p>
-
-<pre><code>`itos` list: list of tokens in vocabulary
-
-`tok_func` Callable: tokenization function
-
-`prefunc` None, Callable: function applied to `input` before tokenization
-
-`postfunc` None, Callable: function applied to `input` after reconstruction</code></pre>
+<ul>
+<li><p><code>itos list</code>: list of tokens in vocabulary</p>
+</li>
+<li><p><code>tok_func Callable</code>: tokenization function</p>
+</li>
+<li><p><code>prefunc Optional[Callable]</code>: function applied to <code>input</code> before tokenization</p>
+</li>
+<li><p><code>postfunc Optional[Callable]</code>: function applied to <code>input</code> after reconstruction</p>
+</li>
+</ul>
 
 </div>
 
@@ -343,8 +349,9 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 </blockquote>
 <p>SelfiesVocab - converts smiles to selfies</p>
 <p>Inputs:</p>
-
-<pre><code>`itos` list: list of tokens in vocabulary</code></pre>
+<ul>
+<li><code>itos list</code>: list of tokens in vocabulary</li>
+</ul>
 
 </div>
 
@@ -371,15 +378,18 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 </blockquote>
 <p>CharacterReplaceVocab - tokenize by character with replacement</p>
 <p>Inputs:</p>
-
-<pre><code>`itos` list: list of tokens
-
-`replace_dict` dict: replacement dictionary of the form {multi_character_token : single_character_token}.
-ie replace_dict={'Br':'R', 'Cl':'L'}
-
-`prefunc` None, Callable: function applied to `input` before tokenization
-
-`postfunc` None, Callable: function applied to `input` after reconstruction</code></pre>
+<ul>
+<li><p><code>itos list</code>: list of tokens in vocabulary</p>
+</li>
+<li><p><code>replace_dict dict</code>: replacement dictionary of the form
+{multi_character_token : single_character_token}.
+ie replace_dict={'Br':'R', 'Cl':'L'}</p>
+</li>
+<li><p><code>prefunc Optional[Callable]</code>: function applied to <code>input</code> before tokenization</p>
+</li>
+<li><p><code>postfunc Optional[Callable]</code>: function applied to <code>input</code> after reconstruction</p>
+</li>
+</ul>
 
 </div>
 
@@ -402,18 +412,20 @@ ie replace_dict={'Br':'R', 'Cl':'L'}
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegexVocab" class="doc_header"><code>class</code> <code>RegexVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L330" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexVocab</code>(<strong><code>itos</code></strong>, <strong><code>pattern</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab#Vocab"><code>Vocab</code></a></p>
+<h2 id="RegexVocab" class="doc_header"><code>class</code> <code>RegexVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L331" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexVocab</code>(<strong><code>itos</code></strong>, <strong><code>pattern</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>RegexVocab - tokenize using <code>pattern</code></p>
 <p>Inputs:</p>
-
-<pre><code>`itos` list: list of tokens
-
-`pattern` str: regex string
-
-`prefunc` None: Callable, function applied to `input` before tokenization
-
-`postfunc` None: Callable, function applied to `input` after reconstruction</code></pre>
+<ul>
+<li><p><code>itos list</code>: list of tokens in vocabulary</p>
+</li>
+<li><p><code>pattern str</code>: regex string</p>
+</li>
+<li><p><code>prefunc Optional[Callable]</code>: function applied to <code>input</code> before tokenization</p>
+</li>
+<li><p><code>postfunc Optional[Callable]</code>: function applied to <code>input</code> after reconstruction</p>
+</li>
+</ul>
 
 </div>
 
@@ -443,7 +455,7 @@ ie replace_dict={'Br':'R', 'Cl':'L'}
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="test_reconstruction" class="doc_header"><code>test_reconstruction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L357" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_reconstruction</code>(<strong><code>vocab</code></strong>, <strong><code>inputs</code></strong>)</p>
+<h4 id="test_reconstruction" class="doc_header"><code>test_reconstruction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L358" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_reconstruction</code>(<strong><code>vocab</code></strong>, <strong><code>inputs</code></strong>)</p>
 </blockquote>
 <p>Returns all items in <code>inputs</code> that can't be correctly reconstructed using <a href="/mrl/vocab"><code>vocab</code></a></p>
 

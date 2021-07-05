@@ -27,15 +27,15 @@ class GenerativeModel(nn.Module):
 
         Inputs:
 
-            `x`: `x` comes from a Dataloader. The specific
-            form of `x` depends on the dataloader used
+        - `x`: `x` comes from a Dataloader. The specific
+        form of `x` depends on the dataloader used
 
         Returns:
 
-            If the model in question makes use of latent vectors
-            for sampling or reconstruction, the function should
-            return a batch of latent vectors. If latent vectors
-            are not compatible, the function should return None
+        If the model in question makes use of latent vectors
+        for sampling or reconstruction, the function should
+        return a batch of latent vectors. If latent vectors
+        are not compatible, the function should return None
 
         '''
         raise NotImplementedError
@@ -65,19 +65,19 @@ def beam_search(model, seed_ints, k, beam_size, sl, temperature, pad_idx=None):
 
     Inputs:
 
-        `model` nn.Module: model
+    - `model nn.Module`: model
 
-        `seed_ints` torch.Longtensor: seed sequence
+    - `seed_ints torch.Longtensor`: seed sequence
 
-        `k` int: top k beam sampling
+    - `k int`: top k beam sampling
 
-        `beam_size` int: maximum number of beams to retain
+    - `beam_size int`: maximum number of beams to retain
 
-        `sl` int: max sequence length
+    - `sl int`: max sequence length
 
-        `temperature` float: sample temperature
+    - `temperature float`: sample temperature
 
-        `pad_idx` int, None: pad index if applicable
+    - `pad_idx Optional[int]`: pad index if applicable
     '''
 
     # currently only works for LSTM_LM. TODO: work for all generative models

@@ -96,20 +96,22 @@ nb_path: "nbs/09_generative_models.generative_base.ipynb"
 </blockquote>
 <p>beam_search - perform beam search using <code>model</code></p>
 <p>Inputs:</p>
-
-<pre><code>`model` nn.Module: model
-
-`seed_ints` torch.Longtensor: seed sequence
-
-`k` int: top k beam sampling
-
-`beam_size` int: maximum number of beams to retain
-
-`sl` int: max sequence length
-
-`temperature` float: sample temperature
-
-`pad_idx` int, None: pad index if applicable</code></pre>
+<ul>
+<li><p><code>model nn.Module</code>: model</p>
+</li>
+<li><p><code>seed_ints torch.Longtensor</code>: seed sequence</p>
+</li>
+<li><p><code>k int</code>: top k beam sampling</p>
+</li>
+<li><p><code>beam_size int</code>: maximum number of beams to retain</p>
+</li>
+<li><p><code>sl int</code>: max sequence length</p>
+</li>
+<li><p><code>temperature float</code>: sample temperature</p>
+</li>
+<li><p><code>pad_idx Optional[int]</code>: pad index if applicable</p>
+</li>
+</ul>
 
 </div>
 

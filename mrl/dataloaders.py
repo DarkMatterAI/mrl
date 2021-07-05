@@ -103,7 +103,7 @@ class Base_Dataset(Dataset):
 
     Inputs:
 
-        `collate_function` Callable: batch collate function for the particular dataset class
+    - `collate_function Callable`: batch collate function for the particular dataset class
     '''
     def __init__(self, collate_function):
         self.collate_function = collate_function
@@ -149,11 +149,11 @@ class Text_Dataset(Base_Dataset):
 
     Inputs:
 
-        `sequences` list[str], list[tuple]: list of text sequences or text tuples (source, target)
+    - `sequences [list[str], list[tuple]]`: list of text sequences or text tuples (source, target)
 
-        `vocab` Vocab: vocabuary for tokenization/numericaization
+    - `vocab Vocab`: vocabuary for tokenization/numericaization
 
-        `collate_function` Callable: batch collate function. If None, defauts to `lm_collate`
+    - `collate_function Callable`: batch collate function. If None, defauts to `lm_collate`
 
     If `sequences` is a list of strings, `__getitem__` returns a tuple of `(sequence_ints, None)`.
     This is suitable for language modeling where the goal is to predict the input sequence.
@@ -208,13 +208,13 @@ class Text_Prediction_Dataset(Text_Dataset):
 
     Inputs:
 
-        `sequences` list[str]: list of text sequences
+    - `sequences list[str]`: list of text sequences
 
-        `y_vals` list[int, float]: list of paired output values
+    - `y_vals list[int, float]`: list of paired output values
 
-        `vocab` Vocab: vocabuary for tokenization/numericaization
+    - `vocab Vocab`: vocabuary for tokenization/numericaization
 
-        `collate_function` Callable: batch collate function. If None, defauts to `sequence_prediction_collate`
+    - `collate_function Callable`: batch collate function. If None, defauts to `sequence_prediction_collate`
 
     `__getitem__` returns a tuple of `(sequence_ints, y_vals)` suitable for predicting
     regressions or classifications from the sequence
@@ -254,11 +254,11 @@ class Vector_Dataset(Base_Dataset):
 
     Inputs:
 
-        `sequences` list[str]: list of text sequences
+    - `sequences list[str]`: list of text sequences
 
-        `vec_function` Callable: function to convert sequence to a vector
+    - `vec_function Callable`: function to convert sequence to a vector
 
-        `collate_function` Callable: batch collate function. If None, defauts to `vector_collate`
+    - `collate_function Callable`: batch collate function. If None, defauts to `vector_collate`
     '''
     def __init__(self, sequences, vec_function, collate_function=None):
         if collate_function is None:
@@ -296,13 +296,13 @@ class Vec_To_Text_Dataset(Vector_Dataset):
 
     Inputs:
 
-        `sequences` list[str], list[tuple]: list of text sequences or text tuples (source, target)
+    - `sequences [list[str], list[tuple]]`: list of text sequences or text tuples (source, target)
 
-        `vocab` Vocab: vocabuary for tokenization/numericaization
+    - `vocab Vocab`: vocabuary for tokenization/numericaization
 
-        `vec_function` Callable: function to convert a sequence to a vector
+    - `vec_function Callable`: function to convert a sequence to a vector
 
-        `collate_function` Callable: batch collate function. If None, defauts to `vec_to_text_collate`
+    - `collate_function Callable`: batch collate function. If None, defauts to `vec_to_text_collate`
 
     `__getitem__` returns a tuple of `(sequence_vector, sequence_ints)`.
 
@@ -358,13 +358,13 @@ class Vec_Prediction_Dataset(Vector_Dataset):
 
     Inputs:
 
-        `sequences` list[str]: list of text sequences
+    - `sequences list[str]`: list of text sequences
 
-        `y_vals` list[int, float]: list of paired output values
+    - `y_vals list[int, float]`: list of paired output values
 
-        `vec_function` Callable: function to convert a sequence to a vector
+    - `vec_function Callable`: function to convert a sequence to a vector
 
-        `collate_function` Callable: batch collate function. If None, defauts to `vector_prediction_collate`
+    - `collate_function Callable`: batch collate function. If None, defauts to `vector_prediction_collate`
     '''
     def __init__(self, sequences, y_vals, vec_function, collate_function=None):
         if collate_function is None:

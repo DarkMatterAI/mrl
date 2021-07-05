@@ -142,11 +142,11 @@ class Vocab():
 
     Inputs:
 
-        `itos` list: list of tokens in vocabulary
+    - `itos list`: list of tokens in vocabulary
 
-        `prefunc` None: Callable, function applied to `input` before tokenization
+    - `prefunc Optional[Callable]`: function applied to `input` before tokenization
 
-        `postfunc` None: Callable, function applied to `input` after reconstruction
+    - `postfunc Optional[Callable]`: function applied to `input` after reconstruction
 
     '''
     def __init__(self, itos, prefunc=None, postfunc=None):
@@ -234,11 +234,11 @@ class CharacterVocab(Vocab):
 
     Inputs:
 
-        `itos` list: list of tokens in vocabulary
+    - `itos list`: list of tokens in vocabulary
 
-        `prefunc` None, Callable: function applied to `input` before tokenization
+    - `prefunc Optional[Callable]`: function applied to `input` before tokenization
 
-        `postfunc` None, Callable: function applied to `input` after reconstruction
+    - `postfunc Optional[Callable]`: function applied to `input` after reconstruction
     '''
     def _tokenize(self, input):
         toks = tokenize_by_character(input)
@@ -250,13 +250,13 @@ class FuncVocab(Vocab):
 
     Inputs:
 
-        `itos` list: list of tokens in vocabulary
+    - `itos list`: list of tokens in vocabulary
 
-        `tok_func` Callable: tokenization function
+    - `tok_func Callable`: tokenization function
 
-        `prefunc` None, Callable: function applied to `input` before tokenization
+    - `prefunc Optional[Callable]`: function applied to `input` before tokenization
 
-        `postfunc` None, Callable: function applied to `input` after reconstruction
+    - `postfunc Optional[Callable]`: function applied to `input` after reconstruction
     '''
 
     def __init__(self, itos, tok_func, prefunc=None, postfunc=None):
@@ -274,7 +274,7 @@ class SelfiesVocab(FuncVocab):
 
     Inputs:
 
-        `itos` list: list of tokens in vocabulary
+    - `itos list`: list of tokens in vocabulary
     '''
     def __init__(self, itos):
         super().__init__(itos, split_selfie, smile_to_selfie, selfie_to_smile)
@@ -286,14 +286,15 @@ class CharacterReplaceVocab(Vocab):
 
     Inputs:
 
-        `itos` list: list of tokens
+    - `itos list`: list of tokens in vocabulary
 
-        `replace_dict` dict: replacement dictionary of the form {multi_character_token : single_character_token}.
-        ie replace_dict={'Br':'R', 'Cl':'L'}
+    - `replace_dict dict`: replacement dictionary of the form
+    {multi_character_token : single_character_token}.
+    ie replace_dict={'Br':'R', 'Cl':'L'}
 
-        `prefunc` None, Callable: function applied to `input` before tokenization
+    - `prefunc Optional[Callable]`: function applied to `input` before tokenization
 
-        `postfunc` None, Callable: function applied to `input` after reconstruction
+    - `postfunc Optional[Callable]`: function applied to `input` after reconstruction
 
     '''
     def __init__(self, itos, replace_dict, prefunc=None, postfunc=None):
@@ -333,13 +334,13 @@ class RegexVocab(Vocab):
 
     Inputs:
 
-        `itos` list: list of tokens
+    - `itos list`: list of tokens in vocabulary
 
-        `pattern` str: regex string
+    - `pattern str`: regex string
 
-        `prefunc` None: Callable, function applied to `input` before tokenization
+    - `prefunc Optional[Callable]`: function applied to `input` before tokenization
 
-        `postfunc` None: Callable, function applied to `input` after reconstruction
+    - `postfunc Optional[Callable]`: function applied to `input` after reconstruction
 
     '''
     def __init__(self, itos, pattern, prefunc=None, postfunc=None):

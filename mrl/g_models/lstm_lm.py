@@ -18,25 +18,25 @@ class LSTM_LM(GenerativeModel):
 
     Inputs:
 
-        d_vocab int: vocab size
+    - `d_vocab int`: vocab size
 
-        d_embedding int: embedding size
+    - `d_embedding int`: embedding size
 
-        d_hidden int: hidden dimension
+    - `d_hidden int`: hidden dimension
 
-        n_layers int: number of LSTM layers
+    - `n_layers int`: number of LSTM layers
 
-        input_dropout float: dropout on the embedding layer
+    - `input_dropout float`: dropout on the embedding layer
 
-        lstm_dropout float: dropout on the LSTM layers
+    - `lstm_dropout float`: dropout on the LSTM layers
 
-        bos_idx int: beginning of sentence token
+    - `bos_idx int`: beginning of sentence token
 
-        bidir bool: if the LSTMs are bidirectional.
-        Must be False for use in generative models
+    - `bidir bool`: if the LSTMs are bidirectional.
+    Must be False for use in generative models
 
-        tie_weights bool: if True, tie the weights of
-        the embedding and the output layer
+    - `tie_weights bool`: if True, tie the weights of
+    the embedding and the output layer
     '''
     def __init__(self, d_vocab, d_embedding, d_hidden, n_layers,
                 input_dropout=0., lstm_dropout=0., bos_idx=0,
@@ -76,22 +76,22 @@ class LSTM_LM(GenerativeModel):
 
         Inputs:
 
-            bs int: batch size
+        - `bs int`: batch size
 
-            sl int: maximum sequence length
+        - `sl int`: maximum sequence length
 
-            z Optional[torch.Tensor[bs, d_latent]]: latent vector
+        - `z Optional[torch.Tensor[bs, d_latent]]`: latent vector
 
-            temperature float: sample temperature
+        - `temperature float`: sample temperature
 
-            multinomial bool: if True, use multinomial sampling.
-            If False, use argmax greedy sampling
+        - `multinomial bool`: if True, use multinomial sampling.
+        If False, use argmax greedy sampling
 
         Returns:
 
-            preds torch.LongTensor[bs, sl]: predicted sequence tokens
+        - `preds torch.LongTensor[bs, sl]`: predicted sequence tokens
 
-            lps torch.FloatTensor[bs, sl, d_vocab]: prediction log probabilities
+        - `lps torch.FloatTensor[bs, sl, d_vocab]`: prediction log probabilities
         '''
 
         current_device = next(self.parameters()).device
@@ -121,22 +121,22 @@ class LSTM_LM(GenerativeModel):
 
         Inputs:
 
-            bs int: batch size
+        - `bs int`: batch size
 
-            sl int: maximum sequence length
+        - `sl int`: maximum sequence length
 
-            z Optional[torch.Tensor[bs, d_latent]]: latent vector
+        - `z Optional[torch.Tensor[bs, d_latent]]`: latent vector
 
-            temperature float: sample temperature
+        - `temperature float`: sample temperature
 
-            multinomial bool: if True, use multinomial sampling.
-            If False, use argmax greedy sampling
+        - `multinomial bool`: if True, use multinomial sampling.
+        If False, use argmax greedy sampling
 
         Returns:
 
-            preds torch.LongTensor[bs, sl]: predicted sequence tokens
+        - `preds torch.LongTensor[bs, sl]`: predicted sequence tokens
 
-            lps torch.FloatTensor[bs, sl, d_vocab]: prediction log probabilities
+        - `lps torch.FloatTensor[bs, sl, d_vocab]`: prediction log probabilities
         '''
         with torch.no_grad():
             return self.sample(bs, sl, temperature=temperature, multinomial=multinomial)
@@ -147,27 +147,27 @@ class LSTM_LM(GenerativeModel):
 
         Inputs:
 
-            x torch.LongTensor[bs, sl]: x value
+        - `x torch.LongTensor[bs, sl]`: x value
 
-            y torch.LongTensor[bs, sl]: y value
+        - `y torch.LongTensor[bs, sl]`: y value
 
-            temperature float: sample temperature
+        - `temperature float`: sample temperature
 
-            latent None: latent vector. LSTM_LM does not use latent
-            vectors, this keyword is included for compatibility
+        - `latent None`: latent vector. LSTM_LM does not use latent
+        vectors, this keyword is included for compatibility
 
         Returns:
 
-            output torch.FloatTensor[bs, sl, d_vocab]: output of the model
+        - `output torch.FloatTensor[bs, sl, d_vocab]`: output of the model
 
-            lps torch.FloatTensor[bs, sl, d_vocab]: log probabilities.
-            Log softmax of `output` values
+        - `lps torch.FloatTensor[bs, sl, d_vocab]`: log probabilities.
+        Log softmax of `output` values
 
-            lps_gathered torch.FloatTensor[bs, sl]: log probabilities
-            gathered by the values in `y`
+        - `lps_gathered torch.FloatTensor[bs, sl]`: log probabilities
+        gathered by the values in `y`
 
-            encoded torch.FloatTensor[bs, sl, d_embedding]: output from
-            final LSTM layer
+        - `encoded torch.FloatTensor[bs, sl, d_embedding]`: output from
+        final LSTM layer
         '''
         output, hiddens, encoded = self._forward(x)
         output.div_(temperature)
@@ -183,42 +183,41 @@ class Conditional_LSTM_LM(GenerativeModel):
 
     Inputs:
 
-        encoder nn.Module: encoder model
+    - `encoder nn.Module`: encoder model
 
-        d_vocab int: vocab size
+    - `d_vocab int`: vocab size
 
-        d_embedding int: embedding size
+    - `d_embedding int`: embedding dimension
 
-        d_hidden int: hidden dimension
+    - `d_hidden int`: hidden dimension
 
-        d_latent int: latent vector dimension
+    - `d_latent int`: latent vector dimension
 
-        n_layers int: number of LSTM layers
+    - `n_layers int`: number of LSTM layers
 
-        input_dropout float: dropout on the embedding layer
+    - `input_dropout float`: dropout percentage on inputs
 
-        lstm_dropout float: dropout on the LSTM layers
+    - `lstm_dropout float`: dropout on LSTM layers
 
-        norm_latent bool: if True, latent vectors are scaled to a norm of 1
+    - `norm_latent bool`: if True, latent vectors are scaled to a norm of 1
 
-        condition_hidden bool: if True, latent vector is used to initialize the
-        hidden state
+    - `condition_hidden bool`: if True, latent vector is used to initialize the
+    hidden state
 
-        condition_output bool: if True, latent vector is concatenated to
-        the outputs of the embedding layer
+    - `condition_output bool`: if True, latent vector is concatenated to inputs
 
-        bos_idx int: beginning of sentence token
+    - `bos_idx int`: beginning of sentence token
 
-        prior Optional[nn.Module]: optional prior distribution to sample from.
-        see `Prior`
+    - `prior Optional[nn.Module]`: optional prior distribution to sample from.
+    see `Prior`
 
-        forward_rollout bool: if True, run supervised training using
-        rollout with teacher forcing. This is a technique used in some
-        seq2seq models and should not be used for pure generative models
+    - `forward_rollout bool`: if True, run supervised training using
+    rollout with teacher forcing. This is a technique used in some
+    seq2seq models and should not be used for pure generative models
 
-        p_force float: teacher forcing probabiliy
+    - `p_force float`: teacher forcing probabiliy
 
-        force_decay float: rate of decay of p_force
+    - `force_decay float`: rate of decay of p_force
     '''
     def __init__(self, encoder, d_vocab, d_embedding, d_hidden, d_latent, n_layers,
                  input_dropout=0., lstm_dropout=0., norm_latent=True,
@@ -319,27 +318,28 @@ class Conditional_LSTM_LM(GenerativeModel):
         return z
 
     def sample(self, bs, sl, z=None, temperature=1., multinomial=True):
+
         '''
         sample - sample from the model
 
         Inputs:
 
-            bs int: batch size
+        - `bs int`: batch size
 
-            sl int: maximum sequence length
+        - `sl int`: maximum sequence length
 
-            z Optional[torch.Tensor[bs, d_latent]]: latent vector
+        - `z Optional[torch.Tensor[bs, d_latent]]`: latent vector
 
-            temperature float: sample temperature
+        - `temperature float`: sample temperature
 
-            multinomial bool: if True, use multinomial sampling.
-            If False, use argmax greedy sampling
+        - `multinomial bool`: if True, use multinomial sampling.
+        If False, use argmax greedy sampling
 
         Returns:
 
-            preds torch.LongTensor[bs, sl]: predicted sequence tokens
+        - `preds torch.LongTensor[bs, sl]`: predicted sequence tokens
 
-            lps torch.FloatTensor[bs, sl, d_vocab]: prediction log probabilities
+        - `lps torch.FloatTensor[bs, sl, d_vocab]`: prediction log probabilities
         '''
 
         current_device = next(self.parameters()).device
@@ -381,22 +381,22 @@ class Conditional_LSTM_LM(GenerativeModel):
 
         Inputs:
 
-            bs int: batch size
+        - `bs int`: batch size
 
-            sl int: maximum sequence length
+        - `sl int`: maximum sequence length
 
-            z Optional[torch.Tensor[bs, d_latent]]: latent vector
+        - `z Optional[torch.Tensor[bs, d_latent]]`: latent vector
 
-            temperature float: sample temperature
+        - `temperature float`: sample temperature
 
-            multinomial bool: if True, use multinomial sampling.
-            If False, use argmax greedy sampling
+        - `multinomial bool`: if True, use multinomial sampling.
+        If False, use argmax greedy sampling
 
         Returns:
 
-            preds torch.LongTensor[bs, sl]: predicted sequence tokens
+        - `preds torch.LongTensor[bs, sl]`: predicted sequence tokens
 
-            lps torch.FloatTensor[bs, sl, d_vocab]: prediction log probabilities
+        - `lps torch.FloatTensor[bs, sl, d_vocab]`: prediction log probabilities
         '''
         with torch.no_grad():
             return self.sample(bs, sl, z=z, temperature=temperature, multinomial=multinomial)
@@ -407,26 +407,26 @@ class Conditional_LSTM_LM(GenerativeModel):
 
         Inputs:
 
-            x list[torch.LongTensor[bs, sl], condition]: x value
+        - `x torch.LongTensor[bs, sl]`: x value
 
-            y torch.LongTensor[bs, sl]: y value
+        - `y torch.LongTensor[bs, sl]`: y value
 
-            temperature float: sample temperature
+        - `temperature float`: sample temperature
 
-            latent Optonal[torch.FloatTensor[bs, d_latent]]: latent vector
+        - `latent Optonal[torch.FloatTensor[bs, d_latent]]`: latent vector
 
         Returns:
 
-            output torch.FloatTensor[bs, sl, d_vocab]: output of the model
+        - `output torch.FloatTensor[bs, sl, d_vocab]`: output of the model
 
-            lps torch.FloatTensor[bs, sl, d_vocab]: log probabilities.
-            Log softmax of `output` values
+        - `lps torch.FloatTensor[bs, sl, d_vocab]`: log probabilities.
+        Log softmax of `output` values
 
-            lps_gathered torch.FloatTensor[bs, sl]: log probabilities
-            gathered by the values in `y`
+        - `lps_gathered torch.FloatTensor[bs, sl]`: log probabilities
+        gathered by the values in `y`
 
-            encoded torch.FloatTensor[bs, sl, d_embedding]: output from
-            final LSTM layer
+        - `encoded torch.FloatTensor[bs, sl, d_embedding]`: output from
+        final LSTM layer
         '''
 
         x,c = x
@@ -456,11 +456,11 @@ class Conditional_LSTM_LM(GenerativeModel):
 
         Inputs:
 
-            z torch.FloatTensor[bs, d_latent]: latent vector
+        - `z torch.FloatTensor[bs, d_latent]`: latent vector
 
-            logvar torch.FloatTensor[bs, d_laten]: log variance vector
+        - `logvar torch.FloatTensor[bs, d_laten]`: log variance vector
 
-            trainable bool: if True, prior will be updated by gradient descent
+        - `trainable bool`: if True, prior will be updated by gradient descent
         '''
         z = z.detach()
         logvar = logvar.detach()
@@ -473,11 +473,11 @@ class Conditional_LSTM_LM(GenerativeModel):
 
         Inputs:
 
-            condition: input condition (depends on encoder)
+        - `condition`: input condition (depends on encoder)
 
-            logvar torch.FloatTensor[bs, d_laten]: log variance vector
+        - `logvar torch.FloatTensor[bs, d_latent]`: log variance vector
 
-            trainable bool: if True, prior will be updated by gradient descent
+        - `trainable bool`: if True, prior will be updated by gradient descent
         '''
         assert condition.shape[0]==1
         z = self.encoder(condition)
