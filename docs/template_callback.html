@@ -50,6 +50,16 @@ nb_path: "nbs/15_template_callback.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Template-Callback">Template Callback<a class="anchor-link" href="#Template-Callback"> </a></h2><p>The <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a> class is used by the <a href="/mrl/environment#Environment"><code>Environment</code></a> to interface with a <a href="/mrl/template.template#Template"><code>Template</code></a> during training.</p>
+<p>Templates serve two roles during training - filtering and scoring of samples</p>
+<h3 id="Filtering">Filtering<a class="anchor-link" href="#Filtering"> </a></h3><p>Templates filter all samples added to the <a href="/mrl/buffer#Buffer"><code>Buffer</code></a> and sampled during each batch. If the argument <code>prefilter=True</code> is passed to the template callback, the template will remove all samples that fail the template's hard filters. If <code>prefilter=False</code> is passed, <a href="/mrl/template.template#Template.validate"><code>Template.validate</code></a> will be used to remove invalid compounds, but will ignore compounds that violate the hard filters</p>
+<h3 id="Scoring">Scoring<a class="anchor-link" href="#Scoring"> </a></h3><p>If the Template has any soft filters, those filters will be used to score compounds each batch. The aggregate soft filter score will be multiplied by <a href="/mrl/template_callback#TemplateCallback.weight"><code>TemplateCallback.weight</code></a> and added to the total reward</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -70,6 +80,89 @@ nb_path: "nbs/15_template_callback.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TemplateCallback" class="doc_header"><code>class</code> <code>TemplateCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemplateCallback</code>(<strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>prefilter</code></strong>=<em><code>True</code></em>, <strong><code>do_filter</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
+<p>TemplateCallback - callback wrapper for <a href="/mrl/template.template#Template"><code>Template</code></a> class</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>template Template</code>: template to use</p>
+</li>
+<li><p><code>sample_name str</code>: <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> attribute to grab samples from</p>
+</li>
+<li><p><code>weight float</code>: weight used to scale template soft filter score</p>
+</li>
+<li><p><code>track bool</code>: if True, template results are added to the batch log
+and metric log</p>
+</li>
+<li><p><code>prefilter bool</code>: if True, samples that fail hard filters in the
+template are removed</p>
+</li>
+<li><p><code>do_filter bool</code>: controls if filtering is done at aall</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Contrastive-Template">Contrastive Template<a class="anchor-link" href="#Contrastive-Template"> </a></h2><p>The <a href="/mrl/template_callback#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> class applies a template to tasks based around comparing input and output compounds (ie making relative improvements to a compound's properties).</p>
+<p>During filtering, the contrastive template will keep samples where both input and output compounds pass the filters.</p>
+<p>Contrastive templates also use a similarity function to impose a similarity constraint on sample pairs (ie output compound must have a similarity of X to the input compound).</p>
+<p>One consideration in using contrastive scores is how to properly scale contrastive scores. If we have a score with a maximum value of <code>1</code>, a contrastive sample pair where the score goes from <code>0.8</code> to <code>1</code> should get the same reward as a sample pair where the score goes from <code>0.6</code> to <code>1</code>. In both cases, the model maximized the output score to the greatest extent possible. To do this, we can scale the reward differences by the maximum possible reward different (ie <code>reward = (output_reward - input_reward)/(max_reward - input_reward)</code>). Passing a value to <code>max_score</code> will cause the contrastive template to perform this scaling.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ContrastiveTemplate" class="doc_header"><code>class</code> <code>ContrastiveTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L143" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveTemplate</code>(<strong><code>similarity_function</code></strong>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>max_score</code></strong>=<em><code>None</code></em>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>prefilter</code></strong>=<em><code>True</code></em>, <strong><code>do_filter</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a></p>
+</blockquote>
+<p>ContrastiveTemplate -  contrasttive callback wrapper for <a href="/mrl/template.template#Template"><code>Template</code></a> class</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>similarity_function SimilarityFunction</code>: evaluates similarity between
+source and targe samples</p>
+</li>
+<li><p><code>sample_name str</code>: <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> attribute to grab samples from</p>
+</li>
+<li><p><code>max_score Optional[float]</code>: maximum template reward. If given, will be
+used to scale contrastive scores</p>
+</li>
+<li><p><code>template Template</code>: template to use</p>
+</li>
+<li><p><code>weight float</code>: weight used to scale template soft filter score</p>
+</li>
+<li><p><code>track bool</code>: if True, template results are added to the batch log
+and metric log</p>
+</li>
+<li><p><code>prefilter bool</code>: if True, samples that fail hard filters in the
+template are removed</p>
+</li>
+<li><p><code>do_filter bool</code>: controls if filtering is done at aall</p>
+</li>
+</ul>
 
 </div>
 
@@ -99,8 +192,10 @@ nb_path: "nbs/15_template_callback.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ContrastiveTemplate" class="doc_header"><code>class</code> <code>ContrastiveTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L125" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveTemplate</code>(<strong><code>similarity_function</code></strong>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>max_score</code></strong>=<em><code>None</code></em>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>prefilter</code></strong>=<em><code>True</code></em>, <strong><code>do_filter</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a></p>
+<h2 id="SimilarityFunction" class="doc_header"><code>class</code> <code>SimilarityFunction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L283" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SimilarityFunction</code>()</p>
 </blockquote>
+<p>SimilarityFunction - compares similarity between source
+and target samples</p>
 
 </div>
 
@@ -108,13 +203,6 @@ nb_path: "nbs/15_template_callback.ipynb"
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -130,8 +218,33 @@ nb_path: "nbs/15_template_callback.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPSimilarity" class="doc_header"><code>class</code> <code>FPSimilarity</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L243" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPSimilarity</code>(<strong><code>fp_function</code></strong>, <strong><code>distance_function</code></strong>, <strong><code>min_sim</code></strong>, <strong><code>max_sim</code></strong>, <strong><code>passscore</code></strong>, <strong><code>failscore</code></strong>, <strong><code>soft_min</code></strong>=<em><code>None</code></em>, <strong><code>soft_max</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="FPSimilarity" class="doc_header"><code>class</code> <code>FPSimilarity</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPSimilarity</code>(<strong><code>fp_function</code></strong>, <strong><code>similarity_function</code></strong>, <strong><code>min_sim</code></strong>, <strong><code>max_sim</code></strong>, <strong><code>passscore</code></strong>, <strong><code>failscore</code></strong>, <strong><code>soft_min</code></strong>=<em><code>None</code></em>, <strong><code>soft_max</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template_callback#SimilarityFunction"><code>SimilarityFunction</code></a></p>
 </blockquote>
+<p>FPSimilarity - computes paired sample similarity using fingerprint
+similarity</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>fp_function Callable</code>: Fingerprint function, ie <a href="/mrl/chem#ECFP6"><code>ECFP6</code></a>. Should
+return a fingerprint when called</p>
+</li>
+<li><p><code>similarity_function Callable</code>: fingerprint similarity function,
+ie <a href="/mrl/chem#tanimoto"><code>tanimoto</code></a></p>
+</li>
+<li><p><code>min_sim float</code>: minimum similarity between paired samples</p>
+</li>
+<li><p><code>max_sim float</code>: maximum similarity between samples</p>
+</li>
+<li><p><code>passscore float</code>: score for passing samples</p>
+</li>
+<li><p><code>failscore float</code>: score for failling compounds</p>
+</li>
+<li><p><code>soft_min Optional[float]</code>: if given, this value is used as
+the minimum similarity cutoff during scoring but not for filtering</p>
+</li>
+<li><p><code>soft_max Optional[float]</code>: if given, this value is used as
+the maximum similarity cutoff during scoring but not for filtering</p>
+</li>
+</ul>
 
 </div>
 

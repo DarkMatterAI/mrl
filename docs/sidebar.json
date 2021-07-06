@@ -40,6 +40,12 @@
                 "Generative Base" : "generative_models.generative_base.html",
                 "LSTM Language Models" : "generative_models.lstm_lm.html",
                 "VAE Models" : "generative_models.vae.html"
+            },
+            "Callbacks" : {
+                "Callbacks Core" : "callback_core.html",
+                "Logging" : "logging.html",
+                "Buffer" : "buffer.html",
+                "Template Callback" : "template_callback.html"
             }
         }
     }

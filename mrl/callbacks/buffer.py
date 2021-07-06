@@ -10,6 +10,13 @@ from .core import *
 # Cell
 
 class Buffer(Callback):
+    '''
+    Buffer - training buffer
+
+    Inputs:
+
+    - `p_total float`: batch percentage for `sample_batch`
+    '''
     def __init__(self, p_total):
         super().__init__(name='buffer', order=0)
 

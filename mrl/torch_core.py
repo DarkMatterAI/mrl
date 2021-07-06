@@ -201,7 +201,7 @@ def discount_rewards(rewards, gamma):
 
     Rewards are discounted following
 
-    `discounted[i] = rewards[i] + gamma*discounted[i+1]
+    `discounted[i] = rewards[i] + gamma*discounted[i+1]`
     '''
     discounted = torch.zeros((rewards.shape[0], rewards.shape[1]+1)).to(rewards.device)
 
@@ -276,6 +276,7 @@ def scatter_rewards(rewards, mask):
     non-padding tokens are True and padding tokens are False.
     Rewards are placed in the last `True` index
 
+    ```
     rewards = torch.tensor([4., 5., 6.]).float()
     mask = torch.tensor([[True, True, True, False],
                          [True, True, False, False],
@@ -284,6 +285,7 @@ def scatter_rewards(rewards, mask):
     >> torch.tensor([[0., 0., 4., 0.],
                      [0., 5., 0., 0.],
                      [0., 0., 0., 6.]])
+    ```
     '''
     template = torch.zeros(mask.shape).to(mask.device)
     lengths = mask.sum(-1)
@@ -313,9 +315,9 @@ def compute_advantages(rewards, values, gamma, lam):
 
     Advantages are computed according to GAE
 
-    delta = rewards[i] + gamma*values[i+1] - values[i]
+    `delta = rewards[i] + gamma*values[i+1] - values[i]`
 
-    advantages[i] = delta + gamma*lam*glv
+    `advantages[i] = delta + gamma*lam*glv`
     '''
 
     advantages = torch.zeros(rewards.shape).to(rewards.device)
