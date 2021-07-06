@@ -14,6 +14,24 @@ from .callbacks import *
 # Cell
 
 class Agent(Callback):
+    '''
+    Agent - class for bundling a model, loss function, and dataset
+
+    Inputs:
+
+    - `model nn.Module`: model
+
+    - `loss_function Callable`: loss function for supervised training. Should
+    function as `loss = loss_function(model_output, y)`
+
+    - `dataset Base_Dataset`: dataset
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self, model, loss_function, dataset, opt_kwargs={}, clip=1., name='agent'):
         super().__init__(name=name, order=2)
 
@@ -25,11 +43,15 @@ class Agent(Callback):
 
         self.opt = self.get_opt(self.model.parameters(), **opt_kwargs)
         self.clip = clip
+        self.training = True
 
     def get_opt(self, parameters, **optim_kwargs):
         return optim.Adam(parameters, **optim_kwargs)
 
     def before_compute_reward(self):
+        '''
+        uses self.dataset to convert samples into tensors
+        '''
         env = self.environment
         batch_state = env.batch_state
         sequences = batch_state.samples
@@ -49,10 +71,12 @@ class Agent(Callback):
         self.opt.zero_grad()
 
     def before_step(self):
-        nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
+        if self.training:
+            nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
 
     def step(self):
-        self.opt.step()
+        if self.training:
+            self.opt.step()
 
     def one_batch(self, batch):
         batch = to_device(batch)
@@ -64,6 +88,19 @@ class Agent(Callback):
         return loss
 
     def train_supervised(self, bs, epochs, lr, percent_valid=0.05):
+        '''
+        train_supervised
+
+        Inputs:
+
+        - `bs int`: batch size
+
+        - `epochs int`: number of epochs
+
+        - `lr float`: learning rate passed to `optim.lr_scheduler.OneCycleLR`
+
+        - `percent_valid float`: validation set percentage
+        '''
 
         train_ds, valid_ds = self.dataset.split(percent_valid)
 
@@ -129,6 +166,24 @@ class Agent(Callback):
 # Cell
 
 class PredictiveAgent(Agent):
+    '''
+    PredictiveAgent - Agent class for predictive models
+
+    Inputs:
+
+    - `model nn.Module`: model
+
+    - `loss_function Callable`: loss function for supervised training. Should
+    function as `loss = loss_function(model_output, y)`
+
+    - `dataset Base_Dataset`: dataset
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
 
     def predict_tensor(self, x):
         if not isinstance(x, (list, tuple)):
@@ -146,6 +201,31 @@ class PredictiveAgent(Agent):
 # Cell
 
 class BaselineAgent(Agent):
+    '''
+    BaselineAgent - agent for a model with a baseline model
+
+    Inputs:
+
+    - `model nn.Module`: model
+
+    - `loss_function Callable`: loss function for supervised training. Should
+    function as `loss = loss_function(model_output, y)`
+
+    - `dataset Base_Dataset`: dataset
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self, model, loss_function, dataset, base_update=0.99,
                  base_update_iter=10, base_model=True, opt_kwargs={},
                  clip=1., name='baseline_agent'):
@@ -174,14 +254,23 @@ class BaselineAgent(Agent):
             pass
 
     def base_to_model(self):
+        '''
+        copies weights from `model` into `base_model`
+        '''
         if type(self.base_model)==type(self.model):
             self.base_model.load_state_dict(self.model.state_dict())
 
     def model_to_base(self):
+        '''
+        copies weights from `base_model` into `model`
+        '''
         if type(self.base_model)==type(self.model):
             self.model.load_state_dict(self.base_model.state_dict())
 
     def update_base_model(self):
+        '''
+        updates baseline model weights
+        '''
         if type(self.base_model)==type(self.model):
             if self.base_update < 1:
                 merge_models(self.base_model, self.model, alpha=self.base_update)
@@ -209,7 +298,31 @@ class BaselineAgent(Agent):
 # Cell
 
 class CriticAgent(BaselineAgent):
+    '''
+    CriticAgent - baseline agent for critic models
 
+    Inputs:
+
+    - `model nn.Module`: model
+
+    - `loss_function Callable`: loss function for supervised training. Should
+    function as `loss = loss_function(model_output, y)`
+
+    - `dataset Base_Dataset`: dataset
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def predict_tensor(self, x, baseline=False):
         if not type(x)==list:
             x = [x]
@@ -249,6 +362,33 @@ class CriticAgent(BaselineAgent):
 # Cell
 
 class GenerativeAgent(BaselineAgent):
+    '''
+    GenerativeAgent - baseline agent for generative models
+
+    Inputs:
+
+    - `model nn.Module`: model
+
+    - `vocab Vocab`: vocabulary
+
+    - `loss_function Callable`: loss function for supervised training. Should
+    function as `loss = loss_function(model_output, y)`
+
+    - `dataset Base_Dataset`: dataset
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self, model, vocab, loss_function, dataset,
                  base_update=0.99, base_update_iter=10, base_model=True,
                  opt_kwargs={}, clip=1., name='generative_agent'):
@@ -279,7 +419,7 @@ class GenerativeAgent(BaselineAgent):
         batch_state.x = x
         batch_state.y = y
         batch_state.bs = bs
-        mask = ~(y==self.vocab.stoi['pad'])
+        mask = ~(y==self.vocab.stoi['pad']) # padding mask
         batch_state.mask = mask
         batch_state.lengths = mask.sum(-1)
         batch_state.sl = y.shape[-1]
@@ -287,6 +427,9 @@ class GenerativeAgent(BaselineAgent):
         batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
 
     def get_rl_tensors(self, model, x, y, latent_info, sources):
+        '''
+        get_rl_tensors - uses latent info to compute output tensors
+        '''
         if latent_info:
             latent_sources = []
             output_tensors = []
@@ -366,6 +509,29 @@ class GenerativeAgent(BaselineAgent):
 # Cell
 
 class SupevisedCB(Callback):
+    '''
+    SupevisedCB - supervised training callback. When triggered,
+    this callback grabs the top `percentile` of samples from the
+    log and runs supervised training with the sampled data
+
+    Inputs:
+
+    - `agent Agent`: agent
+
+    - `frequency int`: how often to run supervised training
+
+    - `base_update float`: how much to update the baseline model
+    after supervised training (if applicable)
+
+    - `percentile int`: percentile (int value 1-100) of data
+    to sample from the log
+
+    - `lr float`: learning rate
+
+    - `bs int`: batch size
+
+    - `log_term str`: what term in the log to take the percentile of
+    '''
     def __init__(self, agent, frequency, base_update, percentile,
                  lr, bs, log_term='rewards'):
         super().__init__('supervised', order=1000)
@@ -393,11 +559,37 @@ class SupevisedCB(Callback):
         self.agent.update_dataset_from_inputs(df.samples.values)
         self.agent.train_supervised(self.bs, 1, self.lr)
 
-        merge_models(self.agent.base_model, self.agent.model, alpha=self.base_update)
+        if hasattr(self.agent, 'base_model'):
+            if isinstance(self.agent.base_model, nn.Module):
+                merge_models(self.agent.base_model, self.agent.model, alpha=self.base_update)
 
 # Cell
 
 class Rollback(Callback):
+    '''
+    Rollback - if `metric_name` falls (above/below) `target`, updates
+    the main model's weights with the baseline model's weights
+
+    Inputs:
+
+    - `agent BaselineAgent`: agent
+
+    - `metric_name str`: metric to track
+
+    - `lookback int`: number of batches to look back. Also sets the
+    maximum rollback frequency
+
+    - `target float`: desired cutoff for `metric_name`
+
+    - `alpha float`: during rollback, the main model weights are
+    updated following `model = alpha*model + (1-alpha)*base_model`
+
+    - `name str`: callback name
+
+    - `mode str['greater', 'lesser']`: if greater, rollback is triggered by
+    the metric going over `target`. If lesser, rollback is triggered by the
+    metric falling below `target`
+    '''
     def __init__(self, agent, metric_name, lookback, target, alpha, name, mode='greater'):
         super().__init__(name=name)
         self.agent = agent
@@ -428,6 +620,37 @@ class Rollback(Callback):
 # Cell
 
 class RetrainRollback(Callback):
+    '''
+    RetrainRollback - triggers supervised training if
+    `metric_name` falls (above/below) `target`
+
+    Inputs:
+
+    - `agent BaselineAgent`: agent
+
+    - `metric_name str`: metric to track
+
+    - `lookback int`: number of batches to look back. Also sets the
+    maximum rollback frequency
+
+    - `target float`: desired cutoff for `metric_name`
+
+    - `percentile int`: percentile (1-100) of data to sample from the log
+
+    - `lr float`: learning rate
+
+    - `bs int`: batch size
+
+    - `base_update float`: after supervised training, the weights
+    of the baseline model are updated following
+    `base_model = alpha*base_model + (1-alpha)*model`
+
+    - `name str`: callback name
+
+    - `mode str['greater', 'lesser']`: if greater, rollback is triggered by
+    the metric going over `target`. If lesser, rollback is triggered by the
+    metric falling below `target`
+    '''
     def __init__(self, agent, metric_name, lookback, target,
                  percentile, lr, bs, base_update, name, mode='greater'):
         super().__init__(name=name, order=1000)
@@ -476,6 +699,31 @@ class RetrainRollback(Callback):
 # Cell
 
 class ResetAndRetrain(Callback):
+    '''
+    ResetAndRetrain - with a set frequency, loads a
+    file of saved weights and runs supervised training
+
+    Inputs:
+
+    - `agent BaselineAgent`: agent
+
+    - `frequency int`: how often to run supervised training
+
+    - `weight_fp str`: filepath to weights
+
+    - `percentile int`: percentile (int value 1-100) of data
+    to sample from the log
+
+    - `lr float`: learning rate
+
+    - `bs int`: batch size
+
+    - `epochs int`: number of epochs to run
+
+    - `log_term str`: what term in the log to take the percentile of
+
+    - `sample_term str`: what log term contains the samples to train on
+    '''
     def __init__(self, agent, frequency, weight_fp, percentile,
                  lr, bs, epochs, log_term='rewards', sample_term='samples'):
         super().__init__(name='reset_retrain', order=1000)
@@ -512,6 +760,20 @@ class ResetAndRetrain(Callback):
 # Cell
 
 class SaveAgentWeights(Callback):
+    '''
+    SaveAgentWeights - saves weights every `n_batches`.
+    Weights are saved to `file_path/filename_iterations.pt`
+
+    Inputs:
+
+    - `file_path str`: directory to save weights in
+
+    - `filename str`: base filename
+
+    - `n_batches int`: how often to save weights
+
+    - `agent Agent`: agent
+    '''
     def __init__(self, file_path, filename, n_batches, agent):
         super().__init__(name='save_cb')
 

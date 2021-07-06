@@ -46,6 +46,9 @@
                 "Logging" : "logging.html",
                 "Buffer" : "buffer.html",
                 "Template Callback" : "template_callback.html"
+            },
+            "Agent" : {
+                "Agent" : "agent.html"
             }
         }
     }

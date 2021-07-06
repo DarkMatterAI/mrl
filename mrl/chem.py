@@ -22,8 +22,13 @@ from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDConfig
 from rdkit.Chem.Lipinski import RotatableBondSmarts
 from rdkit.Chem.FilterCatalog import *
-sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
-import sascorer
+try:
+    # doesnt work for github CI
+    sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
+    import sascorer
+except:
+    warnings.warn("SA score not imported", Warning)
+
 from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')
 import selfies as sf
