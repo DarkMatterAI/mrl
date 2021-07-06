@@ -35,6 +35,22 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Policy-Gradients">Policy Gradients<a class="anchor-link" href="#Policy-Gradients"> </a></h2><p>The code in this module implements several policy gradient algorithms</p>
+<ul>
+<li><p><a href="/mrl/policy_gradient#PolicyGradient"><code>PolicyGradient</code></a> - implements <a href="https://papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html">Policy Gradients</a></p>
+</li>
+<li><p><a href="/mrl/policy_gradient#TRPO"><code>TRPO</code></a> - implements <a href="https://arxiv.org/pdf/1502.05477.pdf">Trust Region Policy Optimization</a></p>
+</li>
+<li><p><a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> - implemeents <a href="https://arxiv.org/pdf/1707.06347.pdf">Proximal Policy Optimization</a></p>
+</li>
+</ul>
+<h3 id="Current-Limitations">Current Limitations<a class="anchor-link" href="#Current-Limitations"> </a></h3><p>The implementations below are designed for the scenario where the output of the model is a series of actions over time. Importantly, rewards are discounted going backwards, meaning the disccounted reward at very timestep contains some of the future rewards. If your model does not predict a series of rewards (ie predicts a single graph), you may need to revisit these assumptions</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -55,6 +71,11 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="BasePolicy" class="doc_header"><code>class</code> <code>BasePolicy</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BasePolicy</code>(<strong><code>gamma</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
+<p>BasePolicy - base policy class</p>
+<p>Inputs:</p>
+<ul>
+<li><code>gamma float</code>: discount factor</li>
+</ul>
 
 </div>
 
@@ -66,6 +87,58 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="BasePolicy.discount_rewards" class="doc_header"><code>BasePolicy.discount_rewards</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BasePolicy.discount_rewards</code>(<strong><code>rewards</code></strong>, <strong><code>mask</code></strong>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>discount_rewards - discounts rewards</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>rewards torch.Tensor[bs]</code>: reward tensor (one reward per batch item)</p>
+</li>
+<li><p><code>mask torch.BoolTensor[bs, sl]</code>: mask (ie for padding). <code>True</code> indicates
+values that will be kept, <code>False</code> indicates values that will be masked</p>
+</li>
+<li><p><code>traj_rewards Optional[torch.Tensor[bs, sl]]</code>: trajectory rewards.
+Has a reward value for each time point</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Policy-Gradients">Policy Gradients<a class="anchor-link" href="#Policy-Gradients"> </a></h2><p><a href="/mrl/policy_gradient#PolicyGradient"><code>PolicyGradient</code></a> implements standard <a href="https://papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html">Policy Gradients</a> following:</p>
+\begin{aligned}
+\nabla_\theta J(\theta) = \mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta(a \vert s)]
+\end{aligned}<p>When we generate a sample through autoregressive Monte Carlo sampling, we create a sequence of actions which we represent as a tensor of size <code>(bs, sl)</code>.</p>
+<p>For each step in this series, we have a probability disribution over all possible actions. This give us a tensor of log probabilities of size <code>(bs, sl, n_actions)</code>. We can then gather the log probabilities for the actions we actually took, giving us a tensor of gathered log probabilities of size <code>(bs, sl)</code>.</p>
+<p>We also have a set of rewards associated with each sample. In the context of generating compounds, we most often have a single reward for each sampling trajectory that represents the final score of he whole molecule. This would be a tensor of size <code>(bs)</code>. If applicable, we can also have a tensor of trajectory rewards which has a reward for each sampling timestep. This trajectory reward tensor would be of size <code>(bs, sl)</code>.</p>
+<p>These rewards are discounted over all timesteps using <a href="/mrl/torch_core#discount_rewards"><code>discount_rewards</code></a>, then scaled using <a href="/mrl/torch_core#whiten"><code>whiten</code></a>. This gives is our final tensor of rewards of size <code>(bs, sl)</code>.</p>
+<p>Now we can compute the empirical expecttion $\mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta(a \vert s)]$ by multiplying the gathered log probabilities by the discounted rewards and taking the mean over the batch.</p>
+<p>Then of course we want to maximize this expectation, so we use gradient descent to minimize $-\mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta(a \vert s)]$</p>
+<p>This basically tells the model to increase the probability of sample paths that had above-average rewards within the batch, and decrease the probability of sample paths with below-average rewards.</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -84,8 +157,25 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L50" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
+<p>PolicyGradient - Basic policy gradient implementation</p>
+<p>papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>discount bool</code>: if True, rewards are discounted over all timesteps</p>
+</li>
+<li><p><code>gamma float</code>: discount factor (ignored if <code>discount=False</code>)</p>
+</li>
+<li><p><code>ratio True</code>: if True, model log probbilities are replaced with the
+ratio between main model log probabilities and baseline model log probabilities,
+a technique used in more sophistocated policy gradient algorithms. This can
+improve stability</p>
+</li>
+<li><p><code>scale_rewards bool</code>: if True, rewards are mean-scaled before discounting.
+This can lead to quicker convergence</p>
+</li>
+</ul>
 
 </div>
 
@@ -97,6 +187,58 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="PolicyGradient.__call__" class="doc_header"><code>PolicyGradient.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L77" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PolicyGradient.__call__</code>(<strong><code>lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>base_lps</code></strong>=<em><code>None</code></em>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>Inputs:</p>
+<ul>
+<li><p><code>lps torch.FloatTensor[bs, sl]</code>: gathered log probabilities</p>
+</li>
+<li><p><code>mask torch.BoolTensor[bs, sl]</code>: padding mask. <code>True</code> indicates
+values that will be kept, <code>False</code> indicates values that will be masked</p>
+</li>
+<li><p><code>rewards torch.FloatTensor[bs]</code>: reward tensor (one reward per batch item)</p>
+</li>
+<li><p><code>base_lps Optional[torch.FloatTensor[bs, sl]]</code>: optional
+base model gathered log probabilities</p>
+</li>
+<li><p><code>traj_rewards Optional[torch.FloatTensor[bs, sl]]</code>: optional tensor of
+trajectory rewards with one reward value per timestep</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Trust-Region-Policy-Optimization">Trust Region Policy Optimization<a class="anchor-link" href="#Trust-Region-Policy-Optimization"> </a></h2><p><a href="https://arxiv.org/pdf/1502.05477.pdf">Trust Region Policy Optimization</a> (TRPO) adapts the policy gradient algorithm by constraining the maximum update size based on how far the current agent has deviated from the baseline agent.</p>
+\begin{aligned}
+J(\theta) = \mathbb{E}_{s \sim \rho^{\pi_{\theta_\text{old}}}, a \sim \pi_{\theta_\text{old}}} \big[ \frac{\pi_\theta(a \vert s)}{\pi_{\theta_\text{old}}(a \vert s)} \hat{A}_{\theta_\text{old}}(s, a) \big]
+\end{aligned}<p>Subject to a KL constraint between the current policy and the baseline policy</p>
+\begin{aligned}
+\mathbb{E}_{s \sim \rho^{\pi_{\theta_\text{old}}}} [D_\text{KL}(\pi_{\theta_\text{old}}(.\vert s) \| \pi_\theta(.\vert s)] \leq \delta
+\end{aligned}
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -115,8 +257,28 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
+<p>TRPO - Trust Region Policy Optimization</p>
+<p>arxiv.org/pdf/1502.05477.pdf</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>gamma float</code>: discount factor</p>
+</li>
+<li><p><code>kl_target float</code>: target maximum KL divergence from baseline policy</p>
+</li>
+<li><p><code>beta float</code>: coefficient for the KL loss</p>
+</li>
+<li><p><code>eta float</code>: coefficient for penalizing KL higher than <code>2*kl_target</code></p>
+</li>
+<li><p><code>lam float</code>: lambda coefficient for advantage calculation</p>
+</li>
+<li><p><code>v_coef float</code>: value function loss coefficient</p>
+</li>
+<li><p><code>scale_rewards bool</code>: if True, rewards are mean-scaled before discounting.
+This can lead to quicker convergence</p>
+</li>
+</ul>
 
 </div>
 
@@ -128,6 +290,66 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TRPO.__call__" class="doc_header"><code>TRPO.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L170" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TRPO.__call__</code>(<strong><code>lps_g</code></strong>, <strong><code>base_lps_g</code></strong>, <strong><code>lps</code></strong>, <strong><code>base_lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>Inputs:</p>
+<ul>
+<li><p><code>lps_g torch.FloatTensor[bs, sl]</code>: model gathered log probabilities</p>
+</li>
+<li><p><code>base_lps_g torch.FloatTensor[bs, sl]</code>: baseline model
+gathered log probabilities</p>
+</li>
+<li><p><code>lps torch.FloatTensor[bs, sl, n_actions]</code>: model full log probabilities</p>
+</li>
+<li><p><code>base_lps torch.FloatTensor[bs, sl, n_actions]</code>: baseline model
+full log probabilities</p>
+</li>
+<li><p><code>mask torch.BoolTensor[bs, sl]</code>: padding mask. <code>True</code> indicates
+values that will be kept, <code>False</code> indicates values that will be masked</p>
+</li>
+<li><p><code>rewards torch.FloatTensor[bs]</code>: reward tensor (one reward per batch item)</p>
+</li>
+<li><p><code>values torch.FloatTensor[bs, sl]</code>: state value predictions</p>
+</li>
+<li><p><code>traj_rewards Optional[torch.FloatTensor[bs, sl]]</code>: optional tensor of
+trajectory rewards with one reward value per timestep</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Proximal-Policy-Optimization">Proximal Policy Optimization<a class="anchor-link" href="#Proximal-Policy-Optimization"> </a></h1><p><a href="https://arxiv.org/pdf/1707.06347.pdf">Proximal Policy Optimization</a> (PPO) applies clipping to the surrogate objective along with the KL constraints</p>
+\begin{aligned}
+r(\theta) = \frac{\pi_\theta(a \vert s)}{\pi_{\theta_\text{old}}(a \vert s)}
+\end{aligned}\begin{aligned}
+J(\theta) = \mathbb{E} [ r(\theta) \hat{A}_{\theta_\text{old}}(s, a) ]
+\end{aligned}\begin{aligned}
+J^\text{CLIP} (\theta) = \mathbb{E} [ \min( r(\theta) \hat{A}_{\theta_\text{old}}(s, a), \text{clip}(r(\theta), 1 - \epsilon, 1 + \epsilon) \hat{A}_{\theta_\text{old}}(s, a))]
+\end{aligned}
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -146,8 +368,80 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L172" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L277" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
+<p>PPO - Proximal policy optimization</p>
+<p>arxiv.org/pdf/1707.06347.pdf</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>gamma float</code>: discount factor</p>
+</li>
+<li><p><code>kl_coef float</code>: KL reward coefficient</p>
+</li>
+<li><p><code>lam float</code>: lambda coefficient for advantage calculation</p>
+</li>
+<li><p><code>v_coef float</code>: value function loss coefficient</p>
+</li>
+<li><p><code>cliprange float</code>: clip value for surrogate loss</p>
+</li>
+<li><p><code>v_cliprange float</code>: clip value for value function predictions</p>
+</li>
+<li><p><code>ent_coef float</code>: entropy regularization coefficient</p>
+</li>
+<li><p><code>kl_target Optional[float]</code>: target value for adaptive KL penalty</p>
+</li>
+<li><p><code>kl_horizon Optional[float]</code>: horizon for adaptive KL penalty</p>
+</li>
+<li><p><code>scale_rewards bool</code>: if True, rewards are mean-scaled before discounting.
+This can lead to quicker convergence</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="PPO.__call__" class="doc_header"><code>PPO.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L321" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PPO.__call__</code>(<strong><code>lps_g</code></strong>, <strong><code>base_lps_g</code></strong>, <strong><code>lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>ref_values</code></strong>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>Inputs:</p>
+<ul>
+<li><p><code>lps_g torch.FloatTensor[bs, sl]</code>: model gathered log probabilities</p>
+</li>
+<li><p><code>base_lps_g torch.FloatTensor[bs, sl]</code>: baseline model
+gathered log probabilities</p>
+</li>
+<li><p><code>lps torch.FloatTensor[bs, sl, n_actions]</code>: model full log probabilities</p>
+</li>
+<li><p><code>mask torch.BoolTensor[bs, sl]</code>: padding mask. <code>True</code> indicates
+values that will be kept, <code>False</code> indicates values that will be masked</p>
+</li>
+<li><p><code>rewards torch.FloatTensor[bs]</code>: reward tensor (one reward per batch item)</p>
+</li>
+<li><p><code>values torch.FloatTensor[bs, sl]</code>: state value predictions</p>
+</li>
+<li><p><code>ref_values torch.FloatTensor[bs, sl]</code>: baseline state value predictions</p>
+</li>
+<li><p><code>traj_rewards Optional[torch.FloatTensor[bs, sl]]</code>: optional tensor of
+trajectory rewards with one reward value per timestep</p>
+</li>
+</ul>
 
 </div>
 

@@ -12,10 +12,30 @@ from .layers import *
 # Cell
 
 class BasePolicy():
+    '''
+    BasePolicy - base policy class
+
+    Inputs:
+
+    - `gamma float`: discount factor
+    '''
     def __init__(self, gamma=1.):
         self.gamma = gamma
 
-    def discount_rewards(self, rewards, mask, traj_rewards):
+    def discount_rewards(self, rewards, mask, traj_rewards=None):
+        '''
+        discount_rewards - discounts rewards
+
+        Inputs:
+
+        - `rewards torch.Tensor[bs]`: reward tensor (one reward per batch item)
+
+        - `mask torch.BoolTensor[bs, sl]`: mask (ie for padding). `True` indicates
+        values that will be kept, `False` indicates values that will be masked
+
+        - `traj_rewards Optional[torch.Tensor[bs, sl]]`: trajectory rewards.
+        Has a reward value for each time point
+        '''
         rewards = scatter_rewards(rewards, mask)
 
         if traj_rewards is not None:
@@ -28,6 +48,25 @@ class BasePolicy():
 # Cell
 
 class PolicyGradient(BasePolicy):
+    '''
+    PolicyGradient - Basic policy gradient implementation
+
+    papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html
+
+    Inputs:
+
+    - `discount bool`: if True, rewards are discounted over all timesteps
+
+    - `gamma float`: discount factor (ignored if `discount=False`)
+
+    - `ratio True`: if True, model log probbilities are replaced with the
+    ratio between main model log probabilities and baseline model log probabilities,
+    a technique used in more sophistocated policy gradient algorithms. This can
+    improve stability
+
+    - `scale_rewards bool`: if True, rewards are mean-scaled before discounting.
+    This can lead to quicker convergence
+    '''
     def __init__(self, discount=True, gamma=0.97, ratio=False, scale_rewards=True):
         super().__init__(gamma)
         self.discount = discount
@@ -36,6 +75,23 @@ class PolicyGradient(BasePolicy):
         self.mean_reward = None
 
     def __call__(self, lps, mask, rewards, base_lps=None, traj_rewards=None):
+        '''
+        Inputs:
+
+        - `lps torch.FloatTensor[bs, sl]`: gathered log probabilities
+
+        - `mask torch.BoolTensor[bs, sl]`: padding mask. `True` indicates
+        values that will be kept, `False` indicates values that will be masked
+
+        - `rewards torch.FloatTensor[bs]`: reward tensor (one reward per batch item)
+
+        - `base_lps Optional[torch.FloatTensor[bs, sl]]`: optional
+        base model gathered log probabilities
+
+        - `traj_rewards Optional[torch.FloatTensor[bs, sl]]`: optional tensor of
+        trajectory rewards with one reward value per timestep
+        '''
+
         if self.ratio:
             lps = (lps - base_lps.detach()).exp()
 
@@ -49,6 +105,8 @@ class PolicyGradient(BasePolicy):
 
         pg_dict = {'loss':pg_loss.detach().cpu(),
                    'rewards':rewards.detach().cpu()}
+
+        self.last_outputs = pg_dict
 
         return pg_loss, pg_dict
 
@@ -76,6 +134,28 @@ class PolicyGradient(BasePolicy):
 # Cell
 
 class TRPO(BasePolicy):
+    '''
+    TRPO - Trust Region Policy Optimization
+
+    arxiv.org/pdf/1502.05477.pdf
+
+    Inputs:
+
+    - `gamma float`: discount factor
+
+    - `kl_target float`: target maximum KL divergence from baseline policy
+
+    - `beta float`: coefficient for the KL loss
+
+    - `eta float`: coefficient for penalizing KL higher than `2*kl_target`
+
+    - `lam float`: lambda coefficient for advantage calculation
+
+    - `v_coef float`: value function loss coefficient
+
+    - `scale_rewards bool`: if True, rewards are mean-scaled before discounting.
+    This can lead to quicker convergence
+    '''
     def __init__(self, gamma, kl_target, beta=1., eta=50, lam=0.95,
                  v_coef=0.5, scale_rewards=True):
         self.gamma = gamma
@@ -89,6 +169,29 @@ class TRPO(BasePolicy):
 
     def __call__(self, lps_g, base_lps_g, lps, base_lps, mask,
                  rewards, values, traj_rewards=None):
+        '''
+        Inputs:
+
+        - `lps_g torch.FloatTensor[bs, sl]`: model gathered log probabilities
+
+        - `base_lps_g torch.FloatTensor[bs, sl]`: baseline model
+        gathered log probabilities
+
+        - `lps torch.FloatTensor[bs, sl, n_actions]`: model full log probabilities
+
+        - `base_lps torch.FloatTensor[bs, sl, n_actions]`: baseline model
+        full log probabilities
+
+        - `mask torch.BoolTensor[bs, sl]`: padding mask. `True` indicates
+        values that will be kept, `False` indicates values that will be masked
+
+        - `rewards torch.FloatTensor[bs]`: reward tensor (one reward per batch item)
+
+        - `values torch.FloatTensor[bs, sl]`: state value predictions
+
+        - `traj_rewards Optional[torch.FloatTensor[bs, sl]]`: optional tensor of
+        trajectory rewards with one reward value per timestep
+        '''
 
         discounted_rewards = self.discount_rewards(rewards, mask, traj_rewards)
         advantages = self.compute_advantages(discounted_rewards, values)
@@ -121,6 +224,8 @@ class TRPO(BasePolicy):
                     'loss2' : loss2.detach().cpu(),
                     'loss3' : loss3.detach().cpu(),
                     'v_loss' : v_loss.detach().cpu()}
+
+        self.last_outputs = pg_dict
 
         return pg_loss, pg_dict
 
@@ -170,6 +275,34 @@ class TRPO(BasePolicy):
 # Cell
 
 class PPO(BasePolicy):
+    '''
+    PPO - Proximal policy optimization
+
+    arxiv.org/pdf/1707.06347.pdf
+
+    Inputs:
+
+    - `gamma float`: discount factor
+
+    - `kl_coef float`: KL reward coefficient
+
+    - `lam float`: lambda coefficient for advantage calculation
+
+    - `v_coef float`: value function loss coefficient
+
+    - `cliprange float`: clip value for surrogate loss
+
+    - `v_cliprange float`: clip value for value function predictions
+
+    - `ent_coef float`: entropy regularization coefficient
+
+    - `kl_target Optional[float]`: target value for adaptive KL penalty
+
+    - `kl_horizon Optional[float]`: horizon for adaptive KL penalty
+
+    - `scale_rewards bool`: if True, rewards are mean-scaled before discounting.
+    This can lead to quicker convergence
+    '''
     def __init__(self, gamma, kl_coef, lam=0.95, v_coef=0.5, cliprange=0.2,
                  v_cliprange=0.2, ent_coef=0.01, kl_target=None,
                  kl_horizon=None, scale_rewards=True):
@@ -185,11 +318,34 @@ class PPO(BasePolicy):
         self.scale_rewards = scale_rewards
         self.mean_reward = None
 
-    def __call__(self, lps, base_lps, mask,
+    def __call__(self, lps_g, base_lps_g, lps, mask,
                  rewards, values, ref_values, traj_rewards=None):
 
+        '''
+        Inputs:
+
+        - `lps_g torch.FloatTensor[bs, sl]`: model gathered log probabilities
+
+        - `base_lps_g torch.FloatTensor[bs, sl]`: baseline model
+        gathered log probabilities
+
+        - `lps torch.FloatTensor[bs, sl, n_actions]`: model full log probabilities
+
+        - `mask torch.BoolTensor[bs, sl]`: padding mask. `True` indicates
+        values that will be kept, `False` indicates values that will be masked
+
+        - `rewards torch.FloatTensor[bs]`: reward tensor (one reward per batch item)
+
+        - `values torch.FloatTensor[bs, sl]`: state value predictions
+
+        - `ref_values torch.FloatTensor[bs, sl]`: baseline state value predictions
+
+        - `traj_rewards Optional[torch.FloatTensor[bs, sl]]`: optional tensor of
+        trajectory rewards with one reward value per timestep
+        '''
+
         discounted_rewards = self.discount_rewards(rewards, mask, traj_rewards)
-        kl_reward = self.compute_kl_reward(lps, base_lps)
+        kl_reward = self.compute_kl_reward(lps_g, base_lps_g)
 
         discounted_rewards = discounted_rewards + kl_reward
         advantages = self.compute_advantages(discounted_rewards, values)
@@ -197,7 +353,7 @@ class PPO(BasePolicy):
 
         v_loss = self.value_loss(values, ref_values, discounted_rewards)
 
-        ratios = (lps - base_lps).exp()
+        ratios = (lps_g - base_lps_g.detach()).exp()
         ratios_clipped = torch.clamp(ratios, 1.0-self.cliprange, 1.0+self.cliprange)
 
         loss1 = -(ratios*advantages)
@@ -206,11 +362,11 @@ class PPO(BasePolicy):
         loss = torch.maximum(loss1, loss2)
         loss = (loss*mask).sum(-1)/mask.sum(-1)
 
-        entropy = Categorical(lps).entropy()
+        entropy = Categorical(logits=lps).entropy().mean(-1)
 
         pg_loss = loss + v_loss.mean(-1) - self.ent_coef*entropy
 
-        self.update_kl(lps, base_lps, mask)
+        self.update_kl(lps_g, base_lps_g, mask)
 
         pg_dict = { 'loss' : pg_loss.detach().cpu(),
                     'pg_discounted' : discounted_rewards,
@@ -220,12 +376,14 @@ class PPO(BasePolicy):
                     'v_loss' : v_loss.detach().cpu(),
                     'entropy' : entropy.detach().cpu()}
 
+        self.last_outputs = pg_dict
+
         return pg_loss, pg_dict
 
     def from_batch_state(self, batch_state):
-        lps = batch_state.model_gathered_logprobs
-        base_lps = batch_state.base_gathered_logprobs
-
+        lps_g = batch_state.model_gathered_logprobs
+        base_lps_g = batch_state.base_gathered_logprobs
+        lps = batch_state.model_logprobs
 
         mask = batch_state.mask
         rewards = batch_state.rewards_final
@@ -243,13 +401,13 @@ class PPO(BasePolicy):
         values = batch_state.state_values
         ref_values = batch_state.ref_state_values
 
-        loss, pg_dict = self(lps, base_lps, mask, rewards,
+        loss, pg_dict = self(lps_g, base_lps_g, lps, mask, rewards,
                              values, ref_values, traj_rewards)
 
         return loss
 
-    def compute_kl_reward(self, lps, base_lps):
-        kl = lps - base_lps
+    def compute_kl_reward(self, lps_g, base_lps_g):
+        kl = lps_g - base_lps_g
         kl_reward = -self.kl_coef * kl.detach()
         return kl_reward
 
@@ -282,13 +440,13 @@ class PPO(BasePolicy):
 
         return advantages
 
-    def update_kl(self, lps, base_lps, mask):
+    def update_kl(self, lps_g, base_lps_g, mask):
 
         if (self.kl_target is not None) and (self.kl_horizon is not None):
-            kl = (lps - base_lps).detach()
+            kl = (lps_g - base_lps_g).detach()
             kl = (kl*mask).sum(-1)/mask.sum(-1)
             kl = kl.cpu().mean()
 
             error = torch.clip(kl/self.kl_target - 1, -0.2, 0.2)
-            factor = 1 + error * lps.shape[0]/self.kl_horizon
+            factor = 1 + error * lps_g.shape[0]/self.kl_horizon
             self.kl_coef *= factor

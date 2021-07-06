@@ -162,6 +162,9 @@ class Agent(Callback):
         state_dict = self.model.state_dict()
         torch.save(state_dict, filename)
 
+    def save(self, filename):
+        torch.save(self, filename)
+
 
 # Cell
 

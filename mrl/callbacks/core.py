@@ -77,6 +77,9 @@ class Callback():
     def plot_time(self, cols=4, smooth=True):
         self.plot_dict(self.event_timelog, cols=cols, smooth=smooth)
 
+    def save(self, filename):
+        torch.save(self, filename)
+
 # Cell
 
 class Event():

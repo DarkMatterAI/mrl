@@ -14,6 +14,21 @@ from .policy_gradient import *
 # Cell
 
 class LossCallback(Callback):
+    '''
+    LossCallback - basic loss callback
+
+    Inputs:
+
+    - `loss_function`: any object with a `from_batch_state` method
+
+    - `name str`: loss name
+
+    - `weight float`: loss scaling weight
+
+    - `track bool`: if values from this loss should be tracked
+
+    - `order int`: callback order
+    '''
     def __init__(self, loss_function, name, weight=1., track=True, order=20):
         super().__init__(name=name, order=order)
         self.loss_function = loss_function
@@ -39,11 +54,30 @@ class LossCallback(Callback):
 # Cell
 
 class PolicyLoss(LossCallback):
+    '''
+    PolicyLoss - Loss callback for `BasePolicy` subclasses
+
+    Inputs:
+
+    - `policy_function BasePolicy`: policy
+
+    - `name str`: loss name
+
+    - `value_head Optional[nn.Module]`: state value prediction model
+
+    - `v_update float`: update fraction for the baseline value head
+
+    - `v_update_iter int`: update frequency for baseline value head
+
+    - `vopt_kwargs dict`: dictionary of keyword args passed to `optim.Adam`
+
+    - `track bool`: if values from this loss should be tracked
+    '''
     def __init__(self, policy_function, name, value_head=None,
                  v_update=0.95, v_update_iter=10,
-                 vopt_kwargs={}, weight=1, track=True):
+                 vopt_kwargs={}, track=True):
         assert isinstance(policy_function, BasePolicy)
-        super().__init__(policy_function, name, weight, track)
+        super().__init__(policy_function, name, weight=1., track=track)
 
         self.set_model(value_head, vopt_kwargs)
         self.v_update = v_update
@@ -135,6 +169,17 @@ class PolicyLoss(LossCallback):
 # Cell
 
 class PriorLoss():
+    '''
+    PriorLoss - loss for a trainable prior
+
+    Inputs:
+
+    - `prior nn.Module`: trainable prior
+
+    - `base_prior Optional[nn.Module]`: optional baseline prior
+
+    - `clip float`: loss clipping value
+    '''
     def __init__(self, prior, base_prior=None, clip=10.):
 
         self.prior = prior
@@ -157,8 +202,6 @@ class PriorLoss():
         else:
             prior_lps = torch.clip(prior_lps, -self.clip, self.clip)
             prior_loss = (-prior_lps.mean(-1)*rewards)
-
-#         prior_loss = torch.clip(prior_loss, -self.clip, self.clip)
 
         return prior_loss
 
@@ -185,7 +228,42 @@ class PriorLoss():
         return loss
 
 
+# Cell
+
 class HistoricPriorLoss(Callback):
+    '''
+    HistoricPriorLoss - draws samples from batch log
+    to send to `prior_loss`
+
+    Inputs:
+
+    - `prior_loss PriorLoss`: prior loss function
+
+    - `model nn.Module`: model used to convert samples to
+    latent vectors
+
+    - `dataset Base_Dataset`: dataset to convert samples to
+    tensors
+
+    - `percentile int`: value [1-100] percentile to sample from
+
+    - `n int`: number of samples to draw
+
+    - `above_percent float`: what percentage of samples should
+    be above `percentile` in score
+
+    - `start_iter int`: what iteration to start using historical
+    loss
+
+    - `frequency int`: batch frequency of calling historical loss
+
+    - `log_term str`: what term in the batch log to use for
+    percentile computation
+
+    - `weight float`: loss scaling weight
+
+    - `track bool`: if values from this callback should be tracked
+    '''
     def __init__(self, prior_loss, model, dataset, percentile,
                  n, above_percent, start_iter, frequency,
                  log_term='rewards', weight=1., track=True):
