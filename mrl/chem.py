@@ -10,10 +10,10 @@ __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mo
            'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4',
            'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd',
            'FP', 'get_fingerprint', 'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles',
-           'fuse_on_atom_mapping', 'fuse_on_link', 'add_map_nums', 'check_ring_bonds', 'decorate_smile',
-           'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator', 'add_one_atom',
-           'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins',
-           'to_sequences']
+           'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold', 'add_map_nums', 'check_ring_bonds',
+           'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator',
+           'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence',
+           'to_proteins', 'to_sequences']
 
 # Cell
 from .imports import *
@@ -22,6 +22,7 @@ from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDConfig
 from rdkit.Chem.Lipinski import RotatableBondSmarts
 from rdkit.Chem.FilterCatalog import *
+from rdkit.Chem.Scaffolds import MurckoScaffold
 try:
     # doesnt work for github CI
     sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
@@ -897,6 +898,22 @@ def fuse_on_link(fragment_string, links):
 
     fused = to_mol('.'.join(fragments))
     return to_smile(fused)
+
+# Cell
+
+def murcko_scaffold(smile, generic=False):
+    '''
+    murcko_scaffold - convert smile to murcko scaffold.
+
+    If generic, all atoms are converted to carbon
+    '''
+    mol = to_mol(smile)
+    scaffold = MurckoScaffold.GetScaffoldForMol(mol)
+
+    if generic:
+        scaffold = MurckoScaffold.MakeScaffoldGeneric(scaffold)
+
+    return to_smile(scaffold)
 
 # Cell
 

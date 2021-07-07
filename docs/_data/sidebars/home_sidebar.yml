@@ -30,6 +30,9 @@ entries:
         - output: web,pdf
           title: Templates (Advanced)
           url: tutorials.template.advanced.html
+        - output: web,pdf
+          title: Dataset Construction
+          url: tutorials.dataset_building.html
         title: Comp Chem
     output: web
     title: Tutorials
@@ -109,6 +112,12 @@ entries:
         - output: web,pdf
           title: Template Callback
           url: template_callback.html
+        - output: web,pdf
+          title: Loss Callbacks
+          url: losses.html
+        - output: web,pdf
+          title: Sampler Callbacks
+          url: samplers.html
         title: Callbacks
       - output: web
         subfolderitems:
@@ -116,6 +125,12 @@ entries:
           title: Agent
           url: agent.html
         title: Agent
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Policy Gradient
+          url: policy_gradient.html
+        title: Poicy Gradient
     output: web
     title: Library
   output: web

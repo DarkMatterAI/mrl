@@ -372,7 +372,7 @@ class PPO(BasePolicy):
                     'pg_discounted' : discounted_rewards,
                     'pg_advantage' : advantages,
                     'ratios' : ratios.detach().cpu(),
-                    'loss' : loss.detach().cpu(),
+                    'ppo_loss' : loss.detach().cpu(),
                     'v_loss' : v_loss.detach().cpu(),
                     'entropy' : entropy.detach().cpu()}
 
