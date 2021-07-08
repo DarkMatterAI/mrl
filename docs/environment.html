@@ -50,6 +50,68 @@ nb_path: "nbs/20_environment.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Environmemnt">Environmemnt<a class="anchor-link" href="#Environmemnt"> </a></h2><p>The <a href="/mrl/environment#Environment"><code>Environment</code></a> class holds all <a href="/mrl/callback_core#Callback"><code>Callback</code></a> classes involved in the fit cycle and runs the fit loop. All callbacks are treated the same, but the following callback classes are distinguished for semantic convenience:</p>
+<ul>
+<li><code>agent</code> - the <a href="/mrl/agent#Agent"><code>Agent</code></a> being trained</li>
+<li><code>template_cb</code> - the <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a> to use for the fit cyce</li>
+<li><code>samplers</code> - any <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> callbacks used </li>
+<li><code>rewards</code> - any <a href="/mrl/reward#RewardCallback"><code>RewardCallback</code></a> callbacks</li>
+<li><code>losses</code> - any <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a> callbacks</li>
+<li><code>cbs</code> - any other <a href="/mrl/callback_core#Callback"><code>Callback</code></a> classes that don't fall into the above categories</li>
+</ul>
+<h2 id="The-Fit-Loop">The Fit Loop<a class="anchor-link" href="#The-Fit-Loop"> </a></h2><p>The following describes the order of events in <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a></p>
+<ol>
+<li>Callbacks added during <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a> are registered</li>
+<li><code>before_train</code> event is called</li>
+<li>Start iterating over the number of batches. For each batch:</li>
+<li>Call <a href="/mrl/environment#Environment.build_buffer"><code>Environment.build_buffer</code></a>. If current buffer size is less than the current batch size:<ol>
+<li>call <code>build_buffer</code> event</li>
+<li>call <code>filter_buffer</code> event</li>
+<li>call <code>after_build_buffer</code> event</li>
+</ol>
+</li>
+<li>Call <a href="/mrl/environment#Environment.sample_batch"><code>Environment.sample_batch</code></a><ol>
+<li>create new <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a></li>
+<li>call <code>before_batch</code> event</li>
+<li>call <code>sample_batch</code> event</li>
+<li>call <code>before_filter_batch</code> event</li>
+<li>call <code>filter_batch</code> event</li>
+<li>call <code>after_sample</code> event</li>
+</ol>
+</li>
+<li>Call <a href="/mrl/environment#Environment.compute_reward"><code>Environment.compute_reward</code></a><ol>
+<li>call <code>before_compute_reward</code> event</li>
+<li>call <code>compute_reward</code> event</li>
+<li>call <code>after_compute_reward</code> event</li>
+<li>call <code>reward_modification</code> event</li>
+<li>call <code>after_reward_modification</code> event</li>
+</ol>
+</li>
+<li>Call <a href="/mrl/environment#Environment.get_model_outputs"><code>Environment.get_model_outputs</code></a><ol>
+<li>call <code>get_model_outputs</code> event</li>
+<li>call <code>after_get_model_outputs</code> event</li>
+</ol>
+</li>
+<li>Call <a href="/mrl/environment#Environment.compute_loss"><code>Environment.compute_loss</code></a><ol>
+<li>call <code>compute_loss</code> event</li>
+<li>call <code>zero_grad</code> event</li>
+<li>call <code>before_step</code> event</li>
+<li>call <code>step</code> event</li>
+</ol>
+</li>
+<li>Call <a href="/mrl/environment#Environment.after_batch"><code>Environment.after_batch</code></a><ol>
+<li>call <code>after_batch</code> event</li>
+</ol>
+</li>
+<li>After the specified number of iterations have completed, call <code>after_train</code> event</li>
+<li>Remove callbacks registered at the start of the fit loop</li>
+</ol>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -68,8 +130,69 @@ nb_path: "nbs/20_environment.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Environment" class="doc_header"><code>class</code> <code>Environment</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Environment</code>(<strong><code>agent_cb</code></strong>, <strong><code>template_cb</code></strong>=<em><code>None</code></em>, <strong><code>samplers</code></strong>=<em><code>None</code></em>, <strong><code>reward_cbs</code></strong>=<em><code>None</code></em>, <strong><code>loss_cbs</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>buffer_p_batch</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="Environment" class="doc_header"><code>class</code> <code>Environment</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Environment</code>(<strong><code>agent</code></strong>, <strong><code>template_cb</code></strong>=<em><code>None</code></em>, <strong><code>samplers</code></strong>=<em><code>None</code></em>, <strong><code>rewards</code></strong>=<em><code>None</code></em>, <strong><code>losses</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>buffer_p_batch</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
+<p>Environment - Environment for training <a href="/mrl/agent"><code>agent</code></a></p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>agent Agent</code>: agent to train</p>
+</li>
+<li><p><code>template_cb Optional[TemplateCallback]</code>: template callback</p>
+</li>
+<li><p><code>samplers Optional[list[Sampler]]</code>: any sampler callbacks (can be any amount)</p>
+</li>
+<li><p><code>rewards Optional[list[RewardCallback]]</code>: any reward callbacks</p>
+</li>
+<li><p><code>losses Optional[list[LossCallback]]</code>: any loss callbacks</p>
+</li>
+<li><p><code>cbs Optional[list[Callback]]</code>: any other callbacks</p>
+</li>
+<li><p><code>buffer_p_batch Optional[float]</code>: percentage of each batch that
+should come from the buffer. If None, value is inferred from
+<code>p_batch</code> values in <code>samplers</code></p>
+</li>
+<li><p><code>log Optional[Log]</code>: custom log. If None, standard <a href="/mrl/logging#Log"><code>Log</code></a> is used</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Environment.fit" class="doc_header"><code>Environment.fit</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L222" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Environment.fit</code>(<strong><code>bs</code></strong>, <strong><code>sl</code></strong>, <strong><code>iters</code></strong>, <strong><code>report</code></strong>, <strong><code>cbs</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>fit - runs the fit cycle</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>bs int</code>: batch size</p>
+</li>
+<li><p><code>sl int</code>: max sample length</p>
+</li>
+<li><p><code>iters int</code>: number of batches to train</p>
+</li>
+<li><p><code>report int</code>: report batch stats every <code>report</code> batches</p>
+</li>
+<li><p><code>cbs Optional[list[Callback]]</code>: optional callbacks
+for the fit loop</p>
+</li>
+</ul>
 
 </div>
 

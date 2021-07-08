@@ -11,7 +11,30 @@ from .callbacks.template_cb import TemplateCallback
 # Cell
 
 class Environment():
-    def __init__(self, agent_cb, template_cb=None, samplers=None, reward_cbs=None, loss_cbs=None,
+    '''
+    Environment - Environment for training `agent`
+
+    Inputs:
+
+    - `agent Agent`: agent to train
+
+    - `template_cb Optional[TemplateCallback]`: template callback
+
+    - `samplers Optional[list[Sampler]]`: any sampler callbacks (can be any amount)
+
+    - `rewards Optional[list[RewardCallback]]`: any reward callbacks
+
+    - `losses Optional[list[LossCallback]]`: any loss callbacks
+
+    - `cbs Optional[list[Callback]]`: any other callbacks
+
+    - `buffer_p_batch Optional[float]`: percentage of each batch that
+    should come from the buffer. If None, value is inferred from
+    `p_batch` values in `samplers`
+
+    - `log Optional[Log]`: custom log. If None, standard `Log` is used
+    '''
+    def __init__(self, agent, template_cb=None, samplers=None, rewards=None, losses=None,
                  cbs=None, buffer_p_batch=None, log=None):
 
         if template_cb is None:
@@ -20,11 +43,11 @@ class Environment():
         if samplers is None:
             samplers = []
 
-        if reward_cbs is None:
-            reward_cbs = []
+        if rewards is None:
+            rewards = []
 
-        if loss_cbs is None:
-            loss_cbs = []
+        if losses is None:
+            losses = []
 
         if cbs is None:
             cbs = []
@@ -32,11 +55,11 @@ class Environment():
         if log is None:
             log = Log()
 
-        self.agent_cb = agent_cb
+        self.agent = agent
         self.template_cb = template_cb
         self.samplers = samplers
-        self.reward_cbs = reward_cbs
-        self.loss_cbs = loss_cbs
+        self.rewards = rewards
+        self.losses = losses
         self.cbs = []
 
         if buffer_p_batch is None:
@@ -48,9 +71,9 @@ class Environment():
         self.batch_state = BatchState()
         self.log = log
 
-        all_cbs = [self.agent_cb] + [self.template_cb] + self.samplers + self.reward_cbs
-        all_cbs += self.loss_cbs + cbs + [self.buffer] + [self.log]
-        all_cbs = sorted(all_cbs, key=lambda x: x.order)
+        all_cbs = [self.agent] + [self.template_cb] + self.samplers + self.rewards
+        all_cbs += self.losses + cbs + [self.buffer] + [self.log]
+#         all_cbs = sorted(all_cbs, key=lambda x: x.order)
 
         self.register_cbs(all_cbs)
         self('setup')
@@ -70,6 +93,8 @@ class Environment():
         for cb in cbs:
             self.register_cb(cb)
 
+        self.sort_cbs()
+
     def remove_cb(self, cb):
         cb.environment = None
         cb.batch_state = None
@@ -81,9 +106,23 @@ class Environment():
 
     def remove_cbs(self, cbs):
         for cb in cbs:
-            self.remove_cb(ccb)
+            self.remove_cb(cb)
+
+        self.sort_cbs()
+
+    def sort_cbs(self):
+        if self.cbs:
+            self.cbs = sorted(self.cbs, key=lambda x: x.order)
 
     def build_buffer(self):
+        '''
+        build_buffer
+
+        If the current buffer length is less than
+        the current batch size, this functiton
+        runs the `build_buffer`, `filter_buffer`,
+        and `after_build_buffer` events
+        '''
         start = time.time()
         if (len(self.buffer) < self.bs):
             self('build_buffer')
@@ -93,6 +132,16 @@ class Environment():
         self.log.timelog['build_buffer'].append(end)
 
     def sample_batch(self):
+        '''
+        sample_batch
+
+        This function runs:
+        - `before_batch`
+        - `sample_batch`
+        - `before_filter_batch`
+        - `filter_batch`
+        - `after_sample`
+        '''
         start = time.time()
         self.batch_state = BatchState()
         self('before_batch')
@@ -104,6 +153,13 @@ class Environment():
         self.log.timelog['sample_batch'].append(end)
 
     def get_model_outputs(self):
+        '''
+        get_model_outputs
+
+        This function runs:
+        - `get_model_outputs`
+        - `after_get_model_outputs`
+        '''
         start = time.time()
         self('get_model_outputs')
         self('after_get_model_outputs')
@@ -111,6 +167,16 @@ class Environment():
         self.log.timelog['get_model_outputs'].append(end)
 
     def compute_reward(self):
+        '''
+        compute_reward
+
+        This function runs:
+        - `before_compute_reward`
+        - `compute_reward`
+        - `after_compute_reward`
+        - `reward_modification`
+        - `after_reward_modification`
+        '''
         start = time.time()
         self('before_compute_reward')
         self('compute_reward')
@@ -121,6 +187,15 @@ class Environment():
         self.log.timelog['compute_reward'].append(end)
 
     def compute_loss(self):
+        '''
+        compute_loss
+
+        This function runs:
+        - `compute_loss`
+        - `zero_grad`
+        - `before_step`
+        - `step`
+        '''
         start = time.time()
         self('compute_loss')
         loss = self.batch_state.loss
@@ -133,12 +208,35 @@ class Environment():
         self.log.timelog['compute_loss'].append(end)
 
     def after_batch(self):
+        '''
+        after_batch
+
+        This function runs:
+        - `after_batch`
+        '''
         start = time.time()
         self('after_batch')
         end = time.time() - start
         self.log.timelog['after_batch'].append(end)
 
     def fit(self, bs, sl, iters, report, cbs=None):
+        '''
+        fit - runs the fit cycle
+
+        Inputs:
+
+        - `bs int`: batch size
+
+        - `sl int`: max sample length
+
+        - `iters int`: number of batches to train
+
+        - `report int`: report batch stats every `report` batches
+
+        - `cbs Optional[list[Callback]]`: optional callbacks
+        for the fit loop
+        '''
+
         if cbs is None:
             cbs = []
         self.register_cbs(cbs)

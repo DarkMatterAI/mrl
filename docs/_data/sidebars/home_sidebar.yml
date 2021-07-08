@@ -131,6 +131,12 @@ entries:
           title: Policy Gradient
           url: policy_gradient.html
         title: Poicy Gradient
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Environment
+          url: environment.html
+        title: Environment
     output: web
     title: Library
   output: web

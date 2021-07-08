@@ -55,6 +55,9 @@
             },
             "Poicy Gradient": {
                 "Policy Gradient" : "policy_gradient.html"
+            },
+            "Environment" : {
+                "Environment" : "environment.html"
             }
         }
     }
