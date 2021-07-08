@@ -324,7 +324,18 @@ index = {"is_container": "00_core.ipynb",
          "Reward": "21_reward.ipynb",
          "RewardCallback": "21_reward.ipynb",
          "NoveltyReward": "21_reward.ipynb",
-         "ContrastiveReward": "21_reward.ipynb"}
+         "ContrastiveReward": "21_reward.ipynb",
+         "lstm_lm_small": "22_model_zoo.ipynb",
+         "lstm_lm_large": "22_model_zoo.ipynb",
+         "LSTM_LM_Small_ZINC": "22_model_zoo.ipynb",
+         "LSTM_LM_Small_ZINC_NC": "22_model_zoo.ipynb",
+         "cond_lstm_small": "22_model_zoo.ipynb",
+         "cond_lstm_large": "22_model_zoo.ipynb",
+         "mlp_cond_lstm_small": "22_model_zoo.ipynb",
+         "mlp_cond_lstm_large": "22_model_zoo.ipynb",
+         "mlp_vae": "22_model_zoo.ipynb",
+         "conv_vae": "22_model_zoo.ipynb",
+         "lstm_vae": "22_model_zoo.ipynb"}
 
 modules = ["core.py",
            "chem.py",
@@ -347,7 +358,8 @@ modules = ["core.py",
            "loss.py",
            "sampler.py",
            "environment.py",
-           "reward.py"]
+           "reward.py",
+           "model_zoo.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 

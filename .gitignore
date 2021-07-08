@@ -140,3 +140,4 @@ checklink/cookies.txt
 .gitconfig
 
 nbs/untracked_files
+nbs/pretrained_weights
