@@ -359,8 +359,8 @@ samples should come from this sampler</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Contrastive-Sampler">Contrastive Sampler<a class="anchor-link" href="#Contrastive-Sampler"> </a></h2><p>So far samplers have focused on drawing individual samples from a model, dataset, or other sourcce.</p>
-<p>Contrastive sampling looks at the task of generating a new sample based on an old sample. For example, we could want to train a model to take in a compound and produce different compound with a high similarity to the original compound but with a better sccore based on some metric.</p>
+<h2 id="Contrastive-Sampler">Contrastive Sampler<a class="anchor-link" href="#Contrastive-Sampler"> </a></h2><p>So far samplers have focused on drawing individual samples from a model, dataset, or other source.</p>
+<p>Contrastive sampling looks at the task of generating a new sample based on an old sample. For example, we could want to train a model to take in a compound and produce different compound with a high similarity to the original compound but with a better score based on some metric.</p>
 <p>In these cases, the samples we create will be a tuple in the form <code>(source_sample, target_sample)</code>. When training a contrastive metric, we may have a pre-made dataset of <code>source, target</code> pairs to use. However, if such paired data doesn't exist, we need some way to generate it on the fly. This is where the <a href="/mrl/samplers#ContrastiveSampler"><code>ContrastiveSampler</code></a> class comes in.</p>
 <p><a href="/mrl/samplers#ContrastiveSampler"><code>ContrastiveSampler</code></a> turns any normal Sampler into a contrastive sampler. The contrastive sampler uses a <code>base_sampler</code> to generate an initial set of <code>source</code> samples. Then the contrastive sampler uses an <code>output_model</code> to generate <code>target</code> samples on the fly.</p>
 <p>This generation process can be run during <code>build_buffer</code> or <code>sample_batch</code>.</p>

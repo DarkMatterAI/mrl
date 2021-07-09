@@ -38,7 +38,7 @@ nb_path: "nbs/18_losses.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Loss-Function-Callbacks">Loss Function Callbacks<a class="anchor-link" href="#Loss-Function-Callbacks"> </a></h2><p>Loss function callbacks compute some loss value from the current batch state and add the resulting value to <a href="/mrl/callback_core#BatchState.loss"><code>BatchState.loss</code></a>.</p>
-<p><a href="/mrl/losses#LossCallback"><code>LossCallback</code></a> provides a simple hook for custom loss funcions. Any object with a <code>from_batch_state</code> method that returns a scalar value can be passed to <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a>. Ex:</p>
+<p><a href="/mrl/losses#LossCallback"><code>LossCallback</code></a> provides a simple hook for custom loss functions. Any object with a <code>from_batch_state</code> method that returns a scalar value can be passed to <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a>. Ex:</p>
 
 <pre><code>class MyLoss():
     def from_batch_state(self, batch_state):

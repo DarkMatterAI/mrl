@@ -51,7 +51,7 @@ nb_path: "nbs/02_template.filters.ipynb"
 Rotatable bonds: Less than 8
 PAINS Filter: Pass</code></pre>
 <p>These property specifications are expressed through the <a href="/mrl/template.filters#Filter"><code>Filter</code></a> class. The primary function of a filter is to define some pass/fail criteria for a molecule. This is done through the <code>property_function</code> and <code>criteria_function</code> methods. <code>property_function</code> computes some value based on the input molecule. <code>criteria_function</code> converts the output of <code>property_function</code> to a single boolean value.</p>
-<p>Filters follow the conovention that <code>True</code> means the input <code>Mol</code> has passed the <code>criteria_function</code> function, while <code>False</code> means the <code>Mol</code> has failed the <code>criteria_function</code>.</p>
+<p>Filters follow the convention that <code>True</code> means the input <code>Mol</code> has passed the <code>criteria_function</code> function, while <code>False</code> means the <code>Mol</code> has failed the <code>criteria_function</code>.</p>
 <p>We can also use filters to express a soft preference for chemical properties by adding a score. If a score is provided, the output of <code>property_function</code> and <code>criteria_function</code> are sent to a <a href="/mrl/template.filters#ScoreFunction"><code>ScoreFunction</code></a> subclass, which returns a numeric value.</p>
 <p>This allows us to use filters to define both the <strong>must-have</strong> chemical properties as well as <strong>nice-to-have</strong> properties. For example:</p>
 
@@ -1640,8 +1640,8 @@ match int number of filters)</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/mrl/template.filters#FPFilter"><code>FPFilter</code></a> allows for filtering based on fingerprint similarity. For a given molecule, a fingerpring of <code>fp_type</code> is generated and compared to <code>reference_fps</code> based on <code>fp_metric</code>. Fingerprint similarity scores greater than <code>fp_thresh</code> evaluate to <code>True</code>.</p>
-<p>See <a href="/mrl/chem#FP"><code>FP</code></a> for fingeprint types and similarity metrics.</p>
+<p><a href="/mrl/template.filters#FPFilter"><code>FPFilter</code></a> allows for filtering based on fingerprint similarity. For a given molecule, a fingerprint of <code>fp_type</code> is generated and compared to <code>reference_fps</code> based on <code>fp_metric</code>. Fingerprint similarity scores greater than <code>fp_thresh</code> evaluate to <code>True</code>.</p>
+<p>See <a href="/mrl/chem#FP"><code>FP</code></a> for fingerprint types and similarity metrics.</p>
 
 </div>
 </div>

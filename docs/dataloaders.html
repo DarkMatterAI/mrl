@@ -211,7 +211,7 @@ batch for next-token prediction</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Datasets">Datasets<a class="anchor-link" href="#Datasets"> </a></h2><p>Datasets subclass the Pytorch <code>Dataset</code> class. MRL datasets add a collate function and the <a href="/mrl/dataloaders#Base_Dataset.dataloader"><code>Base_Dataset.dataloader</code></a> function to easily generate Pytorch dataloaders from the same class</p>
-<p>Like all Pytorch datasets, subclass datasets must contain a valid <code>__len__</code> and <code>__getitem__</code> method. MRL datasets should aalso include a <code>new</code> method.</p>
+<p>Like all Pytorch datasets, subclass datasets must contain a valid <code>__len__</code> and <code>__getitem__</code> method. MRL datasets should also include a <code>new</code> method.</p>
 <p>The purpose of <code>new</code> is to create a new dataset from new data using the same input arguments and collate function as the current dataset. This is used during generative training to process and batch generated samples to ensure they are processed and batched the same as training data</p>
 
 </div>

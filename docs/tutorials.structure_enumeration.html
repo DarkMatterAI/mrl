@@ -31,7 +31,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Structure enumeration is a useful way to explore constrained chemical spaces. You might want to try swapping a ring in a molecule with every possible 6 member ring, or try every linker with four atoms or less.</p>
-<p>The <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> class provides a principled way of enumerating constrained chemical spaces. The jist of it is this. We create a SMARTs template outlining the general structure we want to enumerate. Then, for every atom and bond we want to vary, we define a list of allowed substitutions. The <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> then generates all combinations based on these specifications and filters them for chemical validity.</p>
+<p>The <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> class provides a principled way of enumerating constrained chemical spaces. The gist of it is this. We create a SMARTs template outlining the general structure we want to enumerate. Then, for every atom and bond we want to vary, we define a list of allowed substitutions. The <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> then generates all combinations based on these specifications and filters them for chemical validity.</p>
 
 </div>
 </div>
@@ -261,7 +261,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Why atom 3 instead of some other atom, or multiple other? For this case, it doesn't really matter because we're generating rotationaly symmetric rings. Enumerating examples where all atoms are set for optional removal just blows up our enumeration space for no benefit.</p>
+<p>Why atom 3 instead of some other atom, or multiple other? For this case, it doesn't really matter because we're generating rotationally symmetric rings. Enumerating examples where all atoms are set for optional removal just blows up our enumeration space for no benefit.</p>
 <p>When designing enumeration specs, it's important to consider the tradeoffs from expanding a combinatorial space.</p>
 <p><a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> follows the convention that all possible atoms should be present in the initial SMARTS, with optional removals specified. This allows greater control over which atoms are removed relative to substitution patterns or other chemical features</p>
 
@@ -271,7 +271,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we use the <a href="/mrl/chem#StructureEnumerator"><code>StructureEnumerator</code></a> to enumerate based on our specification.</p>
-<p>Note the <code>max_num</code> parameter. By default, the code generates the cartesian product of all specification choices. The chemical space represented by the specification can quickly grow to billions of molecules if you're not careful. For this reason, enumeration is best done on chemical spaces less than ~10,000,000 compounds (your compute and memory resources depending). The <code>max_num</code> parameter puts a limit on how many compounds will be tested.</p>
+<p>Note the <code>max_num</code> parameter. By default, the code generates the Cartesian product of all specification choices. The chemical space represented by the specification can quickly grow to billions of molecules if you're not careful. For this reason, enumeration is best done on chemical spaces less than ~10,000,000 compounds (your compute and memory resources depending). The <code>max_num</code> parameter puts a limit on how many compounds will be tested.</p>
 
 </div>
 </div>
@@ -525,7 +525,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This results in 269 unique smiles.</p>
-<p>From here we want to do some QC on the resutling sequences. Our previous filter should have removed all combinations that violated our 3 or fewer heteroatom rule, but we can double check here. This is also a good step to incorporate other types of filtering if applicable</p>
+<p>From here we want to do some QC on the resulting sequences. Our previous filter should have removed all combinations that violated our 3 or fewer heteroatom rule, but we can double check here. This is also a good step to incorporate other types of filtering if applicable</p>
 
 </div>
 </div>
@@ -610,7 +610,7 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we want to add attachment points to the smiles strings. These attachments will be added as wildcard atoms (<code>*</code>).</p>
-<p>We specified earlier we want 3 attachments on each ring. For each smiles string, the code checks to see if the molecule supports that number of attachments, defined by the number of atoms with a least 1 impicit hydrogen. If the molecule supports the attachment number, the code generates all valid attachment combinations. Compounds that cannot support the desired number of attachments are removed from the output.</p>
+<p>We specified earlier we want 3 attachments on each ring. For each smiles string, the code checks to see if the molecule supports that number of attachments, defined by the number of atoms with a least 1 implicit hydrogen. If the molecule supports the attachment number, the code generates all valid attachment combinations. Compounds that cannot support the desired number of attachments are removed from the output.</p>
 
 </div>
 </div>
@@ -743,15 +743,17 @@ nb_path: "nbs/tutorials.structure_enumeration.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>For this compound we want the following:</p>
-<p>Experiment with adding N,O atoms at atoms 3, 11, 12</p>
-<p>Experiment with adding N atoms at 5,6,8,10</p>
-<p>Keep atom 7 N, keep atom 9 C</p>
-<p>Experiment with removing carbon 10 or carbon 8 but not both</p>
-<p>Experiment with F, Cl, Br, None Halogens at atom 1</p>
-<p>Enumerate bond configurations in the 6 member ring but leave the 5 member ring as is</p>
-<p>We also have the following constraints:</p>
-<p>No more than 4 N,O heteroatoms (not counting halogens)</p>
-<p>No <code>[N,O]-[N,O]</code> direct linkages</p>
+<ul>
+<li>Experiment with adding N,O atoms at atoms 3, 11, 12</li>
+<li>Experiment with adding N atoms at 5,6,8,10</li>
+<li>Keep atom 7 N, keep atom 9 C</li>
+<li>Experiment with removing carbon 10 or carbon 8 but not both</li>
+<li>Experiment with F, Cl, Br, None Halogens at atom 1</li>
+<li>Enumerate bond configurations in the 6 member ring but leave the 5 member ring as is</li>
+<li>We also have the following constraints:</li>
+<li>No more than 4 N,O heteroatoms (not counting halogens)</li>
+<li>No <code>[N,O]-[N,O]</code> direct linkages</li>
+</ul>
 
 </div>
 </div>

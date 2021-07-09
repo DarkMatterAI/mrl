@@ -37,7 +37,7 @@ nb_path: "nbs/12_callback_core.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Callbacks">Callbacks<a class="anchor-link" href="#Callbacks"> </a></h2><p>The training cycle in MRL is built around the Callback system. Rather than trying to explicitly define every training cycle variant, Callbacks define a series of events (see <a href="/mrl/callback_core#Events"><code>Events</code></a>) that occur during training and allow users to esaily hook into those events. The result is an extremely flexible framework that can adapt to most generative design challenges.</p>
+<h2 id="Callbacks">Callbacks<a class="anchor-link" href="#Callbacks"> </a></h2><p>The training cycle in MRL is built around the Callback system. Rather than trying to explicitly define every training cycle variant, Callbacks define a series of events (see <a href="/mrl/callback_core#Events"><code>Events</code></a>) that occur during training and allow users to easily hook into those events. The result is an extremely flexible framework that can adapt to most generative design challenges.</p>
 <p>Callbacks use the <code>__call__</code> function to organize events. The call function will be passed an event name, like <code>compute_reward</code>. If the Callback function has an attribute that matches the event name, the attribute is called.</p>
 <p>Callbacks have access to the training environment (see <a href="/mrl/environment#Environment"><code>Environment</code></a>) and can access the training environment, the model/agent, the training buffer, training log, other callbacks and all other aspects of the training state</p>
 

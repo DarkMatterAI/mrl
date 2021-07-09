@@ -13,6 +13,23 @@ from .torch_core import *
 # Cell
 
 class Reward():
+    '''
+    Reward - wrapper for `reward_function`. Handles batching
+    and value lookup
+
+    Inputs:
+
+    - `reward_function Callable`: function with the format
+    `rewards = reward_function(samples)`
+
+    - `weight float`: weight to scale rewards
+
+    - `bs Optional[int]`: if given, samples will be batched into
+    chunks of size `bs` and sent to `reward_function` as batches
+
+    - `log bool`: if True, keeps aa lookup table of
+    `sample : reward` values to avoid repeat computation
+    '''
     def __init__(self, reward_function, weight=1, bs=None, log=True):
 
         self.reward_function = reward_function
@@ -86,6 +103,24 @@ class Reward():
 # Cell
 
 class RewardCallback(Callback):
+    '''
+    RewardCallback - callback wrapper for `Reward`
+    used during `compute_reward` event
+
+    Inputs:
+
+    - `reward Reward`: reward to use
+
+    - `name str`: reward name
+
+    - `sample_name str`: sample name to grab from
+    `BatchState` to send to `reward`
+
+    - `order int`: callback order
+
+    - `track bool`: if metrics should be tracked
+    from this callback
+    '''
     def __init__(self, reward, name, sample_name='samples',
                 order=10, track=True):
         super().__init__(name=name, order=order)
@@ -119,6 +154,24 @@ class RewardCallback(Callback):
 # Cell
 
 class RewardModification(Callback):
+    '''
+    RewardModification - callback wrapper for `Reward`
+    used during `reward_modification` event
+
+    Inputs:
+
+    - `reward Reward`: reward to use
+
+    - `name str`: reward name
+
+    - `sample_name str`: sample name to grab from
+    `BatchState` to send to `reward`
+
+    - `order int`: callback order
+
+    - `track bool`: if metrics should be tracked
+    from this callback
+    '''
     def __init__(self, reward, name, sample_name='samples',
                 order=10, track=True):
         super().__init__(name=name, order=order)
@@ -152,6 +205,18 @@ class RewardModification(Callback):
 # Cell
 
 class NoveltyReward(Callback):
+    '''
+    NoveltyReward - gives a reward bonus
+    for new samples. Rewards are given a
+    bonus of `weight`
+
+    Inputs:
+
+    - `weight float`: novelty score weight
+
+    - `track bool`: if metrics should be tracked
+    from this callback
+    '''
     def __init__(self, weight=1., track=True):
         super().__init__(name='novel')
 
@@ -184,6 +249,18 @@ class NoveltyReward(Callback):
 # Cell
 
 class ContrastiveReward(RewardCallback):
+    '''
+    ContrastiveReward - contrastive wrapper for
+    reward callbacks
+
+    Inputs:
+
+    - `base_reward RewardCallback`: base reward callback
+
+    - `max_score Optional[float]`: maximum possible score.
+    If given, contrastive rewards are scaled following
+    `reward = (target_reward - source_reward)/(max_reward - source_reward)`
+    '''
     def __init__(self, base_reward, max_score=None):
         super().__init__(reward = base_reward.reward,
                          name = base_reward.name,

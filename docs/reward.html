@@ -30,7 +30,7 @@ nb_path: "nbs/21_reward.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Rewards are non-differentiable score functions for evaluating samples. Rewards should generally follow the format <code>reward = f(sample)</code></p>
+<h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Rewards are non-differentiable score functions for evaluating samples. Rewards should generally follow the format <code>reward = reward_function(sample)</code></p>
 <p>Rewards in MRL occupy five events in the fit loop:</p>
 <ul>
 <li><code>before_compute_reward</code> - set up necessary values prior to reward calculation (if needed)</li>
@@ -55,18 +55,16 @@ nb_path: "nbs/21_reward.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Reward-Callbacks">Reward Callbacks<a class="anchor-link" href="#Reward-Callbacks"> </a></h2><p>Rewards are used to generate non-differentiable scores from samples. Differentiable scores should be implemented as a <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a>.</p>
-<p>Rewards are calculated after sample creation but before generating model outputs. Use the <code>before_compute_reward</code> event to create any values needed for your reward calculation.</p>
-<p>Rewards are called after sample creation. At this point in the fit loop, rewards have access to the samples themselves and any other attributes generated during the sample process. Rewards do not have access to model outputs</p>
-<p>LossCallback</p>
-<p>before_compute_reward</p>
-<p>Loss function callbacks compute some loss value from the current batch state and add the resulting value to <a href="/mrl/callback_core#BatchState.loss"><code>BatchState.loss</code></a>.</p>
-<p><a href="/mrl/losses#LossCallback"><code>LossCallback</code></a> provides a simple hook for custom loss funcions. Any object with a <code>from_batch_state</code> method that returns a scalar value can be passed to <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a>. Ex:</p>
+<h2 id="Reward-Class">Reward Class<a class="anchor-link" href="#Reward-Class"> </a></h2><p>As mentioned above, rewards generally follow the format <code>reward = reward_function(sample)</code>. The <a href="/mrl/reward#Reward"><code>Reward</code></a> class acts as a wrapper around the <code>reward_function</code> to provide some convenience functions. <a href="/mrl/reward#Reward"><code>Reward</code></a> maintains a lookup table of <code>sample : reward</code> values to avoid repeat computation. <a href="/mrl/reward#Reward"><code>Reward</code></a> handles batching novel samples (ie not in the lookup table), sending them to <code>reward_function</code>, and merging the outputs with the lookup table values.</p>
+<p>Creating a custom reward involves creating a callable function or object that can take in a list of <code>samples</code> and return a list of reward values. For example:</p>
 
-<pre><code>class MyLoss():
-    def from_batch_state(self, batch_state):
-        loss = self.do_loss_calculation()
-        return loss</code></pre>
+<pre><code>class MyRewardFunction():
+    def __call__(self, samples):
+        rewards = self.do_reward_calculation(samples)
+        return rewards
+
+reward_function = MyRewardFunction()
+reward = Reward(reward_function, weight=0.5, log=True)</code></pre>
 
 </div>
 </div>
@@ -91,6 +89,22 @@ nb_path: "nbs/21_reward.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Reward" class="doc_header"><code>class</code> <code>Reward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/reward.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Reward</code>(<strong><code>reward_function</code></strong>, <strong><code>weight</code></strong>=<em><code>1</code></em>, <strong><code>bs</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
+<p>Reward - wrapper for <code>reward_function</code>. Handles batching
+and value lookup</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>reward_function Callable</code>: function with the format
+<code>rewards = reward_function(samples)</code></p>
+</li>
+<li><p><code>weight float</code>: weight to scale rewards</p>
+</li>
+<li><p><code>bs Optional[int]</code>: if given, samples will be batched into
+chunks of size <code>bs</code> and sent to <code>reward_function</code> as batches</p>
+</li>
+<li><p><code>log bool</code>: if True, keeps aa lookup table of
+<code>sample : reward</code> values to avoid repeat computation</p>
+</li>
+</ul>
 
 </div>
 
@@ -102,6 +116,13 @@ nb_path: "nbs/21_reward.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Reward-Callback">Reward Callback<a class="anchor-link" href="#Reward-Callback"> </a></h2><p><a href="/mrl/reward#RewardCallback"><code>RewardCallback</code></a> handles it loop integration and metric logging for a given <a href="/mrl/reward#Reward"><code>Reward</code></a></p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -120,8 +141,25 @@ nb_path: "nbs/21_reward.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RewardCallback" class="doc_header"><code>class</code> <code>RewardCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/reward.py#L88" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RewardCallback</code>(<strong><code>reward</code></strong>, <strong><code>name</code></strong>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>order</code></strong>=<em><code>10</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="RewardCallback" class="doc_header"><code>class</code> <code>RewardCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/reward.py#L105" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RewardCallback</code>(<strong><code>reward</code></strong>, <strong><code>name</code></strong>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>order</code></strong>=<em><code>10</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
+<p>RewardCallback - callback wrapper for <a href="/mrl/reward#Reward"><code>Reward</code></a>
+used during <code>compute_reward</code> event</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>reward Reward</code>: reward to use</p>
+</li>
+<li><p><code>name str</code>: reward name</p>
+</li>
+<li><p><code>sample_name str</code>: sample name to grab from
+<a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> to send to <a href="/mrl/reward"><code>reward</code></a></p>
+</li>
+<li><p><code>order int</code>: callback order</p>
+</li>
+<li><p><code>track bool</code>: if metrics should be tracked
+from this callback</p>
+</li>
+</ul>
 
 </div>
 
@@ -133,6 +171,13 @@ nb_path: "nbs/21_reward.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Reward-Modification">Reward Modification<a class="anchor-link" href="#Reward-Modification"> </a></h2><p>As discussed above, reward modifications apply changes to rewards based on some sort of transient batch context. These are rewards that will influence a given batch, but not the logged rewards</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -196,8 +241,19 @@ applied to <code>self.environmemnt.batch_state.rewards</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NoveltyReward" class="doc_header"><code>class</code> <code>NoveltyReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/reward.py#L154" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoveltyReward</code>(<strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="NoveltyReward" class="doc_header"><code>class</code> <code>NoveltyReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/reward.py#L207" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoveltyReward</code>(<strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
+<p>NoveltyReward - gives a reward bonus
+for new samples. Rewards are given a
+bonus of <code>weight</code></p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>weight float</code>: novelty score weight</p>
+</li>
+<li><p><code>track bool</code>: if metrics should be tracked
+from this callback</p>
+</li>
+</ul>
 
 </div>
 
@@ -209,6 +265,15 @@ applied to <code>self.environmemnt.batch_state.rewards</code></p>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Contrastive-Reward">Contrastive Reward<a class="anchor-link" href="#Contrastive-Reward"> </a></h2><p>Similar to <a href="/mrl/template_callback#ContrastiveTemplate"><code>ContrastiveTemplate</code></a>, <a href="/mrl/reward#ContrastiveReward"><code>ContrastiveReward</code></a> provides a wrapper around a <a href="/mrl/reward#RewardCallback"><code>RewardCallback</code></a> to adapt it for the task of contrastive generation.</p>
+<p>For contrastive generation, we want the model to ingest a source sample and produce a target sample that receives a higher reward than the source sample. <a href="/mrl/reward#ContrastiveReward"><code>ContrastiveReward</code></a> takes some <code>base_reward</code> and computes the values of that base reward for both source and target samples, and returns the difference between those rewards.</p>
+<p>Optionally, the contrastive reward will scale the relative reward based on a given <code>max_score</code> (ie <code>reward = (target_reward - source_reward)/(max_reward - source_reward)</code>). This scales the contrastive reward relative to the maximum possible reward</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -227,8 +292,19 @@ applied to <code>self.environmemnt.batch_state.rewards</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ContrastiveReward" class="doc_header"><code>class</code> <code>ContrastiveReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/reward.py#L186" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveReward</code>(<strong><code>base_reward</code></strong>, <strong><code>max_score</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/reward#RewardCallback"><code>RewardCallback</code></a></p>
+<h2 id="ContrastiveReward" class="doc_header"><code>class</code> <code>ContrastiveReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/reward.py#L251" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveReward</code>(<strong><code>base_reward</code></strong>, <strong><code>max_score</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/reward#RewardCallback"><code>RewardCallback</code></a></p>
 </blockquote>
+<p>ContrastiveReward - contrastive wrapper for
+reward callbacks</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>base_reward RewardCallback</code>: base reward callback</p>
+</li>
+<li><p><code>max_score Optional[float]</code>: maximum possible score.
+If given, contrastive rewards are scaled following
+<code>reward = (target_reward - source_reward)/(max_reward - source_reward)</code></p>
+</li>
+</ul>
 
 </div>
 

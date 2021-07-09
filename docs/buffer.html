@@ -38,7 +38,7 @@ nb_path: "nbs/14_buffer.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Buffer">Buffer<a class="anchor-link" href="#Buffer"> </a></h2><p>The <a href="/mrl/buffer#Buffer"><code>Buffer</code></a> class holds samples generated during the <a href="/mrl/callback_core#BuildBuffer"><code>BuildBuffer</code></a> event. Samples added to the buffer can be any python object that is hashable.</p>
-<p>Sample hashing is used to determine unique samples. For this reason, samples should avoid using containers like pytorch Tensors which are hased on the tensor object level rather than the numeric level.</p>
+<p>Sample hashing is used to determine unique samples. For this reason, samples should avoid using containers like pytorch Tensors which are hashed on the tensor object level rather than the numeric level.</p>
 
 <pre><code>set([torch.tensor(0.), torch.tensor(0.)])
 &gt;&gt; {tensor(0.), tensor(0.)}

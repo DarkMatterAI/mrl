@@ -38,7 +38,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Device-Settings">Device Settings<a class="anchor-link" href="#Device-Settings"> </a></h2><p>These functions control what device is used for tensors.</p>
-<p><a href="/mrl/torch_core#to_device"><code>to_device</code></a> will set a tensor or Pytorch model to the passed device. If no device is passed, the detault device is used.</p>
+<p><a href="/mrl/torch_core#to_device"><code>to_device</code></a> will set a tensor or Pytorch model to the passed device. If no device is passed, the default device is used.</p>
 <p>If Cuda is available, the device defined by <code>torch.cuda.current_device()</code>. The current device can be set using Pytorch:</p>
 <p><code>torch.cuda.set_device(1)</code></p>
 <p>To disable GPU usage, set the <code>use_cuda</code> environment variable to <code>cpu</code>. <code>os.environ['use_cuda'] = 'cpu'</code></p>
