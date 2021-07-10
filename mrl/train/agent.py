@@ -5,11 +5,11 @@ __all__ = ['Agent', 'PredictiveAgent', 'BaselineAgent', 'CriticAgent', 'Generati
 
 # Cell
 
-from .imports import *
-from .core import *
-from .torch_imports import *
-from .torch_core import *
-from .callbacks import *
+from ..imports import *
+from ..core import *
+from ..torch_imports import *
+from ..torch_core import *
+from .callback import *
 
 # Cell
 

@@ -72,7 +72,7 @@ nb_path: "nbs/13_logging.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Log" class="doc_header"><code>class</code> <code>Log</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/log.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Log</code>() :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="Log" class="doc_header"><code>class</code> <code>Log</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Log</code>() :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 
 </div>
@@ -103,7 +103,7 @@ nb_path: "nbs/13_logging.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="log_to_df" class="doc_header"><code>log_to_df</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/log.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>log_to_df</code>(<strong><code>log</code></strong>, <strong><code>keys</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="log_to_df" class="doc_header"><code>log_to_df</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>log_to_df</code>(<strong><code>log</code></strong>, <strong><code>keys</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -178,7 +178,7 @@ nb_path: "nbs/13_logging.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StatsCallback" class="doc_header"><code>class</code> <code>StatsCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/log.py#L175" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StatsCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>=<em><code>None</code></em>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'stats'</code></em>, <strong><code>order</code></strong>=<em><code>20</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="StatsCallback" class="doc_header"><code>class</code> <code>StatsCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L175" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StatsCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>=<em><code>None</code></em>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'stats'</code></em>, <strong><code>order</code></strong>=<em><code>20</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>StatsCallback - base class for callbacks related to calculating
 stats from batches</p>
@@ -226,7 +226,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MaxCallback" class="doc_header"><code>class</code> <code>MaxCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/log.py#L225" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaxCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging#StatsCallback"><code>StatsCallback</code></a></p>
+<h2 id="MaxCallback" class="doc_header"><code>class</code> <code>MaxCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L225" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaxCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging#StatsCallback"><code>StatsCallback</code></a></p>
 </blockquote>
 <p>MaxCallback - adds a metric tracking the maximum of
 <code>batch_attribute</code>, subset by <code>grabname</code>, printed every
@@ -271,7 +271,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MinCallback" class="doc_header"><code>class</code> <code>MinCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/log.py#L263" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MinCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging#StatsCallback"><code>StatsCallback</code></a></p>
+<h2 id="MinCallback" class="doc_header"><code>class</code> <code>MinCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L263" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MinCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging#StatsCallback"><code>StatsCallback</code></a></p>
 </blockquote>
 <p>MinCallback - adds a metric tracking the minimum of
 <code>batch_attribute</code>, subset by <code>grabname</code>, printed every
@@ -316,7 +316,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MeanCallback" class="doc_header"><code>class</code> <code>MeanCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/log.py#L301" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MeanCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging#StatsCallback"><code>StatsCallback</code></a></p>
+<h2 id="MeanCallback" class="doc_header"><code>class</code> <code>MeanCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L301" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MeanCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging#StatsCallback"><code>StatsCallback</code></a></p>
 </blockquote>
 <p>MeanCallback - adds a metric tracking the mean of
 <code>batch_attribute</code>, subset by <code>grabname</code>, printed every
@@ -361,7 +361,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PercentileCallback" class="doc_header"><code>class</code> <code>PercentileCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/log.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PercentileCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>percentile</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging#StatsCallback"><code>StatsCallback</code></a></p>
+<h2 id="PercentileCallback" class="doc_header"><code>class</code> <code>PercentileCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PercentileCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>percentile</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging#StatsCallback"><code>StatsCallback</code></a></p>
 </blockquote>
 <p>PercentileCallback - adds a metric tracking the <code>percentile</code>
 percentile value of <code>batch_attribute</code>, subset by <code>grabname</code>,

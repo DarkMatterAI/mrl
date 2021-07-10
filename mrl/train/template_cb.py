@@ -4,9 +4,9 @@ __all__ = ['TemplateCallback', 'ContrastiveTemplate', 'SimilarityFunction', 'FPS
 
 # Cell
 
-from .core import *
+from .callback import *
 from ..chem import *
-from ..templates import *
+from ..templates.all import *
 from ..torch_imports import *
 from ..torch_core import *
 

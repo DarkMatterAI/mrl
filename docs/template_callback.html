@@ -78,7 +78,7 @@ nb_path: "nbs/15_template_callback.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TemplateCallback" class="doc_header"><code>class</code> <code>TemplateCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemplateCallback</code>(<strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>prefilter</code></strong>=<em><code>True</code></em>, <strong><code>do_filter</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="TemplateCallback" class="doc_header"><code>class</code> <code>TemplateCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/template_cb.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemplateCallback</code>(<strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>prefilter</code></strong>=<em><code>True</code></em>, <strong><code>do_filter</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>TemplateCallback - callback wrapper for <a href="/mrl/template.template#Template"><code>Template</code></a> class</p>
 <p>Inputs:</p>
@@ -137,7 +137,7 @@ template are removed</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ContrastiveTemplate" class="doc_header"><code>class</code> <code>ContrastiveTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L143" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveTemplate</code>(<strong><code>similarity_function</code></strong>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>max_score</code></strong>=<em><code>None</code></em>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>prefilter</code></strong>=<em><code>True</code></em>, <strong><code>do_filter</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a></p>
+<h2 id="ContrastiveTemplate" class="doc_header"><code>class</code> <code>ContrastiveTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/template_cb.py#L143" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveTemplate</code>(<strong><code>similarity_function</code></strong>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>max_score</code></strong>=<em><code>None</code></em>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>prefilter</code></strong>=<em><code>True</code></em>, <strong><code>do_filter</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a></p>
 </blockquote>
 <p>ContrastiveTemplate -  contrasttive callback wrapper for <a href="/mrl/template.template#Template"><code>Template</code></a> class</p>
 <p>Inputs:</p>
@@ -192,7 +192,7 @@ template are removed</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SimilarityFunction" class="doc_header"><code>class</code> <code>SimilarityFunction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L283" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SimilarityFunction</code>()</p>
+<h2 id="SimilarityFunction" class="doc_header"><code>class</code> <code>SimilarityFunction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/template_cb.py#L283" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SimilarityFunction</code>()</p>
 </blockquote>
 <p>SimilarityFunction - compares similarity between source
 and target samples</p>
@@ -218,7 +218,7 @@ and target samples</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPSimilarity" class="doc_header"><code>class</code> <code>FPSimilarity</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/callbacks/template_cb.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPSimilarity</code>(<strong><code>fp_function</code></strong>, <strong><code>similarity_function</code></strong>, <strong><code>min_sim</code></strong>, <strong><code>max_sim</code></strong>, <strong><code>passscore</code></strong>, <strong><code>failscore</code></strong>, <strong><code>soft_min</code></strong>=<em><code>None</code></em>, <strong><code>soft_max</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template_callback#SimilarityFunction"><code>SimilarityFunction</code></a></p>
+<h2 id="FPSimilarity" class="doc_header"><code>class</code> <code>FPSimilarity</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/template_cb.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPSimilarity</code>(<strong><code>fp_function</code></strong>, <strong><code>similarity_function</code></strong>, <strong><code>min_sim</code></strong>, <strong><code>max_sim</code></strong>, <strong><code>passscore</code></strong>, <strong><code>failscore</code></strong>, <strong><code>soft_min</code></strong>=<em><code>None</code></em>, <strong><code>soft_max</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template_callback#SimilarityFunction"><code>SimilarityFunction</code></a></p>
 </blockquote>
 <p>FPSimilarity - computes paired sample similarity using fingerprint
 similarity</p>

@@ -4,12 +4,12 @@ __all__ = ['LossCallback', 'PolicyLoss', 'PriorLoss', 'HistoricPriorLoss']
 
 # Cell
 
-from .imports import *
-from .core import *
-from .torch_imports import *
-from .torch_core import *
-from .callbacks import *
-from .policy_gradient import *
+from ..imports import *
+from ..core import *
+from ..torch_imports import *
+from ..torch_core import *
+from .callback import *
+from ..policy_gradient import *
 
 # Cell
 

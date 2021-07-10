@@ -58,8 +58,8 @@ nb_path: "nbs/tutorials.generative_models.conditional_lstm_lm.ipynb"
 <span class="kn">from</span> <span class="nn">mrl.torch_core</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">mrl.layers</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">mrl.dataloaders</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.g_models</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">mrl.agent</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.g_models.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mrl.train.agent</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">mrl.vocab</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
@@ -659,8 +659,8 @@ nb_path: "nbs/tutorials.generative_models.conditional_lstm_lm.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.92143</td>
-      <td>2.47491</td>
+      <td>1.94749</td>
+      <td>2.41748</td>
       <td>00:05</td>
     </tr>
   </tbody>
@@ -790,13 +790,13 @@ nb_path: "nbs/tutorials.generative_models.conditional_lstm_lm.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[23, 28, 23,  ...,  2,  2,  2],
-        [23, 34, 11,  ...,  2,  2,  2],
-        [23, 23, 28,  ...,  2,  2,  2],
-        ...,
-        [23, 23, 23,  ...,  2,  2,  2],
+<pre>tensor([[23, 23,  5,  ...,  2,  2,  2],
         [23, 23, 27,  ...,  2,  2,  2],
-        [23, 23, 31,  ...,  2,  2,  2]], device=&#39;cuda:0&#39;)</pre>
+        [23, 28, 23,  ...,  2,  2,  2],
+        ...,
+        [23, 23, 28,  ...,  2,  2,  2],
+        [23, 34, 11,  ...,  2,  2,  2],
+        [23, 28, 23,  ...,  2,  2,  2]], device=&#39;cuda:0&#39;)</pre>
 </div>
 
 </div>

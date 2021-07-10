@@ -16,8 +16,8 @@ from .torch_core import *
 from .layers import *
 from .dataloaders import *
 from .vocab import *
-from .g_models import *
-from .agent import *
+from .g_models.all import *
+from .train.agent import *
 
 from torch.utils.model_zoo import load_url
 from torch.hub import download_url_to_file

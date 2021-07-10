@@ -4,11 +4,11 @@ __all__ = ['Reward', 'RewardCallback', 'RewardModification', 'NoveltyReward', 'C
 
 # Cell
 
-from .imports import *
-from .core import *
-from .callbacks import *
-from .torch_imports import *
-from .torch_core import *
+from ..imports import *
+from ..core import *
+from .callback import *
+from ..torch_imports import *
+from ..torch_core import *
 
 # Cell
 

@@ -5,7 +5,7 @@ __all__ = ['Buffer']
 # Cell
 
 from ..imports import *
-from .core import *
+from .callback import *
 
 # Cell
 

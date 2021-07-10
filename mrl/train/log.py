@@ -6,8 +6,8 @@ __all__ = ['Log', 'log_to_df', 'StatsCallback', 'MaxCallback', 'MinCallback', 'M
 
 from ..imports import *
 from ..core import *
-from .core import *
 from ..torch_imports import *
+from .callback import *
 
 # Cell
 
