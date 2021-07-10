@@ -2,8 +2,10 @@
 
 __all__ = ['S3_PREFIX', 'lstm_lm_small', 'lstm_lm_large', 'LSTM_LM_Small_ZINC', 'LSTM_LM_Small_Chembl',
            'LSTM_LM_Small_ZINC_NC', 'LSTM_LM_Small_Chembl_NC', 'LSTM_LM_Small_ZINC_Selfies',
-           'LSTM_LM_Small_Chembl_Selfies', 'cond_lstm_small', 'cond_lstm_large', 'mlp_cond_lstm_small',
-           'mlp_cond_lstm_large', 'mlp_vae', 'conv_vae', 'lstm_vae']
+           'LSTM_LM_Small_Chembl_Selfies', 'LSTM_LM_Small_Rgroup', 'LSTM_LM_Small_Linkers',
+           'LSTM_LM_Small_Linkers_Mapped', 'LSTM_LM_Small_Swissprot', 'cond_lstm_small', 'cond_lstm_large',
+           'mlp_cond_lstm_small', 'mlp_cond_lstm_large', 'FP_Cond_LSTM_LM_Small_ZINC', 'FP_Cond_LSTM_LM_Small_Chembl',
+           'mlp_vae', 'conv_vae', 'lstm_vae', 'FP_VAE_ZINC', 'FP_VAE_Chembl']
 
 # Cell
 from .imports import *
@@ -26,7 +28,16 @@ S3_PREFIX = 'https://dmai-mrl.s3.amazonaws.com/mrl_public'
 
 # Cell
 
-def lstm_lm_small(vocab, drop=True):
+def lstm_lm_small(vocab, drop_scale=1.):
+    '''
+    lstm_lm_small - small LSTM_LM model
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `drop_scale float`: scale dropout values
+    '''
 
     d_vocab = len(vocab.itos)
     bos_idx = vocab.stoi['bos']
@@ -36,12 +47,8 @@ def lstm_lm_small(vocab, drop=True):
     bidir = False
     tie_weights = True
 
-    if drop:
-        input_dropout = 0.3
-        lstm_dropout = 0.3
-    else:
-        input_dropout = 0.
-        lstm_dropout = 0.
+    input_dropout = 0.3*drop_scale
+    lstm_dropout = 0.3*drop_scale
 
     model = LSTM_LM(d_vocab,
                     d_embedding,
@@ -55,7 +62,16 @@ def lstm_lm_small(vocab, drop=True):
 
     return model
 
-def lstm_lm_large(vocab, drop=True):
+def lstm_lm_large(vocab, drop_scale=1.):
+    '''
+    lstm_lm_large - large LSTM_LM model
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `drop_scale float`: scale dropout values
+    '''
 
     d_vocab = len(vocab.itos)
     bos_idx = vocab.stoi['bos']
@@ -66,12 +82,8 @@ def lstm_lm_large(vocab, drop=True):
     tie_weights = True
 
 
-    if drop:
-        input_dropout = 0.3
-        lstm_dropout = 0.3
-    else:
-        input_dropout = 0.
-        lstm_dropout = 0.
+    input_dropout = 0.3*drop_scale
+    lstm_dropout = 0.3*drop_scale
 
     model = LSTM_LM(d_vocab,
                     d_embedding,
@@ -88,7 +100,29 @@ def lstm_lm_large(vocab, drop=True):
 # Cell
 
 class LSTM_LM_Small_ZINC(GenerativeAgent):
+    '''
+    LSTM_LM_Small_ZINC - small `LSTM_LM` model
+    trained on a chunk of the ZINC library
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self,
+                 drop_scale=1.,
                  base_update=0.97,
                  base_update_iter=5,
                  base_model=True,
@@ -98,7 +132,7 @@ class LSTM_LM_Small_ZINC(GenerativeAgent):
                 ):
 
         vocab = CharacterVocab(SMILES_CHAR_VOCAB)
-        model = lstm_lm_small(vocab)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
         location = f'{S3_PREFIX}/lstmlm_small_zinc.pt'
         model.load_state_dict(load_url(location, map_location='cpu'))
         loss_function = CrossEntropy()
@@ -121,7 +155,29 @@ class LSTM_LM_Small_ZINC(GenerativeAgent):
 # Cell
 
 class LSTM_LM_Small_Chembl(GenerativeAgent):
+    '''
+    LSTM_LM_Small_Chembl - small `LSTM_LM` model
+    trained on a chunk of the Chembl library
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self,
+                 drop_scale=1.,
                  base_update=0.97,
                  base_update_iter=5,
                  base_model=True,
@@ -131,7 +187,7 @@ class LSTM_LM_Small_Chembl(GenerativeAgent):
                 ):
 
         vocab = CharacterVocab(SMILES_CHAR_VOCAB)
-        model = lstm_lm_small(vocab)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
         location = f'{S3_PREFIX}/lstmlm_small_chembl.pt'
         model.load_state_dict(load_url(location, map_location='cpu'))
         loss_function = CrossEntropy()
@@ -154,7 +210,30 @@ class LSTM_LM_Small_Chembl(GenerativeAgent):
 # Cell
 
 class LSTM_LM_Small_ZINC_NC(GenerativeAgent):
+    '''
+    LSTM_LM_Small_ZINC_NC - small `LSTM_LM` model
+    trained on a chunk of the ZINC library with
+    no chirality markers (ie no '@' symbols)
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self,
+                 drop_scale=1.,
                  base_update=0.97,
                  base_update_iter=5,
                  base_model=True,
@@ -164,7 +243,7 @@ class LSTM_LM_Small_ZINC_NC(GenerativeAgent):
                 ):
 
         vocab = CharacterVocab(SMILES_CHAR_VOCAB, prefunc=remove_stereo, postfunc=remove_stereo)
-        model = lstm_lm_small(vocab)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
         location = f'{S3_PREFIX}/lstmlm_small_zinc_nc.pt'
         model.load_state_dict(load_url(location, map_location='cpu'))
         loss_function = CrossEntropy()
@@ -187,7 +266,30 @@ class LSTM_LM_Small_ZINC_NC(GenerativeAgent):
 # Cell
 
 class LSTM_LM_Small_Chembl_NC(GenerativeAgent):
+    '''
+    LSTM_LM_Small_Chembl_NC - small `LSTM_LM` model
+    trained on a chunk of the Chembl library with
+    no chirality markers (ie no '@' symbols)
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self,
+                 drop_scale=1.,
                  base_update=0.97,
                  base_update_iter=5,
                  base_model=True,
@@ -197,7 +299,7 @@ class LSTM_LM_Small_Chembl_NC(GenerativeAgent):
                 ):
 
         vocab = CharacterVocab(SMILES_CHAR_VOCAB, prefunc=remove_stereo, postfunc=remove_stereo)
-        model = lstm_lm_small(vocab)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
         location = f'{S3_PREFIX}/lstmlm_small_chembl_nc.pt'
         model.load_state_dict(load_url(location, map_location='cpu'))
         loss_function = CrossEntropy()
@@ -220,7 +322,30 @@ class LSTM_LM_Small_Chembl_NC(GenerativeAgent):
 # Cell
 
 class LSTM_LM_Small_ZINC_Selfies(GenerativeAgent):
+    '''
+    LSTM_LM_Small_ZINC_Selfies - small `LSTM_LM` model
+    trained on a chunk of the ZINC library using
+    SELFIES-type tokenization
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self,
+                 drop_scale=1.,
                  base_update=0.97,
                  base_update_iter=5,
                  base_model=True,
@@ -231,7 +356,7 @@ class LSTM_LM_Small_ZINC_Selfies(GenerativeAgent):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
                   prefunc=smile_to_selfie, postfunc=selfie_to_smile)
-        model = lstm_lm_small(vocab)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
         location = f'{S3_PREFIX}/lstmlm_small_zinc_selfies.pt'
         model.load_state_dict(load_url(location, map_location='cpu'))
         loss_function = CrossEntropy()
@@ -254,7 +379,30 @@ class LSTM_LM_Small_ZINC_Selfies(GenerativeAgent):
 # Cell
 
 class LSTM_LM_Small_Chembl_Selfies(GenerativeAgent):
+    '''
+    LSTM_LM_Small_Chembl_Selfies - small `LSTM_LM` model
+    trained on a chunk of the Chembl library using
+    SELFIES-type tokenization
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
     def __init__(self,
+                 drop_scale=1.,
                  base_update=0.97,
                  base_update_iter=5,
                  base_model=True,
@@ -265,7 +413,7 @@ class LSTM_LM_Small_Chembl_Selfies(GenerativeAgent):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
                   prefunc=smile_to_selfie, postfunc=selfie_to_smile)
-        model = lstm_lm_small(vocab)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
         location = f'{S3_PREFIX}/lstmlm_small_chembl_selfies.pt'
         model.load_state_dict(load_url(location, map_location='cpu'))
         loss_function = CrossEntropy()
@@ -287,7 +435,247 @@ class LSTM_LM_Small_Chembl_Selfies(GenerativeAgent):
 
 # Cell
 
-def cond_lstm_small(vocab, encoder, drop=True):
+class LSTM_LM_Small_Rgroup(GenerativeAgent):
+    '''
+    LSTM_LM_Small_Rgroup - small `LSTM_LM` model
+    trained on R-groups. R groups are SMILES with
+    the format `*R`
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'lstmlm_small_rgroup'
+                ):
+
+        vocab = CharacterVocab(SMILES_CHAR_VOCAB)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/lstmlm_small_rgroup.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+
+        dataset = Text_Dataset(['C'], vocab)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+class LSTM_LM_Small_Linkers(GenerativeAgent):
+    '''
+    LSTM_LM_Small_Linkers - small `LSTM_LM` model
+    trained on linkers. Linkes are SMILES with
+    the format `*R*`
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'lstmlm_small_linkers'
+                ):
+
+        vocab = CharacterVocab(SMILES_CHAR_VOCAB, prefunc=remove_stereo)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/lstmlm_small_linkers.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+
+        dataset = Text_Dataset(['C'], vocab)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+class LSTM_LM_Small_Linkers_Mapped(GenerativeAgent):
+    '''
+    LSTM_LM_Small_Linkers_Mapped - small `LSTM_LM`
+    model trained on linkers with mapping tokens for
+    compatibility with `LinkerBlockTemplate`. Linkers
+    are SMILES with the format `*R*`
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'lstmlm_small_linkers_mapped'
+                ):
+
+        vocab = CharacterReplaceVocab(SMILES_CHAR_VOCAB,
+                                replace_dict={'[2*:1]':'X', '[2*:2]':'Y'},
+                                prefunc=remove_stereo)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/lstmlm_small_linkers_mapped.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+
+        dataset = Text_Dataset(['C'], vocab)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+class LSTM_LM_Small_Swissprot(GenerativeAgent):
+    '''
+    LSTM_LM_Small_Swissprot - small `LSTM_LM`
+    model trained on the Swissprot protein dataset.
+    This model was trained on protein sequences
+    of 650 amino acids or fewer
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'lstmlm_small_swissprot'
+                ):
+
+        vocab = CharacterVocab(AMINO_ACID_VOCAB)
+
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/lstmlm_small_swissprot.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+
+        dataset = Text_Dataset(['C'], vocab)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+def cond_lstm_small(vocab, encoder, drop_scale=1.):
+    '''
+    cond_lstm_small - small conditional LSTM_LM model
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `encoder nn.Module`: encoder module
+
+    - `drop_scale float`: scale dropout values
+    '''
 
     d_vocab = len(vocab.itos)
     bos_idx = vocab.stoi['bos']
@@ -302,12 +690,8 @@ def cond_lstm_small(vocab, encoder, drop=True):
     condition_output = False
     norm_latent = True
 
-    if drop:
-        input_dropout = 0.3
-        lstm_dropout = 0.3
-    else:
-        input_dropout = 0.
-        lstm_dropout = 0.
+    input_dropout = 0.3*drop_scale
+    lstm_dropout = 0.3*drop_scale
 
     model = Conditional_LSTM_LM(encoder,
                                 d_vocab,
@@ -324,7 +708,18 @@ def cond_lstm_small(vocab, encoder, drop=True):
 
     return model
 
-def cond_lstm_large(vocab, encoder, drop=True):
+def cond_lstm_large(vocab, encoder, drop_scale=1.):
+    '''
+    cond_lstm_large - large conditional LSTM_LM model
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `encoder nn.Module`: encoder module
+
+    - `drop_scale float`: scale dropout values
+    '''
 
     d_vocab = len(vocab.itos)
     bos_idx = vocab.stoi['bos']
@@ -340,12 +735,8 @@ def cond_lstm_large(vocab, encoder, drop=True):
     norm_latent = True
 
 
-    if drop:
-        input_dropout = 0.3
-        lstm_dropout = 0.3
-    else:
-        input_dropout = 0.
-        lstm_dropout = 0.
+    input_dropout = 0.3*drop_scale
+    lstm_dropout = 0.3*drop_scale
 
     model = Conditional_LSTM_LM(encoder,
                                 d_vocab,
@@ -362,27 +753,167 @@ def cond_lstm_large(vocab, encoder, drop=True):
 
     return model
 
-def mlp_cond_lstm_small(vocab, drop=True):
-    if drop:
-        enc_drops = [0.1, 0.1]
-    else:
-        enc_drops = [0., 0.]
+def mlp_cond_lstm_small(vocab, drop_scale=1.):
+    '''
+    mlp_cond_lstm_small - small conditional
+    LSTM_LM model with MLP encoder
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `drop_scale float`: scale dropout values
+    '''
+    enc_drops = [0.1*drop_scale, 0.1*drop_scale]
 
     encoder = MLP_Encoder(2048, [1024, 512], 512, enc_drops)
-    return cond_lstm_small(vocab, encoder, drop=drop)
+    return cond_lstm_small(vocab, encoder, drop_scale=drop_scale)
 
-def mlp_cond_lstm_large(vocab, drop=True):
-    if drop:
-        enc_drops = [0.2, 0.2, 0.2, 0.2]
-    else:
-        enc_drops = [0., 0., 0., 0.]
+def mlp_cond_lstm_large(vocab, drop_scale=1.):
+    '''
+    mlp_cond_lstm_large - large conditional
+    LSTM_LM model with MLP encoder
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `drop_scale float`: scale dropout values
+    '''
+    enc_drops = [0.2*drop_scale,
+                 0.2*drop_scale,
+                 0.2*drop_scale,
+                 0.2*drop_scale]
 
     encoder = MLP_Encoder(2048, [1024, 512, 512, 512], 512, [0.2, 0.2, 0.2, 0.2])
-    return cond_lstm_small(vocab, encoder)
+    return cond_lstm_small(vocab, encoder, drop_scale=drop_scale)
 
 # Cell
 
-def mlp_vae(vocab, drop=True):
+class FP_Cond_LSTM_LM_Small_ZINC(GenerativeAgent):
+    '''
+    FP_Cond_LSTM_LM_Small_ZINC - small
+    `Conditional_LSTM_LM` model trained to
+    reconstruct SMILES from a ECFP6 fingerprint
+    using a chunk of the ZINC database
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'fp_cond_lstmlm_small_zinc'
+                ):
+
+        vocab = CharacterVocab(SMILES_CHAR_VOCAB)
+        model = mlp_cond_lstm_small(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/fp_cond_lstmlm_small_zinc.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+        fp_function = partial(failsafe_fp, fp_function=ECFP6)
+        dataset = Vec_To_Text_Dataset(['C'], vocab, fp_function)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+class FP_Cond_LSTM_LM_Small_Chembl(GenerativeAgent):
+    '''
+    FP_Cond_LSTM_LM_Small_Chembl - small
+    `Conditional_LSTM_LM` model trained to
+    reconstruct SMILES from a ECFP6 fingerprint
+    using the Chembl database
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'fp_cond_lstmlm_small_chembl'
+                ):
+
+        vocab = CharacterVocab(SMILES_CHAR_VOCAB)
+        model = mlp_cond_lstm_small(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/fp_cond_lstmlm_small_chembl.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+        fp_function = partial(failsafe_fp, fp_function=ECFP6)
+        dataset = Vec_To_Text_Dataset(['C'], vocab, fp_function)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+def mlp_vae(vocab, drop_scale=1.):
+    '''
+    mlp_vae - VAE with MLP encoder
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `drop_scale float`: scale dropout values
+    '''
 
     d_vocab = len(vocab.itos)
     bos_idx = vocab.stoi['bos']
@@ -396,14 +927,9 @@ def mlp_vae(vocab, drop=True):
     condition_hidden=True
     condition_output=True
 
-    if drop:
-        encoder_drops = [0.2, 0.2]
-        input_dropout=0.3
-        lstm_dropout=0.3
-    else:
-        encoder_drops = [0., 0.]
-        input_dropout=0.
-        lstm_dropout=0.
+    encoder_drops = [0.2*drop_scale, 0.2*drop_scale]
+    input_dropout=0.3*drop_scale
+    lstm_dropout=0.3*drop_scale
 
     model = MLP_VAE(
                 d_vocab,
@@ -423,7 +949,16 @@ def mlp_vae(vocab, drop=True):
 
     return model
 
-def conv_vae(vocab, drop=True):
+def conv_vae(vocab, drop_scale=1.):
+    '''
+    mlp_vae - VAE with convolutional encoder
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `drop_scale float`: scale dropout values
+    '''
 
     d_vocab = len(vocab.itos)
     bos_idx = vocab.stoi['bos']
@@ -438,14 +973,9 @@ def conv_vae(vocab, drop=True):
     condition_hidden=True
     condition_output=True
 
-    if drop:
-        conv_drops = [0.2, 0.2, 0.2]
-        input_dropout=0.3
-        lstm_dropout=0.3
-    else:
-        conv_drops = [0., 0., 0.]
-        input_dropout=0.
-        lstm_dropout=0.
+    conv_drops = [0.2*drop_scale, 0.2*drop_scale, 0.2*drop_scale]
+    input_dropout=0.3*drop_scale
+    lstm_dropout=0.3*drop_scale
 
     model = Conv_VAE(
                     d_vocab,
@@ -465,7 +995,16 @@ def conv_vae(vocab, drop=True):
 
     return model
 
-def lstm_vae(vocab, drop=True):
+def lstm_vae(vocab, drop_scale=1.):
+    '''
+    mlp_vae - VAE with LSTM encoder
+
+    Inputs:
+
+    - `vocab Vocab`: vocab to use
+
+    - `drop_scale float`: scale dropout values
+    '''
 
     d_vocab = len(vocab.itos)
     bos_idx = vocab.stoi['bos']
@@ -477,13 +1016,8 @@ def lstm_vae(vocab, drop=True):
     condition_hidden=True
     condition_output=True
 
-    if drop:
-        input_dropout=0.3
-        lstm_dropout=0.3
-    else:
-        input_dropout=0.
-        lstm_dropout=0.
-
+    input_dropout=0.3*drop_scale
+    lstm_dropout=0.3*drop_scale
 
     model = LSTM_VAE(
                     d_vocab,
@@ -499,3 +1033,115 @@ def lstm_vae(vocab, drop=True):
                 )
 
     return model
+
+# Cell
+
+class FP_VAE_ZINC(GenerativeAgent):
+    '''
+    FP_VAE_ZINC - MLP-to-LSTM VAE trained to
+    reconstruct SMILES from a ECFP6 fingerprint
+    using the ZINC database
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'fp_vae_zinc'
+                ):
+
+        vocab = CharacterVocab(SMILES_CHAR_VOCAB)
+        model = mlp_vae(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/fp_vae_zinc.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+        fp_function = partial(failsafe_fp, fp_function=ECFP6)
+        dataset = Vec_To_Text_Dataset(['C'], vocab, fp_function)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+class FP_VAE_Chembl(GenerativeAgent):
+    '''
+    FP_VAE_Chembl - MLP-to-LSTM VAE trained to
+    reconstruct SMILES from a ECFP6 fingerprint
+    using the Chembl database
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'fp_vae_chembl'
+                ):
+
+        vocab = CharacterVocab(SMILES_CHAR_VOCAB)
+        model = mlp_vae(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/fp_vae_chembl.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+        fp_function = partial(failsafe_fp, fp_function=ECFP6)
+        dataset = Vec_To_Text_Dataset(['C'], vocab, fp_function)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )

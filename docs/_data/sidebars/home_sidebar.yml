@@ -34,6 +34,12 @@ entries:
           title: Dataset Construction
           url: tutorials.dataset_building.html
         title: Comp Chem
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: LSTM Language Model
+          url: tutorials.generative_models.lstm_lm.html
+        title: Generative Models
     output: web
     title: Tutorials
   - folderitems:
@@ -118,6 +124,9 @@ entries:
         - output: web,pdf
           title: Sampler Callbacks
           url: samplers.html
+        - output: web,pdf
+          title: Reward Callbacks
+          url: reward.html
         title: Callbacks
       - output: web
         subfolderitems:

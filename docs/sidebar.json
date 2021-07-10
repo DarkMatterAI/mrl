@@ -11,6 +11,9 @@
                 "Templates (Intermediate)" : "tutorials.template.intermediate.html",
                 "Templates (Advanced)" : "tutorials.template.advanced.html",
                 "Dataset Construction" : "tutorials.dataset_building.html"
+            },
+            "Generative Models" : {
+                "LSTM Language Model" : "tutorials.generative_models.lstm_lm.html"
             }
         }
     },
@@ -48,7 +51,8 @@
                 "Buffer" : "buffer.html",
                 "Template Callback" : "template_callback.html",
                 "Loss Callbacks" : "losses.html",
-                "Sampler Callbacks" : "samplers.html"
+                "Sampler Callbacks" : "samplers.html",
+                "Reward Callbacks" : "reward.html"
             },
             "Agent" : {
                 "Agent" : "agent.html"
