@@ -39,7 +39,19 @@ entries:
         - output: web,pdf
           title: LSTM Language Model
           url: tutorials.generative_models.lstm_lm.html
+        - output: web,pdf
+          title: Conditional LSTM Language Model
+          url: tutorials.generative_models.conditional_lstm_lm.html
+        - output: web,pdf
+          title: VAE
+          url: tutorials.generative_models.vae.html
         title: Generative Models
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Fit Cycle Overview
+          url: tutorials.rl.train_overview.html
+        title: Reinforcement Learning
     output: web
     title: Tutorials
   - folderitems:
