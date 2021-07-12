@@ -366,7 +366,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SupevisedCB" class="doc_header"><code>class</code> <code>SupevisedCB</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L514" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SupevisedCB</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>base_update</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="SupevisedCB" class="doc_header"><code>class</code> <code>SupevisedCB</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L515" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SupevisedCB</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>base_update</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>SupevisedCB - supervised training callback. When triggered,
 this callback grabs the top <code>percentile</code> of samples from the
@@ -419,7 +419,7 @@ to sample from the log</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Rollback" class="doc_header"><code>class</code> <code>Rollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L571" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Rollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>alpha</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="Rollback" class="doc_header"><code>class</code> <code>Rollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L572" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Rollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>alpha</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Rollback - if <code>metric_name</code> falls (above/below) <code>target</code>, updates
 the main model's weights with the baseline model's weights</p>
@@ -473,7 +473,7 @@ metric falling below <code>target</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RetrainRollback" class="doc_header"><code>class</code> <code>RetrainRollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L625" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RetrainRollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>base_update</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="RetrainRollback" class="doc_header"><code>class</code> <code>RetrainRollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L626" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RetrainRollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>base_update</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>RetrainRollback - triggers supervised training if
 <code>metric_name</code> falls (above/below) <code>target</code></p>
@@ -534,7 +534,7 @@ metric falling below <code>target</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ResetAndRetrain" class="doc_header"><code>class</code> <code>ResetAndRetrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L704" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResetAndRetrain</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>weight_fp</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>epochs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>sample_term</code></strong>=<em><code>'samples'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="ResetAndRetrain" class="doc_header"><code>class</code> <code>ResetAndRetrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L705" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResetAndRetrain</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>weight_fp</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>epochs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>sample_term</code></strong>=<em><code>'samples'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>ResetAndRetrain - with a set frequency, loads a
 file of saved weights and runs supervised training</p>
@@ -589,7 +589,7 @@ to sample from the log</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveAgentWeights" class="doc_header"><code>class</code> <code>SaveAgentWeights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L765" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveAgentWeights</code>(<strong><code>file_path</code></strong>, <strong><code>filename</code></strong>, <strong><code>n_batches</code></strong>, <strong><code>agent</code></strong>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="SaveAgentWeights" class="doc_header"><code>class</code> <code>SaveAgentWeights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L766" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveAgentWeights</code>(<strong><code>file_path</code></strong>, <strong><code>filename</code></strong>, <strong><code>n_batches</code></strong>, <strong><code>agent</code></strong>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>SaveAgentWeights - saves weights every <code>n_batches</code>.
 Weights are saved to <code>file_path/filename_iterations.pt</code></p>
@@ -682,7 +682,7 @@ Weights are saved to <code>file_path/filename_iterations.pt</code></p>
     <tr>
       <td>0</td>
       <td>0.47916</td>
-      <td>0.63232</td>
+      <td>0.63233</td>
       <td>00:04</td>
     </tr>
   </tbody>

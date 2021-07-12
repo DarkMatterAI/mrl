@@ -439,14 +439,15 @@ class GenerativeAgent(BaselineAgent):
 
 
             for (latent_source, latents) in latent_info.items():
-                latent_sources.append(latent_source)
-                latent_mask = torch.tensor([i==latent_source for i in sources]).bool()
-                out = self.model.get_rl_tensors(subset_tensor(x, latent_mask),
-                                                      subset_tensor(y, latent_mask),
-                                                      latent=latents)
-                out = list(out)
-                out.append(latents)
-                output_tensors.append(out)
+                if latents.shape[0]>0:
+                    latent_sources.append(latent_source)
+                    latent_mask = torch.tensor([i==latent_source for i in sources]).bool()
+                    out = self.model.get_rl_tensors(subset_tensor(x, latent_mask),
+                                                          subset_tensor(y, latent_mask),
+                                                          latent=latents)
+                    out = list(out)
+                    out.append(latents)
+                    output_tensors.append(out)
 
             non_latent_mask = torch.tensor([not i in latent_sources for i in sources]).bool()
 

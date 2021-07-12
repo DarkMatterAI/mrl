@@ -66,7 +66,10 @@ class Log(Callback):
 
         self.update_metric('new', new.mean())
 
-        diversity = len(set(samples))/len(samples)
+        if len(samples)>0:
+            diversity = len(set(samples))/len(samples)
+        else:
+            diversity = 0.
         self.environment.log.update_metric('diversity', diversity)
 
         self.environment.log.update_metric('bs', len(batch_state.samples))
