@@ -40,8 +40,8 @@ class Environment():
     def __init__(self, agent, template_cb=None, samplers=None, rewards=None, losses=None,
                  cbs=None, buffer_p_batch=None, log=None):
 
-        if template_cb is None:
-            template_cb = TemplateCallback()
+#         if template_cb is None:
+#             template_cb = TemplateCallback()
 
         if samplers is None:
             samplers = []
@@ -88,9 +88,11 @@ class Environment():
     def register_cb(self, cb):
         if isinstance(cb, type):
             cb = cb()
-        cb.environment = self
-        setattr(self, cb.name, cb)
-        self.cbs.append(cb)
+
+        if cb is not None:
+            cb.environment = self
+            setattr(self, cb.name, cb)
+            self.cbs.append(cb)
 
     def register_cbs(self, cbs):
         for cb in cbs:

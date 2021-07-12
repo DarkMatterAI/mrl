@@ -67,6 +67,9 @@
             },
             "Environment" : {
                 "Environment" : "environment.html"
+            },
+            "Model Zoo" : {
+                "Model Zoo" : "model_zoo.html"
             }
         }
     }

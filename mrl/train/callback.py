@@ -2,9 +2,9 @@
 
 __all__ = ['Callback', 'Event', 'Setup', 'BeforeTrain', 'BuildBuffer', 'FilterBuffer', 'AfterBuildBuffer',
            'BeforeBatch', 'SampleBatch', 'BeforeFilterBatch', 'FilterBatch', 'AfterSample', 'BeforeComputeReward',
-           'ComputeReward', 'AfterComputeReward', 'RewardModification', 'GetModelOutputs', 'AfterGetModelOutputs',
-           'ComputeLoss', 'ZeroGrad', 'BeforeStep', 'Step', 'AfterBatch', 'AfterTrain', 'Events', 'SettrDict',
-           'BatchState']
+           'ComputeReward', 'AfterComputeReward', 'RewardModification', 'AfterRewardModification', 'GetModelOutputs',
+           'AfterGetModelOutputs', 'ComputeLoss', 'ZeroGrad', 'BeforeStep', 'Step', 'AfterBatch', 'AfterTrain',
+           'Events', 'SettrDict', 'BatchState']
 
 # Cell
 
@@ -274,6 +274,20 @@ class RewardModification(Event):
     '''
     def __init__(self):
         self.event_name = 'reward_modification'
+
+# Cell
+
+class AfterRewardModification(Event):
+    '''
+    AfterRewardModification
+
+    This event is called after all reward modifications
+    have been computed. This event can be used
+    to log stats and metrics related to the
+    reward modifications for the current batch
+    '''
+    def __init__(self):
+        self.event_name = 'after_reward_modification'
 
 # Cell
 

@@ -4,8 +4,9 @@ __all__ = ['S3_PREFIX', 'lstm_lm_small', 'lstm_lm_large', 'LSTM_LM_Small_ZINC', 
            'LSTM_LM_Small_ZINC_NC', 'LSTM_LM_Small_Chembl_NC', 'LSTM_LM_Small_ZINC_Selfies',
            'LSTM_LM_Small_Chembl_Selfies', 'LSTM_LM_Small_Rgroup', 'LSTM_LM_Small_Linkers',
            'LSTM_LM_Small_Linkers_Mapped', 'LSTM_LM_Small_Swissprot', 'cond_lstm_small', 'cond_lstm_large',
-           'mlp_cond_lstm_small', 'mlp_cond_lstm_large', 'FP_Cond_LSTM_LM_Small_ZINC', 'FP_Cond_LSTM_LM_Small_Chembl',
-           'mlp_vae', 'conv_vae', 'lstm_vae', 'FP_VAE_ZINC', 'FP_VAE_Chembl']
+           'mlp_cond_lstm_small', 'mlp_cond_lstm_large', 'FP_Cond_LSTM_LM_Small_ZINC',
+           'FP_Cond_LSTM_LM_Small_ZINC_Selfies', 'FP_Cond_LSTM_LM_Small_Chembl', 'mlp_vae', 'conv_vae', 'lstm_vae',
+           'FP_VAE_ZINC', 'FP_VAE_Chembl', 'FP_VAE_ZINC_Selfies']
 
 # Cell
 from .imports import *
@@ -847,6 +848,65 @@ class FP_Cond_LSTM_LM_Small_ZINC(GenerativeAgent):
 
 # Cell
 
+class FP_Cond_LSTM_LM_Small_ZINC_Selfies(GenerativeAgent):
+    '''
+    FP_Cond_LSTM_LM_Small_ZINC_Selfies - small
+    `Conditional_LSTM_LM` model trained to
+    reconstruct SMILES from a ECFP6 fingerprint
+    using a chunk of the ZINC database with
+    SELFIES encoding
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'fp_cond_lstmlm_small_zinc_selfies'
+                ):
+
+        vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
+                    prefunc=smile_to_selfie, postfunc=selfie_to_smile)
+        model = mlp_cond_lstm_small(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/fp_cond_lstmlm_small_zinc_selfies.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+        fp_function = partial(failsafe_fp, fp_function=ECFP6)
+        dataset = Vec_To_Text_Dataset(['C'], vocab, fp_function)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
 class FP_Cond_LSTM_LM_Small_Chembl(GenerativeAgent):
     '''
     FP_Cond_LSTM_LM_Small_Chembl - small
@@ -1128,6 +1188,64 @@ class FP_VAE_Chembl(GenerativeAgent):
         vocab = CharacterVocab(SMILES_CHAR_VOCAB)
         model = mlp_vae(vocab, drop_scale=drop_scale)
         location = f'{S3_PREFIX}/fp_vae_chembl.pt'
+        model.load_state_dict(load_url(location, map_location='cpu'))
+        loss_function = CrossEntropy()
+        fp_function = partial(failsafe_fp, fp_function=ECFP6)
+        dataset = Vec_To_Text_Dataset(['C'], vocab, fp_function)
+
+
+        super().__init__(model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+class FP_VAE_ZINC_Selfies(GenerativeAgent):
+    '''
+    FP_VAE_ZINC_Selfies - MLP-to-LSTM VAE trained to
+    reconstruct SMILES from a ECFP6 fingerprint
+    using the ZINC database with SELFIES encoding
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'fp_vae_zinc_selfies'
+                ):
+
+        vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
+                    prefunc=smile_to_selfie, postfunc=selfie_to_smile)
+
+        model = mlp_vae(vocab, drop_scale=drop_scale)
+        location = f'{S3_PREFIX}/fp_vae_zinc_selfies.pt'
         model.load_state_dict(load_url(location, map_location='cpu'))
         loss_function = CrossEntropy()
         fp_function = partial(failsafe_fp, fp_function=ECFP6)

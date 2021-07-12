@@ -58,6 +58,7 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 <li><code>compute_reward</code> - used by <code>rewards</code> to compute rewards for all samples in the <code>batch state</code></li>
 <li><code>after_compute_reward</code> - used for logging reward metrics</li>
 <li><code>reward_modification</code> - modify rewards in ways not tracked by the log</li>
+<li><code>after_reward_modification</code> - log reward modification metrics</li>
 <li><code>get_model_outputs</code> - generate necessary tensors from the model</li>
 <li><code>after_get_model_outputs</code> - used for any processing required prior to loss calculation </li>
 <li><code>compute_loss</code> - compute loss values</li>
@@ -123,7 +124,7 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">set_global_pool</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 </pre></div>
 
     </div>
@@ -140,13 +141,83 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">set_global_pool</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Getting-Started">Getting Started<a class="anchor-link" href="#Getting-Started"> </a></h2><p>We start by creating all the components we need to train a model</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h3><p>The <a href="/mrl/agent#Agent"><code>Agent</code></a> is the actual model we want to train. For this example, we will use the <a href="/mrl/model_zoo#LSTM_LM_Small_ZINC"><code>LSTM_LM_Small_ZINC</code></a> model, which is a <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model trained on a chunk of the ZINC database.</p>
+<p>The agent will actually contain two versions of the model. The main model that we will train with every update iteration, and a baseline model which is updated as an exponentially weighted moving average of the main model. Both models are used in the RL training algorithm we will set up later</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">agent</span> <span class="o">=</span> <span class="n">LSTM_LM_Small_ZINC</span><span class="p">(</span><span class="n">drop_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">opt_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span><span class="mf">5e-5</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Template">Template<a class="anchor-link" href="#Template"> </a></h3><p>The <a href="/mrl/template.template#Template"><code>Template</code></a> class is used to conrol the chemical space. We can set parameters on what molecular properties we want to allow. For this example, we set the following:</p>
+<ul>
+<li>Hard Filters - must have qualities<ul>
+<li><a href="/mrl/template.filters#ValidityFilter"><code>ValidityFilter</code></a> - must be a valid chemical structure</li>
+<li><a href="/mrl/template.filters#SingleCompoundFilter"><code>SingleCompoundFilter</code></a> - samples must be single compounds</li>
+<li><a href="/mrl/template.filters#RotBondFilter"><code>RotBondFilter</code></a> - compounds can have at most 8 rotatable bonds</li>
+<li><a href="/mrl/template.filters#ChargeFilter"><code>ChargeFilter</code></a> - compounds must have no net charge</li>
+</ul>
+</li>
+<li>Soft Filters - nice to have qualities<ul>
+<li><a href="/mrl/template.filters#QEDFilter"><code>QEDFilter</code></a> - Compounds get a score bonus of +1 if their QED value is greater than 0.5</li>
+<li><a href="/mrl/template.filters#SAFilter"><code>SAFilter</code></a> - compounds get a score bonus of + if their SA score is less than 5</li>
+</ul>
+</li>
+</ul>
+<p>We then pass the <a href="/mrl/template.template#Template"><code>Template</code></a> to the <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a> which integrates the template into the fit loop. Note that we pass <code>prefilter=True</code> to the <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a>, which ensures compounds that don't meet our hard filters are removed from training</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">([</span><span class="n">ValidityFilter</span><span class="p">(),</span> 
                      <span class="n">SingleCompoundFilter</span><span class="p">(),</span> 
                      <span class="n">RotBondFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
-                     <span class="n">ChargeFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
+                     <span class="n">ChargeFilter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
                     <span class="p">[</span><span class="n">QEDFilter</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.</span><span class="p">),</span>
-                     <span class="n">SAFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.</span><span class="p">)],</span> 
-                    <span class="n">fail_score</span><span class="o">=-</span><span class="mf">10.</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                     <span class="n">SAFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.</span><span class="p">)])</span>
 
 <span class="n">template_cb</span> <span class="o">=</span> <span class="n">TemplateCallback</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -158,6 +229,14 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Reward">Reward<a class="anchor-link" href="#Reward"> </a></h3><p>For the reward, we will load a scikit-learn linear regression model. This model was trained to predict affinity against erbB1 using molecular fingerprints as inputs</p>
+<p>This score function is extremely simple and likely won't translate well to real affinity. It is used as a lightweight example</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -189,16 +268,44 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 </div>
 </div>
 
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can think of the score function as a black box that takes in samples (SMILES strings) and returns a single numeric score for each sample. Any score function that follows this paradigm can be integrated into MRL</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Brc1cc2c(NCc3cccs3)ncnc2s1&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Brc1cc2c(NCc3ccncc3)ncnc2s1&#39;</span><span class="p">]</span>
+
+<span class="n">reward_function</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
 <div class="output_wrapper">
 <div class="output">
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.7/site-packages/sklearn/base.py:315: UserWarning: Trying to unpickle estimator LinearRegression from version 0.23.2 when using version 0.24.2. This might lead to breaking code or invalid results. Use at your own risk.
-  UserWarning)
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([-0.80169969, -0.66942228])</pre>
 </div>
+
 </div>
 
 </div>
@@ -207,6 +314,14 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h3><p>For our loss, we will use the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> reinforcement learning algorithm. See the <a href="arxiv.org/pdf/1707.06347.pdf">PPO</a> paper for full details.</p>
+<p>The gist of it is the loss function takes a batch of samples and directs he model to increase the probability of above-average samples (relative to the batch mean) and decrease he probability of below-average samples.</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -238,23 +353,19 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 </div>
     {% endraw %}
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">agent</span> <span class="o">=</span> <span class="n">LSTM_LM_Small_ZINC</span><span class="p">(</span><span class="n">drop_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">opt_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span><span class="mf">5e-5</span><span class="p">})</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Samplers">Samplers<a class="anchor-link" href="#Samplers"> </a></h3><p><code>Samplers</code> fill the role of generating samples to train on. We will use four samplers for this run:</p>
+<ul>
+<li><code>sampler1</code>: <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a> - this sampler will draw samples from the main model in the <a href="/mrl/agent#Agent"><code>Agent</code></a>. We set <code>buffer_size=1000</code>, which means we will generate 1000 samples every time we build the buffer. We set <code>p_batch=0.5</code>, which means during training, 50% of each batch will be sampled on the fly from the main model and the rest of the batch will come from the buffer</li>
+<li><code>sampler2</code>: <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a> - this sampler is the same as <code>sampler1</code>, but we draw from the baseline model instead of the main model. We set <code>p_batch=0.</code>, so this sampler will only contribute to the buffer</li>
+<li><code>sampler3</code>: <a href="/mrl/samplers#LogSampler"><code>LogSampler</code></a> - this sampler looks through the log of previous samples. Based on our input arguments, it grabs the top <code>95</code> percentile of samples in the log, and randomly selects <code>100</code> samples from that subset</li>
+<li><code>sampler4</code>: <a href="/mrl/samplers#DatasetSampler"><code>DatasetSampler</code></a> - this sampler is seeded wih erbB1 training data used to train the score function. This sampler will randomly select 4 samples from the dataset to add to the buffer</li>
+</ul>
 
 </div>
-    {% endraw %}
-
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -263,7 +374,7 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">gen_bs</span> <span class="o">=</span> <span class="mi">1500</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;untracked_files/affinity_data_set.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;files/erbB1_affinity_data.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">value</span><span class="o">&lt;-</span><span class="mi">1</span><span class="p">]</span>
 
 <span class="n">sampler1</span> <span class="o">=</span> <span class="n">ModelSampler</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span> <span class="n">agent</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;live&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">gen_bs</span><span class="p">)</span>
@@ -281,6 +392,18 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Other-Callbacks">Other Callbacks<a class="anchor-link" href="#Other-Callbacks"> </a></h3><p>We'll add three more callbacks:</p>
+<ul>
+<li><a href="/mrl/logging#MaxCallback"><code>MaxCallback</code></a>: this will grab the max reward within a batch that came from the source <code>live</code>. <code>live</code> is the name we gave to <code>sampler1</code> above. This means the max callback will grab all outputs from <code>sampler1</code> corresponding to samples from the live model and add the largest to the batch metrics</li>
+<li><a href="/mrl/logging#PercentileCallback"><code>PercentileCallback</code></a>: this does the same as <a href="/mrl/logging#MaxCallback"><code>MaxCallback</code></a> but instead of printing the maximum score, it prints the 90th percentile score</li>
+<li><a href="/mrl/reward#NoveltyReward"><code>NoveltyReward</code></a>: this is reward modification that gives a bonus score of <code>0.05</code> to new samples (ie samples that haven't appeared before in training)</li>
+</ul>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -288,12 +411,11 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">supervised_cb</span> <span class="o">=</span> <span class="n">SupevisedCB</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mf">5e-5</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
-<span class="n">live_max</span> <span class="o">=</span> <span class="n">MaxCallback</span><span class="p">(</span><span class="s1">&#39;rewards&#39;</span><span class="p">,</span> <span class="s1">&#39;live&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">live_max</span> <span class="o">=</span> <span class="n">MaxCallback</span><span class="p">(</span><span class="s1">&#39;rewards&#39;</span><span class="p">,</span> <span class="s1">&#39;live&#39;</span><span class="p">)</span>
 <span class="n">live_p90</span> <span class="o">=</span> <span class="n">PercentileCallback</span><span class="p">(</span><span class="s1">&#39;rewards&#39;</span><span class="p">,</span> <span class="s1">&#39;live&#39;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
 <span class="n">new_cb</span> <span class="o">=</span> <span class="n">NoveltyReward</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 
-<span class="n">cbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_cb</span><span class="p">,</span> <span class="n">supervised_cb</span><span class="p">,</span> <span class="n">live_p90</span><span class="p">,</span> <span class="n">live_max</span><span class="p">]</span>
+<span class="n">cbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_cb</span><span class="p">,</span> <span class="n">live_p90</span><span class="p">,</span> <span class="n">live_max</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -303,6 +425,20 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Training-Walkthrough">Training Walkthrough<a class="anchor-link" href="#Training-Walkthrough"> </a></h2><p>Now we will step through the training cycle looking at how each callback event is used</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Setup">Setup<a class="anchor-link" href="#Setup"> </a></h3><p>The first event occurs when we create our <a href="/mrl/environment#Environment"><code>Environment</code></a> using the callbacks we set up before. Instantiating the <a href="/mrl/environment#Environment"><code>Environment</code></a> registers all callbacks and runs the <code>setup</code> event. Many callbacks use the <code>setup</code> event to add terms to the batch log or the metrics log.</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -321,6 +457,14 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Inside the environment, we just created a <a href="/mrl/buffer#Buffer"><code>Buffer</code></a> and a <a href="/mrl/logging#Log"><code>Log</code></a>.</p>
+<p>The <a href="/mrl/buffer#Buffer"><code>Buffer</code></a> holds a list of samples, which is currently empty</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -328,7 +472,2433 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">buffer</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>buffer</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">buffer</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <a href="/mrl/logging#Log"><code>Log</code></a> holds a number of containers for tracking training outputs</p>
+<ul>
+<li><code>metrics</code>: dictionary of batch metrics. Each key maps to a list where each value in the list is the metric term for  given batch</li>
+<li><code>batch_log</code>: dictionary of batch items. Each key maps to a list. Each element in that list is a list containing the batch values for that key in a given batch</li>
+<li><code>unique_samples</code>: dictionary of unique samples and the rewards for those samples. Useful for looking up if a sample has been seen before</li>
+<li><code>df</code>: dataframe of unique samples and all associated values stored in the <code>batch_log</code></li>
+</ul>
+<p>We can see that these log terms have already been populated during the <code>setup</code> event</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">metrics</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;rewards&#39;: [],
+ &#39;rewards_final&#39;: [],
+ &#39;new&#39;: [],
+ &#39;diversity&#39;: [],
+ &#39;bs&#39;: [],
+ &#39;template&#39;: [],
+ &#39;valid&#39;: [],
+ &#39;live_diversity&#39;: [],
+ &#39;live_valid&#39;: [],
+ &#39;live_rewards&#39;: [],
+ &#39;live_new&#39;: [],
+ &#39;aff&#39;: [],
+ &#39;novel&#39;: [],
+ &#39;PPO&#39;: [],
+ &#39;rewards_live_p90&#39;: [],
+ &#39;rewards_live_max&#39;: []}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">batch_log</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;samples&#39;: [],
+ &#39;sources&#39;: [],
+ &#39;rewards&#39;: [],
+ &#39;rewards_final&#39;: [],
+ &#39;template&#39;: [],
+ &#39;aff&#39;: [],
+ &#39;novel&#39;: [],
+ &#39;PPO&#39;: []}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>samples</th>
+      <th>sources</th>
+      <th>rewards</th>
+      <th>rewards_final</th>
+      <th>template</th>
+      <th>aff</th>
+      <th>novel</th>
+      <th>PPO</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The keys in the above dictionaries were added by the associated callbacks. For example, look at the <code>setup</code> method in <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a>, the type of sampler we used for <code>sampler1</code>:</p>
+
+<pre><code>    def setup(self):
+        if self.p_batch&gt;0. and self.track:
+            log = self.environment.log
+            log.add_metric(f'{self.name}_diversity')
+            log.add_metric(f'{self.name}_valid')
+            log.add_metric(f'{self.name}_rewards')
+            log.add_metric(f'{self.name}_new')</code></pre>
+<p>We gave <code>sampler1</code> the name <code>live</code>. As a result, the terms <code>live_diversity</code>, <code>live_valid</code>, <code>live_rewards</code> and <code>live_new</code> were added to the metrics.</p>
+<p>We can also look at the <code>setup</code> method of our loss function <code>loss</code>:</p>
+
+<pre><code>    def setup(self):
+        if self.track:
+            log = self.environment.log
+            log.add_metric(self.name)
+            log.add_log(self.name)</code></pre>
+<p>This is responsible for the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> terms in the <code>batch_log</code> and the <code>metrics</code>. The PPO metrics term will store the average PPO loss value across a batch, while the PPO batch log term will store the PPO value for each item in a batch</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="The-Fit-Cycle">The Fit Cycle<a class="anchor-link" href="#The-Fit-Cycle"> </a></h3><p>At this point, we could start training using <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a>. We could call <code>env.fit(200, 90, 10, 2)</code> to train for 10 batches with a batch size of 200. For this tutorial, we will step through each part of the fit cycle and observe what is happening</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Before-Train">Before Train<a class="anchor-link" href="#Before-Train"> </a></h3><p>The first stage of the fit cycle is the <code>before_train</code> stage. This sets the batch size and sequence length based on the inputs to <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a> (which we will set manually) and prints the top of the log</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">bs</span> <span class="o">=</span> <span class="mi">200</span> <span class="c1"># batch size of 200</span>
+<span class="n">env</span><span class="o">.</span><span class="n">sl</span> <span class="o">=</span> <span class="mi">90</span> <span class="c1"># max sample length of 90 steps</span>
+<span class="n">mb</span> <span class="o">=</span> <span class="n">master_bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">pbar</span> <span class="o">=</span> <span class="n">mb</span>
+<span class="n">env</span><span class="o">.</span><span class="n">report</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">report</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># report stats every batch</span>
+<span class="n">env</span><span class="p">(</span><span class="s1">&#39;before_train&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Build-Buffer">Build Buffer<a class="anchor-link" href="#Build-Buffer"> </a></h3><p>The next stage of the cycle is the <code>build_buffer</code> stage. This consists of the following events:</p>
+<ul>
+<li><code>build_buffer</code>: samplers add items to the buffer</li>
+<li><code>filter_buffer</code>: the buffer is filtered</li>
+<li><code>after_build_buffer</code>: use as needed</li>
+</ul>
+<p>Going into this stage, our buffer is empty:</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">buffer</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="build_buffer">build_buffer<a class="anchor-link" href="#build_buffer"> </a></h4><p>By calling the <code>build_buffer</code> event, our samplers will add items to the buffer</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;build_buffer&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we have 2004 items in the buffer.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>2004</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can use the <code>buffer_sources</code> attribute to see where each item came from. We have 1000 items from <code>live_buffer</code> which corresponds to <code>sampler1</code>, sampling from the main model.</p>
+<p>We have 1000 items from <code>base_buffer</code> which corresponds to <code>sampler2</code>, sampling from the baseline model.</p>
+<p>We have 4 items from <code>erbB1_data_buffer</code>, our dataset sampler (<code>sampler4</code>).</p>
+<p>Our log sampler, <code>sampler3</code> was set to start sampling after 10 training iterations, so we don't currently have any samples from that sampler</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Counter</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">buffer_sources</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Counter({&#39;live_buffer&#39;: 1000, &#39;base_buffer&#39;: 1000, &#39;erbB1_data_buffer&#39;: 4})</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="filter_buffer">filter_buffer<a class="anchor-link" href="#filter_buffer"> </a></h4><p>It's likely some of these samples don't match our compound requirements defined in the <a href="/mrl/template.template#Template"><code>Template</code></a> we used, so we want to filter the buffer for passing compounds. This is what the <code>filter_buffer</code> does. For this current example, the only callback doing any buffer filtering is the template callback. However, the <code>filter_buffer</code> can be used to implement any form of buffer filtering.</p>
+<p>Any callback that passes a list of boolean values to <a href="/mrl/buffer#Buffer._filter_buffer"><code>Buffer._filter_buffer</code></a> can filter the buffer.</p>
+<p>After filtering, we have 1830 remaining samples</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;filter_buffer&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1830</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Counter</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">buffer_sources</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Counter({&#39;live_buffer&#39;: 914, &#39;base_buffer&#39;: 914, &#39;erbB1_data_buffer&#39;: 2})</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="after_build_buffer">after_build_buffer<a class="anchor-link" href="#after_build_buffer"> </a></h4><p>Next is the <code>after_build_buffer</code> event. None of our current callbacks make use of this event, but it exists to allow for evaluation/postprocessing/whatever after buffer creation.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Sample-Batch">Sample Batch<a class="anchor-link" href="#Sample-Batch"> </a></h3><p>The next event stage is the <code>sample_batch</code> stage. This consists of the following events:</p>
+<ul>
+<li><code>before_batch</code>: set up/refresh any required state prior to batch sampling</li>
+<li><code>sample_batch</code>: draw one batch of samples</li>
+<li><code>before_filter_batch</code>: evaluate unfiltered batch</li>
+<li><code>filter_batch</code>: filter batch</li>
+<li><code>after_sample</code>: compute sample based metrics</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="before_batch">before_batch<a class="anchor-link" href="#before_batch"> </a></h4><p>This event is used to create a new <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> for the environment. The batch state is a container designed to hold any values required by the batch</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span> <span class="o">=</span> <span class="n">BatchState</span><span class="p">()</span>
+<span class="n">env</span><span class="p">(</span><span class="s1">&#39;before_batch&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Currently the batch state only has placeholder values for commonly generated terms</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;samples&#39;: [],
+ &#39;sources&#39;: [],
+ &#39;rewards&#39;: tensor(0., device=&#39;cuda:0&#39;),
+ &#39;loss&#39;: tensor(0., device=&#39;cuda:0&#39;, grad_fn=&lt;CopyBackwards&gt;),
+ &#39;latent_data&#39;: {}}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="sample_batch">sample_batch<a class="anchor-link" href="#sample_batch"> </a></h4><p>Now we actually draw samples to form a batch. All of our <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> objects have a <code>p_batch</code> value, which designated what percentage of the batch should come from that sampler. Batch sampling is designed such that individual sampler <code>p_batch</code> values are respected, and any remaining batch percentage comes from the buffer.</p>
+<p>Only <code>sampler1</code> has <code>p_batch&gt;0.</code>, with a value of <code>p_batch=0.5</code>. This means 50% of the batch will be sampled on he fly from <code>sampler1</code>, and the remaining 50% of the batch will come from the buffer.</p>
+<p>Using a hybrid of live sampling and buffer sampling seems to work best. That said, it is possible to have every batch be 100% buffer samples (like offline RL), or have 100% be live samples (like online RL)</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;sample_batch&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can see we've populated several terms in the batch state. <a href="/mrl/callback_core#BatchState.samples"><code>BatchState.samples</code></a> now has a list of samples. <a href="/mrl/callback_core#BatchState.sources"><code>BatchState.sources</code></a> has the source of each sample.</p>
+<p>We also added <a href="/mrl/callback_core#BatchState.live_raw"><code>BatchState.live_raw</code></a> and <a href="/mrl/callback_core#BatchState.base_raw"><code>BatchState.base_raw</code></a>. These terms hold the outputs of <code>sampler1</code> and <code>sampler2</code>. When we filter <a href="/mrl/callback_core#BatchState.samples"><code>BatchState.samples</code></a>, we can refer to the <code>_raw</code> terms to see what samples were removed.</p>
+<p>Note that <a href="/mrl/callback_core#BatchState.base_raw"><code>BatchState.base_raw</code></a> is an empty list since <code>sampler2.p_batch=0.</code></p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dict_keys([&#39;samples&#39;, &#39;sources&#39;, &#39;rewards&#39;, &#39;loss&#39;, &#39;latent_data&#39;, &#39;live_raw&#39;, &#39;base_raw&#39;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/mrl/callback_core#BatchState.sources"><code>BatchState.sources</code></a> holds the source of each sample. We have 100 samples from <code>live</code>, which corresponds to our on the fly samples from <code>sampler1</code>. The remaining 100 samples come from <code>live_buffer</code> and <code>base_buffer</code>. This means they came from either <code>sampler1</code> (live) or <code>sampler2</code> (base) by way of being sampled from the buffer</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Counter</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;sources&#39;</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Counter({&#39;live_buffer&#39;: 55, &#39;base_buffer&#39;: 45, &#39;live&#39;: 100})</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;samples&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;CC1CCN(C(=O)C2CCN(C(=O)Nc3nc(-c4ccccc4)cs3)CC2)CC1&#39;,
+ &#39;COc1ccnc(O)c1C(=O)NCC1CC(NC(=O)CCC(F)F)C1&#39;,
+ &#39;C[C@@H]([C@@H](C)NC(=O)Nc1cccc(S(N)(=O)=O)c1)N1CCOCC1&#39;,
+ &#39;CCN1C(=O)[C@@H]2CN(C(=O)Nc3ccc(OC(F)F)cn3)CCN2C1=O&#39;,
+ &#39;CC#CCN[C@@H]1CCN(C(=O)CN(C)S(=O)(=O)CC)C1&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;sources&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;live_buffer&#39;, &#39;live_buffer&#39;, &#39;base_buffer&#39;, &#39;base_buffer&#39;, &#39;live_buffer&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;live_raw&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;COc1ccc(N2CCN(CCNC(=O)Nc3ccc(N(C)C(=O)OC(C)(C)C)cc3)CC2)cc1&#39;,
+ &#39;C=CCCOCC(=O)N[C@@H]1CCCN(C(=O)[C@H](C)C#N)CC1&#39;,
+ &#39;COCCO[C@H](C)c1nnc(N2CC[C@H](C(N)=O)C2)n1CC1CC1&#39;,
+ &#39;CCN(CCNCc1cnsn1)C(=O)c1ccc2c(c1)N(C)CC2&#39;,
+ &#39;FC(F)(F)c1nnc(N2CCC[C@@H](OCCO)C2)s1&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;base_raw&#39;</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="before_filter_batch">before_filter_batch<a class="anchor-link" href="#before_filter_batch"> </a></h4><p>This event is not used by any of our current callbacks. It provides a hook to influence the batch state prior to filtering</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="filter_batch">filter_batch<a class="anchor-link" href="#filter_batch"> </a></h4><p>Now the batch will be filtered by our <a href="/mrl/template.template#Template"><code>Template</code></a>, as well as any other callbacks with a <code>filter_batch</code> method</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;filter_batch&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can see that 6 of our 200 samples were removed by filtering</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;samples&#39;</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>194</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can compare the values in <a href="/mrl/callback_core#BatchState.samples"><code>BatchState.samples</code></a> and <a href="/mrl/callback_core#BatchState.live_raw"><code>BatchState.live_raw</code></a> to see what was filtered</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">raw_samples</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;live_raw&#39;</span><span class="p">]</span>
+<span class="n">filtered_samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;samples&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="p">[</span><span class="s1">&#39;samples&#39;</span><span class="p">]))</span> 
+                    <span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">sources</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;live&#39;</span><span class="p">]</span>
+
+<span class="nb">len</span><span class="p">(</span><span class="n">filtered_samples</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_samples</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(94, 100)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">raw_samples</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">filtered_samples</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;COCCO[C@H](C)c1nnc(N2CC[C@H](C(N)=O)C2)n1CC1CC1&#39;,
+ &#39;FC(F)(F)c1nnc(N2CCC[C@@H](OCCO)C2)s1&#39;,
+ &#39;CC(C)(C)[S@@](=O)Cc1cccc(NC(=O)c2cc(Br)cn2C)c1&#39;,
+ &#39;CC(C)C[C@H](CNC(=O)NC[C@@H]1CCc2ccccc2C1)N[C@@H](C)c1ccccc1&#39;,
+ &#39;CCc1cnccc1C(=O)N1C[C@H]2CCC[C@@H](C1)N2C(=O)C1CC1&#39;,
+ &#39;Cc1cc(C(=O)N[C@@H]2COC3(CN(C(=O)C[C@H]4C[C@H]4C4CC4)C3)C2)on1&#39;,
+ &#39;Cc1ccncc1CNC(=O)Cc1coc2c1ccc(F)c2F&#39;,
+ &#39;CCn1cc(CC(=O)N2CCC([C@H](C)NCCCOC)CC2)cn1&#39;,
+ &#39;O=C(NC1CCS(=O)(=O)CC1)C(=O)N[C@@H]1CCC[C@H]2OCC[C@H]21&#39;,
+ &#39;O=S(=O)(NCc1cccc(C(F)(F)F)c1)c1ccc(Cl)c2ccccc21&#39;,
+ &#39;CCC[C@@H](C(=O)NCCN(CC)Cc1nnc(CC)s1)C(C)C&#39;,
+ &#39;C#CC[C@H](CCOC)NC(=O)N[C@@H](C)C(=O)NCc1ccco1&#39;,
+ &#39;COC1CCN(C(C)(C)Cn2c(CC(C)C)nnc2N(C)Cc2ccc(F)c(F)c2)CC1&#39;,
+ &#39;Cn1cc([C@@H]2CSCCCN2C(=O)c2cccc(S(=O)(=O)N3[C@H](C)CCC[C@@H]3C)c2)cn1&#39;,
+ &#39;CCn1cc(C(=O)N2C[C@@H](C)[C@H](NC(=O)c3ccncc3)C2)c(C2CC2)n1&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="after_sample">after_sample<a class="anchor-link" href="#after_sample"> </a></h4><p>The <code>after_sample</code> event is used to calculate metrics related to sampling</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;after_sample&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can see that several values have been added to <a href="/mrl/environment#Environment.log.metrics"><code>Environment.log.metrics</code></a></p>
+<ul>
+<li><code>new - 1.0</code>: percent of samples that have not been seen before</li>
+<li><code>diversity - 1.0</code>: number of unique samples relative to the number of total samples</li>
+<li><code>bs - 194</code>: true batch size after filtering</li>
+<li><code>valid - 0.97</code>: percent of samples that passed filtering</li>
+<li><code>live_diversity - 1.0</code>: number of unique samples relative to the number of total samples from <code>sampler1</code></li>
+<li><code>live_valid - 0.94</code>: percent of samples that passed filtering from <code>sampler1</code></li>
+<li><code>live_new - 1.0</code>: percent of samples that have not been seen before from <code>sampler1</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">metrics</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;rewards&#39;: [],
+ &#39;rewards_final&#39;: [],
+ &#39;new&#39;: [1.0],
+ &#39;diversity&#39;: [1.0],
+ &#39;bs&#39;: [194],
+ &#39;template&#39;: [],
+ &#39;valid&#39;: [0.97],
+ &#39;live_diversity&#39;: [1.0],
+ &#39;live_valid&#39;: [0.94],
+ &#39;live_rewards&#39;: [],
+ &#39;live_new&#39;: [1.0],
+ &#39;aff&#39;: [],
+ &#39;novel&#39;: [],
+ &#39;PPO&#39;: [],
+ &#39;rewards_live_p90&#39;: [],
+ &#39;rewards_live_max&#39;: []}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Compute-Reward">Compute Reward<a class="anchor-link" href="#Compute-Reward"> </a></h3><p>After we sample a batch, we enter the <code>compute_reward</code> stage. This consists of the following events:</p>
+<ul>
+<li><code>before_compute_reward</code> - used to set up any values needed for reward computation </li>
+<li><code>compute_reward</code> - used by <code>rewards</code> to compute rewards for all samples in the <code>batch state</code></li>
+<li><code>after_compute_reward</code> - used for logging reward metrics</li>
+<li><code>reward_modification</code> - modify rewards in ways not tracked by the log</li>
+<li><code>after_reward_modification</code> - log reward modification metrics</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="before_compute_reward">before_compute_reward<a class="anchor-link" href="#before_compute_reward"> </a></h4><p>This event can be used to set up any values needed for reward computation. Most rewards only need the raw samples as inputs, but rewards can use other inputs if needed. The only requirement for a reward is that it returns a tensor with one value per batch item.</p>
+<p>By default, the <a href="/mrl/agent#Agent"><code>Agent</code></a> class will tensorize the samples present at this step. Our <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> loss will also add placeholder values for the terms needed by that function</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;before_compute_reward&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A number of new items have populated the batch state</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dict_keys([&#39;samples&#39;, &#39;sources&#39;, &#39;rewards&#39;, &#39;loss&#39;, &#39;latent_data&#39;, &#39;live_raw&#39;, &#39;base_raw&#39;, &#39;model_gathered_logprobs&#39;, &#39;base_gathered_logprobs&#39;, &#39;mask&#39;, &#39;trajectory_rewards&#39;, &#39;model_logprobs&#39;, &#39;base_logprobs&#39;, &#39;value_input&#39;, &#39;x&#39;, &#39;y&#39;, &#39;bs&#39;, &#39;lengths&#39;, &#39;sl&#39;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">x</span> <span class="c1"># x tensor</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[ 0, 23, 23,  ...,  2,  2,  2],
+        [ 0, 23, 28,  ...,  2,  2,  2],
+        [ 0, 23, 31,  ...,  2,  2,  2],
+        ...,
+        [ 0, 23, 23,  ...,  2,  2,  2],
+        [ 0, 23, 31,  ...,  2,  2,  2],
+        [ 0, 23, 23,  ...,  2,  2,  2]], device=&#39;cuda:0&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">y</span> <span class="c1"># y tensor</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[23, 23, 11,  ...,  2,  2,  2],
+        [23, 28, 34,  ...,  2,  2,  2],
+        [23, 31, 23,  ...,  2,  2,  2],
+        ...,
+        [23, 23, 31,  ...,  2,  2,  2],
+        [23, 31, 23,  ...,  2,  2,  2],
+        [23, 23,  5,  ...,  2,  2,  2]], device=&#39;cuda:0&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">mask</span> <span class="c1"># padding mask</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[ True,  True,  True,  ..., False, False, False],
+        [ True,  True,  True,  ..., False, False, False],
+        [ True,  True,  True,  ..., False, False, False],
+        ...,
+        [ True,  True,  True,  ..., False, False, False],
+        [ True,  True,  True,  ..., False, False, False],
+        [ True,  True,  True,  ..., False, False, False]], device=&#39;cuda:0&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="compute_reward">compute_reward<a class="anchor-link" href="#compute_reward"> </a></h4><p>This step actually computes rewards. The <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> has a tensor of 0s as a placeholder for reward values. Rewards will compute a numeric score for each item in the batch and add it to <a href="/mrl/callback_core#BatchState.rewards"><code>BatchState.rewards</code></a></p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">rewards</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0.], device=&#39;cuda:0&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;compute_reward&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">rewards</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([ -4.9207,  -6.4757, -10.4049,  -4.2980,  -7.7184,  -3.4992,  -8.7251,
+         -6.5808,  -1.9598,  -5.0743,  -5.3781,  -6.2712,   0.4300,  -8.3497,
+         -8.6163,  -3.9752,  -8.2539,  -4.1198, -14.1471,   3.9196,  -7.4355,
+         -5.7973,  -2.4372,  -4.5564,  -7.3128,  -3.7687, -10.7635,  -6.4387,
+        -10.8553,  -8.7834,  -7.7953, -12.2559,  -8.6774,  -3.6228,  -5.5580,
+         -7.0956,  -3.0343,  -0.1838,  -7.5708, -10.2341,  -9.2917,  -3.3889,
+         -7.2033,  -2.3414,  -0.5930,  -6.9157,  -9.9772, -17.4336,  -4.8487,
+         -6.6143,   0.8611,  -6.0077,  -7.2941,   0.7670,  -8.1461,  -2.2909,
+         -4.9466, -12.3601,  -5.5133,  -6.9176,  -2.6929, -11.1348,  -6.7806,
+         -5.8056, -11.1539,  -7.9624,  -2.9736,  -7.4745,  -7.9849, -13.5966,
+         -4.9899,  -0.3546,  -8.9225,  -5.8561,  -4.5420,  -0.6707,  -7.9550,
+         -2.6196,  -7.2471,  -3.8212,  -4.4772,   0.4433, -13.9170,  -5.6456,
+         -8.0470,  -8.7309,  -1.2033,  -8.6667,  -5.4399,  -5.1526,  -0.6074,
+        -12.3861,  -7.2986, -12.5944,  -8.3328, -11.6031,  -3.5766,  -6.6018,
+         -4.5547,  -3.4533,  -8.7475, -10.5989,  -8.0021,  -3.8861,  -5.0582,
+        -10.3035,  -5.0026,  -4.3236,  -8.6545,  -5.2769,  -6.8492,  -7.7600,
+         -5.6974,  -8.3909,  -7.7889,  -6.3220,  -1.4177,  -5.6264,  -3.8658,
+         -5.9085,  -2.2029, -11.3686,  -8.4152,  -3.6143,  -3.6696,  -7.6287,
+        -10.9214,  -1.8035, -12.3404, -11.5483,  -9.4947, -10.5772,  -4.5111,
+         -5.7012, -11.7743, -12.8214,  -4.4162,  -5.3460,  -2.9653,   0.1471,
+         -9.3745,  -2.3537,  -3.4540,  -4.6599,  -5.5776,  -2.5114, -10.2074,
+        -12.2004,  -5.2997,   2.8164,  -6.5669,  -2.2154,  -3.0275,  -6.0305,
+         -8.0275,  -8.7599,  -4.8761, -10.0732,  -4.7152,  -6.3598,  -4.2244,
+         -7.8711,  -7.3025,  -9.5735,  -7.3417, -11.3890,  -5.8458, -10.2232,
+         -7.9277, -11.0311,  -3.9607,  -6.8210,  -3.3330,  -8.3965,  -2.2758,
+         -5.9508, -14.6549,  -8.3111,  -0.7287,  -5.8036,  -6.0785,  -5.4793,
+          0.2956,  -3.8356,  -3.6280,  -5.3575,  -9.7484,  -9.2309,  -4.6663,
+         -6.0039,  -9.0351,  -6.9096,  -7.2342,  -4.7466], device=&#39;cuda:0&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So where did these rewards come from?</p>
+<p>One reward term comes from our <a href="/mrl/template.template#Template"><code>Template</code></a>. We specified soft rewards for compounds with <code>QED&gt;=0.5</code> and <code>SA&lt;=5</code>. Compounds could score a maximum of 2 from the template.</p>
+<p>We also have the reward from the erbB1 regression model we set up earlier.</p>
+<p>The specific rewards from each of these sources are logged in the <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a></p>
+<p>For the <a href="/mrl/template.template#Template"><code>Template</code></a>, we have <a href="/mrl/callback_core#BatchState.template"><code>BatchState.template</code></a> and <a href="/mrl/callback_core#BatchState.template_passes"><code>BatchState.template_passes</code></a></p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dict_keys([&#39;samples&#39;, &#39;sources&#39;, &#39;rewards&#39;, &#39;loss&#39;, &#39;latent_data&#39;, &#39;live_raw&#39;, &#39;base_raw&#39;, &#39;model_gathered_logprobs&#39;, &#39;base_gathered_logprobs&#39;, &#39;mask&#39;, &#39;trajectory_rewards&#39;, &#39;model_logprobs&#39;, &#39;base_logprobs&#39;, &#39;value_input&#39;, &#39;x&#39;, &#39;y&#39;, &#39;bs&#39;, &#39;lengths&#39;, &#39;sl&#39;, &#39;template&#39;, &#39;template_passes&#39;, &#39;aff&#39;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Template scores:</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">template</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2.,
+       2., 2., 2., 2., 2., 2., 2., 2., 1., 2., 2., 2., 2., 2., 2., 2., 2.,
+       2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 1., 2., 2., 2., 2., 2.,
+       2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2.,
+       2., 2., 2., 2., 2., 1., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 1.,
+       2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 1., 2., 2.,
+       2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2.,
+       2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2.,
+       2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2.,
+       2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2.,
+       2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 1., 2., 2., 2., 1., 2.,
+       2., 2., 2., 2., 2., 2., 2.])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/mrl/callback_core#BatchState.template_passes"><code>BatchState.template_passes</code></a> shows which samples passed the hard filters. Since we decided to prefilter with our template earlier, all remaining samples are passing</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">template_passes</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here we have the erbB2 regression scores</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">aff</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([ -6.9207,  -8.4757, -12.4049,  -6.2980,  -9.7184,  -5.4992, -10.7251,
+         -8.5808,  -3.9598,  -7.0743,  -7.3781,  -8.2712,  -1.5700, -10.3497,
+        -10.6163,  -5.9752, -10.2539,  -6.1198, -16.1471,   1.9196,  -9.4355,
+         -7.7973,  -4.4372,  -6.5564,  -9.3128,  -4.7687, -12.7635,  -8.4387,
+        -12.8553, -10.7834,  -9.7953, -14.2559, -10.6774,  -5.6228,  -7.5580,
+         -9.0956,  -5.0343,  -2.1838,  -9.5708, -12.2341, -11.2917,  -5.3889,
+         -9.2033,  -4.3414,  -2.5930,  -7.9157, -11.9772, -19.4336,  -6.8487,
+         -8.6143,  -1.1389,  -8.0077,  -9.2941,  -1.2330, -10.1461,  -4.2909,
+         -6.9466, -14.3601,  -7.5133,  -8.9176,  -4.6929, -13.1348,  -8.7806,
+         -7.8056, -13.1539,  -9.9624,  -4.9736,  -9.4745,  -9.9849, -15.5966,
+         -6.9899,  -2.3546, -10.9225,  -6.8561,  -6.5420,  -2.6707,  -9.9550,
+         -4.6196,  -9.2471,  -5.8212,  -6.4772,  -1.5567, -15.9170,  -7.6456,
+         -9.0470, -10.7309,  -3.2033, -10.6667,  -7.4399,  -7.1526,  -2.6074,
+        -14.3861,  -9.2986, -14.5944, -10.3328, -13.6031,  -5.5766,  -8.6018,
+         -6.5547,  -4.4533, -10.7475, -12.5989, -10.0021,  -5.8861,  -7.0582,
+        -12.3035,  -7.0026,  -6.3236, -10.6545,  -7.2769,  -8.8492,  -9.7600,
+         -7.6974, -10.3909,  -9.7889,  -8.3220,  -3.4177,  -7.6264,  -5.8658,
+         -7.9085,  -4.2029, -13.3686, -10.4152,  -5.6143,  -5.6696,  -9.6287,
+        -12.9214,  -3.8035, -14.3404, -13.5483, -11.4947, -12.5772,  -6.5111,
+         -7.7012, -13.7743, -14.8214,  -6.4162,  -7.3460,  -4.9653,  -1.8529,
+        -11.3745,  -4.3537,  -5.4540,  -6.6599,  -7.5776,  -4.5114, -12.2074,
+        -14.2004,  -7.2997,   0.8164,  -8.5669,  -4.2154,  -5.0275,  -8.0305,
+        -10.0275, -10.7599,  -6.8761, -12.0732,  -6.7152,  -8.3598,  -6.2244,
+         -9.8711,  -9.3025, -11.5735,  -9.3417, -13.3890,  -7.8458, -12.2232,
+         -9.9277, -13.0311,  -5.9607,  -8.8210,  -5.3330, -10.3965,  -4.2758,
+         -7.9508, -16.6549, -10.3111,  -2.7287,  -7.8036,  -8.0785,  -6.4793,
+         -1.7044,  -5.8356,  -5.6280,  -6.3575, -11.7484, -11.2309,  -6.6663,
+         -8.0039, -11.0351,  -8.9096,  -9.2342,  -6.7466], device=&#39;cuda:0&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="after_compute_reward">after_compute_reward<a class="anchor-link" href="#after_compute_reward"> </a></h4><p>This event is used to calculate metrics on the rewards</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;after_compute_reward&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">metrics</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;rewards&#39;: [-6.3607645],
+ &#39;rewards_final&#39;: [],
+ &#39;new&#39;: [1.0],
+ &#39;diversity&#39;: [1.0],
+ &#39;bs&#39;: [194],
+ &#39;template&#39;: [1.9639175257731958],
+ &#39;valid&#39;: [0.97],
+ &#39;live_diversity&#39;: [1.0],
+ &#39;live_valid&#39;: [0.94],
+ &#39;live_rewards&#39;: [-6.473961],
+ &#39;live_new&#39;: [1.0],
+ &#39;aff&#39;: [array(-8.324681, dtype=float32)],
+ &#39;novel&#39;: [],
+ &#39;PPO&#39;: [],
+ &#39;rewards_live_p90&#39;: [-2.212899112701416],
+ &#39;rewards_live_max&#39;: [3.9196339]}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="reward_modification">reward_modification<a class="anchor-link" href="#reward_modification"> </a></h4><p>The reward modification event can be thought of as a second reward that isn't logged. The reason for including this is to allow for transient, "batch context" rewards that don't affect logged values.</p>
+<p>When we set up our callbacks earlier, we had a term</p>
+<p><code>new_cb = NoveltyReward(weight=0.05)</code></p>
+<p>Which would add a bonus score of 0.05 to new, never before seen samples. The point of this callback is to give the model a soft incentive to generate novel samples.</p>
+<p>We want this score to impact our current batch. However, if we treated it the same as our actual rewards, the samples would be saved into <code>env.log</code> with their scores inflated by 0.05. Later, when our <a href="/mrl/samplers#LogSampler"><code>LogSampler</code></a> samples from the log, the sampling would be influenced by a score that was only supposed to be given once.</p>
+<p>Separating out rewards and reward modifications lets us avoid this</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;reward_modification&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">novel</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500, 0.0500,
+        0.0500, 0.0500, 0.0500, 0.0500, 0.0500], device=&#39;cuda:0&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="after_reward_modification">after_reward_modification<a class="anchor-link" href="#after_reward_modification"> </a></h4><p>Similar to <code>after_compute_reward</code>, this event can be used to compute stats on reward modifications</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;after_reward_modification&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">metrics</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;rewards&#39;: [-6.3607645],
+ &#39;rewards_final&#39;: [-6.3607645],
+ &#39;new&#39;: [1.0],
+ &#39;diversity&#39;: [1.0],
+ &#39;bs&#39;: [194],
+ &#39;template&#39;: [1.9639175257731958],
+ &#39;valid&#39;: [0.97],
+ &#39;live_diversity&#39;: [1.0],
+ &#39;live_valid&#39;: [0.94],
+ &#39;live_rewards&#39;: [-6.473961],
+ &#39;live_new&#39;: [1.0],
+ &#39;aff&#39;: [array(-8.324681, dtype=float32)],
+ &#39;novel&#39;: [array(0.05, dtype=float32)],
+ &#39;PPO&#39;: [],
+ &#39;rewards_live_p90&#39;: [-2.212899112701416],
+ &#39;rewards_live_max&#39;: [3.9196339]}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Get-Model-Outputs">Get Model Outputs<a class="anchor-link" href="#Get-Model-Outputs"> </a></h3><p>After computing rewards, we move to set up our loss calculation. The <code>get_model_outputs</code> stage is based on generating the values that we will be backpropagating through. This stage consists of the following events:</p>
+<ul>
+<li><code>get_model_outputs</code> - generate necessary tensors from the model</li>
+<li><code>after_get_model_outputs</code> - used for any processing required prior to loss calculation </li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="get_model_outputs">get_model_outputs<a class="anchor-link" href="#get_model_outputs"> </a></h4><p>This is where we generate tensor values used for loss computation.</p>
+<p>The specifics of what happens here depends on the type of model used. For autoregressive models, this step involves taking the <code>x</code> and <code>y</code> tensors we generated during the <code>before_compute_reward</code> event and doing a forward pass.</p>
+<p><code>x</code> is a tensor of size <code>(bs, sl)</code>. Running <code>x</code> through the model will give a set of log probabilities of size <code>(bs, sl, d_vocab)</code>. We then use <code>y</code> to gather the relevant log probs to get a gathered log prob tensor of size <code>(bs, sl)</code>.</p>
+<p>We generate these values from both the main model and the baseline model</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;get_model_outputs&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dict_keys([&#39;samples&#39;, &#39;sources&#39;, &#39;rewards&#39;, &#39;loss&#39;, &#39;latent_data&#39;, &#39;live_raw&#39;, &#39;base_raw&#39;, &#39;model_gathered_logprobs&#39;, &#39;base_gathered_logprobs&#39;, &#39;mask&#39;, &#39;trajectory_rewards&#39;, &#39;model_logprobs&#39;, &#39;base_logprobs&#39;, &#39;value_input&#39;, &#39;x&#39;, &#39;y&#39;, &#39;bs&#39;, &#39;lengths&#39;, &#39;sl&#39;, &#39;template&#39;, &#39;template_passes&#39;, &#39;aff&#39;, &#39;rewards_final&#39;, &#39;novel&#39;, &#39;model_output&#39;, &#39;model_encoded&#39;, &#39;model_latent&#39;, &#39;y_gumbel&#39;, &#39;base_output&#39;, &#39;base_encoded&#39;, &#39;base_latent&#39;, &#39;state_values&#39;, &#39;ref_state_values&#39;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">model_logprobs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">model_gathered_logprobs</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([194, 75, 47]), torch.Size([194, 75]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="after_get_model_outputs">after_get_model_outputs<a class="anchor-link" href="#after_get_model_outputs"> </a></h4><p>This event is not used by any of our current callbacks, but can be used for any sort of post-processing needed before loss computation</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Compute-Loss">Compute Loss<a class="anchor-link" href="#Compute-Loss"> </a></h3><p>Now we actually compute a loss value and do an optimizer update. See the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> class for a description of the policy gradient algorithm used.</p>
+<p>Loss computation consists of the following steps:</p>
+<ul>
+<li><code>compute_loss</code> - compute loss values</li>
+<li><code>zero_grad</code> - zero grad</li>
+<li><code>before_step</code> - used for computation before optimizer step (ie gradient clipping)</li>
+<li><code>step</code> - step optimizer</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="compute_loss">compute_loss<a class="anchor-link" href="#compute_loss"> </a></h4><p>When we first created our <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a>, there was a placehoder value for <code>loss</code>. This is the value that will ulimately be backpropagated through. This means we can run any sort of loss configuration, so long as the final values end up in <a href="/mrl/callback_core#BatchState.loss"><code>BatchState.loss</code></a>.</p>
+<p>For example, the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> policy gradient algorithm we are using involved a <a href="/mrl/layers#ValueHead"><code>ValueHead</code></a> that predicts values at every time step. This model is held in the <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> callback that holds the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> class. During the <code>compute_loss</code> event, <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> computes an additional loss for the value head that is added to <a href="/mrl/callback_core#BatchState.loss"><code>BatchState.loss</code></a>.  <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> also holds an optimizer for the <a href="/mrl/layers#ValueHead"><code>ValueHead</code></a> parameters.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">loss</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0., device=&#39;cuda:0&#39;, grad_fn=&lt;CopyBackwards&gt;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;compute_loss&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">loss</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(2.6813, device=&#39;cuda:0&#39;, grad_fn=&lt;AddBackward0&gt;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="zero_grad">zero_grad<a class="anchor-link" href="#zero_grad"> </a></h4><p>This is an event to zero gradients of all optimizers in play. We currently have one optimizer in <a href="/mrl/agent#Agent"><code>Agent</code></a> for our generative model and one in <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> for the <a href="/mrl/layers#ValueHead"><code>ValueHead</code></a> of our policy gradient algorithm.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;zero_grad&#39;</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">batch_state</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="before_step">before_step<a class="anchor-link" href="#before_step"> </a></h4><p>This is an event before the actual optimizer step. This is used for things like gradient clipping</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;before_step&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="step">step<a class="anchor-link" href="#step"> </a></h4><p>This is the actual optimizer step. This will step both the <a href="/mrl/agent#Agent"><code>Agent</code></a> and <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> optimizers</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="After-Batch">After Batch<a class="anchor-link" href="#After-Batch"> </a></h3><p>The <code>after_batch</code> stage consists of a single <code>after_batch</code> event. This is used for any updates at the end of the batch.</p>
+<p>In particular, the <a href="/mrl/logging#Log"><code>Log</code></a> will update <a href="/mrl/logging#Log.df"><code>Log.df</code></a> and the <a href="/mrl/agent#Agent"><code>Agent</code></a> will update he baseline model</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;after_batch&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>samples</th>
+      <th>sources</th>
+      <th>rewards</th>
+      <th>rewards_final</th>
+      <th>template</th>
+      <th>aff</th>
+      <th>novel</th>
+      <th>PPO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>CC1CCN(C(=O)C2CCN(C(=O)Nc3nc(-c4ccccc4)cs3)CC2...</td>
+      <td>live_buffer</td>
+      <td>-4.870742</td>
+      <td>-4.920742</td>
+      <td>2.0</td>
+      <td>-6.920742</td>
+      <td>0.05</td>
+      <td>0.210345</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>COc1ccnc(O)c1C(=O)NCC1CC(NC(=O)CCC(F)F)C1</td>
+      <td>live_buffer</td>
+      <td>-6.425727</td>
+      <td>-6.475727</td>
+      <td>2.0</td>
+      <td>-8.475727</td>
+      <td>0.05</td>
+      <td>0.053149</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>C[C@@H]([C@@H](C)NC(=O)Nc1cccc(S(N)(=O)=O)c1)N...</td>
+      <td>base_buffer</td>
+      <td>-10.354889</td>
+      <td>-10.404889</td>
+      <td>2.0</td>
+      <td>-12.404889</td>
+      <td>0.05</td>
+      <td>4.652449</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>CCN1C(=O)[C@@H]2CN(C(=O)Nc3ccc(OC(F)F)cn3)CCN2...</td>
+      <td>base_buffer</td>
+      <td>-4.247975</td>
+      <td>-4.297976</td>
+      <td>2.0</td>
+      <td>-6.297976</td>
+      <td>0.05</td>
+      <td>0.487112</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>CC#CCN[C@@H]1CCN(C(=O)CN(C)S(=O)(=O)CC)C1</td>
+      <td>live_buffer</td>
+      <td>-7.668355</td>
+      <td>-7.718355</td>
+      <td>2.0</td>
+      <td>-9.718355</td>
+      <td>0.05</td>
+      <td>0.708384</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>189</th>
+      <td>CCO[C@@H]1C[C@@H]1C(=O)NC1CCN(CC(=O)Nc2ccccc2)CC1</td>
+      <td>live</td>
+      <td>-5.953860</td>
+      <td>-6.003860</td>
+      <td>2.0</td>
+      <td>-8.003860</td>
+      <td>0.05</td>
+      <td>-0.006749</td>
+    </tr>
+    <tr>
+      <th>190</th>
+      <td>CCn1cc(C(=O)N2C[C@@H](NC(=O)c3ccncc3)[C@H](C)C...</td>
+      <td>live</td>
+      <td>-8.985070</td>
+      <td>-9.035070</td>
+      <td>2.0</td>
+      <td>-11.035070</td>
+      <td>0.05</td>
+      <td>2.448218</td>
+    </tr>
+    <tr>
+      <th>191</th>
+      <td>CC[C@H](NC(=O)C(=O)N1CCC[C@H]1c1ccc(OC)c(OC)c1...</td>
+      <td>live</td>
+      <td>-6.859601</td>
+      <td>-6.909601</td>
+      <td>2.0</td>
+      <td>-8.909601</td>
+      <td>0.05</td>
+      <td>0.219688</td>
+    </tr>
+    <tr>
+      <th>192</th>
+      <td>C[C@H](N)[C@H]1CCCN(C(=O)c2ccccc2Br)C1</td>
+      <td>live</td>
+      <td>-7.184169</td>
+      <td>-7.234169</td>
+      <td>2.0</td>
+      <td>-9.234169</td>
+      <td>0.05</td>
+      <td>0.379862</td>
+    </tr>
+    <tr>
+      <th>193</th>
+      <td>CC(F)(F)C1(C(=O)N2CCC[C@@H](NC(=O)C(F)(F)F)[C@...</td>
+      <td>live</td>
+      <td>-4.696569</td>
+      <td>-4.746570</td>
+      <td>2.0</td>
+      <td>-6.746570</td>
+      <td>0.05</td>
+      <td>0.236451</td>
+    </tr>
+  </tbody>
+</table>
+<p>194 rows × 8 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="After-Train">After Train<a class="anchor-link" href="#After-Train"> </a></h3><p>The <code>after_train</code> event can be used to calculate any final statistics or other values as desired</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;after_train&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions"> </a></h3><p>Hopefully walking through the training process step by step has made he process more understandable. We conclude by simply running <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a> so we don't have to go through things step by step anymore</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -366,99 +2936,479 @@ nb_path: "nbs/tutorials.rl.train_overview.ipynb"
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
-      <td>-6.118</td>
-      <td>-6.118</td>
-      <td>1.000</td>
-      <td>1.000</td>
-      <td>190</td>
-      <td>1.968</td>
-      <td>0.950</td>
-      <td>1.000</td>
-      <td>0.900</td>
-      <td>-6.763</td>
-      <td>1.000</td>
-      <td>-8.087</td>
-      <td>0.050</td>
-      <td>3.216</td>
-      <td>-1.674</td>
-      <td>3.496</td>
-    </tr>
-    <tr>
       <td>2</td>
-      <td>-6.280</td>
-      <td>-6.280</td>
+      <td>-6.198</td>
+      <td>-6.198</td>
       <td>1.000</td>
       <td>1.000</td>
-      <td>188</td>
-      <td>1.968</td>
-      <td>0.940</td>
+      <td>189</td>
+      <td>1.979</td>
+      <td>0.945</td>
       <td>1.000</td>
-      <td>0.880</td>
-      <td>-5.995</td>
+      <td>0.890</td>
+      <td>-6.663</td>
       <td>1.000</td>
-      <td>-8.249</td>
+      <td>-8.177</td>
       <td>0.050</td>
-      <td>2.319</td>
-      <td>-2.585</td>
-      <td>6.606</td>
+      <td>2.885</td>
+      <td>-2.415</td>
+      <td>1.224</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>-6.139</td>
-      <td>-6.139</td>
+      <td>-5.958</td>
+      <td>-5.958</td>
       <td>1.000</td>
       <td>1.000</td>
-      <td>188</td>
-      <td>1.973</td>
-      <td>0.940</td>
+      <td>185</td>
+      <td>1.951</td>
+      <td>0.925</td>
       <td>1.000</td>
-      <td>0.880</td>
-      <td>-6.146</td>
+      <td>0.850</td>
+      <td>-5.662</td>
       <td>1.000</td>
-      <td>-8.113</td>
+      <td>-7.910</td>
       <td>0.050</td>
-      <td>2.588</td>
-      <td>-2.053</td>
-      <td>1.301</td>
+      <td>2.987</td>
+      <td>-1.025</td>
+      <td>3.383</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>-6.070</td>
-      <td>-6.070</td>
+      <td>-6.115</td>
+      <td>-6.115</td>
       <td>1.000</td>
       <td>1.000</td>
-      <td>192</td>
-      <td>1.984</td>
-      <td>0.960</td>
+      <td>185</td>
+      <td>1.957</td>
+      <td>0.925</td>
       <td>1.000</td>
-      <td>0.920</td>
-      <td>-5.836</td>
+      <td>0.850</td>
+      <td>-6.001</td>
       <td>1.000</td>
-      <td>-8.055</td>
+      <td>-8.072</td>
       <td>0.050</td>
-      <td>2.991</td>
-      <td>-0.729</td>
-      <td>7.122</td>
+      <td>2.641</td>
+      <td>-1.548</td>
+      <td>3.829</td>
     </tr>
     <tr>
       <td>8</td>
-      <td>-6.530</td>
-      <td>-6.530</td>
+      <td>-5.425</td>
+      <td>-5.425</td>
       <td>1.000</td>
+      <td>1.000</td>
+      <td>196</td>
+      <td>1.980</td>
+      <td>0.980</td>
+      <td>1.000</td>
+      <td>0.960</td>
+      <td>-5.028</td>
+      <td>1.000</td>
+      <td>-7.404</td>
+      <td>0.050</td>
+      <td>3.626</td>
+      <td>-0.638</td>
+      <td>5.833</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>-5.735</td>
+      <td>-5.735</td>
+      <td>1.000</td>
+      <td>1.000</td>
+      <td>193</td>
+      <td>1.943</td>
+      <td>0.965</td>
+      <td>1.000</td>
+      <td>0.930</td>
+      <td>-5.702</td>
+      <td>1.000</td>
+      <td>-7.678</td>
+      <td>0.050</td>
+      <td>2.803</td>
+      <td>-0.664</td>
+      <td>2.142</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>-5.602</td>
+      <td>-5.602</td>
+      <td>1.000</td>
+      <td>1.000</td>
+      <td>194</td>
+      <td>1.959</td>
+      <td>0.970</td>
+      <td>1.000</td>
+      <td>0.940</td>
+      <td>-5.945</td>
+      <td>1.000</td>
+      <td>-7.561</td>
+      <td>0.050</td>
+      <td>2.916</td>
+      <td>-1.131</td>
+      <td>3.825</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>-6.294</td>
+      <td>-6.294</td>
+      <td>1.000</td>
+      <td>1.000</td>
+      <td>192</td>
+      <td>1.958</td>
+      <td>0.960</td>
+      <td>1.000</td>
+      <td>0.920</td>
+      <td>-6.859</td>
+      <td>1.000</td>
+      <td>-8.253</td>
+      <td>0.050</td>
+      <td>2.827</td>
+      <td>-1.196</td>
+      <td>3.223</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>-6.021</td>
+      <td>-6.021</td>
+      <td>1.000</td>
+      <td>1.000</td>
+      <td>193</td>
+      <td>1.964</td>
+      <td>0.965</td>
+      <td>1.000</td>
+      <td>0.930</td>
+      <td>-6.118</td>
+      <td>1.000</td>
+      <td>-7.985</td>
+      <td>0.050</td>
+      <td>2.550</td>
+      <td>-1.561</td>
+      <td>4.166</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>-5.939</td>
+      <td>-5.939</td>
+      <td>0.979</td>
+      <td>1.000</td>
+      <td>187</td>
+      <td>1.957</td>
+      <td>0.935</td>
+      <td>1.000</td>
+      <td>0.870</td>
+      <td>-6.474</td>
+      <td>1.000</td>
+      <td>-7.896</td>
+      <td>0.049</td>
+      <td>3.500</td>
+      <td>-0.362</td>
+      <td>4.195</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>-5.930</td>
+      <td>-5.930</td>
+      <td>0.937</td>
       <td>1.000</td>
       <td>189</td>
       <td>1.958</td>
       <td>0.945</td>
       <td>1.000</td>
       <td>0.890</td>
-      <td>-5.979</td>
+      <td>-6.755</td>
       <td>1.000</td>
-      <td>-8.488</td>
-      <td>0.050</td>
-      <td>2.663</td>
-      <td>-2.031</td>
-      <td>4.096</td>
+      <td>-7.887</td>
+      <td>0.047</td>
+      <td>5.162</td>
+      <td>-1.946</td>
+      <td>3.934</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td>-5.851</td>
+      <td>-5.851</td>
+      <td>0.989</td>
+      <td>1.000</td>
+      <td>184</td>
+      <td>1.962</td>
+      <td>0.920</td>
+      <td>1.000</td>
+      <td>0.840</td>
+      <td>-5.447</td>
+      <td>1.000</td>
+      <td>-7.813</td>
+      <td>0.049</td>
+      <td>20.685</td>
+      <td>-1.451</td>
+      <td>1.755</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td>-5.759</td>
+      <td>-5.759</td>
+      <td>0.964</td>
+      <td>1.000</td>
+      <td>193</td>
+      <td>1.974</td>
+      <td>0.965</td>
+      <td>1.000</td>
+      <td>0.930</td>
+      <td>-6.226</td>
+      <td>1.000</td>
+      <td>-7.733</td>
+      <td>0.048</td>
+      <td>2.887</td>
+      <td>-1.391</td>
+      <td>3.051</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td>-5.557</td>
+      <td>-5.557</td>
+      <td>0.985</td>
+      <td>1.000</td>
+      <td>195</td>
+      <td>1.959</td>
+      <td>0.975</td>
+      <td>1.000</td>
+      <td>0.950</td>
+      <td>-5.548</td>
+      <td>1.000</td>
+      <td>-7.516</td>
+      <td>0.049</td>
+      <td>3.246</td>
+      <td>-0.574</td>
+      <td>5.542</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>-5.839</td>
+      <td>-5.839</td>
+      <td>0.990</td>
+      <td>1.000</td>
+      <td>192</td>
+      <td>1.969</td>
+      <td>0.960</td>
+      <td>1.000</td>
+      <td>0.920</td>
+      <td>-5.626</td>
+      <td>1.000</td>
+      <td>-7.808</td>
+      <td>0.049</td>
+      <td>2.753</td>
+      <td>-0.961</td>
+      <td>5.594</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>-5.351</td>
+      <td>-5.351</td>
+      <td>0.954</td>
+      <td>1.000</td>
+      <td>194</td>
+      <td>1.948</td>
+      <td>0.970</td>
+      <td>1.000</td>
+      <td>0.940</td>
+      <td>-5.712</td>
+      <td>1.000</td>
+      <td>-7.299</td>
+      <td>0.048</td>
+      <td>3.965</td>
+      <td>-0.882</td>
+      <td>10.033</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td>-5.437</td>
+      <td>-5.437</td>
+      <td>0.964</td>
+      <td>1.000</td>
+      <td>193</td>
+      <td>1.974</td>
+      <td>0.965</td>
+      <td>1.000</td>
+      <td>0.930</td>
+      <td>-5.572</td>
+      <td>1.000</td>
+      <td>-7.411</td>
+      <td>0.048</td>
+      <td>3.065</td>
+      <td>-1.647</td>
+      <td>4.130</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>-5.757</td>
+      <td>-5.757</td>
+      <td>0.984</td>
+      <td>1.000</td>
+      <td>188</td>
+      <td>1.947</td>
+      <td>0.940</td>
+      <td>1.000</td>
+      <td>0.880</td>
+      <td>-6.003</td>
+      <td>1.000</td>
+      <td>-7.704</td>
+      <td>0.049</td>
+      <td>3.639</td>
+      <td>-0.917</td>
+      <td>6.873</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td>-5.595</td>
+      <td>-5.595</td>
+      <td>0.969</td>
+      <td>1.000</td>
+      <td>193</td>
+      <td>1.969</td>
+      <td>0.965</td>
+      <td>1.000</td>
+      <td>0.930</td>
+      <td>-6.394</td>
+      <td>1.000</td>
+      <td>-7.564</td>
+      <td>0.048</td>
+      <td>3.338</td>
+      <td>-1.494</td>
+      <td>2.731</td>
+    </tr>
+    <tr>
+      <td>38</td>
+      <td>-6.097</td>
+      <td>-6.097</td>
+      <td>0.974</td>
+      <td>1.000</td>
+      <td>192</td>
+      <td>1.958</td>
+      <td>0.960</td>
+      <td>1.000</td>
+      <td>0.920</td>
+      <td>-6.170</td>
+      <td>1.000</td>
+      <td>-8.055</td>
+      <td>0.049</td>
+      <td>2.498</td>
+      <td>-1.964</td>
+      <td>4.091</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>-6.034</td>
+      <td>-6.034</td>
+      <td>0.979</td>
+      <td>1.000</td>
+      <td>191</td>
+      <td>1.963</td>
+      <td>0.955</td>
+      <td>1.000</td>
+      <td>0.910</td>
+      <td>-6.239</td>
+      <td>1.000</td>
+      <td>-7.998</td>
+      <td>0.049</td>
+      <td>3.587</td>
+      <td>-1.325</td>
+      <td>5.922</td>
+    </tr>
+    <tr>
+      <td>42</td>
+      <td>-5.755</td>
+      <td>-5.755</td>
+      <td>0.990</td>
+      <td>1.000</td>
+      <td>193</td>
+      <td>1.959</td>
+      <td>0.965</td>
+      <td>1.000</td>
+      <td>0.930</td>
+      <td>-5.786</td>
+      <td>1.000</td>
+      <td>-7.714</td>
+      <td>0.049</td>
+      <td>3.198</td>
+      <td>-0.748</td>
+      <td>3.880</td>
+    </tr>
+    <tr>
+      <td>44</td>
+      <td>-6.326</td>
+      <td>-6.326</td>
+      <td>0.984</td>
+      <td>1.000</td>
+      <td>190</td>
+      <td>1.974</td>
+      <td>0.950</td>
+      <td>1.000</td>
+      <td>0.900</td>
+      <td>-6.656</td>
+      <td>1.000</td>
+      <td>-8.300</td>
+      <td>0.049</td>
+      <td>3.416</td>
+      <td>-1.437</td>
+      <td>3.681</td>
+    </tr>
+    <tr>
+      <td>46</td>
+      <td>-6.136</td>
+      <td>-6.136</td>
+      <td>0.964</td>
+      <td>1.000</td>
+      <td>194</td>
+      <td>1.959</td>
+      <td>0.970</td>
+      <td>1.000</td>
+      <td>0.940</td>
+      <td>-6.681</td>
+      <td>1.000</td>
+      <td>-8.095</td>
+      <td>0.048</td>
+      <td>3.008</td>
+      <td>-2.475</td>
+      <td>2.708</td>
+    </tr>
+    <tr>
+      <td>48</td>
+      <td>-5.694</td>
+      <td>-5.694</td>
+      <td>0.969</td>
+      <td>1.000</td>
+      <td>192</td>
+      <td>1.948</td>
+      <td>0.960</td>
+      <td>1.000</td>
+      <td>0.920</td>
+      <td>-5.869</td>
+      <td>1.000</td>
+      <td>-7.642</td>
+      <td>0.048</td>
+      <td>3.311</td>
+      <td>-1.112</td>
+      <td>1.613</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>-5.801</td>
+      <td>-5.801</td>
+      <td>0.968</td>
+      <td>1.000</td>
+      <td>187</td>
+      <td>1.968</td>
+      <td>0.935</td>
+      <td>1.000</td>
+      <td>0.870</td>
+      <td>-5.952</td>
+      <td>1.000</td>
+      <td>-7.769</td>
+      <td>0.048</td>
+      <td>3.622</td>
+      <td>-1.292</td>
+      <td>4.002</td>
     </tr>
   </tbody>
 </table>
