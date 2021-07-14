@@ -19,6 +19,12 @@
             },
             "Reinforcement Learning" : {
                 "Fit Cycle Overview" : "tutorials.rl.train_overview.html"
+            },
+            "Workflows" : {
+                "Model Optimizaton" : "tutorials.workflows.model_optimization.html",
+                "Prior Optimization" : "tutorials.workflows.prior_optimization.html",
+                "Latent Optimization" : "tutorials.workflows.latent_optimization.html",
+                "Constastive Optimization" : "tutorials.workflows.contrastive_optimization.html"
             }
         }
     },

@@ -104,7 +104,11 @@ class Agent(Callback):
 
         train_ds, valid_ds = self.dataset.split(percent_valid)
 
-        train_dl = train_ds.dataloader(bs, shuffle=True)
+        if len(train_ds)%bs==1:
+            train_dl = train_ds.dataloader(bs, shuffle=True, drop_last=True)
+        else:
+            train_dl = train_ds.dataloader(bs, shuffle=True)
+
         valid_dl = valid_ds.dataloader(bs)
 
         opt = optim.Adam(self.model.parameters(), lr=lr)

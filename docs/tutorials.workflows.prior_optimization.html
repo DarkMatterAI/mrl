@@ -111,7 +111,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.prior_optimization.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Here we freeze the weights o the model so that the model won't be updated during training</p>
+<p>Here we freeze the weights of the model so that the model won't be updated during training</p>
 
 </div>
 </div>
@@ -189,7 +189,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.prior_optimization.ipynb"
         <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">preds</span>
     
-<span class="n">reward_function</span> <span class="o">=</span> <span class="n">FP_Regression_Score</span><span class="p">(</span><span class="s1">&#39;files/erbB1_regression.sklearn&#39;</span><span class="p">)</span>
+<span class="n">reward_function</span> <span class="o">=</span> <span class="n">FP_Regression_Score</span><span class="p">(</span><span class="s1">&#39;../files/erbB1_regression.sklearn&#39;</span><span class="p">)</span>
 
 <span class="n">reward</span> <span class="o">=</span> <span class="n">Reward</span><span class="p">(</span><span class="n">reward_function</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">10.</span><span class="p">)</span>
 
@@ -269,7 +269,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.prior_optimization.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;files/erbB1_affinity_data.csv&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../files/erbB1_affinity_data.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">value</span><span class="o">&lt;-</span><span class="mi">1</span><span class="p">]</span>
 
 <span class="n">smiles</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">values</span>
