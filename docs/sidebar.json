@@ -25,6 +25,11 @@
                 "Prior Optimization" : "tutorials.workflows.prior_optimization.html",
                 "Latent Optimization" : "tutorials.workflows.latent_optimization.html",
                 "Constastive Optimization" : "tutorials.workflows.contrastive_optimization.html"
+            },
+            "Small Molecules" : {
+                "QED Optimization" : "tutorials.small_molecule.qed.html",
+                "Penalized LogP Optimization" : "tutorials.small_molecule.plogp.html",
+                "Multiparameter Property Optimization" : "tutorials.small_molecule.mpo.html"
             }
         }
     },

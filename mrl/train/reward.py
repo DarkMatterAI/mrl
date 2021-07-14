@@ -235,7 +235,7 @@ class RewardModification(Callback):
         else:
             rewards = 0.
 
-        batch_state.rewards += rewards
+        batch_state.rewards_final += rewards
         batch_state[self.name] = rewards
 
         if self.track:
@@ -279,7 +279,7 @@ class NoveltyReward(Callback):
         rewards = np.array([float(i) for i in new])*self.weight
         rewards = to_device(torch.from_numpy(rewards).float())
 
-        batch_state.rewards += rewards
+        batch_state.rewards_final += rewards
         batch_state[self.name] = rewards
 
         if self.track:

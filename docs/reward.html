@@ -226,7 +226,8 @@ from this callback</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Reward-Modification">Reward Modification<a class="anchor-link" href="#Reward-Modification"> </a></h2><p>As discussed above, reward modifications apply changes to rewards based on some sort of transient batch context. These are rewards that will influence a given batch, but not the logged rewards</p>
+<h2 id="Reward-Modification">Reward Modification<a class="anchor-link" href="#Reward-Modification"> </a></h2><p>As discussed above, reward modifications apply changes to rewards based on some sort of transient batch context. These are rewards that will influence a given batch, but not the logged rewards.</p>
+<p>Reward modifications should update the value <a href="/mrl/callback_core#BatchState.rewards_final"><code>BatchState.rewards_final</code></a></p>
 
 </div>
 </div>

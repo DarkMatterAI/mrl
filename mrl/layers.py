@@ -902,15 +902,15 @@ class MLP(nn.Module):
     - `outrange Optional[list[float]]`: squashes the output to be between `outrange[0]`
     and `outrange[1]`
     '''
-    def __init__(self, d_in, dims, d_out, drops, outrange=None):
+    def __init__(self, d_in, dims, d_out, drops, outrange=None, bn=True):
         super().__init__()
 
         dims = [d_in]+dims
 
         acts = [True]*(len(dims)-1)
-        bns = [True]*(len(dims)-1)
+        bns = [True]*(len(dims)-1) if bn else [False]*(len(dims)-1)
         layers = [LinearBlock(d_in, d_out, act=a, bn=b, dropout=p)
-                 for d_in, d_out, a, b, p in zip(dims[:-1], dims[1:], acts, bns, dropouts)]
+                 for d_in, d_out, a, b, p in zip(dims[:-1], dims[1:], acts, bns, drops)]
         layers.append(nn.Linear(dims[-1], d_out))
 
         self.layers = nn.Sequential(*layers)

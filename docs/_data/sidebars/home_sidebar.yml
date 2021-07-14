@@ -67,6 +67,18 @@ entries:
           title: Constastive Optimization
           url: tutorials.workflows.contrastive_optimization.html
         title: Workflows
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: QED Optimization
+          url: tutorials.small_molecule.qed.html
+        - output: web,pdf
+          title: Penalized LogP Optimization
+          url: tutorials.small_molecule.plogp.html
+        - output: web,pdf
+          title: Multiparameter Property Optimization
+          url: tutorials.small_molecule.mpo.html
+        title: Small Molecules
     output: web
     title: Tutorials
   - folderitems:
