@@ -87,7 +87,7 @@ class Agent(Callback):
         loss = self.loss_function(output, y)
         return loss
 
-    def train_supervised(self, bs, epochs, lr, percent_valid=0.05):
+    def train_supervised(self, bs, epochs, lr, percent_valid=0.05, silent=False):
         '''
         train_supervised
 
@@ -100,6 +100,8 @@ class Agent(Callback):
         - `lr float`: learning rate passed to `optim.lr_scheduler.OneCycleLR`
 
         - `percent_valid float`: validation set percentage
+
+        - `silent bool`: if training losses should be printed
         '''
 
         train_ds, valid_ds = self.dataset.split(percent_valid)
@@ -116,13 +118,22 @@ class Agent(Callback):
         scheduler = optim.lr_scheduler.OneCycleLR(opt, max_lr=lr,
                                         steps_per_epoch=len(train_dl), epochs=epochs)
 
-        mb = master_bar(range(epochs))
-        mb.write(['Epoch', 'Train Loss', 'Valid  Loss', 'Time'], table=True)
+        if silent:
+            mb = range(epochs)
+        else:
+            mb = master_bar(range(epochs))
+            mb.write(['Epoch', 'Train Loss', 'Valid  Loss', 'Time'], table=True)
+
         for epoch in mb:
             start = time.time()
             train_losses = []
 
-            for batch in progress_bar(train_dl, parent=mb):
+            if silent:
+                batch_iter = iter(train_dl)
+            else:
+                batch_iter = progress_bar(train_dl, parent=mb)
+
+            for batch in batch_iter:
 
                 loss = self.one_batch(batch)
 
@@ -131,22 +142,33 @@ class Agent(Callback):
                 opt.step()
                 scheduler.step()
                 train_losses.append(loss.detach().cpu())
-                mb.child.comment = f"{train_losses[-1]:.5f}"
+
+                if not silent:
+                    mb.child.comment = f"{train_losses[-1]:.5f}"
 
             with torch.no_grad():
                 self.model.eval()
                 valid_losses = []
-                for batch in progress_bar(valid_dl, parent=mb):
+
+                if silent:
+                    batch_iter = iter(valid_dl)
+                else:
+                    batch_iter = progress_bar(valid_dl, parent=mb)
+
+                for batch in batch_iter:
 
                     loss = self.one_batch(batch)
                     valid_losses.append(loss.detach().cpu())
-                    mb.child.comment = f"{valid_losses[-1]:.5f}"
+
+                    if not silent:
+                        mb.child.comment = f"{valid_losses[-1]:.5f}"
                 self.model.train()
 
             train_loss = smooth_batches(train_losses)
             valid_loss = smooth_batches(valid_losses)
             end = time.time() - start
-            mb.write([epoch, f'{train_losses[-1]:.5f}',
+            if not silent:
+                mb.write([epoch, f'{train_losses[-1]:.5f}',
                       f'{valid_losses[-1]:.5f}', f'{format_time(end)}'], table=True)
 
     def update_dataset(self, dataset):
@@ -156,10 +178,14 @@ class Agent(Callback):
         dataset = self.dataset.new(*dataset_inputs)
         self.update_dataset(dataset)
 
+    def load_state_dict(self, state_dict):
+        self.model.load_state_dict(state_dict)
+
     def load_weights(self, filename):
         state_dict = torch.load(filename, map_location=get_model_device(self.model))
+        self.load_state_dict(state_dict)
 
-        self.model.load_state_dict(state_dict)
+#         self.model.load_state_dict(state_dict)
 
     def save_weights(self, filename):
 
@@ -293,13 +319,15 @@ class BaselineAgent(Agent):
 
         torch.save(state_dict, filename)
 
-    def load_weights(self, filename):
-        state_dict = torch.load(filename, map_location=get_model_device(self.model))
-
+    def load_state_dict(self, state_dict):
         self.model.load_state_dict(state_dict['model'])
 
         if isinstance(self.base_model, nn.Module):
             self.base_model.load_state_dict(state_dict['base_model'])
+
+    def load_weights(self, filename):
+        state_dict = torch.load(filename, map_location=get_model_device(self.model))
+        self.load_state_dict(state_dict)
 
 
 # Cell
@@ -539,9 +567,11 @@ class SupevisedCB(Callback):
     - `bs int`: batch size
 
     - `log_term str`: what term in the log to take the percentile of
+
+    - `silent bool`: if training losses should be printed
     '''
     def __init__(self, agent, frequency, base_update, percentile,
-                 lr, bs, log_term='rewards'):
+                 lr, bs, log_term='rewards', silent=True):
         super().__init__('supervised', order=1000)
         self.agent = agent
         self.frequency = frequency
@@ -550,6 +580,7 @@ class SupevisedCB(Callback):
         self.lr = lr
         self.bs = bs
         self.log_term = log_term
+        self.silent = silent
 
     def after_batch(self):
         env = self.environment
@@ -565,7 +596,7 @@ class SupevisedCB(Callback):
         df = df[df[self.log_term]>np.percentile(df[self.log_term].values, self.percentile)]
 
         self.agent.update_dataset_from_inputs(df.samples.values)
-        self.agent.train_supervised(self.bs, 1, self.lr)
+        self.agent.train_supervised(self.bs, 1, self.lr, silent=self.silent)
 
         if hasattr(self.agent, 'base_model'):
             if isinstance(self.agent.base_model, nn.Module):
@@ -658,9 +689,12 @@ class RetrainRollback(Callback):
     - `mode str['greater', 'lesser']`: if greater, rollback is triggered by
     the metric going over `target`. If lesser, rollback is triggered by the
     metric falling below `target`
+
+    - `silent bool`: if training losses should be printed
     '''
     def __init__(self, agent, metric_name, lookback, target,
-                 percentile, lr, bs, base_update, name, mode='greater'):
+                 percentile, lr, bs, base_update, name, mode='greater',
+                 silent=False):
         super().__init__(name=name, order=1000)
 
         self.agent = agent
@@ -673,6 +707,7 @@ class RetrainRollback(Callback):
         self.base_update = base_update
         self.mode = mode
         self.last_rollback = 0
+        self.silent = silent
 
     def after_batch(self):
         log = self.environment.log
@@ -700,7 +735,7 @@ class RetrainRollback(Callback):
         df = df[metric_values>np.percentile(metric_values, self.percentile)]
 
         self.agent.update_dataset_from_inputs(df.samples.values)
-        self.agent.train_supervised(self.bs, 1, self.lr)
+        self.agent.train_supervised(self.bs, 1, self.lr, silent=self.silent)
 
         merge_models(self.agent.base_model, self.agent.model, alpha=self.base_update)
 
@@ -731,9 +766,12 @@ class ResetAndRetrain(Callback):
     - `log_term str`: what term in the log to take the percentile of
 
     - `sample_term str`: what log term contains the samples to train on
+
+    - `silent bool`: if training losses should be printed
     '''
     def __init__(self, agent, frequency, weight_fp, percentile,
-                 lr, bs, epochs, log_term='rewards', sample_term='samples'):
+                 lr, bs, epochs, log_term='rewards', sample_term='samples',
+                 silent=False):
         super().__init__(name='reset_retrain', order=1000)
         self.agent = agent
         self.frequency = frequency
@@ -744,6 +782,7 @@ class ResetAndRetrain(Callback):
         self.log_term = log_term
         self.sample_term = sample_term
         self.weight_fp = weight_fp
+        self.silent = silent
 
     def after_batch(self):
         env = self.environment
@@ -761,7 +800,7 @@ class ResetAndRetrain(Callback):
         self.agent.model.load_state_dict(torch.load(self.weight_fp))
 
         self.agent.update_dataset_from_inputs(df[self.sample_term].values)
-        self.agent.train_supervised(self.bs, self.epochs, self.lr)
+        self.agent.train_supervised(self.bs, self.epochs, self.lr, silent=self.silent)
 
         self.agent.base_model.load_state_dict(self.agent.model.state_dict())
 

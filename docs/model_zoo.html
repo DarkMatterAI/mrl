@@ -68,6 +68,30 @@ nb_path: "nbs/22_model_zoo.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="model_from_url" class="doc_header"><code>model_from_url</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>model_from_url</code>(<strong><code>weight_filename</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 </div>
     {% endraw %}
 
@@ -82,7 +106,7 @@ nb_path: "nbs/22_model_zoo.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PretrainedGenerativeAgent" class="doc_header"><code>class</code> <code>PretrainedGenerativeAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L32" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PretrainedGenerativeAgent</code>(<strong><code>weight_filename</code></strong>, <strong><code>model</code></strong>, <strong><code>vocab</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'pretrained_model'</code></em>) :: <a href="/mrl/agent#GenerativeAgent"><code>GenerativeAgent</code></a></p>
+<h2 id="PretrainedGenerativeAgent" class="doc_header"><code>class</code> <code>PretrainedGenerativeAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L36" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PretrainedGenerativeAgent</code>(<strong><code>weight_filename</code></strong>, <strong><code>model</code></strong>, <strong><code>vocab</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'pretrained_model'</code></em>) :: <a href="/mrl/agent#GenerativeAgent"><code>GenerativeAgent</code></a></p>
 </blockquote>
 <p>PretrainedGenerativeAgent - base <a href="/mrl/agent#GenerativeAgent"><code>GenerativeAgent</code></a>
 variant for pretrained models</p>
@@ -149,7 +173,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lstm_lm_small" class="doc_header"><code>lstm_lm_small</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lstm_lm_small</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="lstm_lm_small" class="doc_header"><code>lstm_lm_small</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L110" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lstm_lm_small</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>lstm_lm_small - small LSTM_LM model</p>
 <p>Inputs:</p>
@@ -181,7 +205,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lstm_lm_large" class="doc_header"><code>lstm_lm_large</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L140" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lstm_lm_large</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="lstm_lm_large" class="doc_header"><code>lstm_lm_large</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lstm_lm_large</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>lstm_lm_large - large LSTM_LM model</p>
 <p>Inputs:</p>
@@ -241,7 +265,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_ZINC" class="doc_header"><code>class</code> <code>LSTM_LM_Small_ZINC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L177" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_ZINC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_zinc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_ZINC" class="doc_header"><code>class</code> <code>LSTM_LM_Small_ZINC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L181" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_ZINC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_zinc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_ZINC - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model
 trained on a chunk of the ZINC library</p>
@@ -317,7 +341,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_Chembl" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Chembl</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L232" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Chembl</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_chembl'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_Chembl" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Chembl</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L236" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Chembl</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_chembl'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_Chembl - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model
 trained on a chunk of the Chembl library</p>
@@ -391,7 +415,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_ZINC_NC" class="doc_header"><code>class</code> <code>LSTM_LM_Small_ZINC_NC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L287" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_ZINC_NC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_zinc_nc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_ZINC_NC" class="doc_header"><code>class</code> <code>LSTM_LM_Small_ZINC_NC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_ZINC_NC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_zinc_nc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_ZINC_NC - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model
 trained on a chunk of the ZINC library with
@@ -466,7 +490,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_Chembl_NC" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Chembl_NC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L343" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Chembl_NC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_chembl_nc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_Chembl_NC" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Chembl_NC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L347" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Chembl_NC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_chembl_nc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_Chembl_NC - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model
 trained on a chunk of the Chembl library with
@@ -541,7 +565,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_ZINC_Selfies" class="doc_header"><code>class</code> <code>LSTM_LM_Small_ZINC_Selfies</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L398" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_ZINC_Selfies</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_zinc_selfies'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_ZINC_Selfies" class="doc_header"><code>class</code> <code>LSTM_LM_Small_ZINC_Selfies</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L402" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_ZINC_Selfies</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_zinc_selfies'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_ZINC_Selfies - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model
 trained on a chunk of the ZINC library using
@@ -616,7 +640,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_Chembl_Selfies" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Chembl_Selfies</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L455" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Chembl_Selfies</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_chembl_selfies'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_Chembl_Selfies" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Chembl_Selfies</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L459" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Chembl_Selfies</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_chembl_selfies'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_Chembl_Selfies - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model
 trained on a chunk of the Chembl library using
@@ -691,7 +715,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_Rgroup" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Rgroup</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L513" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Rgroup</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_rgroup'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_Rgroup" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Rgroup</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L517" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Rgroup</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_rgroup'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_Rgroup - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model
 trained on R-groups. R groups are SMILES with
@@ -766,7 +790,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_Linkers" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Linkers</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L569" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Linkers</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_linkers'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_Linkers" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Linkers</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L573" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Linkers</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_linkers'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_Linkers - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model
 trained on linkers. Linkes are SMILES with
@@ -841,7 +865,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_Linkers_Mapped" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Linkers_Mapped</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L625" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Linkers_Mapped</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_linkers_mapped'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_Linkers_Mapped" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Linkers_Mapped</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L629" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Linkers_Mapped</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_linkers_mapped'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_Linkers_Mapped - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a>
 model trained on linkers with mapping tokens for
@@ -917,7 +941,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_LM_Small_Swissprot" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Swissprot</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L684" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Swissprot</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_swissprot'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="LSTM_LM_Small_Swissprot" class="doc_header"><code>class</code> <code>LSTM_LM_Small_Swissprot</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L688" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_LM_Small_Swissprot</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'lstmlm_small_swissprot'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>LSTM_LM_Small_Swissprot - small <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a>
 model trained on the Swissprot protein dataset.
@@ -1000,7 +1024,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cond_lstm_small" class="doc_header"><code>cond_lstm_small</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L742" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cond_lstm_small</code>(<strong><code>vocab</code></strong>, <strong><code>encoder</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="cond_lstm_small" class="doc_header"><code>cond_lstm_small</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L746" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cond_lstm_small</code>(<strong><code>vocab</code></strong>, <strong><code>encoder</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>cond_lstm_small - small conditional LSTM_LM model</p>
 <p>Inputs:</p>
@@ -1034,7 +1058,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cond_lstm_large" class="doc_header"><code>cond_lstm_large</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L786" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cond_lstm_large</code>(<strong><code>vocab</code></strong>, <strong><code>encoder</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="cond_lstm_large" class="doc_header"><code>cond_lstm_large</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L790" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cond_lstm_large</code>(<strong><code>vocab</code></strong>, <strong><code>encoder</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>cond_lstm_large - large conditional LSTM_LM model</p>
 <p>Inputs:</p>
@@ -1068,7 +1092,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mlp_cond_lstm_small" class="doc_header"><code>mlp_cond_lstm_small</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L831" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mlp_cond_lstm_small</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="mlp_cond_lstm_small" class="doc_header"><code>mlp_cond_lstm_small</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L835" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mlp_cond_lstm_small</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>mlp_cond_lstm_small - small conditional
 LSTM_LM model with MLP encoder</p>
@@ -1101,7 +1125,7 @@ LSTM_LM model with MLP encoder</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mlp_cond_lstm_large" class="doc_header"><code>mlp_cond_lstm_large</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L847" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mlp_cond_lstm_large</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="mlp_cond_lstm_large" class="doc_header"><code>mlp_cond_lstm_large</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L851" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mlp_cond_lstm_large</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>mlp_cond_lstm_large - large conditional
 LSTM_LM model with MLP encoder</p>
@@ -1162,7 +1186,7 @@ LSTM_LM model with MLP encoder</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP_Cond_LSTM_LM_Small_ZINC" class="doc_header"><code>class</code> <code>FP_Cond_LSTM_LM_Small_ZINC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L868" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_Cond_LSTM_LM_Small_ZINC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_cond_lstmlm_small_zinc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="FP_Cond_LSTM_LM_Small_ZINC" class="doc_header"><code>class</code> <code>FP_Cond_LSTM_LM_Small_ZINC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L872" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_Cond_LSTM_LM_Small_ZINC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_cond_lstmlm_small_zinc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>FP_Cond_LSTM_LM_Small_ZINC - small
 <a href="/mrl/generative_models.lstm_lm#Conditional_LSTM_LM"><code>Conditional_LSTM_LM</code></a> model trained to
@@ -1238,7 +1262,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP_Cond_LSTM_LM_Small_ZINC_Selfies" class="doc_header"><code>class</code> <code>FP_Cond_LSTM_LM_Small_ZINC_Selfies</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L926" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_Cond_LSTM_LM_Small_ZINC_Selfies</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_cond_lstmlm_small_zinc_selfies'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="FP_Cond_LSTM_LM_Small_ZINC_Selfies" class="doc_header"><code>class</code> <code>FP_Cond_LSTM_LM_Small_ZINC_Selfies</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L930" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_Cond_LSTM_LM_Small_ZINC_Selfies</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_cond_lstmlm_small_zinc_selfies'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>FP_Cond_LSTM_LM_Small_ZINC_Selfies - small
 <a href="/mrl/generative_models.lstm_lm#Conditional_LSTM_LM"><code>Conditional_LSTM_LM</code></a> model trained to
@@ -1315,7 +1339,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP_Cond_LSTM_LM_Small_Chembl" class="doc_header"><code>class</code> <code>FP_Cond_LSTM_LM_Small_Chembl</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L985" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_Cond_LSTM_LM_Small_Chembl</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_cond_lstmlm_small_chembl'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="FP_Cond_LSTM_LM_Small_Chembl" class="doc_header"><code>class</code> <code>FP_Cond_LSTM_LM_Small_Chembl</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L989" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_Cond_LSTM_LM_Small_Chembl</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_cond_lstmlm_small_chembl'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>FP_Cond_LSTM_LM_Small_Chembl - small
 <a href="/mrl/generative_models.lstm_lm#Conditional_LSTM_LM"><code>Conditional_LSTM_LM</code></a> model trained to
@@ -1398,7 +1422,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mlp_vae" class="doc_header"><code>mlp_vae</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1042" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mlp_vae</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="mlp_vae" class="doc_header"><code>mlp_vae</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1046" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mlp_vae</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>mlp_vae - VAE with MLP encoder</p>
 <p>Inputs:</p>
@@ -1430,7 +1454,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="conv_vae" class="doc_header"><code>conv_vae</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1087" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>conv_vae</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="conv_vae" class="doc_header"><code>conv_vae</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1091" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>conv_vae</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>mlp_vae - VAE with convolutional encoder</p>
 <p>Inputs:</p>
@@ -1462,7 +1486,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lstm_vae" class="doc_header"><code>lstm_vae</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lstm_vae</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="lstm_vae" class="doc_header"><code>lstm_vae</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lstm_vae</code>(<strong><code>vocab</code></strong>, <strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>mlp_vae - VAE with LSTM encoder</p>
 <p>Inputs:</p>
@@ -1524,7 +1548,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP_VAE_ZINC" class="doc_header"><code>class</code> <code>FP_VAE_ZINC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1174" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_VAE_ZINC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_vae_zinc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="FP_VAE_ZINC" class="doc_header"><code>class</code> <code>FP_VAE_ZINC</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1178" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_VAE_ZINC</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_vae_zinc'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>FP_VAE_ZINC - MLP-to-LSTM VAE trained to
 reconstruct SMILES from a ECFP6 fingerprint
@@ -1599,7 +1623,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP_VAE_Chembl" class="doc_header"><code>class</code> <code>FP_VAE_Chembl</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1231" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_VAE_Chembl</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_vae_chembl'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="FP_VAE_Chembl" class="doc_header"><code>class</code> <code>FP_VAE_Chembl</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1235" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_VAE_Chembl</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_vae_chembl'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>FP_VAE_Chembl - MLP-to-LSTM VAE trained to
 reconstruct SMILES from a ECFP6 fingerprint
@@ -1674,7 +1698,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP_VAE_ZINC_Selfies" class="doc_header"><code>class</code> <code>FP_VAE_ZINC_Selfies</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1287" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_VAE_ZINC_Selfies</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_vae_zinc_selfies'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
+<h2 id="FP_VAE_ZINC_Selfies" class="doc_header"><code>class</code> <code>FP_VAE_ZINC_Selfies</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/model_zoo.py#L1291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP_VAE_ZINC_Selfies</code>(<strong><code>drop_scale</code></strong>=<em><code>1.0</code></em>, <strong><code>base_update</code></strong>=<em><code>0.97</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>5</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'fp_vae_zinc_selfies'</code></em>) :: <a href="/mrl/model_zoo#PretrainedGenerativeAgent"><code>PretrainedGenerativeAgent</code></a></p>
 </blockquote>
 <p>FP_VAE_ZINC_Selfies - MLP-to-LSTM VAE trained to
 reconstruct SMILES from a ECFP6 fingerprint
