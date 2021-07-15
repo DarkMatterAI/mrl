@@ -81,6 +81,12 @@ entries:
         - output: web,pdf
           title: Affinity Optimization
           url: tutorials.small_molecule.affinity.html
+        - output: web,pdf
+          title: R-Group Optimization
+          url: tutorials.small_molecule.rgroup.html
+        - output: web,pdf
+          title: Linker Optimization
+          url: tutorials.small_molecule.linker.html
         title: Small Molecules
     output: web
     title: Tutorials

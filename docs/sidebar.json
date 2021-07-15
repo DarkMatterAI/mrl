@@ -30,7 +30,9 @@
                 "QED Optimization" : "tutorials.small_molecule.qed.html",
                 "Penalized LogP Optimization" : "tutorials.small_molecule.plogp.html",
                 "Multiparameter Property Optimization" : "tutorials.small_molecule.mpo.html",
-                "Affinity Optimization" : "tutorials.small_molecule.affinity.html"
+                "Affinity Optimization" : "tutorials.small_molecule.affinity.html",
+                "R-Group Optimization" : "tutorials.small_molecule.rgroup.html",
+                "Linker Optimization" : "tutorials.small_molecule.linker.html"
             }
         }
     },
