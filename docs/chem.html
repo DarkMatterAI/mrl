@@ -31,7 +31,7 @@ nb_path: "nbs/01_chem.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.7/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -1299,7 +1299,7 @@ statistics of 250k_rndm_zinc_drugs_clean.smi dataset
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Substructure-Matching">Substructure Matching<a class="anchor-link" href="#Substructure-Matching"> </a></h2><p>This class is used for substructure matching an input <code>Mol</code> against a list of SMARTS.</p>
 <p><strong>Note</strong>: Substructure matching is tricky. Be sure to verify your SMARTS before putting a large number of them into a filter.</p>
-<p><code>CatalogMatch</code> functions as a base class to match <code>Mol</code> objects against any generic catalog. <code>has_match</code> will return a single boolean value for if the <code>Mol</code> matches one of he filters in the catalog. <code>get_matches</code> will return a list of bools for all elements in the catalog. <code>percent_matches</code> returns a list of floats for what percentate of filters match.</p>
+<p><code>CatalogMatch</code> functions as a base class to match <code>Mol</code> objects against any generic catalog. <code>has_match</code> will return a single boolean value for if the <code>Mol</code> matches one of he filters in the catalog. <code>get_matches</code> will return a list of bools for all elements in the catalog. <code>percent_matches</code> returns a list of floats for what percentage of filters match.</p>
 <p><code>SMARTSMatch</code> will generate a catalog from a list of SMARTS</p>
 <p><code>PAINSMatch</code>, <code>PAINSAMatch</code>, <code>PAINSBMatch</code> and <code>PAINSCMatch</code> specify different PAINS catalogs present in RDKit (see <a href="https://www.rdkit.org/docs/source/rdkit.Chem.rdfiltercatalog.html#rdkit.Chem.rdfiltercatalog.FilterCatalogParams.FilterCatalogs">here</a>)</p>
 
@@ -1995,7 +1995,7 @@ of smarts match.</p>
 <p>When computing similarities between fingerprints, several things need to be lined up. Different methods are needed for different fingerprint formats (<code>ndarray</code> vs <code>ExplicitBitVect</code>) and different distance metrics.</p>
 <p>The <a href="/mrl/chem#FP"><code>FP</code></a> class holds logic to make this easy.</p>
 <p>The <a href="/mrl/chem#FP.get_fingerprint"><code>FP.get_fingerprint</code></a> function allows for parallel processing of fingerprint generation.</p>
-<p>The <a href="/mrl/chem#FP.fingerprint_similarity"><code>FP.fingerprint_similarity</code></a> routes fingerprints to the correct similarity function based on the fingerprint's array type and the simillarity metric used.</p>
+<p>The <a href="/mrl/chem#FP.fingerprint_similarity"><code>FP.fingerprint_similarity</code></a> routes fingerprints to the correct similarity function based on the fingerprint's array type and the similarity metric used.</p>
 <p>For cases where instantiating a class isn't helpful, <a href="/mrl/chem#get_fingerprint"><code>get_fingerprint</code></a> and <a href="/mrl/chem#fingerprint_similarities"><code>fingerprint_similarities</code></a> work as functional wrappers around <a href="/mrl/chem#FP"><code>FP</code></a>.</p>
 
 </div>
@@ -2193,7 +2193,7 @@ of stacked fingerprints</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Custom-Fingerpint-Functions">Custom Fingerpint Functions<a class="anchor-link" href="#Custom-Fingerpint-Functions"> </a></h2><p>Here is an example on how to add new fingerprint functions and distance functions</p>
+<h2 id="Custom-Fingerprint-Functions">Custom Fingerprint Functions<a class="anchor-link" href="#Custom-Fingerprint-Functions"> </a></h2><p>Here is an example on how to add new fingerprint functions and distance functions</p>
 
 </div>
 </div>

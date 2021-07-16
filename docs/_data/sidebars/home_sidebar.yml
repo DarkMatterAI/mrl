@@ -34,6 +34,63 @@ entries:
           title: Dataset Construction
           url: tutorials.dataset_building.html
         title: Comp Chem
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: LSTM Language Model
+          url: tutorials.generative_models.lstm_lm.html
+        - output: web,pdf
+          title: Conditional LSTM Language Model
+          url: tutorials.generative_models.conditional_lstm_lm.html
+        - output: web,pdf
+          title: VAE
+          url: tutorials.generative_models.vae.html
+        title: Generative Models
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Fit Cycle Overview
+          url: tutorials.rl.train_overview.html
+        title: Reinforcement Learning
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Model Optimizaton
+          url: tutorials.workflows.model_optimization.html
+        - output: web,pdf
+          title: Prior Optimization
+          url: tutorials.workflows.prior_optimization.html
+        - output: web,pdf
+          title: Latent Optimization
+          url: tutorials.workflows.latent_optimization.html
+        - output: web,pdf
+          title: Constastive Optimization
+          url: tutorials.workflows.contrastive_optimization.html
+        title: Workflows
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: QED Optimization
+          url: tutorials.small_molecule.qed.html
+        - output: web,pdf
+          title: Penalized LogP Optimization
+          url: tutorials.small_molecule.plogp.html
+        - output: web,pdf
+          title: Multiparameter Property Optimization
+          url: tutorials.small_molecule.mpo.html
+        - output: web,pdf
+          title: Affinity Optimization
+          url: tutorials.small_molecule.affinity.html
+        - output: web,pdf
+          title: R-Group Optimization
+          url: tutorials.small_molecule.rgroup.html
+        - output: web,pdf
+          title: Linker Optimization
+          url: tutorials.small_molecule.linker.html
+        - output: web,pdf
+          title: MolDQN
+          url: tutorials.small_molecule.moldqn.html
+        title: Small Molecules
     output: web
     title: Tutorials
   - folderitems:
@@ -118,6 +175,9 @@ entries:
         - output: web,pdf
           title: Sampler Callbacks
           url: samplers.html
+        - output: web,pdf
+          title: Reward Callbacks
+          url: reward.html
         title: Callbacks
       - output: web
         subfolderitems:
@@ -137,6 +197,12 @@ entries:
           title: Environment
           url: environment.html
         title: Environment
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Model Zoo
+          url: model_zoo.html
+        title: Model Zoo
     output: web
     title: Library
   output: web

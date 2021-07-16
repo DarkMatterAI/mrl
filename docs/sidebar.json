@@ -11,6 +11,29 @@
                 "Templates (Intermediate)" : "tutorials.template.intermediate.html",
                 "Templates (Advanced)" : "tutorials.template.advanced.html",
                 "Dataset Construction" : "tutorials.dataset_building.html"
+            },
+            "Generative Models" : {
+                "LSTM Language Model" : "tutorials.generative_models.lstm_lm.html",
+                "Conditional LSTM Language Model" : "tutorials.generative_models.conditional_lstm_lm.html",
+                "VAE" : "tutorials.generative_models.vae.html"
+            },
+            "Reinforcement Learning" : {
+                "Fit Cycle Overview" : "tutorials.rl.train_overview.html"
+            },
+            "Workflows" : {
+                "Model Optimizaton" : "tutorials.workflows.model_optimization.html",
+                "Prior Optimization" : "tutorials.workflows.prior_optimization.html",
+                "Latent Optimization" : "tutorials.workflows.latent_optimization.html",
+                "Constastive Optimization" : "tutorials.workflows.contrastive_optimization.html"
+            },
+            "Small Molecules" : {
+                "QED Optimization" : "tutorials.small_molecule.qed.html",
+                "Penalized LogP Optimization" : "tutorials.small_molecule.plogp.html",
+                "Multiparameter Property Optimization" : "tutorials.small_molecule.mpo.html",
+                "Affinity Optimization" : "tutorials.small_molecule.affinity.html",
+                "R-Group Optimization" : "tutorials.small_molecule.rgroup.html",
+                "Linker Optimization" : "tutorials.small_molecule.linker.html",
+                "MolDQN" : "tutorials.small_molecule.moldqn.html"
             }
         }
     },
@@ -48,7 +71,8 @@
                 "Buffer" : "buffer.html",
                 "Template Callback" : "template_callback.html",
                 "Loss Callbacks" : "losses.html",
-                "Sampler Callbacks" : "samplers.html"
+                "Sampler Callbacks" : "samplers.html",
+                "Reward Callbacks" : "reward.html"
             },
             "Agent" : {
                 "Agent" : "agent.html"
@@ -58,6 +82,9 @@
             },
             "Environment" : {
                 "Environment" : "environment.html"
+            },
+            "Model Zoo" : {
+                "Model Zoo" : "model_zoo.html"
             }
         }
     }

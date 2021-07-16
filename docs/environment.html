@@ -31,7 +31,7 @@ nb_path: "nbs/20_environment.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.7/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -55,7 +55,7 @@ nb_path: "nbs/20_environment.ipynb"
 <h2 id="Environmemnt">Environmemnt<a class="anchor-link" href="#Environmemnt"> </a></h2><p>The <a href="/mrl/environment#Environment"><code>Environment</code></a> class holds all <a href="/mrl/callback_core#Callback"><code>Callback</code></a> classes involved in the fit cycle and runs the fit loop. All callbacks are treated the same, but the following callback classes are distinguished for semantic convenience:</p>
 <ul>
 <li><code>agent</code> - the <a href="/mrl/agent#Agent"><code>Agent</code></a> being trained</li>
-<li><code>template_cb</code> - the <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a> to use for the fit cyce</li>
+<li><code>template_cb</code> - the <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a> to use for the fit cycle</li>
 <li><code>samplers</code> - any <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> callbacks used </li>
 <li><code>rewards</code> - any <a href="/mrl/reward#RewardCallback"><code>RewardCallback</code></a> callbacks</li>
 <li><code>losses</code> - any <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a> callbacks</li>
@@ -130,9 +130,9 @@ nb_path: "nbs/20_environment.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Environment" class="doc_header"><code>class</code> <code>Environment</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Environment</code>(<strong><code>agent</code></strong>, <strong><code>template_cb</code></strong>=<em><code>None</code></em>, <strong><code>samplers</code></strong>=<em><code>None</code></em>, <strong><code>rewards</code></strong>=<em><code>None</code></em>, <strong><code>losses</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>buffer_p_batch</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="Environment" class="doc_header"><code>class</code> <code>Environment</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/environment.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Environment</code>(<strong><code>agent</code></strong>, <strong><code>template_cb</code></strong>=<em><code>None</code></em>, <strong><code>samplers</code></strong>=<em><code>None</code></em>, <strong><code>rewards</code></strong>=<em><code>None</code></em>, <strong><code>losses</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>buffer_p_batch</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Environment - Environment for training <a href="/mrl/agent"><code>agent</code></a></p>
+<p>Environment - Environment for training <code>agent</code></p>
 <p>Inputs:</p>
 <ul>
 <li><p><code>agent Agent</code>: agent to train</p>
@@ -176,7 +176,7 @@ should come from the buffer. If None, value is inferred from
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Environment.fit" class="doc_header"><code>Environment.fit</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/environment.py#L222" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Environment.fit</code>(<strong><code>bs</code></strong>, <strong><code>sl</code></strong>, <strong><code>iters</code></strong>, <strong><code>report</code></strong>, <strong><code>cbs</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Environment.fit" class="doc_header"><code>Environment.fit</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/environment.py#L227" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Environment.fit</code>(<strong><code>bs</code></strong>, <strong><code>sl</code></strong>, <strong><code>iters</code></strong>, <strong><code>report</code></strong>, <strong><code>cbs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>fit - runs the fit cycle</p>
 <p>Inputs:</p>

@@ -268,13 +268,15 @@ class Conditional_LSTM_LM(GenerativeModel):
         simply passed to the decoder
         '''
         if self.forward_rollout:
-            current_device = next(self.parameters()).device
+#             current_device = next(self.parameters()).device
             sl = x.shape[1]
             bs = x.shape[0]
 
-            start_idx = torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1)
+            idxs = x[:,0].unsqueeze(-1)
 
-            idxs = to_device(start_idx, device=current_device)
+#             start_idx = torch.tensor([self.bos_idx]*bs).long().unsqueeze(-1)
+
+#             idxs = to_device(start_idx, device=current_device)
 
             output = []
             encoded = []

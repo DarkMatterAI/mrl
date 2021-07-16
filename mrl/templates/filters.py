@@ -3,11 +3,11 @@
 __all__ = ['ScoreFunction', 'NoScore', 'PassThroughScore', 'ModifiedScore', 'ConstantScore', 'WeightedPropertyScore',
            'PropertyFunctionScore', 'LinearDecayScore', 'Filter', 'ValidityFilter', 'SingleCompoundFilter',
            'PropertyFilter', 'MolWtFilter', 'HBDFilter', 'HBAFilter', 'TPSAFilter', 'RotBondFilter', 'SP3Filter',
-           'LogPFilter', 'RingFilter', 'HeteroatomFilter', 'AromaticRingFilter', 'HeavyAtomsFilter', 'MRFilter',
-           'ChargeFilter', 'TotalAtomFilter', 'QEDFilter', 'SAFilter', 'LooseRotBondFilter', 'MaxRingFilter',
-           'MinRingFilter', 'BridgeheadFilter', 'SpiroFilter', 'ChiralFilter', 'RotChainFilter', 'criteria_check',
-           'StructureFilter', 'ExclusionFilter', 'KeepFilter', 'PAINSFilter', 'PAINSAFilter', 'PAINSBFilter',
-           'PAINSCFilter', 'FPFilter']
+           'LogPFilter', 'PenalizedLogPFilter', 'RingFilter', 'HeteroatomFilter', 'AromaticRingFilter',
+           'HeavyAtomsFilter', 'MRFilter', 'ChargeFilter', 'TotalAtomFilter', 'QEDFilter', 'SAFilter',
+           'LooseRotBondFilter', 'MaxRingFilter', 'MinRingFilter', 'BridgeheadFilter', 'SpiroFilter', 'ChiralFilter',
+           'RotChainFilter', 'criteria_check', 'StructureFilter', 'ExclusionFilter', 'KeepFilter', 'PAINSFilter',
+           'PAINSAFilter', 'PAINSBFilter', 'PAINSCFilter', 'FPFilter']
 
 # Cell
 from ..imports import *
@@ -385,6 +385,11 @@ class LogPFilter(PropertyFilter):
     "LogP filter"
     def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
         super().__init__(logp, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
+
+class PenalizedLogPFilter(PropertyFilter):
+    "Penalized LogP filter"
+    def __init__(self, min_val, max_val, score=None, name=None, **kwargs):
+        super().__init__(penalized_logp, min_val=min_val, max_val=max_val, score=score, name=name, **kwargs)
 
 class RingFilter(PropertyFilter):
     "Ring filter"

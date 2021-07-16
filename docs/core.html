@@ -221,8 +221,8 @@ nb_path: "nbs/00_core.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Parallel-Processing">Parallel Processing<a class="anchor-link" href="#Parallel-Processing"> </a></h2><p>MRL tries to build in parallel processing at every level. This can make a huge difference when you're processing millions of molecules</p>
 <p><a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a> and <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> are convenient wrappers for parallel processing. The given <code>func</code> is wrapped with <code>**kwargs</code> and used to process the <code>iterable</code>. If <code>iterable</code> is a <code>list</code> or <code>np.ndarray</code>, the elements in <code>iterable</code> are run in parallel by <code>func</code>.</p>
-<h3 id="Parallel-processing-tradeoffs">Parallel processing tradeoffs<a class="anchor-link" href="#Parallel-processing-tradeoffs"> </a></h3><p>Parallel processing can significantly speed up a process. There are however some tradeoffs.</p>
-<p>In Python, parallel processing is creating using a <code>Pool</code>. A pool maps instances of a function over an interable.</p>
+<h3 id="Parallel-processing-tradeoffs">Parallel processing tradeoffs<a class="anchor-link" href="#Parallel-processing-tradeoffs"> </a></h3><p>Parallel processing can significantly speed up a process. There are however some trade-offs.</p>
+<p>In Python, parallel processing is creating using a <code>Pool</code>. A pool maps instances of a function over an iterable.</p>
 
 <pre><code># uses 5 processes to map `my_iterable` to `my_func`
 with Pool(processes=5) as p:

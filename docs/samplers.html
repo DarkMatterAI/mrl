@@ -31,7 +31,7 @@ nb_path: "nbs/19_samplers.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.7/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -81,7 +81,7 @@ nb_path: "nbs/19_samplers.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Sampler" class="doc_header"><code>class</code> <code>Sampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sampler</code>(<strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>=<em><code>0</code></em>, <strong><code>p_batch</code></strong>=<em><code>0.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="Sampler" class="doc_header"><code>class</code> <code>Sampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Sampler</code>(<strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>=<em><code>0</code></em>, <strong><code>p_batch</code></strong>=<em><code>0.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Sampler - base sampler callback</p>
 <p>Inputs:</p>
@@ -127,7 +127,7 @@ should be tracked</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DatasetSampler" class="doc_header"><code>class</code> <code>DatasetSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L60" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DatasetSampler</code>(<strong><code>data</code></strong>, <strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>=<em><code>0</code></em>, <strong><code>p_batch</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/samplers#Sampler"><code>Sampler</code></a></p>
+<h2 id="DatasetSampler" class="doc_header"><code>class</code> <code>DatasetSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L60" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DatasetSampler</code>(<strong><code>data</code></strong>, <strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>=<em><code>0</code></em>, <strong><code>p_batch</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/samplers#Sampler"><code>Sampler</code></a></p>
 </blockquote>
 <p>DatasetSampler - adds items from <code>data</code>
 to either the buffer or the current batch</p>
@@ -186,7 +186,7 @@ samples should come from this sampler</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ModelSampler" class="doc_header"><code>class</code> <code>ModelSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L105" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelSampler</code>(<strong><code>vocab</code></strong>, <strong><code>model</code></strong>, <strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>p_batch</code></strong>, <strong><code>genbatch</code></strong>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>temperature</code></strong>=<em><code>1.0</code></em>) :: <a href="/mrl/samplers#Sampler"><code>Sampler</code></a></p>
+<h2 id="ModelSampler" class="doc_header"><code>class</code> <code>ModelSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L105" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelSampler</code>(<strong><code>vocab</code></strong>, <strong><code>model</code></strong>, <strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>p_batch</code></strong>, <strong><code>genbatch</code></strong>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>temperature</code></strong>=<em><code>1.0</code></em>) :: <a href="/mrl/samplers#Sampler"><code>Sampler</code></a></p>
 </blockquote>
 <p>ModelSampler - sampler class to draw samples from a <a href="/mrl/generative_models.generative_base#GenerativeModel"><code>GenerativeModel</code></a></p>
 <p>Inputs:</p>
@@ -245,7 +245,7 @@ samples should come from this sampler</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PriorSampler" class="doc_header"><code>class</code> <code>PriorSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L236" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PriorSampler</code>(<strong><code>vocab</code></strong>, <strong><code>model</code></strong>, <strong><code>prior</code></strong>, <strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>p_batch</code></strong>, <strong><code>genbatch</code></strong>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>track_losses</code></strong>=<em><code>True</code></em>, <strong><code>train</code></strong>=<em><code>True</code></em>, <strong><code>train_all</code></strong>=<em><code>False</code></em>, <strong><code>prior_loss</code></strong>=<em><code>None</code></em>, <strong><code>temperature</code></strong>=<em><code>1.0</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a></p>
+<h2 id="PriorSampler" class="doc_header"><code>class</code> <code>PriorSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L236" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PriorSampler</code>(<strong><code>vocab</code></strong>, <strong><code>model</code></strong>, <strong><code>prior</code></strong>, <strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>p_batch</code></strong>, <strong><code>genbatch</code></strong>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>track_losses</code></strong>=<em><code>True</code></em>, <strong><code>train</code></strong>=<em><code>True</code></em>, <strong><code>train_all</code></strong>=<em><code>False</code></em>, <strong><code>prior_loss</code></strong>=<em><code>None</code></em>, <strong><code>temperature</code></strong>=<em><code>1.0</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a></p>
 </blockquote>
 <p>PriorSampler - sampler class to draw samples
 from latent vectors generated by <code>prior</code></p>
@@ -318,7 +318,7 @@ samples in a batch or just ones from this specific sampler</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LatentSampler" class="doc_header"><code>class</code> <code>LatentSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L390" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LatentSampler</code>(<strong><code>vocab</code></strong>, <strong><code>model</code></strong>, <strong><code>latents</code></strong>, <strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>p_batch</code></strong>, <strong><code>genbatch</code></strong>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>train</code></strong>=<em><code>True</code></em>, <strong><code>temperature</code></strong>=<em><code>1.0</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a></p>
+<h2 id="LatentSampler" class="doc_header"><code>class</code> <code>LatentSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L390" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LatentSampler</code>(<strong><code>vocab</code></strong>, <strong><code>model</code></strong>, <strong><code>latents</code></strong>, <strong><code>name</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>p_batch</code></strong>, <strong><code>genbatch</code></strong>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>train</code></strong>=<em><code>True</code></em>, <strong><code>temperature</code></strong>=<em><code>1.0</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>) :: <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a></p>
 </blockquote>
 <p>ModelSampler - sampler class to draw samples from a <a href="/mrl/generative_models.generative_base#GenerativeModel"><code>GenerativeModel</code></a></p>
 <p>Inputs:</p>
@@ -359,8 +359,8 @@ samples should come from this sampler</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Contrastive-Sampler">Contrastive Sampler<a class="anchor-link" href="#Contrastive-Sampler"> </a></h2><p>So far samplers have focused on drawing individual samples from a model, dataset, or other sourcce.</p>
-<p>Contrastive sampling looks at the task of generating a new sample based on an old sample. For example, we could want to train a model to take in a compound and produce different compound with a high similarity to the original compound but with a better sccore based on some metric.</p>
+<h2 id="Contrastive-Sampler">Contrastive Sampler<a class="anchor-link" href="#Contrastive-Sampler"> </a></h2><p>So far samplers have focused on drawing individual samples from a model, dataset, or other source.</p>
+<p>Contrastive sampling looks at the task of generating a new sample based on an old sample. For example, we could want to train a model to take in a compound and produce different compound with a high similarity to the original compound but with a better score based on some metric.</p>
 <p>In these cases, the samples we create will be a tuple in the form <code>(source_sample, target_sample)</code>. When training a contrastive metric, we may have a pre-made dataset of <code>source, target</code> pairs to use. However, if such paired data doesn't exist, we need some way to generate it on the fly. This is where the <a href="/mrl/samplers#ContrastiveSampler"><code>ContrastiveSampler</code></a> class comes in.</p>
 <p><a href="/mrl/samplers#ContrastiveSampler"><code>ContrastiveSampler</code></a> turns any normal Sampler into a contrastive sampler. The contrastive sampler uses a <code>base_sampler</code> to generate an initial set of <code>source</code> samples. Then the contrastive sampler uses an <code>output_model</code> to generate <code>target</code> samples on the fly.</p>
 <p>This generation process can be run during <code>build_buffer</code> or <code>sample_batch</code>.</p>
@@ -387,7 +387,7 @@ samples should come from this sampler</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ContrastiveSampler" class="doc_header"><code>class</code> <code>ContrastiveSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L484" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveSampler</code>(<strong><code>base_sampler</code></strong>, <strong><code>vocab</code></strong>, <strong><code>dataset</code></strong>, <strong><code>output_model</code></strong>, <strong><code>bs</code></strong>, <strong><code>repeats</code></strong>=<em><code>1</code></em>) :: <a href="/mrl/samplers#Sampler"><code>Sampler</code></a></p>
+<h2 id="ContrastiveSampler" class="doc_header"><code>class</code> <code>ContrastiveSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L484" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveSampler</code>(<strong><code>base_sampler</code></strong>, <strong><code>vocab</code></strong>, <strong><code>dataset</code></strong>, <strong><code>output_model</code></strong>, <strong><code>bs</code></strong>, <strong><code>repeats</code></strong>=<em><code>1</code></em>) :: <a href="/mrl/samplers#Sampler"><code>Sampler</code></a></p>
 </blockquote>
 <p>ContrastiveSampler - contrastive sampling wrapper. Uses
 <code>base_sampler</code> to generate source sequences. Then uses
@@ -447,7 +447,7 @@ each source sample</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LogSampler" class="doc_header"><code>class</code> <code>LogSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L587" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogSampler</code>(<strong><code>sample_name</code></strong>, <strong><code>lookup_name</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>percentile</code></strong>, <strong><code>buffer_size</code></strong>) :: <a href="/mrl/samplers#Sampler"><code>Sampler</code></a></p>
+<h2 id="LogSampler" class="doc_header"><code>class</code> <code>LogSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L587" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogSampler</code>(<strong><code>sample_name</code></strong>, <strong><code>lookup_name</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>percentile</code></strong>, <strong><code>buffer_size</code></strong>) :: <a href="/mrl/samplers#Sampler"><code>Sampler</code></a></p>
 </blockquote>
 <p>LogSampler - pulls samples from log
 based on <code>percentile</code></p>
@@ -496,7 +496,7 @@ log data to sample from</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TokenSwapSampler" class="doc_header"><code>class</code> <code>TokenSwapSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L638" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TokenSwapSampler</code>(<strong><code>sample_name</code></strong>, <strong><code>lookup_name</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>percentile</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>vocab</code></strong>, <strong><code>swap_percent</code></strong>) :: <a href="/mrl/samplers#LogSampler"><code>LogSampler</code></a></p>
+<h2 id="TokenSwapSampler" class="doc_header"><code>class</code> <code>TokenSwapSampler</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L638" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TokenSwapSampler</code>(<strong><code>sample_name</code></strong>, <strong><code>lookup_name</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>percentile</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>vocab</code></strong>, <strong><code>swap_percent</code></strong>) :: <a href="/mrl/samplers#LogSampler"><code>LogSampler</code></a></p>
 </blockquote>
 <p>TokenSwapSampler - samples high scoring samples from
 <a href="/mrl/logging#Log.df"><code>Log.df</code></a> and enumerates variants by swapping tokens.
@@ -552,7 +552,7 @@ log data to sample from</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LogEnumerator" class="doc_header"><code>class</code> <code>LogEnumerator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L694" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogEnumerator</code>(<strong><code>sample_name</code></strong>, <strong><code>lookup_name</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>percentile</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/samplers#LogSampler"><code>LogSampler</code></a></p>
+<h2 id="LogEnumerator" class="doc_header"><code>class</code> <code>LogEnumerator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L694" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LogEnumerator</code>(<strong><code>sample_name</code></strong>, <strong><code>lookup_name</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>percentile</code></strong>, <strong><code>buffer_size</code></strong>, <strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/samplers#LogSampler"><code>LogSampler</code></a></p>
 </blockquote>
 <p>LogEnumerator - pulls high scoring samples
 from <a href="/mrl/logging#Log.df"><code>Log.df</code></a> and performs simple enumeration
@@ -609,7 +609,7 @@ log data to sample from</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Timeout" class="doc_header"><code>class</code> <code>Timeout</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L748" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Timeout</code>(<strong><code>timeout_length</code></strong>, <strong><code>timeout_function</code></strong>=<em><code>None</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'timeout'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="Timeout" class="doc_header"><code>class</code> <code>Timeout</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L748" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Timeout</code>(<strong><code>timeout_length</code></strong>, <strong><code>timeout_function</code></strong>=<em><code>None</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'timeout'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Timeout - puts samples in "timeout" to prevent
 training on the same sample too frequently. Samples
@@ -657,7 +657,7 @@ function for samples</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MurckoTimeout" class="doc_header"><code>class</code> <code>MurckoTimeout</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/sampler.py#L818" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MurckoTimeout</code>(<strong><code>timeout_length</code></strong>, <strong><code>generic</code></strong>=<em><code>False</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'murcko_timeout'</code></em>) :: <a href="/mrl/samplers#Timeout"><code>Timeout</code></a></p>
+<h2 id="MurckoTimeout" class="doc_header"><code>class</code> <code>MurckoTimeout</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/sampler.py#L818" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MurckoTimeout</code>(<strong><code>timeout_length</code></strong>, <strong><code>generic</code></strong>=<em><code>False</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'murcko_timeout'</code></em>) :: <a href="/mrl/samplers#Timeout"><code>Timeout</code></a></p>
 </blockquote>
 <p>MurckoTimeout - puts samples in "timeout" to prevent
 training on the same sample too frequently. Samples
