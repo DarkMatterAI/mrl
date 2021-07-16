@@ -32,7 +32,8 @@
                 "Multiparameter Property Optimization" : "tutorials.small_molecule.mpo.html",
                 "Affinity Optimization" : "tutorials.small_molecule.affinity.html",
                 "R-Group Optimization" : "tutorials.small_molecule.rgroup.html",
-                "Linker Optimization" : "tutorials.small_molecule.linker.html"
+                "Linker Optimization" : "tutorials.small_molecule.linker.html",
+                "MolDQN" : "tutorials.small_molecule.moldqn.html"
             }
         }
     },

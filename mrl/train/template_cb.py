@@ -63,8 +63,9 @@ class TemplateCallback(Callback):
                 buffer._filter_buffer(valids)
 
     def filter_batch(self):
+        valid = 1.
+        env = self.environment
         if self.do_filter:
-            env = self.environment
             batch_state = env.batch_state
 
             samples = batch_state[self.sample_name]
@@ -75,8 +76,10 @@ class TemplateCallback(Callback):
 
             self._filter_batch(valids)
 
-            if self.track:
-                env.log.update_metric('valid', valids.mean())
+            valid = valids.mean()
+
+        if self.track:
+            env.log.update_metric('valid', valid)
 
 
     def compute_reward(self):
