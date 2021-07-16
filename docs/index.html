@@ -49,8 +49,11 @@ nb_path: "nbs/index.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Use-Cases">Use Cases<a class="anchor-link" href="#Use-Cases"> </a></h2><p>MRL can be applied to:</p>
 <ul>
-<li>Small molecule design</li>
-<li>Peptide design</li>
+<li><a href="https://darkmatterai.github.io/mrl/tutorials.html#Small-Molecules">Small molecules</a></li>
+<li>Peptides</li>
+<li>DNA (coming soon)</li>
+<li>Polymers (coming soon)</li>
+<li>Catalysts (coming soon)</li>
 </ul>
 <p>View our <a href="https://darkmatterai.github.io/mrl/tutorials.html">tutorials</a> for more examples</p>
 
@@ -59,32 +62,105 @@ nb_path: "nbs/index.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Install">Install<a class="anchor-link" href="#Install"> </a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Package coming soon</p>
+<h2 id="Install">Install<a class="anchor-link" href="#Install"> </a></h2><h3 id="Without-Installing">Without Installing<a class="anchor-link" href="#Without-Installing"> </a></h3><p>MRL can be used without installing via <a href="https://colab.research.google.com/notebooks/intro.ipynb">Google Collab</a>. Open any page in the <a href="https://darkmatterai.github.io/mrl/">documentation</a> and click the "Open in Collab" button to open the notebook in Google Collab. Make sure to change the runtime to GPU.</p>
+<h3 id="Anaconda">Anaconda<a class="anchor-link" href="#Anaconda"> </a></h3><p>MRL is available via Anaconda.</p>
+
+<pre><code>conda create -n mrl python=3.7
+conda install -c dmai -c rdkit -c pytorch -c fastai -c conda-forge mrl</code></pre>
+<h3 id="PyPi">PyPi<a class="anchor-link" href="#PyPi"> </a></h3><p>MRL is available via pypi. First <a href="https://pytorch.org/get-started/locally/">install pytorch</a>. Then run the following:</p>
+
+<pre><code>pip install mrl-pypi</code></pre>
+<h3 id="Developer-Install">Developer Install<a class="anchor-link" href="#Developer-Install"> </a></h3><p>If you plan to develop the library or want the most up to date release, use an editable install. First <a href="https://pytorch.org/get-started/locally/">install pytorch</a>. Then run the following:</p>
+
+<pre><code>git clone https://github.com/DarkMatterAI/mrl
+pip install -e .</code></pre>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="How-to-use">How to use<a class="anchor-link" href="#How-to-use"> </a></h2>
+<h2 id="How-to-use">How to use<a class="anchor-link" href="#How-to-use"> </a></h2><p>Here's an example of using a MRL pre-trained model to generate compounds based on the <a href="https://www.ebi.ac.uk/chembl/">ChEMBL</a> library:</p>
+
+<pre><code>from mrl.model_zoo import LSTM_LM_Small_Chembl
+
+agent = LSTM_LM_Small_Chembl()
+
+preds, log_probs = agent.model.sample_no_grad(512, 90)
+smiles = agent.reconstruct(preds)
+
+smiles[:10]
+&gt;['COC(=O)C1=C(Nc2ccc(Br)cc2)SCC1=O',
+ 'Cc1nnc2n1CN(C(C)=O)CC2c1ccc2c(c1)OCO2',
+ 'COc1ccc(C(=O)NNc2c(C#N)cnn2-c2ccccc2)c(OC)c1',
+ 'COC(=O)C1(C)C=C(N2CC2)C(=O)C(C(C)=O)=C1',
+ 'CC(O)(c1cccc(Cl)c1)c1nc(-c2cccc(-n3cncn3)c2)co1',
+ 'Clc1cccc2ccc(-n3c(-c4ccccc4)nc4ccccc4c3=O)nc12',
+ 'Cc1cccc(NC(=O)CSc2nnnn2-c2ccc3c(c2)OCCO3)c1',
+ 'Nc1n[nH]c(=O)c2cc(NCc3ccc(C(=O)O)c(Cl)c3)ccc12',
+ 'CCOc1ccc(NC(=O)c2oc3ccccc3c2NC(=O)c2ccccc2OC)cc1',
+ 'Cc1ccc2c(N3CCN(CC(=O)Nc4ccc(N5CCCCC5=O)cc4)CC3)cccc2n1']</code></pre>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Contributing">Contributing<a class="anchor-link" href="#Contributing"> </a></h2>
+<h2 id="Getting-Started">Getting Started<a class="anchor-link" href="#Getting-Started"> </a></h2><p>See the MRL <a href="https://darkmatterai.github.io/mrl/">documentation page</a> for full documentaion</p>
+<p>See the MRL <a href="https://darkmatterai.github.io/mrl/tutorials.html">tutorials page</a> for examples</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Acknowledgements">Acknowledgements<a class="anchor-link" href="#Acknowledgements"> </a></h2>
+<h2 id="Contributing">Contributing<a class="anchor-link" href="#Contributing"> </a></h2><p>MRL uses <a href="https://github.com/fastai/nbdev">nbdev</a> for development. This allows us to build code, tests and documentation at the same time.</p>
+<p>To contribute, install <a href="https://github.com/fastai/nbdev">nbdev</a>. Then run <code>nbdev_install_git_hooks</code> in your terminal. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks which causes unnecessary merge conflicts.</p>
+<p>If you make changes to a notebook, run <code>nbdev_build_lib</code> to update the library.</p>
+<p>If you make changes to the library, run <code>nbdev_update_lib</code> to update the notebooks.</p>
+<p>Submit PRs to the <code>dev</code> branch.</p>
+<p>Before submitting a PR, run <code>nbdev_diff_nbs</code> to verify the notebooks and the library match.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Acknowledgements">Acknowledgements<a class="anchor-link" href="#Acknowledgements"> </a></h2><p>MRl is built using many open source libraries. We would especially like to thank the development teams behind <a href="https://github.com/pytorch/pytorch">Pytorch</a>, <a href="https://github.com/rdkit/rdkit">RDKit</a> and <a href="https://github.com/fastai">fastai</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Roadmap">Roadmap<a class="anchor-link" href="#Roadmap"> </a></h2><p>New Modules:</p>
+<ul>
+<li>Combichem</li>
+<li>Huggingface/transformers integration</li>
+<li>Active learning</li>
+<li>Chemprop integration</li>
+<li>Docking integration</li>
+<li>Pharmacophore</li>
+</ul>
+<p>Project Quality:</p>
+<ul>
+<li>Enable google search on documentation page</li>
+</ul>
+<p>New modalities:</p>
+<ul>
+<li>DNA</li>
+<li>Polymers</li>
+<li>Catalysts</li>
+</ul>
+<p>Tutorials:</p>
+<ul>
+<li>In depth, multi-cycle affinity optimization</li>
+<li>Polymer design</li>
+<li>Peptide design with transformer likelihood stability</li>
+<li>Deep drug decoder</li>
+<li>Generative screening primer</li>
+</ul>
+
 </div>
 </div>
 </div>
