@@ -19,7 +19,7 @@ __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mo
 from .imports import *
 from .core import *
 from rdkit import Chem, DataStructs
-from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDConfig
+from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDConfig, Draw
 from rdkit.Chem.Lipinski import RotatableBondSmarts
 from rdkit.Chem.FilterCatalog import *
 from rdkit.Chem.Scaffolds import MurckoScaffold
@@ -242,7 +242,7 @@ def draw_mols(mols, legends=None, mols_per_row=3, sub_img_size=(300,300)):
 
     mols_per_row = min(mols_per_row, len(mols))
 
-    return Chem.Draw.MolsToGridImage(mols, molsPerRow=mols_per_row,
+    return Draw.MolsToGridImage(mols, molsPerRow=mols_per_row,
                                     subImgSize=sub_img_size, legends=legends)
 
 # Cell
