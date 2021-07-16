@@ -2,6 +2,7 @@
 
 title: Agent
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -37,26 +38,19 @@ nb_path: "nbs/16_agent.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>The <a href="/mrl/agent#Agent"><code>Agent</code></a> class holds a model, a dataset and a loss function in a single object. The Agent is also a callback and serves several roles in the fit loop.</p>
+<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>The <a href="/mrl/agent.html#Agent"><code>Agent</code></a> class holds a model, a dataset and a loss function in a single object. The Agent is also a callback and serves several roles in the fit loop.</p>
 <h4 id="Notable-Functions">Notable Functions<a class="anchor-link" href="#Notable-Functions"> </a></h4><ul>
-<li><p><a href="/mrl/agent#Agent.train_supervised"><code>Agent.train_supervised</code></a> - runs a supervised training loop using the items in <a href="/mrl/agent#Agent.dataset"><code>Agent.dataset</code></a>. Subclass this function for custom supervised training loops</p>
+<li><p><a href="/mrl/agent.html#Agent.train_supervised"><code>Agent.train_supervised</code></a> - runs a supervised training loop using the items in <a href="/mrl/agent.html#Agent.dataset"><code>Agent.dataset</code></a>. Subclass this function for custom supervised training loops</p>
 </li>
-<li><p><a href="/mrl/agent#Agent.update_dataset"><code>Agent.update_dataset</code></a>/<a href="/mrl/agent#Agent.update_dataset_from_inputs"><code>Agent.update_dataset_from_inputs</code></a> - updates <a href="/mrl/agent#Agent.dataset"><code>Agent.dataset</code></a> with new items</p>
+<li><p><a href="/mrl/agent.html#Agent.update_dataset"><code>Agent.update_dataset</code></a>/<a href="/mrl/agent.html#Agent.update_dataset_from_inputs"><code>Agent.update_dataset_from_inputs</code></a> - updates <a href="/mrl/agent.html#Agent.dataset"><code>Agent.dataset</code></a> with new items</p>
 </li>
-<li><p><a href="/mrl/agent#Agent.before_compute_reward"><code>Agent.before_compute_reward</code></a> - used during the fit loop to convert samples into tensors. Items from the current batch are used to create a version of <a href="/mrl/agent#Agent.dataset"><code>Agent.dataset</code></a> containing the new samples. This dataset is then used to convert samples into tensors</p>
+<li><p><a href="/mrl/agent.html#Agent.before_compute_reward"><code>Agent.before_compute_reward</code></a> - used during the fit loop to convert samples into tensors. Items from the current batch are used to create a version of <a href="/mrl/agent.html#Agent.dataset"><code>Agent.dataset</code></a> containing the new samples. This dataset is then used to convert samples into tensors</p>
 </li>
 </ul>
 
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -68,7 +62,7 @@ nb_path: "nbs/16_agent.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Agent" class="doc_header"><code>class</code> <code>Agent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Agent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'agent'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="Agent" class="doc_header"><code>class</code> <code>Agent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Agent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'agent'</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Agent - class for bundling a model, loss function, and dataset</p>
 <p>Inputs:</p>
@@ -116,7 +110,7 @@ function as <code>loss = loss_function(model_output, y)</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PredictiveAgent" class="doc_header"><code>class</code> <code>PredictiveAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L201" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PredictiveAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'agent'</code></em>) :: <a href="/mrl/agent#Agent"><code>Agent</code></a></p>
+<h2 id="PredictiveAgent" class="doc_header"><code>class</code> <code>PredictiveAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L201" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PredictiveAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'agent'</code></em>) :: <a href="/mrl/agent.html#Agent"><code>Agent</code></a></p>
 </blockquote>
 <p>PredictiveAgent - Agent class for predictive models</p>
 <p>Inputs:</p>
@@ -146,15 +140,6 @@ function as <code>loss = loss_function(model_output, y)</code></p>
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Baseline-Agent">Baseline Agent<a class="anchor-link" href="#Baseline-Agent"> </a></h2><p>Many RL algorithms make use of two agents. The main agent is trained every batch. The other agent (the baseline agent) is updated every <code>n</code> batches. RL algorithms like <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> and <a href="/mrl/policy_gradient#TRPO"><code>TRPO</code></a> make use of the ratio between the main agent and the baseline agent.</p>
-<p>The <a href="/mrl/agent#BaselineAgent"><code>BaselineAgent</code></a> creates a copy of the model that serves as the baseline. The baseline agent is updated every <code>base_update_iter</code> batches.</p>
-<p>The baseline is updated following <code>w_baseline_new = alpha*w_baseline_old + (1-alpha)*w_main</code> where <code>alpha</code> is set by the <code>base_update</code> parameter. Setting <code>base_update=0</code> will cause the weights of the main agent to be simply copied into the baseline.</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -162,6 +147,15 @@ function as <code>loss = loss_function(model_output, y)</code></p>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Baseline-Agent">Baseline Agent<a class="anchor-link" href="#Baseline-Agent"> </a></h2><p>Many RL algorithms make use of two agents. The main agent is trained every batch. The other agent (the baseline agent) is updated every <code>n</code> batches. RL algorithms like <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> and <a href="/mrl/policy_gradient.html#TRPO"><code>TRPO</code></a> make use of the ratio between the main agent and the baseline agent.</p>
+<p>The <a href="/mrl/agent.html#BaselineAgent"><code>BaselineAgent</code></a> creates a copy of the model that serves as the baseline. The baseline agent is updated every <code>base_update_iter</code> batches.</p>
+<p>The baseline is updated following <code>w_baseline_new = alpha*w_baseline_old + (1-alpha)*w_main</code> where <code>alpha</code> is set by the <code>base_update</code> parameter. Setting <code>base_update=0</code> will cause the weights of the main agent to be simply copied into the baseline.</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -173,7 +167,7 @@ function as <code>loss = loss_function(model_output, y)</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BaselineAgent" class="doc_header"><code>class</code> <code>BaselineAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L236" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaselineAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'baseline_agent'</code></em>) :: <a href="/mrl/agent#Agent"><code>Agent</code></a></p>
+<h2 id="BaselineAgent" class="doc_header"><code>class</code> <code>BaselineAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L236" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaselineAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'baseline_agent'</code></em>) :: <a href="/mrl/agent.html#Agent"><code>Agent</code></a></p>
 </blockquote>
 <p>BaselineAgent - agent for a model with a baseline model</p>
 <p>Inputs:</p>
@@ -228,7 +222,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CriticAgent" class="doc_header"><code>class</code> <code>CriticAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L335" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CriticAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'baseline_agent'</code></em>) :: <a href="/mrl/agent#BaselineAgent"><code>BaselineAgent</code></a></p>
+<h2 id="CriticAgent" class="doc_header"><code>class</code> <code>CriticAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L335" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CriticAgent</code>(<strong><code>model</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'baseline_agent'</code></em>) :: <a href="/mrl/agent.html#BaselineAgent"><code>BaselineAgent</code></a></p>
 </blockquote>
 <p>CriticAgent - baseline agent for critic models</p>
 <p>Inputs:</p>
@@ -265,13 +259,6 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Generative-Agent">Generative Agent<a class="anchor-link" href="#Generative-Agent"> </a></h2><p>The <a href="/mrl/agent#GenerativeAgent"><code>GenerativeAgent</code></a> class adds in a <code>vocab</code> input to reconstruct generated samples. This class also has updated <code>before_compute_reward</code> and <code>get_model_outputs</code> to create the relevant values for training</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -279,6 +266,13 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Generative-Agent">Generative Agent<a class="anchor-link" href="#Generative-Agent"> </a></h2><p>The <a href="/mrl/agent.html#GenerativeAgent"><code>GenerativeAgent</code></a> class adds in a <code>vocab</code> input to reconstruct generated samples. This class also has updated <code>before_compute_reward</code> and <code>get_model_outputs</code> to create the relevant values for training</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -290,7 +284,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GenerativeAgent" class="doc_header"><code>class</code> <code>GenerativeAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L399" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GenerativeAgent</code>(<strong><code>model</code></strong>, <strong><code>vocab</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'generative_agent'</code></em>) :: <a href="/mrl/agent#BaselineAgent"><code>BaselineAgent</code></a></p>
+<h2 id="GenerativeAgent" class="doc_header"><code>class</code> <code>GenerativeAgent</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L399" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GenerativeAgent</code>(<strong><code>model</code></strong>, <strong><code>vocab</code></strong>, <strong><code>loss_function</code></strong>, <strong><code>dataset</code></strong>, <strong><code>base_update</code></strong>=<em><code>0.99</code></em>, <strong><code>base_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>base_model</code></strong>=<em><code>True</code></em>, <strong><code>opt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>clip</code></strong>=<em><code>1.0</code></em>, <strong><code>name</code></strong>=<em><code>'generative_agent'</code></em>) :: <a href="/mrl/agent.html#BaselineAgent"><code>BaselineAgent</code></a></p>
 </blockquote>
 <p>GenerativeAgent - baseline agent for generative models</p>
 <p>Inputs:</p>
@@ -329,25 +323,6 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Training-Callbacks">Training Callbacks<a class="anchor-link" href="#Training-Callbacks"> </a></h2><p>These callbacks organize using supervised training during the RL fit cycle</p>
-<ul>
-<li><p><a href="/mrl/agent#SupevisedCB"><code>SupevisedCB</code></a> - runs supervised training on the top <code>x</code> percentile of samples with a set frequency</p>
-</li>
-<li><p><a href="/mrl/agent#Rollback"><code>Rollback</code></a> - if a chosen metric falls (above/below) a certain value, the weights of the main model are reverted to the baseline model</p>
-</li>
-<li><p><a href="/mrl/agent#RetrainRollback"><code>RetrainRollback</code></a> - runs supervised training if a chosen metric falls (above/below) a certain value</p>
-</li>
-<li><p><a href="/mrl/agent#ResetAndRetrain"><code>ResetAndRetrain</code></a> - with a set frequency, reloads a saved checkpoint and runs supervised training from the sample log</p>
-</li>
-<li><p><a href="/mrl/agent#SaveAgentWeights"><code>SaveAgentWeights</code></a> - saves weights with a set frequency</p>
-</li>
-</ul>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -355,6 +330,25 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Training-Callbacks">Training Callbacks<a class="anchor-link" href="#Training-Callbacks"> </a></h2><p>These callbacks organize using supervised training during the RL fit cycle</p>
+<ul>
+<li><p><a href="/mrl/agent.html#SupevisedCB"><code>SupevisedCB</code></a> - runs supervised training on the top <code>x</code> percentile of samples with a set frequency</p>
+</li>
+<li><p><a href="/mrl/agent.html#Rollback"><code>Rollback</code></a> - if a chosen metric falls (above/below) a certain value, the weights of the main model are reverted to the baseline model</p>
+</li>
+<li><p><a href="/mrl/agent.html#RetrainRollback"><code>RetrainRollback</code></a> - runs supervised training if a chosen metric falls (above/below) a certain value</p>
+</li>
+<li><p><a href="/mrl/agent.html#ResetAndRetrain"><code>ResetAndRetrain</code></a> - with a set frequency, reloads a saved checkpoint and runs supervised training from the sample log</p>
+</li>
+<li><p><a href="/mrl/agent.html#SaveAgentWeights"><code>SaveAgentWeights</code></a> - saves weights with a set frequency</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -366,7 +360,7 @@ the base model following <code>base_model = base_update*base_model + (1-base_upd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SupevisedCB" class="doc_header"><code>class</code> <code>SupevisedCB</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L547" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SupevisedCB</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>base_update</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>silent</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="SupevisedCB" class="doc_header"><code>class</code> <code>SupevisedCB</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L547" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SupevisedCB</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>base_update</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>silent</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>SupevisedCB - supervised training callback. When triggered,
 this callback grabs the top <code>percentile</code> of samples from the
@@ -421,7 +415,7 @@ to sample from the log</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Rollback" class="doc_header"><code>class</code> <code>Rollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L607" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Rollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>alpha</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="Rollback" class="doc_header"><code>class</code> <code>Rollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L607" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Rollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>alpha</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Rollback - if <code>metric_name</code> falls (above/below) <code>target</code>, updates
 the main model's weights with the baseline model's weights</p>
@@ -475,7 +469,7 @@ metric falling below <code>target</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RetrainRollback" class="doc_header"><code>class</code> <code>RetrainRollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L661" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RetrainRollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>base_update</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>, <strong><code>silent</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="RetrainRollback" class="doc_header"><code>class</code> <code>RetrainRollback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L661" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RetrainRollback</code>(<strong><code>agent</code></strong>, <strong><code>metric_name</code></strong>, <strong><code>lookback</code></strong>, <strong><code>target</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>base_update</code></strong>, <strong><code>name</code></strong>, <strong><code>mode</code></strong>=<em><code>'greater'</code></em>, <strong><code>silent</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>RetrainRollback - triggers supervised training if
 <code>metric_name</code> falls (above/below) <code>target</code></p>
@@ -538,7 +532,7 @@ metric falling below <code>target</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ResetAndRetrain" class="doc_header"><code>class</code> <code>ResetAndRetrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L744" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResetAndRetrain</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>weight_fp</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>epochs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>sample_term</code></strong>=<em><code>'samples'</code></em>, <strong><code>silent</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="ResetAndRetrain" class="doc_header"><code>class</code> <code>ResetAndRetrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L744" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResetAndRetrain</code>(<strong><code>agent</code></strong>, <strong><code>frequency</code></strong>, <strong><code>weight_fp</code></strong>, <strong><code>percentile</code></strong>, <strong><code>lr</code></strong>, <strong><code>bs</code></strong>, <strong><code>epochs</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>sample_term</code></strong>=<em><code>'samples'</code></em>, <strong><code>silent</code></strong>=<em><code>False</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>ResetAndRetrain - with a set frequency, loads a
 file of saved weights and runs supervised training</p>
@@ -595,7 +589,7 @@ to sample from the log</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveAgentWeights" class="doc_header"><code>class</code> <code>SaveAgentWeights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L809" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveAgentWeights</code>(<strong><code>file_path</code></strong>, <strong><code>filename</code></strong>, <strong><code>n_batches</code></strong>, <strong><code>agent</code></strong>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="SaveAgentWeights" class="doc_header"><code>class</code> <code>SaveAgentWeights</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/agent.py#L809" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveAgentWeights</code>(<strong><code>file_path</code></strong>, <strong><code>filename</code></strong>, <strong><code>n_batches</code></strong>, <strong><code>agent</code></strong>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>SaveAgentWeights - saves weights every <code>n_batches</code>.
 Weights are saved to <code>file_path/filename_iterations.pt</code></p>
@@ -617,6 +611,13 @@ Weights are saved to <code>file_path/filename_iterations.pt</code></p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -687,9 +688,9 @@ Weights are saved to <code>file_path/filename_iterations.pt</code></p>
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.47916</td>
-      <td>0.63230</td>
-      <td>00:07</td>
+      <td>0.47915</td>
+      <td>0.63231</td>
+      <td>00:04</td>
     </tr>
   </tbody>
 </table>

@@ -2,6 +2,7 @@
 
 title: Policy Gradient
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -39,11 +40,11 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Policy-Gradients">Policy Gradients<a class="anchor-link" href="#Policy-Gradients"> </a></h2><p>The code in this module implements several policy gradient algorithms</p>
 <ul>
-<li><p><a href="/mrl/policy_gradient#PolicyGradient"><code>PolicyGradient</code></a> - implements <a href="https://papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html">Policy Gradients</a></p>
+<li><p><a href="/mrl/policy_gradient.html#PolicyGradient"><code>PolicyGradient</code></a> - implements <a href="https://papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html">Policy Gradients</a></p>
 </li>
-<li><p><a href="/mrl/policy_gradient#TRPO"><code>TRPO</code></a> - implements <a href="https://arxiv.org/pdf/1502.05477.pdf">Trust Region Policy Optimization</a></p>
+<li><p><a href="/mrl/policy_gradient.html#TRPO"><code>TRPO</code></a> - implements <a href="https://arxiv.org/pdf/1502.05477.pdf">Trust Region Policy Optimization</a></p>
 </li>
-<li><p><a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> - implemeents <a href="https://arxiv.org/pdf/1707.06347.pdf">Proximal Policy Optimization</a></p>
+<li><p><a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> - implemeents <a href="https://arxiv.org/pdf/1707.06347.pdf">Proximal Policy Optimization</a></p>
 </li>
 </ul>
 <h3 id="Current-Limitations">Current Limitations<a class="anchor-link" href="#Current-Limitations"> </a></h3><p>The implementations below are designed for the scenario where the output of the model is a series of actions over time. Importantly, rewards are discounted going backwards, meaning the discounted reward at very timestep contains some of the future rewards. If your model does not predict a series of rewards (ie predicts a single graph), you may need to revisit these assumptions</p>
@@ -51,13 +52,6 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -83,6 +77,13 @@ nb_path: "nbs/17_policy_gradient.ipynb"
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -125,14 +126,14 @@ Has a reward value for each time point</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Policy-Gradients">Policy Gradients<a class="anchor-link" href="#Policy-Gradients"> </a></h2><p><a href="/mrl/policy_gradient#PolicyGradient"><code>PolicyGradient</code></a> implements standard <a href="https://papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html">Policy Gradients</a> following:</p>
+<h2 id="Policy-Gradients">Policy Gradients<a class="anchor-link" href="#Policy-Gradients"> </a></h2><p><a href="/mrl/policy_gradient.html#PolicyGradient"><code>PolicyGradient</code></a> implements standard <a href="https://papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html">Policy Gradients</a> following:</p>
 <p>{% raw %}
 $$ \nabla_\theta J(\theta) = \mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta(a \vert s)] $$
 {% endraw %}</p>
 <p>When we generate a sample through autoregressive Monte Carlo sampling, we create a sequence of actions which we represent as a tensor of size <code>(bs, sl)</code>.</p>
 <p>For each step in this series, we have a probability distribution over all possible actions. This give us a tensor of log probabilities of size <code>(bs, sl, n_actions)</code>. We can then gather the log probabilities for the actions we actually took, giving us a tensor of gathered log probabilities of size <code>(bs, sl)</code>.</p>
 <p>We also have a set of rewards associated with each sample. In the context of generating compounds, we most often have a single reward for each sampling trajectory that represents the final score of he whole molecule. This would be a tensor of size <code>(bs)</code>. If applicable, we can also have a tensor of trajectory rewards which has a reward for each sampling timestep. This trajectory reward tensor would be of size <code>(bs, sl)</code>.</p>
-<p>These rewards are discounted over all timesteps using <a href="/mrl/torch_core#discount_rewards"><code>discount_rewards</code></a>, then scaled using <a href="/mrl/torch_core#whiten"><code>whiten</code></a>. This gives is our final tensor of rewards of size <code>(bs, sl)</code>.</p>
+<p>These rewards are discounted over all timesteps using <a href="/mrl/torch_core.html#discount_rewards"><code>discount_rewards</code></a>, then scaled using <a href="/mrl/torch_core.html#whiten"><code>whiten</code></a>. This gives is our final tensor of rewards of size <code>(bs, sl)</code>.</p>
 <p>Now we can compute the empirical expectation $\mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta(a \vert s)]$ by multiplying the gathered log probabilities by the discounted rewards and taking the mean over the batch.</p>
 <p>Then of course we want to maximize this expectation, so we use gradient descent to minimize $-\mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta(a \vert s)]$</p>
 <p>This basically tells the model to increase the probability of sample paths that had above-average rewards within the batch, and decrease the probability of sample paths with below-average rewards.</p>
@@ -144,13 +145,6 @@ $$ \nabla_\theta J(\theta) = \mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -158,7 +152,7 @@ $$ \nabla_\theta J(\theta) = \mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L50" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L50" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 <p>PolicyGradient - Basic policy gradient implementation</p>
 <p>papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html</p>
@@ -184,6 +178,13 @@ This can lead to quicker convergence</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -246,13 +247,6 @@ $$ \mathbb{E}_{s \sim \rho^{\pi_{\theta_\text{old}}}} [D_\text{KL}(\pi_{\theta_\
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -260,7 +254,7 @@ $$ \mathbb{E}_{s \sim \rho^{\pi_{\theta_\text{old}}}} [D_\text{KL}(\pi_{\theta_\
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 <p>TRPO - Trust Region Policy Optimization</p>
 <p>arxiv.org/pdf/1502.05477.pdf</p>
@@ -289,6 +283,13 @@ This can lead to quicker convergence</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -360,13 +361,6 @@ $$ J^\text{CLIP} (\theta) = \mathbb{E} [ \min( r(\theta) \hat{A}_{\theta_\text{o
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -374,7 +368,7 @@ $$ J^\text{CLIP} (\theta) = \mathbb{E} [ \min( r(\theta) \hat{A}_{\theta_\text{o
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L277" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L277" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 <p>PPO - Proximal policy optimization</p>
 <p>arxiv.org/pdf/1707.06347.pdf</p>
@@ -409,6 +403,13 @@ This can lead to quicker convergence</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

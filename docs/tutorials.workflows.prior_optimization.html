@@ -2,6 +2,7 @@
 
 title: Example Workflows - Prior Optimization
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -86,7 +87,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.prior_optimization.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>Here we create the model we want to optimize. We will use the <a href="/mrl/model_zoo#FP_Cond_LSTM_LM_Small_ZINC"><code>FP_Cond_LSTM_LM_Small_ZINC</code></a> - a LSTM-based conditionl language model pretrained on part of the ZINC database.</p>
+<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>Here we create the model we want to optimize. We will use the <a href="/mrl/model_zoo.html#FP_Cond_LSTM_LM_Small_ZINC"><code>FP_Cond_LSTM_LM_Small_ZINC</code></a> - a LSTM-based conditionl language model pretrained on part of the ZINC database.</p>
 <p>Note that for prior optimization we specifically need a conditional generative model</p>
 
 </div>
@@ -345,7 +346,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.prior_optimization.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Optional:-Policy-Gradient-Loss">Optional: Policy Gradient Loss<a class="anchor-link" href="#Optional:-Policy-Gradient-Loss"> </a></h2><p>The priors we have set so far will be trained by the <a href="/mrl/losses#PriorLoss"><code>PriorLoss</code></a> passed to the <a href="/mrl/samplers#PriorSampler"><code>PriorSampler</code></a>. We can additionally add a policy gradient loss term. This isn't necessary, but tends to speed up convergence.</p>
+<h2 id="Optional:-Policy-Gradient-Loss">Optional: Policy Gradient Loss<a class="anchor-link" href="#Optional:-Policy-Gradient-Loss"> </a></h2><p>The priors we have set so far will be trained by the <a href="/mrl/losses.html#PriorLoss"><code>PriorLoss</code></a> passed to the <a href="/mrl/samplers.html#PriorSampler"><code>PriorSampler</code></a>. We can additionally add a policy gradient loss term. This isn't necessary, but tends to speed up convergence.</p>
 
 </div>
 </div>

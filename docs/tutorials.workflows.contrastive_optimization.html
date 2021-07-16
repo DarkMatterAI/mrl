@@ -2,6 +2,7 @@
 
 title: Example Workflows - Contrastive Optimization
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -86,7 +87,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.contrastive_optimization.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>Here we create the model we want to optimize. We will use the <a href="/mrl/model_zoo#FP_Cond_LSTM_LM_Small_ZINC"><code>FP_Cond_LSTM_LM_Small_ZINC</code></a> - a LSTM-based conditionl language model pretrained on part of the ZINC database.</p>
+<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>Here we create the model we want to optimize. We will use the <a href="/mrl/model_zoo.html#FP_Cond_LSTM_LM_Small_ZINC"><code>FP_Cond_LSTM_LM_Small_ZINC</code></a> - a LSTM-based conditionl language model pretrained on part of the ZINC database.</p>
 <p>Note that for contrastive optimization we specifically need a conditional generative model</p>
 
 </div>
@@ -112,9 +113,9 @@ nb_path: "nbs/tutorials/tutorials.workflows.contrastive_optimization.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Template">Template<a class="anchor-link" href="#Template"> </a></h2><p>We will set up a very basic template that will only check compounds for structural validity.</p>
-<p>For contrastive generation, we use the <a href="/mrl/template_callback#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> callback rather than <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a>. The contrastive template will validate both the source and target samples pass the template.</p>
-<p>The <a href="/mrl/template_callback#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> also allows us to impose a similarity constraint on <code>(source, target)</code> pairs. This is important to controlling the quality of results. If we have no similarity constraint, the model can learn to ignore the source input and simply generate high scoring compounds, which is not what we want here. On the fip side, if we reward the model for producing high similarity outputs, the model will simply learn to produce the exact source input, which is also not what we want.</p>
-<p>We want our <code>(source, target)</code> pairs to be different, but not too different. We use the <a href="/mrl/template_callback#FPSimilarity"><code>FPSimilarity</code></a> to impose this constraint by setting minimum and maximum similarity values. In the code below, we set the allowed similarity range for <code>(source, target)</code> pairs to be between 0.3 and 0.9, measured by Tanimoto similarity.</p>
+<p>For contrastive generation, we use the <a href="/mrl/template_callback.html#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> callback rather than <a href="/mrl/template_callback.html#TemplateCallback"><code>TemplateCallback</code></a>. The contrastive template will validate both the source and target samples pass the template.</p>
+<p>The <a href="/mrl/template_callback.html#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> also allows us to impose a similarity constraint on <code>(source, target)</code> pairs. This is important to controlling the quality of results. If we have no similarity constraint, the model can learn to ignore the source input and simply generate high scoring compounds, which is not what we want here. On the fip side, if we reward the model for producing high similarity outputs, the model will simply learn to produce the exact source input, which is also not what we want.</p>
+<p>We want our <code>(source, target)</code> pairs to be different, but not too different. We use the <a href="/mrl/template_callback.html#FPSimilarity"><code>FPSimilarity</code></a> to impose this constraint by setting minimum and maximum similarity values. In the code below, we set the allowed similarity range for <code>(source, target)</code> pairs to be between 0.3 and 0.9, measured by Tanimoto similarity.</p>
 
 </div>
 </div>
@@ -145,7 +146,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.contrastive_optimization.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Reward">Reward<a class="anchor-link" href="#Reward"> </a></h2><p>For the reward, we will load a scikit-learn linear regression model trained to predict affinity against erbB1 using molecular fingerprints.</p>
 <p>This score function is extremely simple and won't translate well to affinity. It is used as a lightweight example</p>
-<p>Similar to how we used the <a href="/mrl/template_callback#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> wrapper for our template, we use the <a href="/mrl/reward#ContrastiveReward"><code>ContrastiveReward</code></a> wrapper for our reward. The contrastive reward will evaluate <code>reward(target) - reward(source)</code>.</p>
+<p>Similar to how we used the <a href="/mrl/template_callback.html#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> wrapper for our template, we use the <a href="/mrl/reward.html#ContrastiveReward"><code>ContrastiveReward</code></a> wrapper for our reward. The contrastive reward will evaluate <code>reward(target) - reward(source)</code>.</p>
 <p>This however raises an interesting question on how to treat this score. Consider a score that ranges between <code>[0,1]</code>. We have two samples pairs with <code>(source, target)</code> scores of <code>(0.2, 0.9)</code>, <code>(0.5, 0.9)</code>. Both target samples have the same score, but different source scores. We could evaluate our contrastive score on the actual relative basis, which would give us:</p>
 <ul>
 <li><code>(0.2, 0.9)</code> -&gt; <code>(0.9-0.2)=.7</code></li>
@@ -200,7 +201,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.contrastive_optimization.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h2><p>We will use the <a href="/mrl/policy_gradient#PolicyGradient"><code>PolicyGradient</code></a> class, the simplest policy gradient algorithm</p>
+<h2 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h2><p>We will use the <a href="/mrl/policy_gradient.html#PolicyGradient"><code>PolicyGradient</code></a> class, the simplest policy gradient algorithm</p>
 
 </div>
 </div>
@@ -323,10 +324,10 @@ Wall time: 1min 8s
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we can set up our sampler. Similar to how we used the <a href="/mrl/template_callback#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> wrapper for our template, we use the <a href="/mrl/samplers#ContrastiveSampler"><code>ContrastiveSampler</code></a> wrapper for our sampler.</p>
-<p>The <a href="/mrl/samplers#ContrastiveSampler"><code>ContrastiveSampler</code></a> takes another <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> as input (the base sampler). It draws a set of source samples from the base sampler, then generates a set of target samples on the fly from the specified model. This wrapper can be applied to any <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> class.</p>
-<p>We'll create a <a href="/mrl/samplers#DatasetSampler"><code>DatasetSampler</code></a> from the samples we just generated, then pass the <a href="/mrl/samplers#DatasetSampler"><code>DatasetSampler</code></a> to <a href="/mrl/samplers#ContrastiveSampler"><code>ContrastiveSampler</code></a>. Every batch we will sample source compounds from <a href="/mrl/samplers#DatasetSampler"><code>DatasetSampler</code></a>, generate new target compounds on the fly, and train.</p>
-<p>Note that using <a href="/mrl/samplers#ContrastiveSampler"><code>ContrastiveSampler</code></a> is only necessary if the target samples are not known. If a dataset of <code>(source, target)</code> samples has already been defined, the <code>(source, target)</code> pairs can be passed as tuples directly to the <a href="/mrl/samplers#DatasetSampler"><code>DatasetSampler</code></a></p>
+<p>Now we can set up our sampler. Similar to how we used the <a href="/mrl/template_callback.html#ContrastiveTemplate"><code>ContrastiveTemplate</code></a> wrapper for our template, we use the <a href="/mrl/samplers.html#ContrastiveSampler"><code>ContrastiveSampler</code></a> wrapper for our sampler.</p>
+<p>The <a href="/mrl/samplers.html#ContrastiveSampler"><code>ContrastiveSampler</code></a> takes another <a href="/mrl/samplers.html#Sampler"><code>Sampler</code></a> as input (the base sampler). It draws a set of source samples from the base sampler, then generates a set of target samples on the fly from the specified model. This wrapper can be applied to any <a href="/mrl/samplers.html#Sampler"><code>Sampler</code></a> class.</p>
+<p>We'll create a <a href="/mrl/samplers.html#DatasetSampler"><code>DatasetSampler</code></a> from the samples we just generated, then pass the <a href="/mrl/samplers.html#DatasetSampler"><code>DatasetSampler</code></a> to <a href="/mrl/samplers.html#ContrastiveSampler"><code>ContrastiveSampler</code></a>. Every batch we will sample source compounds from <a href="/mrl/samplers.html#DatasetSampler"><code>DatasetSampler</code></a>, generate new target compounds on the fly, and train.</p>
+<p>Note that using <a href="/mrl/samplers.html#ContrastiveSampler"><code>ContrastiveSampler</code></a> is only necessary if the target samples are not known. If a dataset of <code>(source, target)</code> samples has already been defined, the <code>(source, target)</code> pairs can be passed as tuples directly to the <a href="/mrl/samplers.html#DatasetSampler"><code>DatasetSampler</code></a></p>
 
 </div>
 </div>

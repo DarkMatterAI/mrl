@@ -2,6 +2,7 @@
 
 title: Dataloaders
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -42,13 +43,6 @@ nb_path: "nbs/08_dataloaders.ipynb"
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -239,15 +233,6 @@ batch for next-token prediction</p>
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Datasets">Datasets<a class="anchor-link" href="#Datasets"> </a></h2><p>Datasets subclass the Pytorch <code>Dataset</code> class. MRL datasets add a collate function and the <a href="/mrl/dataloaders#Base_Dataset.dataloader"><code>Base_Dataset.dataloader</code></a> function to easily generate Pytorch dataloaders from the same class</p>
-<p>Like all Pytorch datasets, subclass datasets must contain a valid <code>__len__</code> and <code>__getitem__</code> method. MRL datasets should also include a <code>new</code> method.</p>
-<p>The purpose of <code>new</code> is to create a new dataset from new data using the same input arguments and collate function as the current dataset. This is used during generative training to process and batch generated samples to ensure they are processed and batched the same as training data</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -255,6 +240,15 @@ batch for next-token prediction</p>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Datasets">Datasets<a class="anchor-link" href="#Datasets"> </a></h2><p>Datasets subclass the Pytorch <code>Dataset</code> class. MRL datasets add a collate function and the <a href="/mrl/dataloaders.html#Base_Dataset.dataloader"><code>Base_Dataset.dataloader</code></a> function to easily generate Pytorch dataloaders from the same class</p>
+<p>Like all Pytorch datasets, subclass datasets must contain a valid <code>__len__</code> and <code>__getitem__</code> method. MRL datasets should also include a <code>new</code> method.</p>
+<p>The purpose of <code>new</code> is to create a new dataset from new data using the same input arguments and collate function as the current dataset. This is used during generative training to process and batch generated samples to ensure they are processed and batched the same as training data</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -284,15 +278,6 @@ batch for next-token prediction</p>
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Text-Datasets">Text Datasets<a class="anchor-link" href="#Text-Datasets"> </a></h2><p>Text datasets deal with tokenizing and numericalizing text data, like SMILES strings.</p>
-<p><a href="/mrl/dataloaders#Text_Dataset"><code>Text_Dataset</code></a> returns numericalized SMILES for language modeling.</p>
-<p><a href="/mrl/dataloaders#Text_Prediction_Dataset"><code>Text_Prediction_Dataset</code></a> returns numericaized SMILES along with some <code>y_val</code> output value, for tasks like property prediction</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -300,6 +285,15 @@ batch for next-token prediction</p>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Text-Datasets">Text Datasets<a class="anchor-link" href="#Text-Datasets"> </a></h2><p>Text datasets deal with tokenizing and numericalizing text data, like SMILES strings.</p>
+<p><a href="/mrl/dataloaders.html#Text_Dataset"><code>Text_Dataset</code></a> returns numericalized SMILES for language modeling.</p>
+<p><a href="/mrl/dataloaders.html#Text_Prediction_Dataset"><code>Text_Prediction_Dataset</code></a> returns numericaized SMILES along with some <code>y_val</code> output value, for tasks like property prediction</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -311,7 +305,7 @@ batch for next-token prediction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Text_Dataset" class="doc_header"><code>class</code> <code>Text_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L152" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Text_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Base_Dataset"><code>Base_Dataset</code></a></p>
+<h2 id="Text_Dataset" class="doc_header"><code>class</code> <code>Text_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L152" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Text_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Base_Dataset"><code>Base_Dataset</code></a></p>
 </blockquote>
 <p>Text_Dataset - base dataset for language modes</p>
 <p>Inputs:</p>
@@ -320,7 +314,7 @@ batch for next-token prediction</p>
 </li>
 <li><p><code>vocab Vocab</code>: vocabuary for tokenization/numericaization</p>
 </li>
-<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#lm_collate"><code>lm_collate</code></a></p>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders.html#lm_collate"><code>lm_collate</code></a></p>
 </li>
 </ul>
 <p>If <code>sequences</code> is a list of strings, <code>__getitem__</code> returns a tuple of <code>(sequence_ints, None)</code>.
@@ -335,6 +329,13 @@ the predicted sequence is different from the input sequence</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -390,13 +391,6 @@ the predicted sequence is different from the input sequence</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -404,7 +398,7 @@ the predicted sequence is different from the input sequence</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Text_Prediction_Dataset" class="doc_header"><code>class</code> <code>Text_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L211" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Text_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Text_Dataset"><code>Text_Dataset</code></a></p>
+<h2 id="Text_Prediction_Dataset" class="doc_header"><code>class</code> <code>Text_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L211" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Text_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Text_Dataset"><code>Text_Dataset</code></a></p>
 </blockquote>
 <p>Text_Prediction_Dataset - base dataset for predicting from text strings</p>
 <p>Inputs:</p>
@@ -415,7 +409,7 @@ the predicted sequence is different from the input sequence</p>
 </li>
 <li><p><code>vocab Vocab</code>: vocabuary for tokenization/numericaization</p>
 </li>
-<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#sequence_prediction_collate"><code>sequence_prediction_collate</code></a></p>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders.html#sequence_prediction_collate"><code>sequence_prediction_collate</code></a></p>
 </li>
 </ul>
 <p><code>__getitem__</code> returns a tuple of <code>(sequence_ints, y_vals)</code> suitable for predicting
@@ -427,6 +421,13 @@ regressions or classifications from the sequence</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -455,19 +456,12 @@ regressions or classifications from the sequence</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Vector-Datasets">Vector Datasets<a class="anchor-link" href="#Vector-Datasets"> </a></h2><p>Another common dataset framework is where we are dealing with vectors derived from a molecule. This could be a vector of properties, fingerprints, or any task where a molecule-derived vector is needed.</p>
-<p><a href="/mrl/dataloaders#Vector_Dataset"><code>Vector_Dataset</code></a> is a base dataset that simply returns the molecule derived vector</p>
+<p><a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a> is a base dataset that simply returns the molecule derived vector</p>
 <p><code>Vec_Recon_Dataset</code> returns the molecule derived vector and tokenized SMILES strings. This is used for tasks like generating compounds based on an input vector or fingerprint</p>
 
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -479,7 +473,7 @@ regressions or classifications from the sequence</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vector_Dataset" class="doc_header"><code>class</code> <code>Vector_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L257" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Base_Dataset"><code>Base_Dataset</code></a></p>
+<h2 id="Vector_Dataset" class="doc_header"><code>class</code> <code>Vector_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L257" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vector_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Base_Dataset"><code>Base_Dataset</code></a></p>
 </blockquote>
 <p>Vector_Dataset - base dataset for molecule-derived vectors</p>
 <p>Inputs:</p>
@@ -488,7 +482,7 @@ regressions or classifications from the sequence</p>
 </li>
 <li><p><code>vec_function Callable</code>: function to convert sequence to a vector</p>
 </li>
-<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#vector_collate"><code>vector_collate</code></a></p>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders.html#vector_collate"><code>vector_collate</code></a></p>
 </li>
 </ul>
 
@@ -498,6 +492,13 @@ regressions or classifications from the sequence</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -532,7 +533,7 @@ regressions or classifications from the sequence</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.7/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -548,13 +549,6 @@ regressions or classifications from the sequence</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -562,7 +556,7 @@ regressions or classifications from the sequence</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vec_To_Text_Dataset" class="doc_header"><code>class</code> <code>Vec_To_Text_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_To_Text_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Vector_Dataset"><code>Vector_Dataset</code></a></p>
+<h2 id="Vec_To_Text_Dataset" class="doc_header"><code>class</code> <code>Vec_To_Text_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_To_Text_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a></p>
 </blockquote>
 <p>Vec_To_Text_Dataset - base dataset for predicting text sequences from vectors</p>
 <p>Inputs:</p>
@@ -573,7 +567,7 @@ regressions or classifications from the sequence</p>
 </li>
 <li><p><code>vec_function Callable</code>: function to convert a sequence to a vector</p>
 </li>
-<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#vec_to_text_collate"><code>vec_to_text_collate</code></a></p>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders.html#vec_to_text_collate"><code>vec_to_text_collate</code></a></p>
 </li>
 </ul>
 <p><code>__getitem__</code> returns a tuple of <code>(sequence_vector, sequence_ints)</code>.</p>
@@ -588,6 +582,13 @@ and <code>sequence_ints</code> will be derived from the second sequence</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -645,13 +646,6 @@ and <code>sequence_ints</code> will be derived from the second sequence</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -659,7 +653,7 @@ and <code>sequence_ints</code> will be derived from the second sequence</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vec_Prediction_Dataset" class="doc_header"><code>class</code> <code>Vec_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L361" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders#Vector_Dataset"><code>Vector_Dataset</code></a></p>
+<h2 id="Vec_Prediction_Dataset" class="doc_header"><code>class</code> <code>Vec_Prediction_Dataset</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/dataloaders.py#L361" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vec_Prediction_Dataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <a href="/mrl/dataloaders.html#Vector_Dataset"><code>Vector_Dataset</code></a></p>
 </blockquote>
 <p>Vec_Prediction_Dataset - base dataset for predicting y_vals from vectors</p>
 <p>Inputs:</p>
@@ -670,7 +664,7 @@ and <code>sequence_ints</code> will be derived from the second sequence</p>
 </li>
 <li><p><code>vec_function Callable</code>: function to convert a sequence to a vector</p>
 </li>
-<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders#vector_prediction_collate"><code>vector_prediction_collate</code></a></p>
+<li><p><code>collate_function Callable</code>: batch collate function. If None, defauts to <a href="/mrl/dataloaders.html#vector_prediction_collate"><code>vector_prediction_collate</code></a></p>
 </li>
 </ul>
 
@@ -680,6 +674,13 @@ and <code>sequence_ints</code> will be derived from the second sequence</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

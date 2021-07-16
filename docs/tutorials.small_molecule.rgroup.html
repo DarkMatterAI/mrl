@@ -2,6 +2,7 @@
 
 title: Small Molecule R-Group Optimization
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -33,7 +34,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.rgroup.ipynb"
 <h2 id="R-Group-Optimization">R-Group Optimization<a class="anchor-link" href="#R-Group-Optimization"> </a></h2><p>Often in drug discovery we want to experiment with changing a specific part of a molecule, while keeping the rest constant. One example of this is optimizing a single R-group on a compound.</p>
 <p>One way this is approached is to build a dataset of compounds containing the same core molecule with different R-groups. This however can pose a problem for generative models. Generative models might "lose track" of the desired core strucure during generative screening if it is not strongly enforced.</p>
 <p>An efficient solution to this is to only generate the R-group.</p>
-<p>This tutorial looks at using the <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a> module with a pre-trained R-group generative model to optimize a single R-group.</p>
+<p>This tutorial looks at using the <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> module with a pre-trained R-group generative model to optimize a single R-group.</p>
 
 </div>
 </div>
@@ -257,7 +258,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.rgroup.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Chemical-Space">Chemical Space<a class="anchor-link" href="#Chemical-Space"> </a></h2><p>Next we need to develop our chemical space. This is where we decide what compounds will be allowed and what compounds will be removed.</p>
 <p>Getting the right filtering parameters makes a huge difference in compound quality. In practice, finding the right constraints is an interative process. First run a generative screen. Then examine the highest scoring compounds and look for undesirable properties or structural features. Then update the template and iterate.</p>
-<p>For R-group optimization, we will make use of the <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a> class. Block templates allow us to make a series of nested templates to control different parts of the molecule.</p>
+<p>For R-group optimization, we will make use of the <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> class. Block templates allow us to make a series of nested templates to control different parts of the molecule.</p>
 <p>We will create one template for just the R-group, and another template for the full molecule. When we generate an R-group, it will first be checked against the R-group template. Then the R-group will be fused to the scaffold and evaluated using the full molecule template.</p>
 <p>This allows us to set seprate constraints on structures in the R-group versus the full molecule.</p>
 <p>For the R-group, we specify the group should have 1-2 rings and be between 20-220 g/mol in weight</p>
@@ -319,7 +320,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.rgroup.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Load-Model">Load Model<a class="anchor-link" href="#Load-Model"> </a></h2><p>We load the <a href="/mrl/model_zoo#LSTM_LM_Small_Rgroup"><code>LSTM_LM_Small_Rgroup</code></a> model. This is a basic LSTM-based language model trained on R-groups generated from the ZINC library</p>
+<h2 id="Load-Model">Load Model<a class="anchor-link" href="#Load-Model"> </a></h2><p>We load the <a href="/mrl/model_zoo.html#LSTM_LM_Small_Rgroup"><code>LSTM_LM_Small_Rgroup</code></a> model. This is a basic LSTM-based language model trained on R-groups generated from the ZINC library</p>
 
 </div>
 </div>
@@ -689,7 +690,7 @@ Wall time: 4min 36s
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Loss">Loss<a class="anchor-link" href="#Loss"> </a></h3><p>We use <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> as our policy gradient loss</p>
+<h3 id="Loss">Loss<a class="anchor-link" href="#Loss"> </a></h3><p>We use <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> as our policy gradient loss</p>
 
 </div>
 </div>
@@ -768,12 +769,12 @@ Wall time: 4min 36s
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Callbacks">Callbacks<a class="anchor-link" href="#Callbacks"> </a></h3><p>Additional callbacks</p>
 <ul>
-<li><a href="/mrl/agent#SupevisedCB"><code>SupevisedCB</code></a>: runs supervised training on the top 3% of samples every 400 batches</li>
-<li><a href="/mrl/logging#MaxCallback"><code>MaxCallback</code></a>: prints the max reward for each batch</li>
-<li><a href="/mrl/logging#PercentileCallback"><code>PercentileCallback</code></a>: prints the 90th percentile score each batch</li>
-<li><a href="/mrl/agent#ResetAndRetrain"><code>ResetAndRetrain</code></a>: reloads the base model and retrained on the top 10% of samples every 2000 batches</li>
-<li><a href="/mrl/reward#NoveltyReward"><code>NoveltyReward</code></a>: gives a score bonus to new compounds</li>
-<li><a href="/mrl/samplers#Timeout"><code>Timeout</code></a>: prohibits training on the same sample more than once every 20 batches</li>
+<li><a href="/mrl/agent.html#SupevisedCB"><code>SupevisedCB</code></a>: runs supervised training on the top 3% of samples every 400 batches</li>
+<li><a href="/mrl/logging.html#MaxCallback"><code>MaxCallback</code></a>: prints the max reward for each batch</li>
+<li><a href="/mrl/logging.html#PercentileCallback"><code>PercentileCallback</code></a>: prints the 90th percentile score each batch</li>
+<li><a href="/mrl/agent.html#ResetAndRetrain"><code>ResetAndRetrain</code></a>: reloads the base model and retrained on the top 10% of samples every 2000 batches</li>
+<li><a href="/mrl/reward.html#NoveltyReward"><code>NoveltyReward</code></a>: gives a score bonus to new compounds</li>
+<li><a href="/mrl/samplers.html#Timeout"><code>Timeout</code></a>: prohibits training on the same sample more than once every 20 batches</li>
 </ul>
 
 </div>

@@ -2,6 +2,7 @@
 
 title: Small Molecule Property Optimization - Multiparameter Optimization
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -85,7 +86,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.mpo.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>Here we create the model we want to optimize. We will use the <a href="/mrl/model_zoo#LSTM_LM_Small_ZINC_NC"><code>LSTM_LM_Small_ZINC_NC</code></a> - a LSTM-based language model pretrained on part of the ZINC database without chirality. Training without chirality prevents a form of mode collapse where the model converges to generating different isomers of the same compound.</p>
+<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>Here we create the model we want to optimize. We will use the <a href="/mrl/model_zoo.html#LSTM_LM_Small_ZINC_NC"><code>LSTM_LM_Small_ZINC_NC</code></a> - a LSTM-based language model pretrained on part of the ZINC database without chirality. Training without chirality prevents a form of mode collapse where the model converges to generating different isomers of the same compound.</p>
 <p>Whether or not to use a model trained with or without chirality depends on the reward function you are trying to optimize. You should use a model with chirality if your reward function handles chirality in a meaningful way. Specically this means your reward function should give different scores to different isomers. This difference should relate to a real aspect of the propety predicted (ie affinity of different isomers) rather than being a spurious feature learned by the model (this happens surprisingly often).</p>
 <p>Our score isn't influenced by chirality, so we will use a nonchiral model</p>
 
@@ -115,12 +116,12 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.mpo.ipynb"
 <p>First we set up our hard filters. We set constraints following the <a href="https://en.wikipedia.org/wiki/Lipinski%27s_rule_of_five">Rule of 5</a></p>
 <p>We set the following hard filters:</p>
 <ul>
-<li><a href="/mrl/template.filters#ValidityFilter"><code>ValidityFilter</code></a>: Only valid compounds</li>
-<li><a href="/mrl/template.filters#SingleCompoundFilter"><code>SingleCompoundFilter</code></a>: Only single compounds</li>
-<li><a href="/mrl/template.filters#MolWtFilter"><code>MolWtFilter</code></a>: Molecular weight less than 500 g/mol</li>
-<li><a href="/mrl/template.filters#HBDFilter"><code>HBDFilter</code></a>: Less than or equal to 5 hydrogen bond donors</li>
-<li><a href="/mrl/template.filters#HBAFilter"><code>HBAFilter</code></a>: Less than or equal to 10 hydrogen bond acceptors</li>
-<li><a href="/mrl/template.filters#LogPFilter"><code>LogPFilter</code></a>: LogP less than 5</li>
+<li><a href="/mrl/template.filters.html#ValidityFilter"><code>ValidityFilter</code></a>: Only valid compounds</li>
+<li><a href="/mrl/template.filters.html#SingleCompoundFilter"><code>SingleCompoundFilter</code></a>: Only single compounds</li>
+<li><a href="/mrl/template.filters.html#MolWtFilter"><code>MolWtFilter</code></a>: Molecular weight less than 500 g/mol</li>
+<li><a href="/mrl/template.filters.html#HBDFilter"><code>HBDFilter</code></a>: Less than or equal to 5 hydrogen bond donors</li>
+<li><a href="/mrl/template.filters.html#HBAFilter"><code>HBAFilter</code></a>: Less than or equal to 10 hydrogen bond acceptors</li>
+<li><a href="/mrl/template.filters.html#LogPFilter"><code>LogPFilter</code></a>: LogP less than 5</li>
 </ul>
 <p>Next we set up our soft filters which will serve as our score. For each property (QED, LogP, SA), we scale the value:</p>
 <ul>
@@ -182,7 +183,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.mpo.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h2><p>We will use the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> policy gradient algorithm</p>
+<h2 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h2><p>We will use the <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> policy gradient algorithm</p>
 
 </div>
 </div>

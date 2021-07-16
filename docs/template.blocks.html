@@ -2,6 +2,7 @@
 
 title: Blocks
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -45,7 +46,7 @@ nb_path: "nbs/04_template.blocks.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Templates define a chemical space using a set of hard and soft filters to evaluate a molecule. For greater control, we may wish to apply different templates to different parts of the molecule. With the <a href="/mrl/template.blocks#Block"><code>Block</code></a> and <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a> classes and some modifications to how we represent SMILES strings, we can do this.</p>
+<h2 id="Overview">Overview<a class="anchor-link" href="#Overview"> </a></h2><p>Templates define a chemical space using a set of hard and soft filters to evaluate a molecule. For greater control, we may wish to apply different templates to different parts of the molecule. With the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> and <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> classes and some modifications to how we represent SMILES strings, we can do this.</p>
 <p>For a detailed example of using Blocks, see the <a href="/mrl/tutorials.template.advanced.html">Block Tutorial</a> page</p>
 <h3 id="Motivating-Example:-R-group-Optimization">Motivating Example: R-group Optimization<a class="anchor-link" href="#Motivating-Example:-R-group-Optimization"> </a></h3><p>Say we have a compound of the form <code>R1-scaffold-R2</code>, where the scaffold is a defined structure. We want to run a generative screen on the two R-groups while keeping the scaffold constant. We also have preferences on the chemical structures present at each R-group. We want <code>R1</code> to contain at least 1 ring, and we want <code>R2</code> to have no rings.</p>
 <p>One way to approach this would be to build a dataset of compounds with the format <code>R1-scaffold-R2</code> where all <code>R1</code> and <code>R2</code> structures conform to our desired properties. We would then train a generative model on this dataset and run a standard generative screen. However, this runs the risk of generated compounds deviating from our desired chemotype. This means we need to create a template that enforces the <code>R1-scaffold-R2</code> chemotype with our stated constraints on <code>R1</code> and <code>R2</code>.</p>
@@ -54,8 +55,8 @@ nb_path: "nbs/04_template.blocks.ipynb"
 <p>Now we can evaluate and assemble compounds to compare them to our desired constraints. We create different templates for <code>R1</code>, <code>R2</code> and the full compound <code>R1-scaffold-R2</code>.</p>
 <p>The model generates some sequence of the form <code>*R1.*R2</code>. We split this into <code>*R1</code> and <code>*R2</code>, and evaluate each R group with their respective template. Then we add in the scaffold, fuse the fragments into the full molecule, and evaluate the full molecule template.</p>
 <p>When we generate and evaluate compounds in this way, we can build in a strong guarantee that compounds passing this tiered templating process will conform to our specified chemotype.</p>
-<h3 id="The-Block-Class">The Block Class<a class="anchor-link" href="#The-Block-Class"> </a></h3><p>The process described above is implemented using the <a href="/mrl/template.blocks#Block"><code>Block</code></a> class. A block is a general abstraction for a chunk of a molecule. The <a href="/mrl/template.blocks#Block"><code>Block</code></a> class holds a <a href="/mrl/template.template#Template"><code>Template</code></a> describing desired molecular properties and additional information specifying how the block links to other blocks.</p>
-<p>Blocks are assembled into a tree structure, with some blocks nested within other blocks. For the above example, we would have four blocks in total. We would have two <a href="/mrl/template.blocks#MolBlock"><code>MolBlock</code></a> blocks for <code>R1</code> and <code>R2</code> and a <a href="/mrl/template.blocks#ConstantMolBlock"><code>ConstantMolBlock</code></a> for the pre-defined scaffold. The block structure would look like this:</p>
+<h3 id="The-Block-Class">The Block Class<a class="anchor-link" href="#The-Block-Class"> </a></h3><p>The process described above is implemented using the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class. A block is a general abstraction for a chunk of a molecule. The <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class holds a <a href="/mrl/template.template.html#Template"><code>Template</code></a> describing desired molecular properties and additional information specifying how the block links to other blocks.</p>
+<p>Blocks are assembled into a tree structure, with some blocks nested within other blocks. For the above example, we would have four blocks in total. We would have two <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> blocks for <code>R1</code> and <code>R2</code> and a <a href="/mrl/template.blocks.html#ConstantMolBlock"><code>ConstantMolBlock</code></a> for the pre-defined scaffold. The block structure would look like this:</p>
 
 <pre><code>Block tree:
 
@@ -78,7 +79,7 @@ Block 1 - full molecule, links=[]
     Block 4 - R2 + R2 Template, links=['[2*:2]']</code></pre>
 <p>When analyzing a fragment sequence, a block will extract the isotope/map number links of <code>{isotope}*:{map_num}</code> from each fragment. The links present in a fragment are compared to the links specified in the Block, as well as any subblocks contained within the block.</p>
 <h3 id="Fragment-Routing-Convention">Fragment Routing Convention<a class="anchor-link" href="#Fragment-Routing-Convention"> </a></h3><p>Wildcards should be expressed as <code>[{isotope}*:{map_number}]</code>. The <code>isotope</code> value sould be <code>1</code> or <code>2</code>. <code>0</code> should not be used as RDKit canonicalization removes zero isotope values from wildcards.</p>
-<h3 id="The-BlockTemplate-Class">The BlockTemplate Class<a class="anchor-link" href="#The-BlockTemplate-Class"> </a></h3><p>Once the block tree is assembled, it can be used to create a <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a>. The <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a> class is a wrapper for a series of nested <code>Blocks</code> designed to behave like the <a href="/mrl/template.template#Template"><code>Template</code></a> class. <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a> has the same <code>__call__</code> API as <a href="/mrl/template.template#Template"><code>Template</code></a>, and provides saving/loading functions and data logging, as well as easy access to nodes via unnested lists and dictionaries.</p>
+<h3 id="The-BlockTemplate-Class">The BlockTemplate Class<a class="anchor-link" href="#The-BlockTemplate-Class"> </a></h3><p>Once the block tree is assembled, it can be used to create a <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a>. The <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> class is a wrapper for a series of nested <code>Blocks</code> designed to behave like the <a href="/mrl/template.template.html#Template"><code>Template</code></a> class. <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> has the same <code>__call__</code> API as <a href="/mrl/template.template.html#Template"><code>Template</code></a>, and provides saving/loading functions and data logging, as well as easy access to nodes via unnested lists and dictionaries.</p>
 <h3 id="Code-Example">Code Example<a class="anchor-link" href="#Code-Example"> </a></h3><p>For the <code>R1-scaffold-R2</code> example, setting up the blocks would look something like this</p>
 
 <pre><code>r1_template = Template(r1_hard_filters, r1_soft_filters)
@@ -111,13 +112,6 @@ block_template = BlockTemplate(main_block)</code></pre>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -130,13 +124,13 @@ block_template = BlockTemplate(main_block)</code></pre>
 <p>Block - base class for Blocks</p>
 <p>Inputs:</p>
 <ul>
-<li><p><code>template Template</code>: <a href="/mrl/template.template#Template"><code>Template</code></a> subclass</p>
+<li><p><code>template Template</code>: <a href="/mrl/template.template.html#Template"><code>Template</code></a> subclass</p>
 </li>
 <li><p><code>links list[str]</code>: list, defines links between this block and other blocks</p>
 </li>
 <li><p><code>name str</code>: block name</p>
 </li>
-<li><p><code>subblocks list[Block]</code>: list of <a href="/mrl/template.blocks#Block"><code>Block</code></a> classes nested within this block</p>
+<li><p><code>subblocks list[Block]</code>: list of <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> classes nested within this block</p>
 </li>
 </ul>
 
@@ -168,9 +162,9 @@ block_template = BlockTemplate(main_block)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MolBlock" class="doc_header"><code>class</code> <code>MolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L146" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlock</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks#Block"><code>Block</code></a></p>
+<h2 id="MolBlock" class="doc_header"><code>class</code> <code>MolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L146" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MolBlock</code>(<strong><code>template</code></strong>, <strong><code>links</code></strong>, <strong><code>name</code></strong>, <strong><code>subblocks</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#Block"><code>Block</code></a></p>
 </blockquote>
-<p>MolBlock - <a href="/mrl/template.blocks#Block"><code>Block</code></a> subclass specific to working with smiles strings. This class expects
+<p>MolBlock - <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> subclass specific to working with smiles strings. This class expects
 links between SMILES fragments to be wildcard atoms of the form <code>{isotope}*:{map_number}</code>.
 Note that '0' should not be used as an isotope number because RDKit removes '0' isotopes from
 SMILES strings automatically.</p>
@@ -181,6 +175,13 @@ SMILES strings automatically.</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -207,7 +208,7 @@ Can either be a single string of the form <code>'f1.f2.f3'</code>
 or a list of the form <code>['f1','f2','f3']</code>. All items in
 <code>fragments</code> should correspond to the same final molecule.</p>
 </li>
-<li><p><code>add_constant bool</code>: If True, constant sequences in any <a href="/mrl/template.blocks#ConstantBlock"><code>ConstantBlock</code></a> subclasses
+<li><p><code>add_constant bool</code>: If True, constant sequences in any <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a> subclasses
 are added to <code>fragments</code> during evaluation. Should be <code>True</code> if constant sequences are
 missing from <code>fragments</code> or False if they are present</p>
 </li>
@@ -229,7 +230,7 @@ templates and <code>fused</code> passed <code>self.template</code></p>
 <pre><code>1. Fragments are decomposed based on `self.decompose_fragments`
 2. Fragments are routed to subblocks if present using `self.match_fragment_recursive`
 3. Any fragments matching a subblock are first evaluated by that subblock's template
-4. If `add_constant=True`, constant sequences from any [`ConstantBlock`](/mrl/template.blocks#ConstantBlock) subblocks are added
+4. If `add_constant=True`, constant sequences from any [`ConstantBlock`](/mrl/template.blocks.html#ConstantBlock) subblocks are added
 5. Fragments are joined and fused using `self.join_fragments` and `self.fuse_fragments`
 6. The fused fragments are processed by `self.eval_mol`</code></pre>
 
@@ -239,13 +240,6 @@ templates and <code>fused</code> passed <code>self.template</code></p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -286,7 +280,7 @@ templates and <code>fused</code> passed <code>self.template</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L402" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>, <strong><code>links</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks#ConstantBlock"><code>ConstantBlock</code></a></p>
+<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L402" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>, <strong><code>links</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
 </blockquote>
 <p>ConstantMolBlock - constant block for SMILES sequence</p>
 
@@ -350,7 +344,7 @@ templates and <code>fused</code> passed <code>self.template</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RGroupBlockTemplate" class="doc_header"><code>class</code> <code>RGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L628" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>replace_wildcard</code></strong>=<em><code>True</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="RGroupBlockTemplate" class="doc_header"><code>class</code> <code>RGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L628" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>replace_wildcard</code></strong>=<em><code>True</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>RGroupBlockTemplate - block template for r-group screening</p>
 <p>Inputs:</p>
@@ -392,7 +386,7 @@ Should have a single unmapped wildcard atom, ie <code>*CCCC</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DoubleRGroupBlockTemplate" class="doc_header"><code>class</code> <code>DoubleRGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L691" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="DoubleRGroupBlockTemplate" class="doc_header"><code>class</code> <code>DoubleRGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L691" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>DoubleRGroupBlockTemplate - block template for screening two r-groups</p>
 <p>Inputs:</p>
@@ -438,7 +432,7 @@ will be fused to wildcard <code>1*:2</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LinkerBlockTemplate" class="doc_header"><code>class</code> <code>LinkerBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L737" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinkerBlockTemplate</code>(<strong><code>smile1</code></strong>, <strong><code>smile2</code></strong>, <strong><code>linker_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="LinkerBlockTemplate" class="doc_header"><code>class</code> <code>LinkerBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L737" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinkerBlockTemplate</code>(<strong><code>smile1</code></strong>, <strong><code>smile2</code></strong>, <strong><code>linker_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>LinkerBlockTemplate - block template for screening linkers</p>
 <p>Inputs:</p>
@@ -483,7 +477,7 @@ Should have a single unmapped wildcard, ie <code>*CCCC</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ScaffoldBlockTemplate" class="doc_header"><code>class</code> <code>ScaffoldBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L794" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaffoldBlockTemplate</code>(<strong><code>attachments</code></strong>, <strong><code>scaffold_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="ScaffoldBlockTemplate" class="doc_header"><code>class</code> <code>ScaffoldBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L794" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaffoldBlockTemplate</code>(<strong><code>attachments</code></strong>, <strong><code>scaffold_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>ScaffoldBlockTemplate - block template for screening scaffolds or rings with multiple attachments</p>
 <p>Inputs:</p>
@@ -505,6 +499,13 @@ ie <code>['[1:*1]CC', '[1:*2]CCC']</code></p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

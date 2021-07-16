@@ -2,6 +2,7 @@
 
 title: Callback Core
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -37,20 +38,13 @@ nb_path: "nbs/12_callback_core.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Callbacks">Callbacks<a class="anchor-link" href="#Callbacks"> </a></h2><p>The training cycle in MRL is built around the Callback system. Rather than trying to explicitly define every training cycle variant, Callbacks define a series of events (see <a href="/mrl/callback_core#Events"><code>Events</code></a>) that occur during training and allow users to easily hook into those events. The result is an extremely flexible framework that can adapt to most generative design challenges.</p>
+<h2 id="Callbacks">Callbacks<a class="anchor-link" href="#Callbacks"> </a></h2><p>The training cycle in MRL is built around the Callback system. Rather than trying to explicitly define every training cycle variant, Callbacks define a series of events (see <a href="/mrl/callback_core.html#Events"><code>Events</code></a>) that occur during training and allow users to easily hook into those events. The result is an extremely flexible framework that can adapt to most generative design challenges.</p>
 <p>Callbacks use the <code>__call__</code> function to organize events. The call function will be passed an event name, like <code>compute_reward</code>. If the Callback function has an attribute that matches the event name, the attribute is called.</p>
-<p>Callbacks have access to the training environment (see <a href="/mrl/environment#Environment"><code>Environment</code></a>) and can access the training environment, the model/agent, the training buffer, training log, other callbacks and all other aspects of the training state</p>
+<p>Callbacks have access to the training environment (see <a href="/mrl/environment.html#Environment"><code>Environment</code></a>) and can access the training environment, the model/agent, the training buffer, training log, other callbacks and all other aspects of the training state</p>
 
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -126,10 +120,10 @@ nb_path: "nbs/12_callback_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Setup" class="doc_header"><code>class</code> <code>Setup</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Setup</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="Setup" class="doc_header"><code>class</code> <code>Setup</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Setup</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>Setup</p>
-<p>Setup is called after an <a href="/mrl/environment#Environment"><code>Environment</code></a> is created. The setup
+<p>Setup is called after an <a href="/mrl/environment.html#Environment"><code>Environment</code></a> is created. The setup
 step is used to do things like set attributes or add logging terms</p>
 
 </div>
@@ -160,10 +154,10 @@ step is used to do things like set attributes or add logging terms</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BeforeTrain" class="doc_header"><code>class</code> <code>BeforeTrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L108" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeTrain</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="BeforeTrain" class="doc_header"><code>class</code> <code>BeforeTrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L108" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeTrain</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>BeforeTrain</p>
-<p>This event is called by <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a> before the first batch is run</p>
+<p>This event is called by <a href="/mrl/environment.html#Environment.fit"><code>Environment.fit</code></a> before the first batch is run</p>
 
 </div>
 
@@ -193,7 +187,7 @@ step is used to do things like set attributes or add logging terms</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BuildBuffer" class="doc_header"><code>class</code> <code>BuildBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L119" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BuildBuffer</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="BuildBuffer" class="doc_header"><code>class</code> <code>BuildBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L119" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BuildBuffer</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>BuildBuffer</p>
 <p>The build buffer event is used to add samples to the Buffer</p>
@@ -226,7 +220,7 @@ step is used to do things like set attributes or add logging terms</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterBuffer" class="doc_header"><code>class</code> <code>FilterBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L130" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterBuffer</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="FilterBuffer" class="doc_header"><code>class</code> <code>FilterBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L130" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterBuffer</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>FilterBuffer</p>
 <p>The filter buffer event is used to screen items added to the
@@ -261,7 +255,7 @@ match the filter criteria</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AfterBuildBuffer" class="doc_header"><code>class</code> <code>AfterBuildBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L143" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterBuildBuffer</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="AfterBuildBuffer" class="doc_header"><code>class</code> <code>AfterBuildBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L143" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterBuildBuffer</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>AfterBuildBuffer</p>
 <p>This event is called after the buffer has been filtered and
@@ -296,7 +290,7 @@ evaluate metrics and statistics related to the buffer creation</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BeforeBatch" class="doc_header"><code>class</code> <code>BeforeBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L156" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeBatch</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="BeforeBatch" class="doc_header"><code>class</code> <code>BeforeBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L156" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeBatch</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>BeforeBatch</p>
 <p>This event is called before the next batch is sampled</p>
@@ -329,7 +323,7 @@ evaluate metrics and statistics related to the buffer creation</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SampleBatch" class="doc_header"><code>class</code> <code>SampleBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L167" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SampleBatch</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="SampleBatch" class="doc_header"><code>class</code> <code>SampleBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L167" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SampleBatch</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>SampleBatch</p>
 <p>This event produces a series of samples that are added
@@ -363,7 +357,7 @@ to the next batch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BeforeFilterBatch" class="doc_header"><code>class</code> <code>BeforeFilterBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L179" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeFilterBatch</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="BeforeFilterBatch" class="doc_header"><code>class</code> <code>BeforeFilterBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L179" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeFilterBatch</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>BeforeFilterBatch</p>
 <p>This event is called before the current batch is filtered</p>
@@ -396,7 +390,7 @@ to the next batch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterBatch" class="doc_header"><code>class</code> <code>FilterBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L190" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterBatch</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="FilterBatch" class="doc_header"><code>class</code> <code>FilterBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L190" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterBatch</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>FilterBatch</p>
 <p>This event is used to screen items in the current batch
@@ -430,7 +424,7 @@ and remove items that do not match the filter criteria</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AfterSample" class="doc_header"><code>class</code> <code>AfterSample</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L202" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterSample</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="AfterSample" class="doc_header"><code>class</code> <code>AfterSample</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L202" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterSample</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>AfterSample</p>
 <p>This event is called after a batch is sampled and filtered.
@@ -464,7 +458,7 @@ This event can be used to log stats about the last batch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BeforeComputeReward" class="doc_header"><code>class</code> <code>BeforeComputeReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L214" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeComputeReward</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="BeforeComputeReward" class="doc_header"><code>class</code> <code>BeforeComputeReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L214" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeComputeReward</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>BeforeComputeReward</p>
 <p>This event is called prior to computing rewards
@@ -499,7 +493,7 @@ any inputs required for computing rewards</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ComputeReward" class="doc_header"><code>class</code> <code>ComputeReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L227" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ComputeReward</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="ComputeReward" class="doc_header"><code>class</code> <code>ComputeReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L227" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ComputeReward</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>ComputeReward</p>
 <p>This event is used to compute rewards for
@@ -534,7 +528,7 @@ the current batch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AfterComputeReward" class="doc_header"><code>class</code> <code>AfterComputeReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L241" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterComputeReward</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="AfterComputeReward" class="doc_header"><code>class</code> <code>AfterComputeReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L241" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterComputeReward</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>AfterComputeReward</p>
 <p>This event is called after all rewards
@@ -570,7 +564,7 @@ rewards for the current batch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RewardModification" class="doc_header"><code>class</code> <code>RewardModification</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L255" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RewardModification</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="RewardModification" class="doc_header"><code>class</code> <code>RewardModification</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L255" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RewardModification</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>RewardModification</p>
 <p>This event is used to modify rewards before they
@@ -615,7 +609,7 @@ applied to <code>self.environmemnt.batch_state.rewards</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AfterRewardModification" class="doc_header"><code>class</code> <code>AfterRewardModification</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L280" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterRewardModification</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="AfterRewardModification" class="doc_header"><code>class</code> <code>AfterRewardModification</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L280" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterRewardModification</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>AfterRewardModification</p>
 <p>This event is called after all reward modifications
@@ -651,7 +645,7 @@ reward modifications for the current batch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GetModelOutputs" class="doc_header"><code>class</code> <code>GetModelOutputs</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GetModelOutputs</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="GetModelOutputs" class="doc_header"><code>class</code> <code>GetModelOutputs</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GetModelOutputs</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>GetModelOutputs</p>
 <p>This event is used to generate any model-derived outputs
@@ -685,7 +679,7 @@ relevant to loss computation</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AfterGetModelOutputs" class="doc_header"><code>class</code> <code>AfterGetModelOutputs</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L306" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterGetModelOutputs</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="AfterGetModelOutputs" class="doc_header"><code>class</code> <code>AfterGetModelOutputs</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L306" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterGetModelOutputs</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>AfterGetModelOutputs</p>
 <p>This event is called after <code>get_model_outputs</code>.
@@ -720,7 +714,7 @@ required prior to loss computation</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ComputeLoss" class="doc_header"><code>class</code> <code>ComputeLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ComputeLoss</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="ComputeLoss" class="doc_header"><code>class</code> <code>ComputeLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ComputeLoss</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>ComputeLoss</p>
 <p>This event is used to compute loss values</p>
@@ -755,7 +749,7 @@ required prior to loss computation</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ZeroGrad" class="doc_header"><code>class</code> <code>ZeroGrad</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L333" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZeroGrad</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="ZeroGrad" class="doc_header"><code>class</code> <code>ZeroGrad</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L333" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ZeroGrad</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>ZeroGrad</p>
 <p>This event is used to zero gradients
@@ -790,7 +784,7 @@ in any optimizers relevant to the fit cycle</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BeforeStep" class="doc_header"><code>class</code> <code>BeforeStep</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L347" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeStep</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="BeforeStep" class="doc_header"><code>class</code> <code>BeforeStep</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L347" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BeforeStep</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>BeforeStep</p>
 <p>This event is used for any processed
@@ -825,7 +819,7 @@ before <code>opt.step()</code>, ie gradient clipping</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Step" class="doc_header"><code>class</code> <code>Step</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L360" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Step</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="Step" class="doc_header"><code>class</code> <code>Step</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L360" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Step</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>Step</p>
 <p>This event is used to step all optimizers</p>
@@ -858,7 +852,7 @@ before <code>opt.step()</code>, ie gradient clipping</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AfterBatch" class="doc_header"><code>class</code> <code>AfterBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L371" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterBatch</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="AfterBatch" class="doc_header"><code>class</code> <code>AfterBatch</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L371" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterBatch</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>AfterBatch</p>
 <p>This event is called after <code>step</code>. This
@@ -893,7 +887,7 @@ and clean up values before the next batch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AfterTrain" class="doc_header"><code>class</code> <code>AfterTrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L384" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterTrain</code>() :: <a href="/mrl/callback_core#Event"><code>Event</code></a></p>
+<h2 id="AfterTrain" class="doc_header"><code>class</code> <code>AfterTrain</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L384" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AfterTrain</code>() :: <a href="/mrl/callback_core.html#Event"><code>Event</code></a></p>
 </blockquote>
 <p>AfterTrain</p>
 <p>This event is called after all
@@ -980,16 +974,6 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Batch-State">Batch State<a class="anchor-link" href="#Batch-State"> </a></h2><p>The <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> class is used by an <a href="/mrl/environment#Environment"><code>Environment</code></a> to track values generated or computed during a batch. Every batch, the old <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> is deleted and a new <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> is created.</p>
-<p>Attributes in <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> can be set or accessed with a key like a dictionary or as an attribute. <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> can hold any arbitrary value during a batch. However, it was designed for the use case where every attribute is either a single value or a list/container with length equal to the current batch size.</p>
-<h3 id="Rewards">Rewards<a class="anchor-link" href="#Rewards"> </a></h3><p><a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> holds the <code>rewards</code> value for a batch. All reward functions should ultimately add their reward value to <a href="/mrl/callback_core#BatchState.rewards"><code>BatchState.rewards</code></a>. See <a href="/mrl/reward#Reward"><code>Reward</code></a> for more information.</p>
-<h3 id="Loss">Loss<a class="anchor-link" href="#Loss"> </a></h3><p><a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> holds the <code>loss</code> value for a batch. This is the value that will be backpropagated during the optimizer update. All loss functions should ultimately add their value to <a href="/mrl/callback_core#BatchState.loss"><code>BatchState.loss</code></a>. See <code>Loss</code> for more information.</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -997,6 +981,16 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Batch-State">Batch State<a class="anchor-link" href="#Batch-State"> </a></h2><p>The <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> class is used by an <a href="/mrl/environment.html#Environment"><code>Environment</code></a> to track values generated or computed during a batch. Every batch, the old <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> is deleted and a new <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> is created.</p>
+<p>Attributes in <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> can be set or accessed with a key like a dictionary or as an attribute. <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> can hold any arbitrary value during a batch. However, it was designed for the use case where every attribute is either a single value or a list/container with length equal to the current batch size.</p>
+<h3 id="Rewards">Rewards<a class="anchor-link" href="#Rewards"> </a></h3><p><a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> holds the <code>rewards</code> value for a batch. All reward functions should ultimately add their reward value to <a href="/mrl/callback_core.html#BatchState.rewards"><code>BatchState.rewards</code></a>. See <a href="/mrl/reward.html#Reward"><code>Reward</code></a> for more information.</p>
+<h3 id="Loss">Loss<a class="anchor-link" href="#Loss"> </a></h3><p><a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> holds the <code>loss</code> value for a batch. This is the value that will be backpropagated during the optimizer update. All loss functions should ultimately add their value to <a href="/mrl/callback_core.html#BatchState.loss"><code>BatchState.loss</code></a>. See <code>Loss</code> for more information.</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1008,7 +1002,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BatchState" class="doc_header"><code>class</code> <code>BatchState</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L472" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchState</code>() :: <a href="/mrl/callback_core#SettrDict"><code>SettrDict</code></a></p>
+<h2 id="BatchState" class="doc_header"><code>class</code> <code>BatchState</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/callback.py#L472" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BatchState</code>() :: <a href="/mrl/callback_core.html#SettrDict"><code>SettrDict</code></a></p>
 </blockquote>
 <p>dict() -&gt; new empty dictionary
 dict(mapping) -&gt; new dictionary initialized from a mapping object's
@@ -1026,6 +1020,13 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

@@ -2,6 +2,7 @@
 
 title: Tutorial - VAE Models
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -86,7 +87,7 @@ nb_path: "nbs/tutorials/tutorials.generative_models.vae.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Setup">Setup<a class="anchor-link" href="#Setup"> </a></h2><p>Before creating a model, we need to set up our data.</p>
 <p>Our raw data is in the form of SMILES strings. We need to convert these to tensors.</p>
-<p>First we need a <a href="/mrl/vocab#Vocab"><code>Vocab</code></a> to handle converting strings to tokens and mapping those tokens to integers. We will use the <a href="/mrl/vocab#CharacterVocab"><code>CharacterVocab</code></a> class with the <a href="/mrl/vocab#SMILES_CHAR_VOCAB"><code>SMILES_CHAR_VOCAB</code></a> vocabulary. This will tokenize SMILES on a character basis.</p>
+<p>First we need a <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a> to handle converting strings to tokens and mapping those tokens to integers. We will use the <a href="/mrl/vocab.html#CharacterVocab"><code>CharacterVocab</code></a> class with the <a href="/mrl/vocab.html#SMILES_CHAR_VOCAB"><code>SMILES_CHAR_VOCAB</code></a> vocabulary. This will tokenize SMILES on a character basis.</p>
 <p>More sophisticated tokenization schemes exist, but character tokenization is nice for the simplicity. Character tokenization has a small, compact vocabulary. Other tokenization strategies can tokenize by more meaningful subwords, but these strategies create a long tail of low frequency tokens and lots of <code>unk</code> characters.</p>
 
 </div>
@@ -279,7 +280,7 @@ nb_path: "nbs/tutorials/tutorials.generative_models.vae.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Dataset">Dataset<a class="anchor-link" href="#Dataset"> </a></h2><p>Now we need a dataset. We have to decide what data we want to send to the encoder to generate a latent vector.</p>
 <p>For this tutorial, we are going to use molecular fingerprints to generate the latent vector. The model will use the encoder to map the input fingerprint to a latent vector. Then the latent vector will be used to condition the decoder, which will reconstruct the SMILES string corresponding to the fingerprint.</p>
-<p>To do this, we will use the <a href="/mrl/dataloaders#Vec_To_Text_Dataset"><code>Vec_To_Text_Dataset</code></a> dataset with <a href="/mrl/chem#ECFP6"><code>ECFP6</code></a> as our fingerprint function</p>
+<p>To do this, we will use the <a href="/mrl/dataloaders.html#Vec_To_Text_Dataset"><code>Vec_To_Text_Dataset</code></a> dataset with <a href="/mrl/chem.html#ECFP6"><code>ECFP6</code></a> as our fingerprint function</p>
 
 </div>
 </div>
@@ -421,7 +422,7 @@ nb_path: "nbs/tutorials/tutorials.generative_models.vae.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Model-Creation">Model Creation<a class="anchor-link" href="#Model-Creation"> </a></h2><p>We can create a model through the <a href="/mrl/generative_models.vae#MLP_VAE"><code>MLP_VAE</code></a> class.</p>
+<h2 id="Model-Creation">Model Creation<a class="anchor-link" href="#Model-Creation"> </a></h2><p>We can create a model through the <a href="/mrl/generative_models.vae.html#MLP_VAE"><code>MLP_VAE</code></a> class.</p>
 
 </div>
 </div>
@@ -473,7 +474,7 @@ nb_path: "nbs/tutorials/tutorials.generative_models.vae.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can examine the encoder-decoder structure of the model. We have a <a href="/mrl/layers#MLP_Encoder"><code>MLP_Encoder</code></a> section which contains three MP layers. then we have a <code>decoder</code> section that consists of an embedding, three LSTM layers and an output layer.</p>
+<p>We can examine the encoder-decoder structure of the model. We have a <a href="/mrl/layers.html#MLP_Encoder"><code>MLP_Encoder</code></a> section which contains three MP layers. then we have a <code>decoder</code> section that consists of an embedding, three LSTM layers and an output layer.</p>
 <p>There's also a <code>transition</code> section that converts the output of the encoder into a latent vector. For VAEs, the encoder output is put through a linear layer to generate a vector of means and a vector of standard deviations. These are used to parameterize a Gaussian distribution based on the encoder input. We then sample from this distibution to get a latent vector</p>
 
 </div>
@@ -565,8 +566,8 @@ nb_path: "nbs/tutorials/tutorials.generative_models.vae.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we'll put the model into a <a href="/mrl/agent#GenerativeAgent"><code>GenerativeAgent</code></a> to manage supervised training.</p>
-<p>We need to specify a loss function - we will use <a href="/mrl/generative_models.vae#VAELoss"><code>VAELoss</code></a> which includes a loss term for the KL-divergence between the distribution parameterized by the latent vector and the target distribution which is a unit Gaussian</p>
+<p>Now we'll put the model into a <a href="/mrl/agent.html#GenerativeAgent"><code>GenerativeAgent</code></a> to manage supervised training.</p>
+<p>We need to specify a loss function - we will use <a href="/mrl/generative_models.vae.html#VAELoss"><code>VAELoss</code></a> which includes a loss term for the KL-divergence between the distribution parameterized by the latent vector and the target distribution which is a unit Gaussian</p>
 
 </div>
 </div>
@@ -671,7 +672,7 @@ nb_path: "nbs/tutorials/tutorials.generative_models.vae.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Pre-trained-Models">Pre-trained Models<a class="anchor-link" href="#Pre-trained-Models"> </a></h2><p>The MRL model zoo offers a number of pre-trained models. We'll load one of these to continue.</p>
-<p>We'll use the <a href="/mrl/model_zoo#FP_VAE_ZINC"><code>FP_VAE_ZINC</code></a> model. This model was trained first on a chunk of the ZINC database</p>
+<p>We'll use the <a href="/mrl/model_zoo.html#FP_VAE_ZINC"><code>FP_VAE_ZINC</code></a> model. This model was trained first on a chunk of the ZINC database</p>
 
 </div>
 </div>
@@ -1381,7 +1382,7 @@ Valid:		1.000
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Notice how the above compounds do not appear to be very similar to the input molecule, even though we sampled all output compounds from the same latent vector.</p>
-<p>This is a feature of VAE-type models that are trained with a KL constraint. If robust reconstruction is needed, consider a model like <a href="/mrl/generative_models.lstm_lm#Conditional_LSTM_LM"><code>Conditional_LSTM_LM</code></a> which does not have the KL constraint</p>
+<p>This is a feature of VAE-type models that are trained with a KL constraint. If robust reconstruction is needed, consider a model like <a href="/mrl/generative_models.lstm_lm.html#Conditional_LSTM_LM"><code>Conditional_LSTM_LM</code></a> which does not have the KL constraint</p>
 
 </div>
 </div>

@@ -141,3 +141,4 @@ checklink/cookies.txt
 
 nbs/untracked_files
 nbs/pretrained_weights
+.pypirc

@@ -2,6 +2,7 @@
 
 title: Core
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -42,13 +43,6 @@ nb_path: "nbs/00_core.ipynb"
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -202,6 +196,13 @@ nb_path: "nbs/00_core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -220,7 +221,7 @@ nb_path: "nbs/00_core.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Parallel-Processing">Parallel Processing<a class="anchor-link" href="#Parallel-Processing"> </a></h2><p>MRL tries to build in parallel processing at every level. This can make a huge difference when you're processing millions of molecules</p>
-<p><a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a> and <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> are convenient wrappers for parallel processing. The given <code>func</code> is wrapped with <code>**kwargs</code> and used to process the <code>iterable</code>. If <code>iterable</code> is a <code>list</code> or <code>np.ndarray</code>, the elements in <code>iterable</code> are run in parallel by <code>func</code>.</p>
+<p><a href="/mrl/core.html#new_pool_parallel"><code>new_pool_parallel</code></a> and <a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a> are convenient wrappers for parallel processing. The given <code>func</code> is wrapped with <code>**kwargs</code> and used to process the <code>iterable</code>. If <code>iterable</code> is a <code>list</code> or <code>np.ndarray</code>, the elements in <code>iterable</code> are run in parallel by <code>func</code>.</p>
 <h3 id="Parallel-processing-tradeoffs">Parallel processing tradeoffs<a class="anchor-link" href="#Parallel-processing-tradeoffs"> </a></h3><p>Parallel processing can significantly speed up a process. There are however some trade-offs.</p>
 <p>In Python, parallel processing is creating using a <code>Pool</code>. A pool maps instances of a function over an iterable.</p>
 
@@ -233,24 +234,17 @@ with Pool(processes=5) as p:
 <li>Maintain an open process pool to avoid repeated pool creation overhead</li>
 </ol>
 <p>MRL uses different functions to control the method of parallel processing used.</p>
-<p>The <a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a> function implements parallel processing using a new pool for every function call, similar to the above code. This function is best used to process large numbers of inputs infrequently. Parallel processing is controlled by the <code>cpus</code> argument. If <code>cpus=None</code>, the <code>ncpus</code> environment variable is used (ie <code>os.environ['ncpus'] = '8'</code>)</p>
-<p>The <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> function allows for repeated use of a stateful process Pool, defined by the <a href="/mrl/core#GLOBAL_POOL"><code>GLOBAL_POOL</code></a> variable. By default, <code>GLOBAL_POOL=None</code>. To create a global pool, use the <a href="/mrl/core#set_global_pool"><code>set_global_pool</code></a> function.</p>
+<p>The <a href="/mrl/core.html#new_pool_parallel"><code>new_pool_parallel</code></a> function implements parallel processing using a new pool for every function call, similar to the above code. This function is best used to process large numbers of inputs infrequently. Parallel processing is controlled by the <code>cpus</code> argument. If <code>cpus=None</code>, the <code>ncpus</code> environment variable is used (ie <code>os.environ['ncpus'] = '8'</code>)</p>
+<p>The <a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a> function allows for repeated use of a stateful process Pool, defined by the <a href="/mrl/core.html#GLOBAL_POOL"><code>GLOBAL_POOL</code></a> variable. By default, <code>GLOBAL_POOL=None</code>. To create a global pool, use the <a href="/mrl/core.html#set_global_pool"><code>set_global_pool</code></a> function.</p>
 
 <pre><code>set_global_pool(cpus=8)</code></pre>
-<p>If the <code>cpus=None</code>, <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> will run processes using <a href="/mrl/core#GLOBAL_POOL"><code>GLOBAL_POOL</code></a> if it exists, or serial processing if it does not. If <code>cpus</code> is not None, <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a> defaults back to using <a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a></p>
-<p>If you need to frequently use parallel processing on small batches of inputs (ie batches from a model), set a global pool and use <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a></p>
-<h3 id="Global-Pool-Gotchas">Global Pool Gotchas<a class="anchor-link" href="#Global-Pool-Gotchas"> </a></h3><p>Using a global pool allows us to take advantage of parallel processing on small batches without having the overhead of creating process pools over and over again. However, process pools left open accumulate memory. If memory usage builds up, use <a href="/mrl/core#refresh_global_pool"><code>refresh_global_pool</code></a> to release the memory and create a new global pool, or use <a href="/mrl/core#close_global_pool"><code>close_global_pool</code></a> to delete the global pool and reset it to <code>None</code></p>
+<p>If the <code>cpus=None</code>, <a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a> will run processes using <a href="/mrl/core.html#GLOBAL_POOL"><code>GLOBAL_POOL</code></a> if it exists, or serial processing if it does not. If <code>cpus</code> is not None, <a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a> defaults back to using <a href="/mrl/core.html#new_pool_parallel"><code>new_pool_parallel</code></a></p>
+<p>If you need to frequently use parallel processing on small batches of inputs (ie batches from a model), set a global pool and use <a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a></p>
+<h3 id="Global-Pool-Gotchas">Global Pool Gotchas<a class="anchor-link" href="#Global-Pool-Gotchas"> </a></h3><p>Using a global pool allows us to take advantage of parallel processing on small batches without having the overhead of creating process pools over and over again. However, process pools left open accumulate memory. If memory usage builds up, use <a href="/mrl/core.html#refresh_global_pool"><code>refresh_global_pool</code></a> to release the memory and create a new global pool, or use <a href="/mrl/core.html#close_global_pool"><code>close_global_pool</code></a> to delete the global pool and reset it to <code>None</code></p>
 
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -367,6 +361,13 @@ with Pool(processes=5) as p:
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -630,14 +631,14 @@ maybe_parallel arg override 2 cpus time: 3.02
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the above example, <a href="/mrl/core#new_pool_parallel"><code>new_pool_parallel</code></a> takes 5 seconds longer to execute compared to <a href="/mrl/core#maybe_parallel"><code>maybe_parallel</code></a>. The time difference is driven by the overhead generated by creating new pools</p>
+<p>In the above example, <a href="/mrl/core.html#new_pool_parallel"><code>new_pool_parallel</code></a> takes 5 seconds longer to execute compared to <a href="/mrl/core.html#maybe_parallel"><code>maybe_parallel</code></a>. The time difference is driven by the overhead generated by creating new pools</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Debugging-Parallel-Processing">Debugging Parallel Processing<a class="anchor-link" href="#Debugging-Parallel-Processing"> </a></h2><p>Errors in parallel processing can be difficult to debug because the true error and stack trace are obscured by the parallel processing stack trace. If you have errors in parallel processing, first try setting <code>os.environ['ncpus'] = '0'</code> and running <a href="/mrl/core#close_global_pool"><code>close_global_pool</code></a> to disable python multiprocessing. This should reveal the true error.</p>
+<h2 id="Debugging-Parallel-Processing">Debugging Parallel Processing<a class="anchor-link" href="#Debugging-Parallel-Processing"> </a></h2><p>Errors in parallel processing can be difficult to debug because the true error and stack trace are obscured by the parallel processing stack trace. If you have errors in parallel processing, first try setting <code>os.environ['ncpus'] = '0'</code> and running <a href="/mrl/core.html#close_global_pool"><code>close_global_pool</code></a> to disable python multiprocessing. This should reveal the true error.</p>
 <p>If everything works fine when multiprocessing is disabled, it is likely one of your functions is failing to pickle.</p>
 
 </div>

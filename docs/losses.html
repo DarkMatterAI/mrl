@@ -2,6 +2,7 @@
 
 title: Losses
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -37,8 +38,8 @@ nb_path: "nbs/18_losses.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Loss-Function-Callbacks">Loss Function Callbacks<a class="anchor-link" href="#Loss-Function-Callbacks"> </a></h2><p>Loss function callbacks compute some loss value from the current batch state and add the resulting value to <a href="/mrl/callback_core#BatchState.loss"><code>BatchState.loss</code></a>.</p>
-<p><a href="/mrl/losses#LossCallback"><code>LossCallback</code></a> provides a simple hook for custom loss functions. Any object with a <code>from_batch_state</code> method that returns a scalar value can be passed to <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a>. Ex:</p>
+<h2 id="Loss-Function-Callbacks">Loss Function Callbacks<a class="anchor-link" href="#Loss-Function-Callbacks"> </a></h2><p>Loss function callbacks compute some loss value from the current batch state and add the resulting value to <a href="/mrl/callback_core.html#BatchState.loss"><code>BatchState.loss</code></a>.</p>
+<p><a href="/mrl/losses.html#LossCallback"><code>LossCallback</code></a> provides a simple hook for custom loss functions. Any object with a <code>from_batch_state</code> method that returns a scalar value can be passed to <a href="/mrl/losses.html#LossCallback"><code>LossCallback</code></a>. Ex:</p>
 
 <pre><code>class MyLoss():
     def from_batch_state(self, batch_state):
@@ -52,13 +53,6 @@ nb_path: "nbs/18_losses.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -66,7 +60,7 @@ nb_path: "nbs/18_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LossCallback" class="doc_header"><code>class</code> <code>LossCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/loss.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LossCallback</code>(<strong><code>loss_function</code></strong>, <strong><code>name</code></strong>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>order</code></strong>=<em><code>20</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="LossCallback" class="doc_header"><code>class</code> <code>LossCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/loss.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LossCallback</code>(<strong><code>loss_function</code></strong>, <strong><code>name</code></strong>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>, <strong><code>order</code></strong>=<em><code>20</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>LossCallback - basic loss callback</p>
 <p>Inputs:</p>
@@ -93,14 +87,6 @@ nb_path: "nbs/18_losses.ipynb"
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Policy-Loss">Policy Loss<a class="anchor-link" href="#Policy-Loss"> </a></h2><p>The <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> interfaces with any of the <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a> subclasses like <a href="/mrl/policy_gradient#PolicyGradient"><code>PolicyGradient</code></a>, <a href="/mrl/policy_gradient#TRPO"><code>TRPO</code></a> or <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a>.</p>
-<p><a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> can optionally contain a <code>value_head</code>, a model to predict state values. The code will look for a <code>batch_state.value_input</code> attribute, which is typically set by <a href="/mrl/agent#Agent.get_model_outputs"><code>Agent.get_model_outputs</code></a></p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -108,6 +94,14 @@ nb_path: "nbs/18_losses.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Policy-Loss">Policy Loss<a class="anchor-link" href="#Policy-Loss"> </a></h2><p>The <a href="/mrl/losses.html#PolicyLoss"><code>PolicyLoss</code></a> interfaces with any of the <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a> subclasses like <a href="/mrl/policy_gradient.html#PolicyGradient"><code>PolicyGradient</code></a>, <a href="/mrl/policy_gradient.html#TRPO"><code>TRPO</code></a> or <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a>.</p>
+<p><a href="/mrl/losses.html#PolicyLoss"><code>PolicyLoss</code></a> can optionally contain a <code>value_head</code>, a model to predict state values. The code will look for a <code>batch_state.value_input</code> attribute, which is typically set by <a href="/mrl/agent.html#Agent.get_model_outputs"><code>Agent.get_model_outputs</code></a></p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -119,9 +113,9 @@ nb_path: "nbs/18_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PolicyLoss" class="doc_header"><code>class</code> <code>PolicyLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/loss.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyLoss</code>(<strong><code>policy_function</code></strong>, <strong><code>name</code></strong>, <strong><code>value_head</code></strong>=<em><code>None</code></em>, <strong><code>v_update</code></strong>=<em><code>0.95</code></em>, <strong><code>v_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>vopt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a></p>
+<h2 id="PolicyLoss" class="doc_header"><code>class</code> <code>PolicyLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/loss.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyLoss</code>(<strong><code>policy_function</code></strong>, <strong><code>name</code></strong>, <strong><code>value_head</code></strong>=<em><code>None</code></em>, <strong><code>v_update</code></strong>=<em><code>0.95</code></em>, <strong><code>v_update_iter</code></strong>=<em><code>10</code></em>, <strong><code>vopt_kwargs</code></strong>=<em><code>{}</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/losses.html#LossCallback"><code>LossCallback</code></a></p>
 </blockquote>
-<p>PolicyLoss - Loss callback for <a href="/mrl/policy_gradient#BasePolicy"><code>BasePolicy</code></a> subclasses</p>
+<p>PolicyLoss - Loss callback for <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a> subclasses</p>
 <p>Inputs:</p>
 <ul>
 <li><p><code>policy_function BasePolicy</code>: policy</p>
@@ -209,7 +203,7 @@ nb_path: "nbs/18_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HistoricPriorLoss" class="doc_header"><code>class</code> <code>HistoricPriorLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/loss.py#L233" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HistoricPriorLoss</code>(<strong><code>prior_loss</code></strong>, <strong><code>model</code></strong>, <strong><code>dataset</code></strong>, <strong><code>percentile</code></strong>, <strong><code>n</code></strong>, <strong><code>above_percent</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>frequency</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="HistoricPriorLoss" class="doc_header"><code>class</code> <code>HistoricPriorLoss</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/loss.py#L233" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HistoricPriorLoss</code>(<strong><code>prior_loss</code></strong>, <strong><code>model</code></strong>, <strong><code>dataset</code></strong>, <strong><code>percentile</code></strong>, <strong><code>n</code></strong>, <strong><code>above_percent</code></strong>, <strong><code>start_iter</code></strong>, <strong><code>frequency</code></strong>, <strong><code>log_term</code></strong>=<em><code>'rewards'</code></em>, <strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>HistoricPriorLoss - draws samples from batch log
 to send to <code>prior_loss</code></p>
@@ -250,6 +244,13 @@ percentile computation</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

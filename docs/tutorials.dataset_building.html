@@ -2,6 +2,7 @@
 
 title: Tutorial - Dataset Construction
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -55,21 +56,6 @@ nb_path: "nbs/tutorials/tutorials.dataset_building.ipynb"
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.7/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
-  return f(*args, **kwds)
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -301,7 +287,7 @@ nb_path: "nbs/tutorials/tutorials.dataset_building.ipynb"
 <h2 id="Fragment-Datasets">Fragment Datasets<a class="anchor-link" href="#Fragment-Datasets"> </a></h2><p>Often we want to optimize a section of a molecule while keeping the rest constant. The best way to do this is to have the model generate only the part of the compound that needs to be changed.</p>
 <p>If you want to use a generative screen to optimize an R-group, it is more efficient to train an R-group specific model rather than a full-molecule compound.</p>
 <p>We will look at curating datasets for R-group, linker and scaffold generation tasks.</p>
-<p>We will use the <a href="/mrl/chem#fragment_smile"><code>fragment_smile</code></a> function to slice up compounds into fragments. Then we will screen the fragments</p>
+<p>We will use the <a href="/mrl/chem.html#fragment_smile"><code>fragment_smile</code></a> function to slice up compounds into fragments. Then we will screen the fragments</p>
 
 </div>
 </div>

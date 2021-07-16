@@ -2,6 +2,7 @@
 
 title: Small Molecule Affinity Optimization
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -496,7 +497,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.affinity.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Score-Function">Score Function<a class="anchor-link" href="#Score-Function"> </a></h2><p>Now we want to develop a score function for predicting binding affinity. We are going to use a MLP-type model to predict affinity from an <a href="/mrl/chem#ECFP6"><code>ECFP6</code></a> fingerprint.</p>
+<h2 id="Score-Function">Score Function<a class="anchor-link" href="#Score-Function"> </a></h2><p>Now we want to develop a score function for predicting binding affinity. We are going to use a MLP-type model to predict affinity from an <a href="/mrl/chem.html#ECFP6"><code>ECFP6</code></a> fingerprint.</p>
 <p>We will train on 90% of the data and validate on the 10% held out.</p>
 
 </div>
@@ -926,7 +927,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.affinity.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Load-Model">Load Model<a class="anchor-link" href="#Load-Model"> </a></h2><p>We load the <a href="/mrl/model_zoo#LSTM_LM_Small_ZINC_NC"><code>LSTM_LM_Small_ZINC_NC</code></a> model. This is a basic LSTM-based language model trained on part of the ZINC database</p>
+<h2 id="Load-Model">Load Model<a class="anchor-link" href="#Load-Model"> </a></h2><p>We load the <a href="/mrl/model_zoo.html#LSTM_LM_Small_ZINC_NC"><code>LSTM_LM_Small_ZINC_NC</code></a> model. This is a basic LSTM-based language model trained on part of the ZINC database</p>
 
 </div>
 </div>
@@ -1417,7 +1418,7 @@ Wall time: 2min 52s
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Loss">Loss<a class="anchor-link" href="#Loss"> </a></h3><p>We use <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> as our policy gradient loss</p>
+<h3 id="Loss">Loss<a class="anchor-link" href="#Loss"> </a></h3><p>We use <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> as our policy gradient loss</p>
 
 </div>
 </div>
@@ -1537,12 +1538,12 @@ Wall time: 2min 52s
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Callbacks">Callbacks<a class="anchor-link" href="#Callbacks"> </a></h3><p>Additional callbacks</p>
 <ul>
-<li><a href="/mrl/agent#SupevisedCB"><code>SupevisedCB</code></a>: runs supervised training on the top 3% of samples every 400 batches</li>
-<li><a href="/mrl/logging#MaxCallback"><code>MaxCallback</code></a>: prints the max reward for each batch</li>
-<li><a href="/mrl/logging#PercentileCallback"><code>PercentileCallback</code></a>: prints the 90th percentile score each batch</li>
-<li><a href="/mrl/agent#ResetAndRetrain"><code>ResetAndRetrain</code></a>: reloads the base model and retrained on the top 10% of samples every 2000 batches</li>
-<li><a href="/mrl/reward#NoveltyReward"><code>NoveltyReward</code></a>: gives a score bonus to new compounds</li>
-<li><a href="/mrl/samplers#Timeout"><code>Timeout</code></a>: prohibits training on the same sample more than once every 20 batches</li>
+<li><a href="/mrl/agent.html#SupevisedCB"><code>SupevisedCB</code></a>: runs supervised training on the top 3% of samples every 400 batches</li>
+<li><a href="/mrl/logging.html#MaxCallback"><code>MaxCallback</code></a>: prints the max reward for each batch</li>
+<li><a href="/mrl/logging.html#PercentileCallback"><code>PercentileCallback</code></a>: prints the 90th percentile score each batch</li>
+<li><a href="/mrl/agent.html#ResetAndRetrain"><code>ResetAndRetrain</code></a>: reloads the base model and retrained on the top 10% of samples every 2000 batches</li>
+<li><a href="/mrl/reward.html#NoveltyReward"><code>NoveltyReward</code></a>: gives a score bonus to new compounds</li>
+<li><a href="/mrl/samplers.html#Timeout"><code>Timeout</code></a>: prohibits training on the same sample more than once every 20 batches</li>
 </ul>
 
 </div>

@@ -2,6 +2,7 @@
 
 title: Tutorial - Templates (Advanced)
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -30,10 +31,10 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Block-Overview">Block Overview<a class="anchor-link" href="#Block-Overview"> </a></h2><p>This tutorial follows from the <a href="/mrl/tutorials.template.beginner.html">Intermediate Template Tutorial</a>. This tutorial looks at using the <a href="/mrl/template.blocks#Block"><code>Block</code></a> class to apply different templates to different parts of the molecule.</p>
-<p>For a full description of the <a href="/mrl/template.blocks#Block"><code>Block</code></a> class, see the <a href="/mrl/template.blocks.html">Blocks</a> page. Here we will do a brief overview.</p>
+<h2 id="Block-Overview">Block Overview<a class="anchor-link" href="#Block-Overview"> </a></h2><p>This tutorial follows from the <a href="/mrl/tutorials.template.beginner.html">Intermediate Template Tutorial</a>. This tutorial looks at using the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class to apply different templates to different parts of the molecule.</p>
+<p>For a full description of the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class, see the <a href="/mrl/template.blocks.html">Blocks</a> page. Here we will do a brief overview.</p>
 <p>The basic idea is that instead of generating a compound of the form <code>X-Y-Z</code>, we generate a string of fragments <code>*X.*Y*.*Z</code>. When we use a block template to analyze this compound, we first screen <code>*X</code>, <code>*Y*</code> and <code>*Z</code> separately with different templates. Then we fuse the fragments into a single compound <code>X-Y-Z</code> and screen the full compound against a template.</p>
-<h2 id="Block-Structure">Block Structure<a class="anchor-link" href="#Block-Structure"> </a></h2><p>A <a href="/mrl/template.blocks#Block"><code>Block</code></a> consists of a <a href="/mrl/template.template#Template"><code>Template</code></a> and a set of <code>links</code> that determine how a block connects to other blocks. Links are defined by adding isotope and map numbers to wildcard atoms, ie <code>* &gt;&gt; [{isotope}*:{map_num}]</code>. Map numbers determine how fragments link together, while isotopes differentiate wildcard atoms with the same map number. Isotope values should be <code>1</code> or <code>2</code>. Applying this to the above example, <code>*X.*Y*.*Z</code> would become <code>[1*:1]X.[2*:1]Y[2*:2].[1*:2]Z</code>. This tells us that <code>[1*:1]</code> should link to <code>[2*:1]</code> (same map number, different isotope), and the same for <code>[2*:2]</code> and <code>[1*:2]</code></p>
+<h2 id="Block-Structure">Block Structure<a class="anchor-link" href="#Block-Structure"> </a></h2><p>A <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> consists of a <a href="/mrl/template.template.html#Template"><code>Template</code></a> and a set of <code>links</code> that determine how a block connects to other blocks. Links are defined by adding isotope and map numbers to wildcard atoms, ie <code>* &gt;&gt; [{isotope}*:{map_num}]</code>. Map numbers determine how fragments link together, while isotopes differentiate wildcard atoms with the same map number. Isotope values should be <code>1</code> or <code>2</code>. Applying this to the above example, <code>*X.*Y*.*Z</code> would become <code>[1*:1]X.[2*:1]Y[2*:2].[1*:2]Z</code>. This tells us that <code>[1*:1]</code> should link to <code>[2*:1]</code> (same map number, different isotope), and the same for <code>[2*:2]</code> and <code>[1*:2]</code></p>
 <p>Blocks are arranged in a tree structure with the head block representing the full molecule. For this example, our block structure would look like</p>
 
 <pre><code>Block 1 - head block, full molecule template, links=[]
@@ -105,7 +106,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.7/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
+<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
   return f(*args, **kwds)
 </pre>
 </div>
@@ -241,7 +242,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Next we start building blocks. First we'll create a block for the scaffold. Since the scaffold is constant, we will use the <a href="/mrl/template.blocks#ConstantMolBlock"><code>ConstantMolBlock</code></a> which is a block specific for constant SMILES strings</p>
+<p>Next we start building blocks. First we'll create a block for the scaffold. Since the scaffold is constant, we will use the <a href="/mrl/template.blocks.html#ConstantMolBlock"><code>ConstantMolBlock</code></a> which is a block specific for constant SMILES strings</p>
 
 </div>
 </div>
@@ -283,7 +284,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Next we make blocks for the R groups using the <a href="/mrl/template.blocks#MolBlock"><code>MolBlock</code></a> class. To create a block, we pass a Template and a set of links. Links for SMILES strings follow the convention <code>{isotope}*:{map_number}</code>, leaving out the brackets used in SMILES syntax.</p>
+<p>Next we make blocks for the R groups using the <a href="/mrl/template.blocks.html#MolBlock"><code>MolBlock</code></a> class. To create a block, we pass a Template and a set of links. Links for SMILES strings follow the convention <code>{isotope}*:{map_number}</code>, leaving out the brackets used in SMILES syntax.</p>
 <p>For the R1 block, <code>links=['2*:1']</code></p>
 <p>For the R2 block, <code>links=['2*:2']</code></p>
 
@@ -435,7 +436,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now We pass the head block to a <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a>. The <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a> class gives a collection of Blocks the same <code>__call__</code> API as the <code>Tempate</code> class, which allows them to be interchanged. <a href="/mrl/template.blocks#BlockTemplate"><code>BlockTemplate</code></a> also handles data logging as well as saving and loading templates</p>
+<p>Now We pass the head block to a <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a>. The <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> class gives a collection of Blocks the same <code>__call__</code> API as the <code>Tempate</code> class, which allows them to be interchanged. <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a> also handles data logging as well as saving and loading templates</p>
 
 </div>
 </div>
@@ -523,7 +524,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we can use this block template. We load a list of 2000 SMILES strings. We'll use the <a href="/mrl/chem#fragment_smiles"><code>fragment_smiles</code></a> function to fragment these smiles</p>
+<p>Now we can use this block template. We load a list of 2000 SMILES strings. We'll use the <a href="/mrl/chem.html#fragment_smiles"><code>fragment_smiles</code></a> function to fragment these smiles</p>
 
 </div>
 </div>
@@ -602,7 +603,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we can pass these SMIES and fragments through the template using the <a href="/mrl/template.blocks#BlockTemplate.load_data"><code>BlockTemplate.load_data</code></a> function.</p>
+<p>Now we can pass these SMIES and fragments through the template using the <a href="/mrl/template.blocks.html#BlockTemplate.load_data"><code>BlockTemplate.load_data</code></a> function.</p>
 <p>This function passes the inputs through the block tree. At each block node, the inputs are screened. If an input matches the link structure and template at a given node, the input is added to the template log at that node.</p>
 
 </div>
@@ -884,7 +885,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can now sample from these datasets. The <a href="/mrl/template.blocks#BlockTemplate.sample_leaf_nodes"><code>BlockTemplate.sample_leaf_nodes</code></a> function draws a random fragment from the data log of each leaf node. Passing <code>include_constant=True</code> adds constant block sequences (in this case the scaffold).</p>
+<p>We can now sample from these datasets. The <a href="/mrl/template.blocks.html#BlockTemplate.sample_leaf_nodes"><code>BlockTemplate.sample_leaf_nodes</code></a> function draws a random fragment from the data log of each leaf node. Passing <code>include_constant=True</code> adds constant block sequences (in this case the scaffold).</p>
 
 </div>
 </div>
@@ -1016,7 +1017,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We now process these fragment strings with the <a href="/mrl/template.blocks#BlockTemplate.recurse_fragments"><code>BlockTemplate.recurse_fragments</code></a> function, passing <code>add_constant=True</code> to indicate the constant regions are not currently included in the fragments</p>
+<p>We now process these fragment strings with the <a href="/mrl/template.blocks.html#BlockTemplate.recurse_fragments"><code>BlockTemplate.recurse_fragments</code></a> function, passing <code>add_constant=True</code> to indicate the constant regions are not currently included in the fragments</p>
 
 </div>
 </div>
@@ -1369,7 +1370,7 @@ nb_path: "nbs/tutorials/tutorials.template.advanced.ipynb"
 <p>First we need a dataset of compounds matching this pattern. We've already discussed how to build datasets using block templates, so all good there.</p>
 <p>Now we need to change the tokenization structure of the generative model to account for this. We could continue with the standard approach of tokenizing by character. However this can lead to some model confusion. If we tokenize by character, <code>CC[2*:1]</code> becomes <code>['C', 'C', '[', '2', '*', ':', '1', ']']</code>. The tokens <code>1</code> and <code>2</code> already exist in the SMILES alphabet to denote ring openings and closures. If we tokenize our links by character, we overload the meaning of <code>1</code> and <code>2</code>. We also open up the possibility for the model to produce invalid links.</p>
 <p>A cleaner approach is to treat the links <code>[2*:1]</code> as tokens. <code>CC[2*:1]</code> would become <code>['C', 'C', '[2*:1]']</code>. This treats links as a single token unit, which makes a lot more sense.</p>
-<p>See the toknization section in the <a href="/mrl/vocab#Vocab"><code>Vocab</code></a> module for details</p>
+<p>See the toknization section in the <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a> module for details</p>
 
 </div>
 </div>

@@ -8,7 +8,7 @@ MRL bridges the gap between generative models and practical drug discovery by en
 
 MRL is suitable for all stages of drug discovery, from high diversity hit expansion screens to hyper-focused lead optimization
 
-![](nbs/files/mols.png)
+<img src="nbs/files/mols.png" width="800" alt="rgroup optimization" style="max-width: 800px">
 
 ## Use Cases
 

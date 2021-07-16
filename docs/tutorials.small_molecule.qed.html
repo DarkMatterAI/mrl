@@ -2,6 +2,7 @@
 
 title: Small Molecule Property Optimization - QED
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -85,7 +86,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.qed.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>Here we create the model we want to optimize. We will use the <a href="/mrl/model_zoo#LSTM_LM_Small_ZINC_NC"><code>LSTM_LM_Small_ZINC_NC</code></a> - a LSTM-based language model pretrained on part of the ZINC database without chirality. Training without chirality prevents a form of mode collapse where the model converges to generating different isomers of the same compound.</p>
+<h2 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h2><p>Here we create the model we want to optimize. We will use the <a href="/mrl/model_zoo.html#LSTM_LM_Small_ZINC_NC"><code>LSTM_LM_Small_ZINC_NC</code></a> - a LSTM-based language model pretrained on part of the ZINC database without chirality. Training without chirality prevents a form of mode collapse where the model converges to generating different isomers of the same compound.</p>
 <p>Whether or not to use a model trained with or without chirality depends on the reward function you are trying to optimize. You should use a model with chirality if your reward function handles chirality in a meaningful way. Specically this means your reward function should give different scores to different isomers. This difference should relate to a real aspect of the propety predicted (ie affinity of different isomers) rather than being a spurious feature learned by the model (this happens surprisingly often).</p>
 <p>QED score isn't impacted by chirality, so using a non-chiral model makes sense</p>
 
@@ -114,12 +115,12 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.qed.ipynb"
 <h2 id="Template">Template<a class="anchor-link" href="#Template"> </a></h2><p>Here we create our template.</p>
 <p>We set the following hard filters:</p>
 <ul>
-<li><a href="/mrl/template.filters#ValidityFilter"><code>ValidityFilter</code></a>: screens for vaid compounds</li>
-<li><a href="/mrl/template.filters#SingleCompoundFilter"><code>SingleCompoundFilter</code></a>: screens for single compounds</li>
+<li><a href="/mrl/template.filters.html#ValidityFilter"><code>ValidityFilter</code></a>: screens for vaid compounds</li>
+<li><a href="/mrl/template.filters.html#SingleCompoundFilter"><code>SingleCompoundFilter</code></a>: screens for single compounds</li>
 </ul>
 <p>We set the following soft filters:</p>
 <ul>
-<li><a href="/mrl/template.filters#QEDFilter"><code>QEDFilter</code></a>: evaluates the QED score of a compound. By passing <code>score=PassThroughScore()</code>, this filter simply returns the QED score</li>
+<li><a href="/mrl/template.filters.html#QEDFilter"><code>QEDFilter</code></a>: evaluates the QED score of a compound. By passing <code>score=PassThroughScore()</code>, this filter simply returns the QED score</li>
 </ul>
 
 </div>
@@ -157,7 +158,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.qed.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h2><p>We will use the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> policy gradient algorithm</p>
+<h2 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h2><p>We will use the <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> policy gradient algorithm</p>
 
 </div>
 </div>

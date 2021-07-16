@@ -2,6 +2,7 @@
 
 title: Environment
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -52,28 +53,28 @@ nb_path: "nbs/20_environment.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Environmemnt">Environmemnt<a class="anchor-link" href="#Environmemnt"> </a></h2><p>The <a href="/mrl/environment#Environment"><code>Environment</code></a> class holds all <a href="/mrl/callback_core#Callback"><code>Callback</code></a> classes involved in the fit cycle and runs the fit loop. All callbacks are treated the same, but the following callback classes are distinguished for semantic convenience:</p>
+<h2 id="Environmemnt">Environmemnt<a class="anchor-link" href="#Environmemnt"> </a></h2><p>The <a href="/mrl/environment.html#Environment"><code>Environment</code></a> class holds all <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a> classes involved in the fit cycle and runs the fit loop. All callbacks are treated the same, but the following callback classes are distinguished for semantic convenience:</p>
 <ul>
-<li><code>agent</code> - the <a href="/mrl/agent#Agent"><code>Agent</code></a> being trained</li>
-<li><code>template_cb</code> - the <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a> to use for the fit cycle</li>
-<li><code>samplers</code> - any <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> callbacks used </li>
-<li><code>rewards</code> - any <a href="/mrl/reward#RewardCallback"><code>RewardCallback</code></a> callbacks</li>
-<li><code>losses</code> - any <a href="/mrl/losses#LossCallback"><code>LossCallback</code></a> callbacks</li>
-<li><code>cbs</code> - any other <a href="/mrl/callback_core#Callback"><code>Callback</code></a> classes that don't fall into the above categories</li>
+<li><code>agent</code> - the <a href="/mrl/agent.html#Agent"><code>Agent</code></a> being trained</li>
+<li><code>template_cb</code> - the <a href="/mrl/template_callback.html#TemplateCallback"><code>TemplateCallback</code></a> to use for the fit cycle</li>
+<li><code>samplers</code> - any <a href="/mrl/samplers.html#Sampler"><code>Sampler</code></a> callbacks used </li>
+<li><code>rewards</code> - any <a href="/mrl/reward.html#RewardCallback"><code>RewardCallback</code></a> callbacks</li>
+<li><code>losses</code> - any <a href="/mrl/losses.html#LossCallback"><code>LossCallback</code></a> callbacks</li>
+<li><code>cbs</code> - any other <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a> classes that don't fall into the above categories</li>
 </ul>
-<h2 id="The-Fit-Loop">The Fit Loop<a class="anchor-link" href="#The-Fit-Loop"> </a></h2><p>The following describes the order of events in <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a></p>
+<h2 id="The-Fit-Loop">The Fit Loop<a class="anchor-link" href="#The-Fit-Loop"> </a></h2><p>The following describes the order of events in <a href="/mrl/environment.html#Environment.fit"><code>Environment.fit</code></a></p>
 <ol>
-<li>Callbacks added during <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a> are registered</li>
+<li>Callbacks added during <a href="/mrl/environment.html#Environment.fit"><code>Environment.fit</code></a> are registered</li>
 <li><code>before_train</code> event is called</li>
 <li>Start iterating over the number of batches. For each batch:</li>
-<li>Call <a href="/mrl/environment#Environment.build_buffer"><code>Environment.build_buffer</code></a>. If current buffer size is less than the current batch size:<ol>
+<li>Call <a href="/mrl/environment.html#Environment.build_buffer"><code>Environment.build_buffer</code></a>. If current buffer size is less than the current batch size:<ol>
 <li>call <code>build_buffer</code> event</li>
 <li>call <code>filter_buffer</code> event</li>
 <li>call <code>after_build_buffer</code> event</li>
 </ol>
 </li>
-<li>Call <a href="/mrl/environment#Environment.sample_batch"><code>Environment.sample_batch</code></a><ol>
-<li>create new <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a></li>
+<li>Call <a href="/mrl/environment.html#Environment.sample_batch"><code>Environment.sample_batch</code></a><ol>
+<li>create new <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a></li>
 <li>call <code>before_batch</code> event</li>
 <li>call <code>sample_batch</code> event</li>
 <li>call <code>before_filter_batch</code> event</li>
@@ -81,7 +82,7 @@ nb_path: "nbs/20_environment.ipynb"
 <li>call <code>after_sample</code> event</li>
 </ol>
 </li>
-<li>Call <a href="/mrl/environment#Environment.compute_reward"><code>Environment.compute_reward</code></a><ol>
+<li>Call <a href="/mrl/environment.html#Environment.compute_reward"><code>Environment.compute_reward</code></a><ol>
 <li>call <code>before_compute_reward</code> event</li>
 <li>call <code>compute_reward</code> event</li>
 <li>call <code>after_compute_reward</code> event</li>
@@ -89,19 +90,19 @@ nb_path: "nbs/20_environment.ipynb"
 <li>call <code>after_reward_modification</code> event</li>
 </ol>
 </li>
-<li>Call <a href="/mrl/environment#Environment.get_model_outputs"><code>Environment.get_model_outputs</code></a><ol>
+<li>Call <a href="/mrl/environment.html#Environment.get_model_outputs"><code>Environment.get_model_outputs</code></a><ol>
 <li>call <code>get_model_outputs</code> event</li>
 <li>call <code>after_get_model_outputs</code> event</li>
 </ol>
 </li>
-<li>Call <a href="/mrl/environment#Environment.compute_loss"><code>Environment.compute_loss</code></a><ol>
+<li>Call <a href="/mrl/environment.html#Environment.compute_loss"><code>Environment.compute_loss</code></a><ol>
 <li>call <code>compute_loss</code> event</li>
 <li>call <code>zero_grad</code> event</li>
 <li>call <code>before_step</code> event</li>
 <li>call <code>step</code> event</li>
 </ol>
 </li>
-<li>Call <a href="/mrl/environment#Environment.after_batch"><code>Environment.after_batch</code></a><ol>
+<li>Call <a href="/mrl/environment.html#Environment.after_batch"><code>Environment.after_batch</code></a><ol>
 <li>call <code>after_batch</code> event</li>
 </ol>
 </li>
@@ -112,13 +113,6 @@ nb_path: "nbs/20_environment.ipynb"
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -151,7 +145,7 @@ nb_path: "nbs/20_environment.ipynb"
 should come from the buffer. If None, value is inferred from
 <code>p_batch</code> values in <code>samplers</code></p>
 </li>
-<li><p><code>log Optional[Log]</code>: custom log. If None, standard <a href="/mrl/logging#Log"><code>Log</code></a> is used</p>
+<li><p><code>log Optional[Log]</code>: custom log. If None, standard <a href="/mrl/logging.html#Log"><code>Log</code></a> is used</p>
 </li>
 </ul>
 
@@ -161,6 +155,13 @@ should come from the buffer. If None, value is inferred from
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

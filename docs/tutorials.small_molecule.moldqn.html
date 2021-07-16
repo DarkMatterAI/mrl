@@ -2,6 +2,7 @@
 
 title: MolDQN
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -43,9 +44,9 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.moldqn.ipynb"
 <p>This process lets us build up a set of <code>(state, next_state)</code> sample pairs. Then during optimization, we train the model to predict the value of <code>state</code> plus a portion of the value of <code>next_state</code>. Including a portion of future rewards in the prediction is an important part of MolDQN. We could forego the RL aspect of this entirely and use just the sampling procedure in a beam-search sort of way where we calculate the highest value next state and simply choose that. The flaw with this approach is it can lead to getting stuck in local optima. With RL, we hope the model can learn that choosing a state that has a lower value on the next immediate step can actually be advantgeous as it can lead to an overall higher reward in say 3 steps.</p>
 <h3 id="Integrating-MolDQN">Integrating MolDQN<a class="anchor-link" href="#Integrating-MolDQN"> </a></h3><p>To integrate the MolDQN approch into MRL, we need to design the following:</p>
 <ol>
-<li>A <a href="/mrl/dataloaders#Base_Dataset"><code>Base_Dataset</code></a> variant for MolDQN</li>
-<li>A <a href="/mrl/agent#Agent"><code>Agent</code></a> variant for MolDQN</li>
-<li>A <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> variant for MolDQN</li>
+<li>A <a href="/mrl/dataloaders.html#Base_Dataset"><code>Base_Dataset</code></a> variant for MolDQN</li>
+<li>A <a href="/mrl/agent.html#Agent"><code>Agent</code></a> variant for MolDQN</li>
+<li>A <a href="/mrl/samplers.html#Sampler"><code>Sampler</code></a> variant for MolDQN</li>
 </ol>
 
 </div>
@@ -101,7 +102,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.moldqn.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="MolDQN-Dataset">MolDQN Dataset<a class="anchor-link" href="#MolDQN-Dataset"> </a></h2><p>We need to build a variant of <a href="/mrl/dataloaders#Base_Dataset"><code>Base_Dataset</code></a> to work with MolDQN. This means we need to implement the following methods:</p>
+<h2 id="MolDQN-Dataset">MolDQN Dataset<a class="anchor-link" href="#MolDQN-Dataset"> </a></h2><p>We need to build a variant of <a href="/mrl/dataloaders.html#Base_Dataset"><code>Base_Dataset</code></a> to work with MolDQN. This means we need to implement the following methods:</p>
 <ul>
 <li><code>__len__</code></li>
 <li><code>__getitem__</code></li>
@@ -212,9 +213,9 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.moldqn.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="MolDQN-Agent">MolDQN Agent<a class="anchor-link" href="#MolDQN-Agent"> </a></h2><p>Since our data is tensorized into fingerprint vectors, our model will be a MLP-type model. We now need to build an <a href="/mrl/agent#Agent"><code>Agent</code></a> to use this model.</p>
-<p>MolDQN uses a double Q learning approach. This fits with the <a href="/mrl/agent#BaselineAgent"><code>BaselineAgent</code></a> framework of having a main model and a baseline model.</p>
-<p>We build a new <a href="/mrl/agent#BaselineAgent"><code>BaselineAgent</code></a> with the following methods implemented:</p>
+<h2 id="MolDQN-Agent">MolDQN Agent<a class="anchor-link" href="#MolDQN-Agent"> </a></h2><p>Since our data is tensorized into fingerprint vectors, our model will be a MLP-type model. We now need to build an <a href="/mrl/agent.html#Agent"><code>Agent</code></a> to use this model.</p>
+<p>MolDQN uses a double Q learning approach. This fits with the <a href="/mrl/agent.html#BaselineAgent"><code>BaselineAgent</code></a> framework of having a main model and a baseline model.</p>
+<p>We build a new <a href="/mrl/agent.html#BaselineAgent"><code>BaselineAgent</code></a> with the following methods implemented:</p>
 <ul>
 <li><code>setup</code>: define terms to log for MolDQN</li>
 <li><code>before_compute_reward</code>: correctly tensorize samples</li>
@@ -397,8 +398,8 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.moldqn.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Sampler">Sampler<a class="anchor-link" href="#Sampler"> </a></h2><p>Now we need to build a <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> to generate samples. This sampler needs to follow the "add one atom or bond" rollout procedure for MolDQN. It also needs to generate samples in our pre-determined format of <code>(str[state], int[steps_left], tuple[next_states])</code></p>
-<p>We will use the <a href="/mrl/chem#add_bond_combi"><code>add_bond_combi</code></a> and <a href="/mrl/chem#add_atom_combi"><code>add_atom_combi</code></a> functions from the <code>chem</code> module to generate next states.</p>
+<h2 id="Sampler">Sampler<a class="anchor-link" href="#Sampler"> </a></h2><p>Now we need to build a <a href="/mrl/samplers.html#Sampler"><code>Sampler</code></a> to generate samples. This sampler needs to follow the "add one atom or bond" rollout procedure for MolDQN. It also needs to generate samples in our pre-determined format of <code>(str[state], int[steps_left], tuple[next_states])</code></p>
+<p>We will use the <a href="/mrl/chem.html#add_bond_combi"><code>add_bond_combi</code></a> and <a href="/mrl/chem.html#add_atom_combi"><code>add_atom_combi</code></a> functions from the <code>chem</code> module to generate next states.</p>
 <p>During rollout, we start with some initial state (C, N, or O). We generate all possible next states. We then evaluate those states with the baseline model. With probability <code>p</code>, we select the highest scoring state as predicted by the model. With probability <code>1-p</code>, we randomly select the next state. This probability is set by the <code>eps</code> parameter and decreased by a factor of <code>0.99907</code> every episode.</p>
 <p>The <code>build_episode</code> method handles running the rollout.</p>
 <p>We also build a <code>DQNLogSampler</code> which will pull high scoring episodes from the log</p>

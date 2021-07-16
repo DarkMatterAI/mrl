@@ -2,6 +2,7 @@
 
 title: Vocab
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -44,17 +45,17 @@ nb_path: "nbs/07_vocab.ipynb"
 <li>The token integers are sent to the model</li>
 </ol>
 <p>This brings up the problem of how best to tokenize smiles. The following methods are implemented out of the box:</p>
-<h3 id="Character-Tokenization">Character Tokenization<a class="anchor-link" href="#Character-Tokenization"> </a></h3><p>Character Tokenization is when we break down SMILES by character. This is implemented with the <a href="/mrl/vocab#tokenize_by_character"><code>tokenize_by_character</code></a> function.</p>
+<h3 id="Character-Tokenization">Character Tokenization<a class="anchor-link" href="#Character-Tokenization"> </a></h3><p>Character Tokenization is when we break down SMILES by character. This is implemented with the <a href="/mrl/vocab.html#tokenize_by_character"><code>tokenize_by_character</code></a> function.</p>
 
 <pre><code>tokenize_by_character('CC[NH]CC')
 &gt; &gt; ['C', 'C', '[', 'N', 'H', ']', 'C', 'C']</code></pre>
 <p>This form of tokenization is quick and simple. One drawback of this approach is some characters might be overloaded. For example, <code>Br</code> is tokenized to <code>['B', 'r']</code>, leading to the <code>B</code> token meaning both boron (in the standard context) and Bromine (in the <code>Br</code> context). In practice, this isn't much of an issue. Language models are particularly adept at learning co-location of tokens.</p>
-<h3 id="Character-Tokenization-with-Replacement">Character Tokenization with Replacement<a class="anchor-link" href="#Character-Tokenization-with-Replacement"> </a></h3><p>Character tokenization with replacement is the same as character tokenization except we add a dictionary of multi-character tokens to be replaced with single-character tokens. This dictionary has the form <code>{multi_character_token :single_character_token}</code>. Before tokenizing by character, all instances of <code>multi_character_token</code> are replaced with <code>single_character_token</code>. Character Tokenization with Replacement is implemented with the <a href="/mrl/vocab#tokenize_with_replacements"><code>tokenize_with_replacements</code></a> function.</p>
+<h3 id="Character-Tokenization-with-Replacement">Character Tokenization with Replacement<a class="anchor-link" href="#Character-Tokenization-with-Replacement"> </a></h3><p>Character tokenization with replacement is the same as character tokenization except we add a dictionary of multi-character tokens to be replaced with single-character tokens. This dictionary has the form <code>{multi_character_token :single_character_token}</code>. Before tokenizing by character, all instances of <code>multi_character_token</code> are replaced with <code>single_character_token</code>. Character Tokenization with Replacement is implemented with the <a href="/mrl/vocab.html#tokenize_with_replacements"><code>tokenize_with_replacements</code></a> function.</p>
 
 <pre><code>replacement_dict = {'Br' : 'R', 'Cl' : 'L'}
 tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 &gt; &gt; ['[', 'L', ']', 'C', 'C', '[', 'R', ']']</code></pre>
-<h3 id="Regex-Tokenization">Regex Tokenization<a class="anchor-link" href="#Regex-Tokenization"> </a></h3><p>Regex tokenization uses a regex string to decompose SMILES. This is mainly used to keep bracketed terms (ie <code>[O-]</code>) as single tokens. This method avoids character overloading by keeping all bracketed terms as individual tokens, but has issues with generating a large number of low frequency tokens. Regex tokenization is implemented with the <a href="/mrl/vocab#regex_tokenize"><code>regex_tokenize</code></a> function</p>
+<h3 id="Regex-Tokenization">Regex Tokenization<a class="anchor-link" href="#Regex-Tokenization"> </a></h3><p>Regex tokenization uses a regex string to decompose SMILES. This is mainly used to keep bracketed terms (ie <code>[O-]</code>) as single tokens. This method avoids character overloading by keeping all bracketed terms as individual tokens, but has issues with generating a large number of low frequency tokens. Regex tokenization is implemented with the <a href="/mrl/vocab.html#regex_tokenize"><code>regex_tokenize</code></a> function</p>
 
 <pre><code>SMILE_REGEX = """(\[[^\]]+]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|H|\(|\)|\.|=|#|-|\+|\\\\|\/|:|~|@|\?|&gt;|\*|\$|\%[0-9]{2}|[0-9])"""regex_tokenize('CCC[Br]', re.compile(SMILE_REGEX))
 &gt;&gt;['C', 'C', 'C', '[Br]']</code></pre>
@@ -62,13 +63,6 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -89,7 +83,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="pad_vocab" class="doc_header"><code>pad_vocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_vocab</code>(<strong><code>vocab</code></strong>)</p>
 </blockquote>
-<p>pads <a href="/mrl/vocab"><code>vocab</code></a> to have a length divisible by 8 - improves fp16 performance</p>
+<p>pads <code>vocab</code> to have a length divisible by 8 - improves fp16 performance</p>
 
 </div>
 
@@ -101,15 +95,6 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>These are regex patterns to decompose smiles into tokens</p>
-<p><a href="/mrl/vocab#SMILE_REGEX"><code>SMILE_REGEX</code></a> is based off <a href="https://github.com/pschwllr/MolecularTransformer/blob/master/README.md">this work</a>. The pattern decomposes SMILES into individual characters, but keeps <code>Cl</code>, <code>Br</code>, and any term in brackets (ie <code>[O-]</code>) intact.</p>
-<p><a href="/mrl/vocab#MAPPING_REGEX"><code>MAPPING_REGEX</code></a> is a derivative of <a href="/mrl/vocab#SMILE_REGEX"><code>SMILE_REGEX</code></a> designed to work with the mapping framework used with the <a href="/mrl/template.blocks#Block"><code>Block</code></a> class. <a href="/mrl/vocab#MAPPING_REGEX"><code>MAPPING_REGEX</code></a> keeps <code>Cl</code>, <code>Br</code>, and any string of the form <code>[{isotope}*:{map_num}]</code> intact</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -117,6 +102,15 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These are regex patterns to decompose smiles into tokens</p>
+<p><a href="/mrl/vocab.html#SMILE_REGEX"><code>SMILE_REGEX</code></a> is based off <a href="https://github.com/pschwllr/MolecularTransformer/blob/master/README.md">this work</a>. The pattern decomposes SMILES into individual characters, but keeps <code>Cl</code>, <code>Br</code>, and any term in brackets (ie <code>[O-]</code>) intact.</p>
+<p><a href="/mrl/vocab.html#MAPPING_REGEX"><code>MAPPING_REGEX</code></a> is a derivative of <a href="/mrl/vocab.html#SMILE_REGEX"><code>SMILE_REGEX</code></a> designed to work with the mapping framework used with the <a href="/mrl/template.blocks.html#Block"><code>Block</code></a> class. <a href="/mrl/vocab.html#MAPPING_REGEX"><code>MAPPING_REGEX</code></a> keeps <code>Cl</code>, <code>Br</code>, and any string of the form <code>[{isotope}*:{map_num}]</code> intact</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -202,6 +196,13 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -221,21 +222,14 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Vocabulary">Vocabulary<a class="anchor-link" href="#Vocabulary"> </a></h2><p>The <a href="/mrl/vocab#Vocab"><code>Vocab</code></a> class handles tokenization. <a href="/mrl/vocab#Vocab.tokenize"><code>Vocab.tokenize</code></a> breaks strings down into tokens. <a href="/mrl/vocab#Vocab.numericalize"><code>Vocab.numericalize</code></a> maps tokens to integers. <a href="/mrl/vocab#Vocab.reconstruct"><code>Vocab.reconstruct</code></a> converts integers back into strings.</p>
-<p><a href="/mrl/vocab#Vocab"><code>Vocab</code></a> holds <code>itos</code>, a list of tokens, and <code>stoi</code>, a dictionary mapping tokens to integers. <a href="/mrl/vocab#Vocab"><code>Vocab</code></a> automatically adds four special tokens <code>['bos', 'eos', 'pad', 'unk']</code> indicating beginning of sentence, end of sentence, padding and unknown.</p>
-<h3 id="Custom-Vocbulary">Custom Vocbulary<a class="anchor-link" href="#Custom-Vocbulary"> </a></h3><p>To implement custom tokenization, subclass <a href="/mrl/vocab#Vocab"><code>Vocab</code></a> and update the <code>tokenize</code>, <code>numericalize</code> and <code>reconstruct</code> methods. Use the <a href="/mrl/vocab#test_reconstruction"><code>test_reconstruction</code></a> function to verify your custom vocab can successfully reconstruct sequences.</p>
+<h2 id="Vocabulary">Vocabulary<a class="anchor-link" href="#Vocabulary"> </a></h2><p>The <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a> class handles tokenization. <a href="/mrl/vocab.html#Vocab.tokenize"><code>Vocab.tokenize</code></a> breaks strings down into tokens. <a href="/mrl/vocab.html#Vocab.numericalize"><code>Vocab.numericalize</code></a> maps tokens to integers. <a href="/mrl/vocab.html#Vocab.reconstruct"><code>Vocab.reconstruct</code></a> converts integers back into strings.</p>
+<p><a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a> holds <code>itos</code>, a list of tokens, and <code>stoi</code>, a dictionary mapping tokens to integers. <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a> automatically adds four special tokens <code>['bos', 'eos', 'pad', 'unk']</code> indicating beginning of sentence, end of sentence, padding and unknown.</p>
+<h3 id="Custom-Vocbulary">Custom Vocbulary<a class="anchor-link" href="#Custom-Vocbulary"> </a></h3><p>To implement custom tokenization, subclass <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a> and update the <code>tokenize</code>, <code>numericalize</code> and <code>reconstruct</code> methods. Use the <a href="/mrl/vocab.html#test_reconstruction"><code>test_reconstruction</code></a> function to verify your custom vocab can successfully reconstruct sequences.</p>
 <p>Vocabs also have <code>prefunc</code> and <code>postfunc</code> hooks for added flexibility. <code>prefunc</code> is called on the inputs to <code>tokenize</code> before tokenization. <code>postfunc</code> is called during <code>reconstruct</code> after tokens are joined.</p>
 
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -281,7 +275,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CharacterVocab" class="doc_header"><code>class</code> <code>CharacterVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L244" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterVocab</code>(<strong><code>itos</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab#Vocab"><code>Vocab</code></a></p>
+<h2 id="CharacterVocab" class="doc_header"><code>class</code> <code>CharacterVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L244" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterVocab</code>(<strong><code>itos</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>CharacterVocab - tokenize by character</p>
 <p>Inputs:</p>
@@ -315,7 +309,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FuncVocab" class="doc_header"><code>class</code> <code>FuncVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L260" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FuncVocab</code>(<strong><code>itos</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab#Vocab"><code>Vocab</code></a></p>
+<h2 id="FuncVocab" class="doc_header"><code>class</code> <code>FuncVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L260" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FuncVocab</code>(<strong><code>itos</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>FuncVocab - tokenize by <code>tok_func</code></p>
 <p>Inputs:</p>
@@ -351,7 +345,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesVocab" class="doc_header"><code>class</code> <code>SelfiesVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L284" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesVocab</code>(<strong><code>itos</code></strong>) :: <a href="/mrl/vocab#FuncVocab"><code>FuncVocab</code></a></p>
+<h2 id="SelfiesVocab" class="doc_header"><code>class</code> <code>SelfiesVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L284" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesVocab</code>(<strong><code>itos</code></strong>) :: <a href="/mrl/vocab.html#FuncVocab"><code>FuncVocab</code></a></p>
 </blockquote>
 <p>SelfiesVocab - converts smiles to selfies</p>
 <p>Inputs:</p>
@@ -380,7 +374,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CharacterReplaceVocab" class="doc_header"><code>class</code> <code>CharacterReplaceVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L296" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterReplaceVocab</code>(<strong><code>itos</code></strong>, <strong><code>replace_dict</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab#Vocab"><code>Vocab</code></a></p>
+<h2 id="CharacterReplaceVocab" class="doc_header"><code>class</code> <code>CharacterReplaceVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L296" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterReplaceVocab</code>(<strong><code>itos</code></strong>, <strong><code>replace_dict</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>CharacterReplaceVocab - tokenize by character with replacement</p>
 <p>Inputs:</p>
@@ -418,7 +412,7 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegexVocab" class="doc_header"><code>class</code> <code>RegexVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L344" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexVocab</code>(<strong><code>itos</code></strong>, <strong><code>pattern</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab#Vocab"><code>Vocab</code></a></p>
+<h2 id="RegexVocab" class="doc_header"><code>class</code> <code>RegexVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L344" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexVocab</code>(<strong><code>itos</code></strong>, <strong><code>pattern</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>RegexVocab - tokenize using <code>pattern</code></p>
 <p>Inputs:</p>
@@ -463,7 +457,7 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="test_reconstruction" class="doc_header"><code>test_reconstruction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L371" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_reconstruction</code>(<strong><code>vocab</code></strong>, <strong><code>inputs</code></strong>)</p>
 </blockquote>
-<p>Returns all items in <code>inputs</code> that can't be correctly reconstructed using <a href="/mrl/vocab"><code>vocab</code></a></p>
+<p>Returns all items in <code>inputs</code> that can't be correctly reconstructed using <code>vocab</code></p>
 
 </div>
 
@@ -471,6 +465,13 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -574,7 +575,7 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 <p>Stereochemistry in SMILES strings can lead to interesting outcomes for ML models. Predictive models can overfit to specific stereocenters present in training data, and generative models can fall into a form of mode collapse of predicting different stereoisomers of the same compound, or generating excessive stereocenters.</p>
 <p>For these reasons, we may wish to deal with generic SMILES strings without stereochemistry information.</p>
 <p>One way to do this is to bulk preprocess datasets to remove stereochemistry information, but this requires storing a copy of the stereochemistry-free data, which can be prohibitive for large datasets.</p>
-<p>Another way would be to apply stereochemistry removal as a <code>prefunc</code> in our <a href="/mrl/vocab#Vocab"><code>Vocab</code></a>, which will remove stereochemistry on the fly before tokenization.</p>
+<p>Another way would be to apply stereochemistry removal as a <code>prefunc</code> in our <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a>, which will remove stereochemistry on the fly before tokenization.</p>
 
 </div>
 </div>
@@ -601,21 +602,6 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/dmai/miniconda3/envs/mrl/lib/python3.7/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for boost::shared_ptr&lt;RDKit::FilterCatalogEntry const&gt; already registered; second conversion method ignored.
-  return f(*args, **kwds)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -623,7 +609,7 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Vocab-Example---SELFIES-Vocab">Vocab Example - SELFIES Vocab<a class="anchor-link" href="#Vocab-Example---SELFIES-Vocab"> </a></h2><p><a href="https://github.com/aspuru-guzik-group/selfies">SELFIES</a> is molecule text representation alternative to SMILES strings. One advantage of using SELFIES representations is token swaps in SELFIES strings always result in valid compounds.</p>
 <p>MRL is standardized around using SMILES representations for working with compounds, so we can't use SELFIES representations for RL training (unless you want to write a parallel SELFIES-compatible version of all the comp chem functions).</p>
-<p>Luckily, we can make use of <code>prefunc</code> and <code>postfunc</code> utilities to use SELFIES representations in our generative models. We can use <a href="/mrl/chem#smile_to_selfie"><code>smile_to_selfie</code></a> as a prefunc and <a href="/mrl/chem#selfie_to_smile"><code>selfie_to_smile</code></a> as a postfunc.</p>
+<p>Luckily, we can make use of <code>prefunc</code> and <code>postfunc</code> utilities to use SELFIES representations in our generative models. We can use <a href="/mrl/chem.html#smile_to_selfie"><code>smile_to_selfie</code></a> as a prefunc and <a href="/mrl/chem.html#selfie_to_smile"><code>selfie_to_smile</code></a> as a postfunc.</p>
 <p>This means we can keep all our data in SMILES forms for compatibility. When we process SMILES for the model, we first use the <code>prefunc</code> to convert SMILES to SELFIES. Then we tokenize, numericalize and train models in selfies space. Then when we reconstruct a sequence, we use the <code>postfunc</code> to convert it back into SMILES strings.</p>
 <p>From the outside perspective, the model takes in and produces SMILES strings. But internally, everything is in SELFIES space.</p>
 

@@ -2,6 +2,7 @@
 
 title: Torch Core
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -38,7 +39,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Device-Settings">Device Settings<a class="anchor-link" href="#Device-Settings"> </a></h2><p>These functions control what device is used for tensors.</p>
-<p><a href="/mrl/torch_core#to_device"><code>to_device</code></a> will set a tensor or Pytorch model to the passed device. If no device is passed, the default device is used.</p>
+<p><a href="/mrl/torch_core.html#to_device"><code>to_device</code></a> will set a tensor or Pytorch model to the passed device. If no device is passed, the default device is used.</p>
 <p>If Cuda is available, the device defined by <code>torch.cuda.current_device()</code>. The current device can be set using Pytorch:</p>
 <p><code>torch.cuda.set_device(1)</code></p>
 <p>To disable GPU usage, set the <code>use_cuda</code> environment variable to <code>cpu</code>. <code>os.environ['use_cuda'] = 'cpu'</code></p>
@@ -46,13 +47,6 @@ nb_path: "nbs/05_torch_core.ipynb"
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -97,7 +91,7 @@ nb_path: "nbs/05_torch_core.ipynb"
 </blockquote>
 <p>to_device - sets <code>tensor</code> to <code>device</code> if possible.
 If <code>device=None</code>, <code>tensor</code> is set to the default device
-returned by <a href="/mrl/torch_core#get_device"><code>get_device</code></a></p>
+returned by <a href="/mrl/torch_core.html#get_device"><code>get_device</code></a></p>
 <p>Inputs</p>
 <ul>
 <li><p><code>tensor torch.Tensor</code>: input tensor</p>
@@ -474,6 +468,13 @@ function will index all items in <code>x</code></p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -507,13 +508,6 @@ function will index all items in <code>x</code></p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -624,6 +618,13 @@ scattered = scatter_rewards(rewards, mask)
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -657,13 +658,6 @@ scattered = scatter_rewards(rewards, mask)
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -711,13 +705,6 @@ scattered = scatter_rewards(rewards, mask)
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Loss-Functions">Loss Functions<a class="anchor-link" href="#Loss-Functions"> </a></h2><p>Pytorch losses</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -725,6 +712,13 @@ scattered = scatter_rewards(rewards, mask)
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Loss-Functions">Loss Functions<a class="anchor-link" href="#Loss-Functions"> </a></h2><p>Pytorch losses</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -851,6 +845,13 @@ Flattens predictions and targets before computing loss</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

@@ -2,6 +2,7 @@
 
 title: Tutorial - RL Train Cycle Overview
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -30,21 +31,21 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="RL-Train-Cycle-Overview">RL Train Cycle Overview<a class="anchor-link" href="#RL-Train-Cycle-Overview"> </a></h2><p>The goal of this tutorial is to walk through the RL fit cycle to familiarize ourselves with the <a href="/mrl/callback_core#Events"><code>Events</code></a> cycle and get a better understanding of how <a href="/mrl/callback_core#Callback"><code>Callback</code></a> and <a href="/mrl/environment#Environment"><code>Environment</code></a> classes work.</p>
-<h2 id="High-Level-Overview">High Level Overview<a class="anchor-link" href="#High-Level-Overview"> </a></h2><h3 id="The-Environment">The Environment<a class="anchor-link" href="#The-Environment"> </a></h3><p>At the highest level, we have the <a href="/mrl/environment#Environment"><code>Environment</code></a> class. The <a href="/mrl/environment#Environment"><code>Environment</code></a> holds together several sub-modules and orchestrates them during the fit loop. The following are contained in the <a href="/mrl/environment#Environment"><code>Environment</code></a>:</p>
+<h2 id="RL-Train-Cycle-Overview">RL Train Cycle Overview<a class="anchor-link" href="#RL-Train-Cycle-Overview"> </a></h2><p>The goal of this tutorial is to walk through the RL fit cycle to familiarize ourselves with the <a href="/mrl/callback_core.html#Events"><code>Events</code></a> cycle and get a better understanding of how <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a> and <a href="/mrl/environment.html#Environment"><code>Environment</code></a> classes work.</p>
+<h2 id="High-Level-Overview">High Level Overview<a class="anchor-link" href="#High-Level-Overview"> </a></h2><h3 id="The-Environment">The Environment<a class="anchor-link" href="#The-Environment"> </a></h3><p>At the highest level, we have the <a href="/mrl/environment.html#Environment"><code>Environment</code></a> class. The <a href="/mrl/environment.html#Environment"><code>Environment</code></a> holds together several sub-modules and orchestrates them during the fit loop. The following are contained in the <a href="/mrl/environment.html#Environment"><code>Environment</code></a>:</p>
 <ul>
 <li><code>agent</code> - This is the actual model we're training</li>
-<li><code>template_cb</code> - this holds a <a href="/mrl/template.template#Template"><code>Template</code></a> class that we use to define our chemical space</li>
+<li><code>template_cb</code> - this holds a <a href="/mrl/template.template.html#Template"><code>Template</code></a> class that we use to define our chemical space</li>
 <li><code>samplers</code> - samplers generate new samples to train on</li>
 <li><code>buffer</code> - the buffer collects and distributes samples from all the <code>samplers</code></li>
 <li><code>rewards</code> - rewards score samples</li>
 <li><code>losses</code> - losses generate values we can backpropagate through </li>
 <li><code>log</code> - the log holds a record of all samples in the training process</li>
 </ul>
-<h3 id="Callbacks-and-the-Event-Cycle">Callbacks and the Event Cycle<a class="anchor-link" href="#Callbacks-and-the-Event-Cycle"> </a></h3><p>Each one of the above items is a <a href="/mrl/callback_core#Callback"><code>Callback</code></a>. A <a href="/mrl/callback_core#Callback"><code>Callback</code></a> is a a general class that can hook into the <a href="/mrl/environment#Environment"><code>Environment</code></a> fit cycle at a number of pre-defined <a href="/mrl/callback_core#Events"><code>Events</code></a>. When the <a href="/mrl/environment#Environment"><code>Environment</code></a> calls a specific <a href="/mrl/callback_core#Event"><code>Event</code></a>, the event name is passed to every callback in the <a href="/mrl/environment#Environment"><code>Environment</code></a>. If a given <a href="/mrl/callback_core#Callback"><code>Callback</code></a> has a defined function named after the event, that function is called. This creates a very flexible system for customizing training loops.</p>
-<p>We'll be looking more at <a href="/mrl/callback_core#Events"><code>Events</code></a> later. For now, we'll just list them in brief. These are the events called during the RL training cycle in the order they are executed:</p>
+<h3 id="Callbacks-and-the-Event-Cycle">Callbacks and the Event Cycle<a class="anchor-link" href="#Callbacks-and-the-Event-Cycle"> </a></h3><p>Each one of the above items is a <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a>. A <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a> is a a general class that can hook into the <a href="/mrl/environment.html#Environment"><code>Environment</code></a> fit cycle at a number of pre-defined <a href="/mrl/callback_core.html#Events"><code>Events</code></a>. When the <a href="/mrl/environment.html#Environment"><code>Environment</code></a> calls a specific <a href="/mrl/callback_core.html#Event"><code>Event</code></a>, the event name is passed to every callback in the <a href="/mrl/environment.html#Environment"><code>Environment</code></a>. If a given <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a> has a defined function named after the event, that function is called. This creates a very flexible system for customizing training loops.</p>
+<p>We'll be looking more at <a href="/mrl/callback_core.html#Events"><code>Events</code></a> later. For now, we'll just list them in brief. These are the events called during the RL training cycle in the order they are executed:</p>
 <ul>
-<li><code>setup</code> - called when the <a href="/mrl/environment#Environment"><code>Environment</code></a> is created, used to set up values</li>
+<li><code>setup</code> - called when the <a href="/mrl/environment.html#Environment"><code>Environment</code></a> is created, used to set up values</li>
 <li><code>before_train</code> - called before training is started</li>
 <li><code>build_buffer</code> - draws samples from <code>samplers</code> into the <code>buffer</code></li>
 <li><code>filter_buffer</code> - filters samples in the buffer</li>
@@ -163,7 +164,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h3><p>The <a href="/mrl/agent#Agent"><code>Agent</code></a> is the actual model we want to train. For this example, we will use the <a href="/mrl/model_zoo#LSTM_LM_Small_ZINC"><code>LSTM_LM_Small_ZINC</code></a> model, which is a <a href="/mrl/generative_models.lstm_lm#LSTM_LM"><code>LSTM_LM</code></a> model trained on a chunk of the ZINC database.</p>
+<h3 id="Agent">Agent<a class="anchor-link" href="#Agent"> </a></h3><p>The <a href="/mrl/agent.html#Agent"><code>Agent</code></a> is the actual model we want to train. For this example, we will use the <a href="/mrl/model_zoo.html#LSTM_LM_Small_ZINC"><code>LSTM_LM_Small_ZINC</code></a> model, which is a <a href="/mrl/generative_models.lstm_lm.html#LSTM_LM"><code>LSTM_LM</code></a> model trained on a chunk of the ZINC database.</p>
 <p>The agent will actually contain two versions of the model. The main model that we will train with every update iteration, and a baseline model which is updated as an exponentially weighted moving average of the main model. Both models are used in the RL training algorithm we will set up later</p>
 
 </div>
@@ -188,22 +189,22 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Template">Template<a class="anchor-link" href="#Template"> </a></h3><p>The <a href="/mrl/template.template#Template"><code>Template</code></a> class is used to conrol the chemical space. We can set parameters on what molecular properties we want to allow. For this example, we set the following:</p>
+<h3 id="Template">Template<a class="anchor-link" href="#Template"> </a></h3><p>The <a href="/mrl/template.template.html#Template"><code>Template</code></a> class is used to conrol the chemical space. We can set parameters on what molecular properties we want to allow. For this example, we set the following:</p>
 <ul>
 <li>Hard Filters - must have qualities<ul>
-<li><a href="/mrl/template.filters#ValidityFilter"><code>ValidityFilter</code></a> - must be a valid chemical structure</li>
-<li><a href="/mrl/template.filters#SingleCompoundFilter"><code>SingleCompoundFilter</code></a> - samples must be single compounds</li>
-<li><a href="/mrl/template.filters#RotBondFilter"><code>RotBondFilter</code></a> - compounds can have at most 8 rotatable bonds</li>
-<li><a href="/mrl/template.filters#ChargeFilter"><code>ChargeFilter</code></a> - compounds must have no net charge</li>
+<li><a href="/mrl/template.filters.html#ValidityFilter"><code>ValidityFilter</code></a> - must be a valid chemical structure</li>
+<li><a href="/mrl/template.filters.html#SingleCompoundFilter"><code>SingleCompoundFilter</code></a> - samples must be single compounds</li>
+<li><a href="/mrl/template.filters.html#RotBondFilter"><code>RotBondFilter</code></a> - compounds can have at most 8 rotatable bonds</li>
+<li><a href="/mrl/template.filters.html#ChargeFilter"><code>ChargeFilter</code></a> - compounds must have no net charge</li>
 </ul>
 </li>
 <li>Soft Filters - nice to have qualities<ul>
-<li><a href="/mrl/template.filters#QEDFilter"><code>QEDFilter</code></a> - Compounds get a score bonus of +1 if their QED value is greater than 0.5</li>
-<li><a href="/mrl/template.filters#SAFilter"><code>SAFilter</code></a> - compounds get a score bonus of + if their SA score is less than 5</li>
+<li><a href="/mrl/template.filters.html#QEDFilter"><code>QEDFilter</code></a> - Compounds get a score bonus of +1 if their QED value is greater than 0.5</li>
+<li><a href="/mrl/template.filters.html#SAFilter"><code>SAFilter</code></a> - compounds get a score bonus of + if their SA score is less than 5</li>
 </ul>
 </li>
 </ul>
-<p>We then pass the <a href="/mrl/template.template#Template"><code>Template</code></a> to the <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a> which integrates the template into the fit loop. Note that we pass <code>prefilter=True</code> to the <a href="/mrl/template_callback#TemplateCallback"><code>TemplateCallback</code></a>, which ensures compounds that don't meet our hard filters are removed from training</p>
+<p>We then pass the <a href="/mrl/template.template.html#Template"><code>Template</code></a> to the <a href="/mrl/template_callback.html#TemplateCallback"><code>TemplateCallback</code></a> which integrates the template into the fit loop. Note that we pass <code>prefilter=True</code> to the <a href="/mrl/template_callback.html#TemplateCallback"><code>TemplateCallback</code></a>, which ensures compounds that don't meet our hard filters are removed from training</p>
 
 </div>
 </div>
@@ -319,7 +320,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h3><p>For our loss, we will use the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> reinforcement learning algorithm. See the <a href="arxiv.org/pdf/1707.06347.pdf">PPO</a> paper for full details.</p>
+<h3 id="Loss-Function">Loss Function<a class="anchor-link" href="#Loss-Function"> </a></h3><p>For our loss, we will use the <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> reinforcement learning algorithm. See the <a href="arxiv.org/pdf/1707.06347.pdf">PPO</a> paper for full details.</p>
 <p>The gist of it is the loss function takes a batch of samples and directs he model to increase the probability of above-average samples (relative to the batch mean) and decrease he probability of below-average samples.</p>
 
 </div>
@@ -360,10 +361,10 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Samplers">Samplers<a class="anchor-link" href="#Samplers"> </a></h3><p><code>Samplers</code> fill the role of generating samples to train on. We will use four samplers for this run:</p>
 <ul>
-<li><code>sampler1</code>: <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a> - this sampler will draw samples from the main model in the <a href="/mrl/agent#Agent"><code>Agent</code></a>. We set <code>buffer_size=1000</code>, which means we will generate 1000 samples every time we build the buffer. We set <code>p_batch=0.5</code>, which means during training, 50% of each batch will be sampled on the fly from the main model and the rest of the batch will come from the buffer</li>
-<li><code>sampler2</code>: <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a> - this sampler is the same as <code>sampler1</code>, but we draw from the baseline model instead of the main model. We set <code>p_batch=0.</code>, so this sampler will only contribute to the buffer</li>
-<li><code>sampler3</code>: <a href="/mrl/samplers#LogSampler"><code>LogSampler</code></a> - this sampler looks through the log of previous samples. Based on our input arguments, it grabs the top <code>95</code> percentile of samples in the log, and randomly selects <code>100</code> samples from that subset</li>
-<li><code>sampler4</code>: <a href="/mrl/samplers#DatasetSampler"><code>DatasetSampler</code></a> - this sampler is seeded wih erbB1 training data used to train the score function. This sampler will randomly select 4 samples from the dataset to add to the buffer</li>
+<li><code>sampler1</code>: <a href="/mrl/samplers.html#ModelSampler"><code>ModelSampler</code></a> - this sampler will draw samples from the main model in the <a href="/mrl/agent.html#Agent"><code>Agent</code></a>. We set <code>buffer_size=1000</code>, which means we will generate 1000 samples every time we build the buffer. We set <code>p_batch=0.5</code>, which means during training, 50% of each batch will be sampled on the fly from the main model and the rest of the batch will come from the buffer</li>
+<li><code>sampler2</code>: <a href="/mrl/samplers.html#ModelSampler"><code>ModelSampler</code></a> - this sampler is the same as <code>sampler1</code>, but we draw from the baseline model instead of the main model. We set <code>p_batch=0.</code>, so this sampler will only contribute to the buffer</li>
+<li><code>sampler3</code>: <a href="/mrl/samplers.html#LogSampler"><code>LogSampler</code></a> - this sampler looks through the log of previous samples. Based on our input arguments, it grabs the top <code>95</code> percentile of samples in the log, and randomly selects <code>100</code> samples from that subset</li>
+<li><code>sampler4</code>: <a href="/mrl/samplers.html#DatasetSampler"><code>DatasetSampler</code></a> - this sampler is seeded wih erbB1 training data used to train the score function. This sampler will randomly select 4 samples from the dataset to add to the buffer</li>
 </ul>
 
 </div>
@@ -399,9 +400,9 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Other-Callbacks">Other Callbacks<a class="anchor-link" href="#Other-Callbacks"> </a></h3><p>We'll add three more callbacks:</p>
 <ul>
-<li><a href="/mrl/logging#MaxCallback"><code>MaxCallback</code></a>: this will grab the max reward within a batch that came from the source <code>live</code>. <code>live</code> is the name we gave to <code>sampler1</code> above. This means the max callback will grab all outputs from <code>sampler1</code> corresponding to samples from the live model and add the largest to the batch metrics</li>
-<li><a href="/mrl/logging#PercentileCallback"><code>PercentileCallback</code></a>: this does the same as <a href="/mrl/logging#MaxCallback"><code>MaxCallback</code></a> but instead of printing the maximum score, it prints the 90th percentile score</li>
-<li><a href="/mrl/reward#NoveltyReward"><code>NoveltyReward</code></a>: this is reward modification that gives a bonus score of <code>0.05</code> to new samples (ie samples that haven't appeared before in training)</li>
+<li><a href="/mrl/logging.html#MaxCallback"><code>MaxCallback</code></a>: this will grab the max reward within a batch that came from the source <code>live</code>. <code>live</code> is the name we gave to <code>sampler1</code> above. This means the max callback will grab all outputs from <code>sampler1</code> corresponding to samples from the live model and add the largest to the batch metrics</li>
+<li><a href="/mrl/logging.html#PercentileCallback"><code>PercentileCallback</code></a>: this does the same as <a href="/mrl/logging.html#MaxCallback"><code>MaxCallback</code></a> but instead of printing the maximum score, it prints the 90th percentile score</li>
+<li><a href="/mrl/reward.html#NoveltyReward"><code>NoveltyReward</code></a>: this is reward modification that gives a bonus score of <code>0.05</code> to new samples (ie samples that haven't appeared before in training)</li>
 </ul>
 
 </div>
@@ -437,7 +438,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Setup">Setup<a class="anchor-link" href="#Setup"> </a></h3><p>The first event occurs when we create our <a href="/mrl/environment#Environment"><code>Environment</code></a> using the callbacks we set up before. Instantiating the <a href="/mrl/environment#Environment"><code>Environment</code></a> registers all callbacks and runs the <code>setup</code> event. Many callbacks use the <code>setup</code> event to add terms to the batch log or the metrics log.</p>
+<h3 id="Setup">Setup<a class="anchor-link" href="#Setup"> </a></h3><p>The first event occurs when we create our <a href="/mrl/environment.html#Environment"><code>Environment</code></a> using the callbacks we set up before. Instantiating the <a href="/mrl/environment.html#Environment"><code>Environment</code></a> registers all callbacks and runs the <code>setup</code> event. Many callbacks use the <code>setup</code> event to add terms to the batch log or the metrics log.</p>
 
 </div>
 </div>
@@ -462,8 +463,8 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Inside the environment, we just created a <a href="/mrl/buffer#Buffer"><code>Buffer</code></a> and a <a href="/mrl/logging#Log"><code>Log</code></a>.</p>
-<p>The <a href="/mrl/buffer#Buffer"><code>Buffer</code></a> holds a list of samples, which is currently empty</p>
+<p>Inside the environment, we just created a <a href="/mrl/buffer.html#Buffer"><code>Buffer</code></a> and a <a href="/mrl/logging.html#Log"><code>Log</code></a>.</p>
+<p>The <a href="/mrl/buffer.html#Buffer"><code>Buffer</code></a> holds a list of samples, which is currently empty</p>
 
 </div>
 </div>
@@ -536,7 +537,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <a href="/mrl/logging#Log"><code>Log</code></a> holds a number of containers for tracking training outputs</p>
+<p>The <a href="/mrl/logging.html#Log"><code>Log</code></a> holds a number of containers for tracking training outputs</p>
 <ul>
 <li><code>metrics</code>: dictionary of batch metrics. Each key maps to a list where each value in the list is the metric term for  given batch</li>
 <li><code>batch_log</code>: dictionary of batch items. Each key maps to a list. Each element in that list is a list containing the batch values for that key in a given batch</li>
@@ -701,7 +702,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The keys in the above dictionaries were added by the associated callbacks. For example, look at the <code>setup</code> method in <a href="/mrl/samplers#ModelSampler"><code>ModelSampler</code></a>, the type of sampler we used for <code>sampler1</code>:</p>
+<p>The keys in the above dictionaries were added by the associated callbacks. For example, look at the <code>setup</code> method in <a href="/mrl/samplers.html#ModelSampler"><code>ModelSampler</code></a>, the type of sampler we used for <code>sampler1</code>:</p>
 
 <pre><code>    def setup(self):
         if self.p_batch&gt;0. and self.track:
@@ -718,21 +719,21 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
             log = self.environment.log
             log.add_metric(self.name)
             log.add_log(self.name)</code></pre>
-<p>This is responsible for the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> terms in the <code>batch_log</code> and the <code>metrics</code>. The PPO metrics term will store the average PPO loss value across a batch, while the PPO batch log term will store the PPO value for each item in a batch</p>
+<p>This is responsible for the <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> terms in the <code>batch_log</code> and the <code>metrics</code>. The PPO metrics term will store the average PPO loss value across a batch, while the PPO batch log term will store the PPO value for each item in a batch</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-Fit-Cycle">The Fit Cycle<a class="anchor-link" href="#The-Fit-Cycle"> </a></h3><p>At this point, we could start training using <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a>. We could call <code>env.fit(200, 90, 10, 2)</code> to train for 10 batches with a batch size of 200. For this tutorial, we will step through each part of the fit cycle and observe what is happening</p>
+<h3 id="The-Fit-Cycle">The Fit Cycle<a class="anchor-link" href="#The-Fit-Cycle"> </a></h3><p>At this point, we could start training using <a href="/mrl/environment.html#Environment.fit"><code>Environment.fit</code></a>. We could call <code>env.fit(200, 90, 10, 2)</code> to train for 10 batches with a batch size of 200. For this tutorial, we will step through each part of the fit cycle and observe what is happening</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Before-Train">Before Train<a class="anchor-link" href="#Before-Train"> </a></h3><p>The first stage of the fit cycle is the <code>before_train</code> stage. This sets the batch size and sequence length based on the inputs to <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a> (which we will set manually) and prints the top of the log</p>
+<h3 id="Before-Train">Before Train<a class="anchor-link" href="#Before-Train"> </a></h3><p>The first stage of the fit cycle is the <code>before_train</code> stage. This sets the batch size and sequence length based on the inputs to <a href="/mrl/environment.html#Environment.fit"><code>Environment.fit</code></a> (which we will set manually) and prints the top of the log</p>
 
 </div>
 </div>
@@ -915,8 +916,8 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="filter_buffer">filter_buffer<a class="anchor-link" href="#filter_buffer"> </a></h4><p>It's likely some of these samples don't match our compound requirements defined in the <a href="/mrl/template.template#Template"><code>Template</code></a> we used, so we want to filter the buffer for passing compounds. This is what the <code>filter_buffer</code> does. For this current example, the only callback doing any buffer filtering is the template callback. However, the <code>filter_buffer</code> can be used to implement any form of buffer filtering.</p>
-<p>Any callback that passes a list of boolean values to <a href="/mrl/buffer#Buffer._filter_buffer"><code>Buffer._filter_buffer</code></a> can filter the buffer.</p>
+<h4 id="filter_buffer">filter_buffer<a class="anchor-link" href="#filter_buffer"> </a></h4><p>It's likely some of these samples don't match our compound requirements defined in the <a href="/mrl/template.template.html#Template"><code>Template</code></a> we used, so we want to filter the buffer for passing compounds. This is what the <code>filter_buffer</code> does. For this current example, the only callback doing any buffer filtering is the template callback. However, the <code>filter_buffer</code> can be used to implement any form of buffer filtering.</p>
+<p>Any callback that passes a list of boolean values to <a href="/mrl/buffer.html#Buffer._filter_buffer"><code>Buffer._filter_buffer</code></a> can filter the buffer.</p>
 <p>After filtering, we have 1830 remaining samples</p>
 
 </div>
@@ -1028,7 +1029,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="before_batch">before_batch<a class="anchor-link" href="#before_batch"> </a></h4><p>This event is used to create a new <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> for the environment. The batch state is a container designed to hold any values required by the batch</p>
+<h4 id="before_batch">before_batch<a class="anchor-link" href="#before_batch"> </a></h4><p>This event is used to create a new <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> for the environment. The batch state is a container designed to hold any values required by the batch</p>
 
 </div>
 </div>
@@ -1097,7 +1098,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="sample_batch">sample_batch<a class="anchor-link" href="#sample_batch"> </a></h4><p>Now we actually draw samples to form a batch. All of our <a href="/mrl/samplers#Sampler"><code>Sampler</code></a> objects have a <code>p_batch</code> value, which designated what percentage of the batch should come from that sampler. Batch sampling is designed such that individual sampler <code>p_batch</code> values are respected, and any remaining batch percentage comes from the buffer.</p>
+<h4 id="sample_batch">sample_batch<a class="anchor-link" href="#sample_batch"> </a></h4><p>Now we actually draw samples to form a batch. All of our <a href="/mrl/samplers.html#Sampler"><code>Sampler</code></a> objects have a <code>p_batch</code> value, which designated what percentage of the batch should come from that sampler. Batch sampling is designed such that individual sampler <code>p_batch</code> values are respected, and any remaining batch percentage comes from the buffer.</p>
 <p>Only <code>sampler1</code> has <code>p_batch&gt;0.</code>, with a value of <code>p_batch=0.5</code>. This means 50% of the batch will be sampled on he fly from <code>sampler1</code>, and the remaining 50% of the batch will come from the buffer.</p>
 <p>Using a hybrid of live sampling and buffer sampling seems to work best. That said, it is possible to have every batch be 100% buffer samples (like offline RL), or have 100% be live samples (like online RL)</p>
 
@@ -1123,9 +1124,9 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we can see we've populated several terms in the batch state. <a href="/mrl/callback_core#BatchState.samples"><code>BatchState.samples</code></a> now has a list of samples. <a href="/mrl/callback_core#BatchState.sources"><code>BatchState.sources</code></a> has the source of each sample.</p>
-<p>We also added <a href="/mrl/callback_core#BatchState.live_raw"><code>BatchState.live_raw</code></a> and <a href="/mrl/callback_core#BatchState.base_raw"><code>BatchState.base_raw</code></a>. These terms hold the outputs of <code>sampler1</code> and <code>sampler2</code>. When we filter <a href="/mrl/callback_core#BatchState.samples"><code>BatchState.samples</code></a>, we can refer to the <code>_raw</code> terms to see what samples were removed.</p>
-<p>Note that <a href="/mrl/callback_core#BatchState.base_raw"><code>BatchState.base_raw</code></a> is an empty list since <code>sampler2.p_batch=0.</code></p>
+<p>Now we can see we've populated several terms in the batch state. <a href="/mrl/callback_core.html#BatchState.samples"><code>BatchState.samples</code></a> now has a list of samples. <a href="/mrl/callback_core.html#BatchState.sources"><code>BatchState.sources</code></a> has the source of each sample.</p>
+<p>We also added <a href="/mrl/callback_core.html#BatchState.live_raw"><code>BatchState.live_raw</code></a> and <a href="/mrl/callback_core.html#BatchState.base_raw"><code>BatchState.base_raw</code></a>. These terms hold the outputs of <code>sampler1</code> and <code>sampler2</code>. When we filter <a href="/mrl/callback_core.html#BatchState.samples"><code>BatchState.samples</code></a>, we can refer to the <code>_raw</code> terms to see what samples were removed.</p>
+<p>Note that <a href="/mrl/callback_core.html#BatchState.base_raw"><code>BatchState.base_raw</code></a> is an empty list since <code>sampler2.p_batch=0.</code></p>
 
 </div>
 </div>
@@ -1165,7 +1166,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/mrl/callback_core#BatchState.sources"><code>BatchState.sources</code></a> holds the source of each sample. We have 100 samples from <code>live</code>, which corresponds to our on the fly samples from <code>sampler1</code>. The remaining 100 samples come from <code>live_buffer</code> and <code>base_buffer</code>. This means they came from either <code>sampler1</code> (live) or <code>sampler2</code> (base) by way of being sampled from the buffer</p>
+<p><a href="/mrl/callback_core.html#BatchState.sources"><code>BatchState.sources</code></a> holds the source of each sample. We have 100 samples from <code>live</code>, which corresponds to our on the fly samples from <code>sampler1</code>. The remaining 100 samples come from <code>live_buffer</code> and <code>base_buffer</code>. This means they came from either <code>sampler1</code> (live) or <code>sampler2</code> (base) by way of being sampled from the buffer</p>
 
 </div>
 </div>
@@ -1352,7 +1353,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="filter_batch">filter_batch<a class="anchor-link" href="#filter_batch"> </a></h4><p>Now the batch will be filtered by our <a href="/mrl/template.template#Template"><code>Template</code></a>, as well as any other callbacks with a <code>filter_batch</code> method</p>
+<h4 id="filter_batch">filter_batch<a class="anchor-link" href="#filter_batch"> </a></h4><p>Now the batch will be filtered by our <a href="/mrl/template.template.html#Template"><code>Template</code></a>, as well as any other callbacks with a <code>filter_batch</code> method</p>
 
 </div>
 </div>
@@ -1416,7 +1417,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can compare the values in <a href="/mrl/callback_core#BatchState.samples"><code>BatchState.samples</code></a> and <a href="/mrl/callback_core#BatchState.live_raw"><code>BatchState.live_raw</code></a> to see what was filtered</p>
+<p>We can compare the values in <a href="/mrl/callback_core.html#BatchState.samples"><code>BatchState.samples</code></a> and <a href="/mrl/callback_core.html#BatchState.live_raw"><code>BatchState.live_raw</code></a> to see what was filtered</p>
 
 </div>
 </div>
@@ -1531,7 +1532,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can see that several values have been added to <a href="/mrl/environment#Environment.log.metrics"><code>Environment.log.metrics</code></a></p>
+<p>We can see that several values have been added to <a href="/mrl/environment.html#Environment.log.metrics"><code>Environment.log.metrics</code></a></p>
 <ul>
 <li><code>new - 1.0</code>: percent of samples that have not been seen before</li>
 <li><code>diversity - 1.0</code>: number of unique samples relative to the number of total samples</li>
@@ -1610,7 +1611,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="before_compute_reward">before_compute_reward<a class="anchor-link" href="#before_compute_reward"> </a></h4><p>This event can be used to set up any values needed for reward computation. Most rewards only need the raw samples as inputs, but rewards can use other inputs if needed. The only requirement for a reward is that it returns a tensor with one value per batch item.</p>
-<p>By default, the <a href="/mrl/agent#Agent"><code>Agent</code></a> class will tensorize the samples present at this step. Our <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> loss will also add placeholder values for the terms needed by that function</p>
+<p>By default, the <a href="/mrl/agent.html#Agent"><code>Agent</code></a> class will tensorize the samples present at this step. Our <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> loss will also add placeholder values for the terms needed by that function</p>
 
 </div>
 </div>
@@ -1791,7 +1792,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="compute_reward">compute_reward<a class="anchor-link" href="#compute_reward"> </a></h4><p>This step actually computes rewards. The <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a> has a tensor of 0s as a placeholder for reward values. Rewards will compute a numeric score for each item in the batch and add it to <a href="/mrl/callback_core#BatchState.rewards"><code>BatchState.rewards</code></a></p>
+<h4 id="compute_reward">compute_reward<a class="anchor-link" href="#compute_reward"> </a></h4><p>This step actually computes rewards. The <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> has a tensor of 0s as a placeholder for reward values. Rewards will compute a numeric score for each item in the batch and add it to <a href="/mrl/callback_core.html#BatchState.rewards"><code>BatchState.rewards</code></a></p>
 
 </div>
 </div>
@@ -1917,10 +1918,10 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>So where did these rewards come from?</p>
-<p>One reward term comes from our <a href="/mrl/template.template#Template"><code>Template</code></a>. We specified soft rewards for compounds with <code>QED&gt;=0.5</code> and <code>SA&lt;=5</code>. Compounds could score a maximum of 2 from the template.</p>
+<p>One reward term comes from our <a href="/mrl/template.template.html#Template"><code>Template</code></a>. We specified soft rewards for compounds with <code>QED&gt;=0.5</code> and <code>SA&lt;=5</code>. Compounds could score a maximum of 2 from the template.</p>
 <p>We also have the reward from the erbB1 regression model we set up earlier.</p>
-<p>The specific rewards from each of these sources are logged in the <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a></p>
-<p>For the <a href="/mrl/template.template#Template"><code>Template</code></a>, we have <a href="/mrl/callback_core#BatchState.template"><code>BatchState.template</code></a> and <a href="/mrl/callback_core#BatchState.template_passes"><code>BatchState.template_passes</code></a></p>
+<p>The specific rewards from each of these sources are logged in the <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a></p>
+<p>For the <a href="/mrl/template.template.html#Template"><code>Template</code></a>, we have <a href="/mrl/callback_core.html#BatchState.template"><code>BatchState.template</code></a> and <a href="/mrl/callback_core.html#BatchState.template_passes"><code>BatchState.template_passes</code></a></p>
 
 </div>
 </div>
@@ -2011,7 +2012,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/mrl/callback_core#BatchState.template_passes"><code>BatchState.template_passes</code></a> shows which samples passed the hard filters. Since we decided to prefilter with our template earlier, all remaining samples are passing</p>
+<p><a href="/mrl/callback_core.html#BatchState.template_passes"><code>BatchState.template_passes</code></a> shows which samples passed the hard filters. Since we decided to prefilter with our template earlier, all remaining samples are passing</p>
 
 </div>
 </div>
@@ -2215,7 +2216,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 <p>When we set up our callbacks earlier, we had a term</p>
 <p><code>new_cb = NoveltyReward(weight=0.05)</code></p>
 <p>Which would add a bonus score of 0.05 to new, never before seen samples. The point of this callback is to give the model a soft incentive to generate novel samples.</p>
-<p>We want this score to impact our current batch. However, if we treated it the same as our actual rewards, the samples would be saved into <code>env.log</code> with their scores inflated by 0.05. Later, when our <a href="/mrl/samplers#LogSampler"><code>LogSampler</code></a> samples from the log, the sampling would be influenced by a score that was only supposed to be given once.</p>
+<p>We want this score to impact our current batch. However, if we treated it the same as our actual rewards, the samples would be saved into <code>env.log</code> with their scores inflated by 0.05. Later, when our <a href="/mrl/samplers.html#LogSampler"><code>LogSampler</code></a> samples from the log, the sampling would be influenced by a score that was only supposed to be given once.</p>
 <p>Separating out rewards and reward modifications lets us avoid this</p>
 
 </div>
@@ -2477,7 +2478,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Compute-Loss">Compute Loss<a class="anchor-link" href="#Compute-Loss"> </a></h3><p>Now we actually compute a loss value and do an optimizer update. See the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> class for a description of the policy gradient algorithm used.</p>
+<h3 id="Compute-Loss">Compute Loss<a class="anchor-link" href="#Compute-Loss"> </a></h3><p>Now we actually compute a loss value and do an optimizer update. See the <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> class for a description of the policy gradient algorithm used.</p>
 <p>Loss computation consists of the following steps:</p>
 <ul>
 <li><code>compute_loss</code> - compute loss values</li>
@@ -2491,8 +2492,8 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="compute_loss">compute_loss<a class="anchor-link" href="#compute_loss"> </a></h4><p>When we first created our <a href="/mrl/callback_core#BatchState"><code>BatchState</code></a>, there was a placehoder value for <code>loss</code>. This is the value that will ulimately be backpropagated through. This means we can run any sort of loss configuration, so long as the final values end up in <a href="/mrl/callback_core#BatchState.loss"><code>BatchState.loss</code></a>.</p>
-<p>For example, the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> policy gradient algorithm we are using involved a <a href="/mrl/layers#ValueHead"><code>ValueHead</code></a> that predicts values at every time step. This model is held in the <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> callback that holds the <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> class. During the <code>compute_loss</code> event, <a href="/mrl/policy_gradient#PPO"><code>PPO</code></a> computes an additional loss for the value head that is added to <a href="/mrl/callback_core#BatchState.loss"><code>BatchState.loss</code></a>.  <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> also holds an optimizer for the <a href="/mrl/layers#ValueHead"><code>ValueHead</code></a> parameters.</p>
+<h4 id="compute_loss">compute_loss<a class="anchor-link" href="#compute_loss"> </a></h4><p>When we first created our <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a>, there was a placehoder value for <code>loss</code>. This is the value that will ulimately be backpropagated through. This means we can run any sort of loss configuration, so long as the final values end up in <a href="/mrl/callback_core.html#BatchState.loss"><code>BatchState.loss</code></a>.</p>
+<p>For example, the <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> policy gradient algorithm we are using involved a <a href="/mrl/layers.html#ValueHead"><code>ValueHead</code></a> that predicts values at every time step. This model is held in the <a href="/mrl/losses.html#PolicyLoss"><code>PolicyLoss</code></a> callback that holds the <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> class. During the <code>compute_loss</code> event, <a href="/mrl/policy_gradient.html#PPO"><code>PPO</code></a> computes an additional loss for the value head that is added to <a href="/mrl/callback_core.html#BatchState.loss"><code>BatchState.loss</code></a>.  <a href="/mrl/losses.html#PolicyLoss"><code>PolicyLoss</code></a> also holds an optimizer for the <a href="/mrl/layers.html#ValueHead"><code>ValueHead</code></a> parameters.</p>
 
 </div>
 </div>
@@ -2582,7 +2583,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="zero_grad">zero_grad<a class="anchor-link" href="#zero_grad"> </a></h4><p>This is an event to zero gradients of all optimizers in play. We currently have one optimizer in <a href="/mrl/agent#Agent"><code>Agent</code></a> for our generative model and one in <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> for the <a href="/mrl/layers#ValueHead"><code>ValueHead</code></a> of our policy gradient algorithm.</p>
+<h4 id="zero_grad">zero_grad<a class="anchor-link" href="#zero_grad"> </a></h4><p>This is an event to zero gradients of all optimizers in play. We currently have one optimizer in <a href="/mrl/agent.html#Agent"><code>Agent</code></a> for our generative model and one in <a href="/mrl/losses.html#PolicyLoss"><code>PolicyLoss</code></a> for the <a href="/mrl/layers.html#ValueHead"><code>ValueHead</code></a> of our policy gradient algorithm.</p>
 
 </div>
 </div>
@@ -2631,7 +2632,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="step">step<a class="anchor-link" href="#step"> </a></h4><p>This is the actual optimizer step. This will step both the <a href="/mrl/agent#Agent"><code>Agent</code></a> and <a href="/mrl/losses#PolicyLoss"><code>PolicyLoss</code></a> optimizers</p>
+<h4 id="step">step<a class="anchor-link" href="#step"> </a></h4><p>This is the actual optimizer step. This will step both the <a href="/mrl/agent.html#Agent"><code>Agent</code></a> and <a href="/mrl/losses.html#PolicyLoss"><code>PolicyLoss</code></a> optimizers</p>
 
 </div>
 </div>
@@ -2656,7 +2657,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="After-Batch">After Batch<a class="anchor-link" href="#After-Batch"> </a></h3><p>The <code>after_batch</code> stage consists of a single <code>after_batch</code> event. This is used for any updates at the end of the batch.</p>
-<p>In particular, the <a href="/mrl/logging#Log"><code>Log</code></a> will update <a href="/mrl/logging#Log.df"><code>Log.df</code></a> and the <a href="/mrl/agent#Agent"><code>Agent</code></a> will update he baseline model</p>
+<p>In particular, the <a href="/mrl/logging.html#Log"><code>Log</code></a> will update <a href="/mrl/logging.html#Log.df"><code>Log.df</code></a> and the <a href="/mrl/agent.html#Agent"><code>Agent</code></a> will update he baseline model</p>
 
 </div>
 </div>
@@ -2889,7 +2890,7 @@ nb_path: "nbs/tutorials/tutorials.rl.train_overview.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions"> </a></h3><p>Hopefully walking through the training process step by step has made he process more understandable. We conclude by simply running <a href="/mrl/environment#Environment.fit"><code>Environment.fit</code></a> so we don't have to go through things step by step anymore</p>
+<h3 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions"> </a></h3><p>Hopefully walking through the training process step by step has made he process more understandable. We conclude by simply running <a href="/mrl/environment.html#Environment.fit"><code>Environment.fit</code></a> so we don't have to go through things step by step anymore</p>
 
 </div>
 </div>

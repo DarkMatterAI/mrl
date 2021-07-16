@@ -24,11 +24,24 @@ from rdkit.Chem.Lipinski import RotatableBondSmarts
 from rdkit.Chem.FilterCatalog import *
 from rdkit.Chem.Scaffolds import MurckoScaffold
 try:
-    # doesnt work for github CI
+    # doesnt work for github CI/pypi install.
+    # SA score is only in the contrib dir for RDKit conda install
     sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
     import sascorer
 except:
-    warnings.warn("SA score not imported", Warning)
+    # download SA score
+    import requests
+    files = [
+        'https://raw.githubusercontent.com/rdkit/rdkit/master/Contrib/SA_Score/sascorer.py',
+        'https://raw.githubusercontent.com/rdkit/rdkit/master/Contrib/SA_Score/fpscores.pkl.gz'
+    ]
+
+    for file in files:
+        r = requests.get(file)
+        with open(file.split('/')[-1], 'wb') as f:
+            f.write(r.content)
+
+    import sascorer
 
 from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')

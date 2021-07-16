@@ -2,6 +2,7 @@
 
 title: Layers
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -21,13 +22,6 @@ nb_path: "nbs/06_layers.ipynb"
 
 <div class="container" id="notebook-container">
         
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -87,6 +81,13 @@ Batchnorm, activation and dropout layers are optional</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -98,13 +99,6 @@ Batchnorm, activation and dropout layers are optional</p>
     </div>
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -204,7 +198,7 @@ Batchnorm, activation and dropout layers are optional</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv1d" class="doc_header"><code>class</code> <code>Conv1d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L135" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
+<h2 id="Conv1d" class="doc_header"><code>class</code> <code>Conv1d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L135" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv1d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers.html#Conv"><code>Conv</code></a></p>
 </blockquote>
 <p>Conv1d - 1D convolution</p>
 <p>Inputs:</p>
@@ -250,7 +244,7 @@ Batchnorm, activation and dropout layers are optional</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv2d" class="doc_header"><code>class</code> <code>Conv2d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L164" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv2d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
+<h2 id="Conv2d" class="doc_header"><code>class</code> <code>Conv2d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L164" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv2d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers.html#Conv"><code>Conv</code></a></p>
 </blockquote>
 <p>Conv2d - 2D convolution</p>
 <p>Inputs:</p>
@@ -296,7 +290,7 @@ Batchnorm, activation and dropout layers are optional</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv3d" class="doc_header"><code>class</code> <code>Conv3d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L193" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv3d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers#Conv"><code>Conv</code></a></p>
+<h2 id="Conv3d" class="doc_header"><code>class</code> <code>Conv3d</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L193" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv3d</code>(<strong><code>d_in</code></strong>, <strong><code>d_out</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>True</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong>**<code>conv_kwargs</code></strong>) :: <a href="/mrl/layers.html#Conv"><code>Conv</code></a></p>
 </blockquote>
 <p>Conv3d - 3D convolution</p>
 <p>Inputs:</p>
@@ -420,7 +414,7 @@ Batchnorm, activation and dropout layers are optional</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NormalPrior" class="doc_header"><code>class</code> <code>NormalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L281" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#Prior"><code>Prior</code></a></p>
+<h2 id="NormalPrior" class="doc_header"><code>class</code> <code>NormalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L281" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#Prior"><code>Prior</code></a></p>
 </blockquote>
 <p>NormalPrior - normal distribution prior</p>
 <p>Inputs:</p>
@@ -457,7 +451,7 @@ sending variance values negative</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SphericalPrior" class="doc_header"><code>class</code> <code>SphericalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L317" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SphericalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#NormalPrior"><code>NormalPrior</code></a></p>
+<h2 id="SphericalPrior" class="doc_header"><code>class</code> <code>SphericalPrior</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L317" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SphericalPrior</code>(<strong><code>loc</code></strong>, <strong><code>log_scale</code></strong>, <strong><code>trainable</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#NormalPrior"><code>NormalPrior</code></a></p>
 </blockquote>
 <p>SphericalPrior - spherical distribution prior</p>
 <p>Inputs:</p>
@@ -486,6 +480,13 @@ sending variance values negative</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -502,13 +503,6 @@ sending variance values negative</p>
     </div>
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -600,6 +594,13 @@ hidden state</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -735,13 +736,6 @@ hidden state</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -749,7 +743,7 @@ hidden state</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM" class="doc_header"><code>class</code> <code>LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L551" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers#Conditional_LSTM"><code>Conditional_LSTM</code></a></p>
+<h2 id="LSTM" class="doc_header"><code>class</code> <code>LSTM</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L551" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM</code>(<strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>d_output</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#Conditional_LSTM"><code>Conditional_LSTM</code></a></p>
 </blockquote>
 <p>LSTM - LSTM module</p>
 <p>Inputs:</p>
@@ -785,6 +779,13 @@ hidden state</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -804,13 +805,6 @@ hidden state</p>
     </div>
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -969,7 +963,7 @@ d_latent attribute which is referenced by other modules</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LSTM_Encoder" class="doc_header"><code>class</code> <code>LSTM_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L771" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
+<h2 id="LSTM_Encoder" class="doc_header"><code>class</code> <code>LSTM_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L771" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LSTM_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_hidden</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>input_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>lstm_dropout</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>LSTM_Encoder - LSTM-based encoder</p>
 <p>Inputs:</p>
@@ -1004,6 +998,13 @@ d_latent attribute which is referenced by other modules</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -1024,13 +1025,6 @@ d_latent attribute which is referenced by other modules</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -1038,7 +1032,7 @@ d_latent attribute which is referenced by other modules</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MLP_Encoder" class="doc_header"><code>class</code> <code>MLP_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L812" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_Encoder</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
+<h2 id="MLP_Encoder" class="doc_header"><code>class</code> <code>MLP_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L812" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_Encoder</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>MLP_Encoder - MLP-based encoder</p>
 <p>Inputs:</p>
@@ -1057,6 +1051,13 @@ d_latent attribute which is referenced by other modules</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1083,13 +1084,6 @@ d_latent attribute which is referenced by other modules</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -1097,7 +1091,7 @@ d_latent attribute which is referenced by other modules</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv_Encoder" class="doc_header"><code>class</code> <code>Conv_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L843" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers#Encoder"><code>Encoder</code></a></p>
+<h2 id="Conv_Encoder" class="doc_header"><code>class</code> <code>Conv_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L843" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>Conv_Encoder - 1D conv encoder</p>
 <p>Inputs:</p>
@@ -1131,6 +1125,13 @@ d_latent attribute which is referenced by other modules</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -1142,13 +1143,6 @@ d_latent attribute which is referenced by other modules</p>
     </div>
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -1188,6 +1182,13 @@ and <code>outrange[1]</code></p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
