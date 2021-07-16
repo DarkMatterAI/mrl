@@ -30,7 +30,7 @@ min_python = cfg['min_python']
 lic = licenses.get(cfg['license'].lower(), (cfg['license'], None))
 
 setuptools.setup(
-    name = cfg['lib_name']+'-pypi',
+    name = cfg['pypi_name'],
     license = lic[0],
     classifiers = [
         'Development Status :: ' + statuses[int(cfg['status'])],
