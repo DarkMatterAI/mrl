@@ -2,11 +2,13 @@
 
 __all__ = ['is_container', 'flatten_recursive', 'flatten_list_of_lists', 'deduplicate_list', 'chunk_list',
            'filter_passing', 'set_global_pool', 'close_global_pool', 'refresh_global_pool', 'new_pool_parallel',
-           'maybe_parallel', 'GLOBAL_POOL']
+           'maybe_parallel', 'GLOBAL_POOL', 'download_files']
 
 # Cell
 from .imports import *
 from multiprocessing import get_context
+import requests
+import zipfile
 
 # Cell
 def is_container(x):
@@ -127,3 +129,18 @@ def maybe_parallel(func, iterable, cpus=None, **kwargs):
         output = p_func(iterable)
 
     return output
+
+
+# Cell
+
+def download_files():
+    if not os.path.exists('files'):
+        r = requests.get('https://dmai-mrl.s3.us-west-2.amazonaws.com/mrl_public/files.zip')
+
+        with open('files.zip', 'wb') as f:
+            f.write(r.content)
+
+        with zipfile.ZipFile('files.zip', 'r') as zip_ref:
+            zip_ref.extractall('.')
+
+        os.remove('files.zip')
