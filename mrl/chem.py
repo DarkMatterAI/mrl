@@ -18,6 +18,7 @@ __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mo
 # Cell
 from .imports import *
 from .core import *
+import rdkit
 from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDConfig, Draw
 from rdkit.Chem.Lipinski import RotatableBondSmarts
@@ -27,6 +28,7 @@ try:
     # doesnt work for github CI/pypi install.
     # SA score is only in the contrib dir for RDKit conda install
     sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
+    sys.path.append(rdkit.__path__)
     import sascorer
 except:
     # download SA score
@@ -38,7 +40,7 @@ except:
 
     for file in files:
         r = requests.get(file)
-        with open(file.split('/')[-1], 'wb') as f:
+        with open(rdkit.__path__+'/'+file.split('/')[-1], 'wb') as f:
             f.write(r.content)
 
     import sascorer
