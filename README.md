@@ -23,6 +23,8 @@ View our [tutorials](https://darkmatterai.github.io/mrl/tutorials.html) for more
 
 ## Install
 
+__NOTE__: MRL is currently under active development. Currently it is recommended to install the most up-to-date version using the `Developer Install` instructions below
+
 ### Without Installing
 
 MRL can be used without installing via [Google Collab](https://colab.research.google.com/notebooks/intro.ipynb). Open any page in the [documentation](https://darkmatterai.github.io/mrl/) and click the "Open in Collab" button to open the notebook in Google Collab. Make sure to change the runtime to GPU.
