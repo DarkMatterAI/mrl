@@ -51,39 +51,6 @@ nb_path: "nbs/01_chem.ipynb"
 </div>
     {% endraw %}
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">RDConfig</span><span class="o">.</span><span class="n">RDContribDir</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;/home/dmai/miniconda3/envs/mrl/share/RDKit/Contrib&#39;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="RDKit-i/o">RDKit i/o<a class="anchor-link" href="#RDKit-i/o"> </a></h2><p><a href="/mrl/chem.html#to_mol"><code>to_mol</code></a> and <a href="/mrl/chem.html#to_smile"><code>to_smile</code></a> are functions that make it easy to work with both SMILES strings and RDKit <code>Mol</code> objects. For example, if a function requires a <code>mol</code> input, adding <code>mol = to_mol(mol)</code> allows the function to take either SMILES strings or RDKit mols as input</p>

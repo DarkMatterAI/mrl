@@ -2,12 +2,12 @@
 
 __all__ = ['ScoreFunction', 'NoScore', 'PassThroughScore', 'ModifiedScore', 'ConstantScore', 'WeightedPropertyScore',
            'PropertyFunctionScore', 'LinearDecayScore', 'Filter', 'ValidityFilter', 'SingleCompoundFilter',
-           'PropertyFilter', 'MolWtFilter', 'HBDFilter', 'HBAFilter', 'TPSAFilter', 'RotBondFilter', 'SP3Filter',
-           'LogPFilter', 'PenalizedLogPFilter', 'RingFilter', 'HeteroatomFilter', 'AromaticRingFilter',
-           'HeavyAtomsFilter', 'MRFilter', 'ChargeFilter', 'TotalAtomFilter', 'QEDFilter', 'SAFilter',
-           'LooseRotBondFilter', 'MaxRingFilter', 'MinRingFilter', 'BridgeheadFilter', 'SpiroFilter', 'ChiralFilter',
-           'RotChainFilter', 'criteria_check', 'StructureFilter', 'ExclusionFilter', 'KeepFilter', 'PAINSFilter',
-           'PAINSAFilter', 'PAINSBFilter', 'PAINSCFilter', 'FPFilter']
+           'CharacterCountFilter', 'AttachmentFilter', 'PropertyFilter', 'MolWtFilter', 'HBDFilter', 'HBAFilter',
+           'TPSAFilter', 'RotBondFilter', 'SP3Filter', 'LogPFilter', 'PenalizedLogPFilter', 'RingFilter',
+           'HeteroatomFilter', 'AromaticRingFilter', 'HeavyAtomsFilter', 'MRFilter', 'ChargeFilter', 'TotalAtomFilter',
+           'QEDFilter', 'SAFilter', 'LooseRotBondFilter', 'MaxRingFilter', 'MinRingFilter', 'BridgeheadFilter',
+           'SpiroFilter', 'ChiralFilter', 'RotChainFilter', 'criteria_check', 'StructureFilter', 'ExclusionFilter',
+           'KeepFilter', 'PAINSFilter', 'PAINSAFilter', 'PAINSBFilter', 'PAINSCFilter', 'FPFilter']
 
 # Cell
 from ..imports import *
@@ -287,12 +287,22 @@ class ValidityFilter(Filter):
 class SingleCompoundFilter(Filter):
     '''
     SingleCompoundFilter - checks to see if a given `Mol` is a single compound
+
+    Inputs:
+
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
+
+    - `name Optional[str]`: filter name used for repr
+
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
+
+    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
     '''
-    def __init__(self, score=None, name=None, fail_score=0.):
+    def __init__(self, score=None, name=None, fail_score=0., mode='smile'):
         if name is None:
             name = 'Single Compound Filter'
 
-        super().__init__(score, name, fail_score=fail_score)
+        super().__init__(score, name, fail_score=fail_score, mode=mode)
         self.priority=1
 
     def property_function(self, mol):
@@ -301,6 +311,99 @@ class SingleCompoundFilter(Filter):
 
     def criteria_function(self, property_output):
         return not '.' in property_output
+
+
+# Cell
+
+class CharacterCountFilter(Filter):
+    '''
+    CharacterCountFilter - validates `Mol` based on the
+    count of the specified character
+
+    Inputs:
+
+    - `char str`: character to count
+
+    - `min_val Optional[float, int]`: min value for count
+
+    - `max_val Optional[float, int]`: max value for count
+
+    ` `per_length bool`: if True, counts are normalized by string length
+
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
+
+    - `name Optional[str]`: filter name used for repr
+
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
+
+    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
+    '''
+    def __init__(self, char, min_val=None, max_val=None, per_length=False,
+                 score=None, name=None, fail_score=0., mode='smile'):
+        if name is None:
+            name = f'Character Filter {char}'
+
+        super().__init__(score, name, fail_score=fail_score, mode=mode)
+
+        self.priority = 1
+        self.char = char
+        self.min_val = min_val
+        self.max_val = max_val
+        self.per_length = per_length
+
+    def property_function(self, mol):
+        smile = self.to_string(mol)
+        return smile
+
+    def criteria_function(self, property_output):
+        value = property_output.count(self.char)
+
+        if self.per_length:
+            value = value/len(property_output)
+
+        lower_bound = (value>=self.min_val) if self.min_val is not None else True
+        upper_bound = (value<=self.max_val) if self.max_val is not None else True
+        output = lower_bound and upper_bound
+
+        return output
+
+    def __repr__(self):
+        output = f'{self.name}' + f' ({self.min_val}, {self.max_val})'
+        return output
+
+class AttachmentFilter(CharacterCountFilter):
+    '''
+    AttachmentFilter - validates `Mol` based on the
+    number of `*` attachment points
+
+    Inputs:
+
+    - `min_val Optional[float, int]`: min attachment value
+
+    - `max_val Optional[float, int]`: max attachment value
+
+    ` `per_length bool`: if True, counts are normalized by string length
+
+    - `score [None, int, float, ScoreFunction]`: see `Filter.set_score`
+
+    - `name Optional[str]`: filter name used for repr
+
+    - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
+
+    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
+    '''
+    def __init__(self, min_val=None, max_val=None, per_length=False,
+                 score=None, name=None, fail_score=0., mode='smile'):
+
+        super().__init__(char='*',
+                         min_val=min_val,
+                         max_val=max_val,
+                         per_length=per_length,
+                         score=score,
+                         name=name,
+                         fail_score=fail_score,
+                         mode=mode
+                        )
 
 # Cell
 

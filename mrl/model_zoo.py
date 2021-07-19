@@ -3,10 +3,10 @@
 __all__ = ['model_from_url', 'S3_PREFIX', 'PretrainedGenerativeAgent', 'lstm_lm_small', 'lstm_lm_large',
            'LSTM_LM_Small_ZINC', 'LSTM_LM_Small_Chembl', 'LSTM_LM_Small_ZINC_NC', 'LSTM_LM_Small_Chembl_NC',
            'LSTM_LM_Small_ZINC_Selfies', 'LSTM_LM_Small_Chembl_Selfies', 'LSTM_LM_Small_Rgroup',
-           'LSTM_LM_Small_Linkers', 'LSTM_LM_Small_Linkers_Mapped', 'LSTM_LM_Small_Swissprot', 'cond_lstm_small',
-           'cond_lstm_large', 'mlp_cond_lstm_small', 'mlp_cond_lstm_large', 'FP_Cond_LSTM_LM_Small_ZINC',
-           'FP_Cond_LSTM_LM_Small_ZINC_Selfies', 'FP_Cond_LSTM_LM_Small_Chembl', 'mlp_vae', 'conv_vae', 'lstm_vae',
-           'FP_VAE_ZINC', 'FP_VAE_Chembl', 'FP_VAE_ZINC_Selfies']
+           'LSTM_LM_Small_Linkers', 'LSTM_LM_Small_Linkers_Mapped', 'LSTM_LM_Small_Swissprot', 'LSTM_LM_Small_PI1M',
+           'cond_lstm_small', 'cond_lstm_large', 'mlp_cond_lstm_small', 'mlp_cond_lstm_large',
+           'FP_Cond_LSTM_LM_Small_ZINC', 'FP_Cond_LSTM_LM_Small_ZINC_Selfies', 'FP_Cond_LSTM_LM_Small_Chembl',
+           'mlp_vae', 'conv_vae', 'lstm_vae', 'FP_VAE_ZINC', 'FP_VAE_Chembl', 'FP_VAE_ZINC_Selfies']
 
 # Cell
 from .imports import *
@@ -726,6 +726,61 @@ class LSTM_LM_Small_Swissprot(PretrainedGenerativeAgent):
 
         loss_function = CrossEntropy()
         dataset = Text_Dataset(['C'], vocab)
+
+
+        super().__init__(weight_filename,
+                         model,
+                         vocab,
+                         loss_function,
+                         dataset,
+                         base_update=base_update,
+                         base_update_iter=base_update_iter,
+                         base_model=base_model,
+                         opt_kwargs=opt_kwargs,
+                         clip=clip,
+                         name=name
+                         )
+
+# Cell
+
+class LSTM_LM_Small_PI1M(PretrainedGenerativeAgent):
+    '''
+    LSTM_LM_Small_Chembl - small `LSTM_LM` model
+    trained on a chunk of the PI1M polymer library
+
+    Inputs:
+
+    - `drop_scale float`: dropout scale
+
+    - `base_update float`: update fraction for the baseline model. Updates
+    the base model following `base_model = base_update*base_model + (1-base_update)*model`
+
+    - `base_update_iter int`: update frequency for baseline model
+
+    - `base_model bool`: if False, baseline model will not be created
+
+    - `opt_kwargs dict`: dictionary of keyword arguments passed to `optim.Adam`
+
+    - `clip float`: gradient clipping
+
+    - `name str`: agent name
+    '''
+    def __init__(self,
+                 drop_scale=1.,
+                 base_update=0.97,
+                 base_update_iter=5,
+                 base_model=True,
+                 opt_kwargs={},
+                 clip=1.,
+                 name = 'lstmlm_small_pi1m'
+                ):
+
+        vocab = CharacterVocab(SMILES_CHAR_VOCAB)
+        model = lstm_lm_small(vocab, drop_scale=drop_scale)
+        weight_filename = 'lstmlm_small_pi1m.pt'
+
+        loss_function = CrossEntropy()
+        dataset = Text_Dataset(['*C*'], vocab)
 
 
         super().__init__(weight_filename,

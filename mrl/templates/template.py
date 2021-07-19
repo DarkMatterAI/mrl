@@ -46,6 +46,12 @@ class Template():
         self.fail_score = fail_score
         self.mode = mode
 
+        for f in self.hard_filters:
+            f.mode = self.mode
+
+        for f in self.soft_filters:
+            f.mode = self.mode
+
         self.hard_log = pd.DataFrame(columns=['smiles']+list(range(len(self.hard_filters)))+['final'])
         self.hard_col_names = ['smiles'] + [i.name for i in self.hard_filters] + ['final']
         self.hard_lookup = {}
@@ -211,16 +217,16 @@ class Template():
                 new_df = pd.DataFrame(new_data, columns=self.soft_log.columns)
                 self.soft_log = self.soft_log.append(new_df)
 
-            if self.use_lookup:
-                for item in new_data:
-                    smile = item[0]
-                    score = item[-1]
+        if self.use_lookup and new_data:
+            for item in new_data:
+                smile = item[0]
+                score = item[-1]
 
-                    if filter_type=='hard' and not smile in self.hard_lookup.keys():
-                        self.hard_lookup[smile] = score
+                if filter_type=='hard' and not smile in self.hard_lookup.keys():
+                    self.hard_lookup[smile] = score
 
-                    if filter_type=='soft' and not smile in self.soft_lookup.keys():
-                        self.soft_lookup[smile] = score
+                if filter_type=='soft' and not smile in self.soft_lookup.keys():
+                    self.soft_lookup[smile] = score
 
     def clean_logs(self):
         'de-duplicate logs'

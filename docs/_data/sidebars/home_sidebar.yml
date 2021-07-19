@@ -91,6 +91,12 @@ entries:
           title: MolDQN
           url: tutorials.small_molecule.moldqn.html
         title: Small Molecules
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Antimicrobial Peptide Design
+          url: tutorials.proteins.amp.html
+        title: Proteins
     output: web
     title: Tutorials
   - folderitems:
