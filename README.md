@@ -14,9 +14,9 @@ MRL is suitable for all stages of drug discovery, from high diversity hit expans
 
 MRL can be applied to:
 - [Small molecules](https://darkmatterai.github.io/mrl/tutorials.html#Small-Molecules)
-- Peptides
+- [Proteins](https://darkmatterai.github.io/mrl/tutorials.html#Proteins)
+- [Polymers](https://darkmatterai.github.io/mrl/tutorials.html#Polymers)
 - DNA (coming soon)
-- Polymers (coming soon)
 - Catalysts (coming soon)
 
 View our [tutorials](https://darkmatterai.github.io/mrl/tutorials.html) for more examples
@@ -119,12 +119,9 @@ Project Quality:
 
 New modalities:
 - DNA
-- Polymers
 - Catalysts
 
 Tutorials:
 - In depth, multi-cycle affinity optimization
-- Polymer design
-- Peptide design with transformer likelihood stability
 - Deep drug decoder
 - Generative screening primer

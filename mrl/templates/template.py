@@ -33,7 +33,7 @@ class Template():
     - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
 
     '''
-    def __init__(self, hard_filters, soft_filters=None, log=False, use_lookup=True, fail_score=0.,
+    def __init__(self, hard_filters, soft_filters=None, log=False, use_lookup=False, fail_score=0.,
                 cpus=None, mode='smile'):
 
         if soft_filters is None:

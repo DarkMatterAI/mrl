@@ -37,6 +37,10 @@
             },
             "Proteins" : {
                 "Antimicrobial Peptide Design" : "tutorials.proteins.amp.html"
+            },
+            "Polymers" : {
+                "SA Score Optimization" : "tutorials.polymers.sa_score.html",
+                "Band Gap Optimization" : "tutorials.polymers.bandgap.html"
             }
         }
     },

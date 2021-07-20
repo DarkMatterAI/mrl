@@ -97,6 +97,15 @@ entries:
           title: Antimicrobial Peptide Design
           url: tutorials.proteins.amp.html
         title: Proteins
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: SA Score Optimization
+          url: tutorials.polymers.sa_score.html
+        - output: web,pdf
+          title: Band Gap Optimization
+          url: tutorials.polymers.bandgap.html
+        title: Polymers
     output: web
     title: Tutorials
   - folderitems:
