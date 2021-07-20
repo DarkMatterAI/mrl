@@ -37,7 +37,8 @@
                 "MolDQN" : "tutorials.small_molecule.moldqn.html"
             },
             "Proteins" : {
-                "Antimicrobial Peptide Design" : "tutorials.proteins.amp.html"
+                "Antimicrobial Peptide Design" : "tutorials.proteins.amp.html",
+                "AAV Capsid Design" : "tutorials.proteins.capsid.html"
             },
             "Polymers" : {
                 "SA Score Optimization" : "tutorials.polymers.sa_score.html",

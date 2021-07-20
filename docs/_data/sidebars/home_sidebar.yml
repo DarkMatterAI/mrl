@@ -99,6 +99,9 @@ entries:
         - output: web,pdf
           title: Antimicrobial Peptide Design
           url: tutorials.proteins.amp.html
+        - output: web,pdf
+          title: AAV Capsid Design
+          url: tutorials.proteins.capsid.html
         title: Proteins
       - output: web
         subfolderitems:

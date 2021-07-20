@@ -30,7 +30,7 @@ class Template():
 
     - `cpus Optional[int]`: number of CPUs to use. If None, defaults to `os.environ['ncpus']`
 
-    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str['smile', 'protein']`: determines how inputs are converted to Mol objects
 
     '''
     def __init__(self, hard_filters, soft_filters=None, log=False, use_lookup=False, fail_score=0.,
@@ -104,8 +104,14 @@ class Template():
         'Canonicalize/standardize smiles'
         if cpus is None:
             cpus = self.cpus
-        mols = maybe_parallel(self.to_mol, smiles, cpus=cpus)
-        strings = maybe_parallel(self.to_string, mols, cpus=cpus)
+
+        if self.mode=='smile':
+            # canonicalize smiles
+            mols = maybe_parallel(self.to_mol, smiles, cpus=cpus)
+            strings = maybe_parallel(self.to_string, mols, cpus=cpus)
+        else:
+            # other modaalities are sequences, don't bother
+            strings = smiles
         return strings
 
     def validate(self, smiles, cpus=None):

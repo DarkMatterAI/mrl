@@ -117,7 +117,7 @@ is re-screened, the lookup value is returned</p>
 </li>
 <li><p><code>cpus Optional[int]</code>: number of CPUs to use. If None, defaults to <code>os.environ['ncpus']</code></p>
 </li>
-<li><p><code>mode str</code>: <code>smile</code> or <code>protein</code>, determines how inputs are converted to Mol objects</p>
+<li><p><code>mode str['smile', 'protein']</code>: determines how inputs are converted to Mol objects</p>
 </li>
 </ul>
 
@@ -149,7 +149,7 @@ is re-screened, the lookup value is returned</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BlankTemplate" class="doc_header"><code>class</code> <code>BlankTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L326" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlankTemplate</code>(<strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="BlankTemplate" class="doc_header"><code>class</code> <code>BlankTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L332" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlankTemplate</code>(<strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Empty template (no hard or soft filters)</p>
 
@@ -174,7 +174,7 @@ is re-screened, the lookup value is returned</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ValidMoleculeTemplate" class="doc_header"><code>class</code> <code>ValidMoleculeTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L331" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidMoleculeTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="ValidMoleculeTemplate" class="doc_header"><code>class</code> <code>ValidMoleculeTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L337" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ValidMoleculeTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for checking if an input is a single valid chemical structure</p>
 
@@ -199,7 +199,7 @@ is re-screened, the lookup value is returned</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RuleOf5Template" class="doc_header"><code>class</code> <code>RuleOf5Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L353" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf5Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="RuleOf5Template" class="doc_header"><code>class</code> <code>RuleOf5Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L359" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf5Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Lipinski's rule of 5 (en.wikipedia.org/wiki/Lipinski%27s_rule_of_five)</p>
 
@@ -224,7 +224,7 @@ is re-screened, the lookup value is returned</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GhoseTemplate" class="doc_header"><code>class</code> <code>GhoseTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L379" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GhoseTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="GhoseTemplate" class="doc_header"><code>class</code> <code>GhoseTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L385" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GhoseTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Ghose filters (doi.org/10.1021/cc9800071)</p>
 
@@ -249,7 +249,7 @@ is re-screened, the lookup value is returned</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VeberTemplate" class="doc_header"><code>class</code> <code>VeberTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L405" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VeberTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="VeberTemplate" class="doc_header"><code>class</code> <code>VeberTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L411" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VeberTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for Veber filters (doi.org/10.1021/jm020017n)</p>
 
@@ -274,7 +274,7 @@ is re-screened, the lookup value is returned</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="REOSTemplate" class="doc_header"><code>class</code> <code>REOSTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L427" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>REOSTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="REOSTemplate" class="doc_header"><code>class</code> <code>REOSTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L433" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>REOSTemplate</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for REOS filters (10.1016/s0169-409x(02)00003-0)</p>
 
@@ -299,7 +299,7 @@ is re-screened, the lookup value is returned</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RuleOf3Template" class="doc_header"><code>class</code> <code>RuleOf3Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L459" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf3Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
+<h2 id="RuleOf3Template" class="doc_header"><code>class</code> <code>RuleOf3Template</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/template.py#L465" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RuleOf3Template</code>(<strong><code>hard</code></strong>=<em><code>True</code></em>, <strong><code>soft</code></strong>=<em><code>False</code></em>, <strong>**<code>template_kwargs</code></strong>) :: <a href="/mrl/template.template.html#Template"><code>Template</code></a></p>
 </blockquote>
 <p>Template for rule of 5 filter (doi.org/10.1016/S1359-6446(03)02831-9)</p>
 
