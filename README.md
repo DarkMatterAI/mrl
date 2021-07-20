@@ -123,5 +123,4 @@ New modalities:
 
 Tutorials:
 - In depth, multi-cycle affinity optimization
-- Deep drug decoder
 - Generative screening primer

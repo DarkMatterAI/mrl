@@ -15,7 +15,8 @@
             "Generative Models" : {
                 "LSTM Language Model" : "tutorials.generative_models.lstm_lm.html",
                 "Conditional LSTM Language Model" : "tutorials.generative_models.conditional_lstm_lm.html",
-                "VAE" : "tutorials.generative_models.vae.html"
+                "VAE" : "tutorials.generative_models.vae.html",
+                "Deep Drug Decoder" : "tutorials.generative_models.deep_drug_decoder.html"
             },
             "Reinforcement Learning" : {
                 "Fit Cycle Overview" : "tutorials.rl.train_overview.html"

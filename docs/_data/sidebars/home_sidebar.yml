@@ -45,6 +45,9 @@ entries:
         - output: web,pdf
           title: VAE
           url: tutorials.generative_models.vae.html
+        - output: web,pdf
+          title: Deep Drug Decoder
+          url: tutorials.generative_models.deep_drug_decoder.html
         title: Generative Models
       - output: web
         subfolderitems:
