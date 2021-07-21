@@ -81,7 +81,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pad_vocab" class="doc_header"><code>pad_vocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_vocab</code>(<strong><code>vocab</code></strong>)</p>
+<h4 id="pad_vocab" class="doc_header"><code>pad_vocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L194" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_vocab</code>(<strong><code>vocab</code></strong>)</p>
 </blockquote>
 <p>pads <code>vocab</code> to have a length divisible by 8 - improves fp16 performance</p>
 
@@ -129,7 +129,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_by_character" class="doc_header"><code>tokenize_by_character</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L126" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_by_character</code>(<strong><code>input</code></strong>)</p>
+<h4 id="tokenize_by_character" class="doc_header"><code>tokenize_by_character</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L217" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_by_character</code>(<strong><code>input</code></strong>)</p>
 </blockquote>
 <p>Splits <code>input</code> into inividual characters</p>
 
@@ -154,7 +154,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_with_replacements" class="doc_header"><code>tokenize_with_replacements</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_with_replacements</code>(<strong><code>input</code></strong>, <strong><code>replacement_dict</code></strong>)</p>
+<h4 id="tokenize_with_replacements" class="doc_header"><code>tokenize_with_replacements</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L230" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_with_replacements</code>(<strong><code>input</code></strong>, <strong><code>replacement_dict</code></strong>)</p>
 </blockquote>
 <p>Replaces substrings in <code>input</code> using <code>replacement_dict</code>, then tokenizes by character</p>
 
@@ -179,9 +179,33 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="regex_tokenize" class="doc_header"><code>regex_tokenize</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>regex_tokenize</code>(<strong><code>input</code></strong>, <strong><code>regex</code></strong>)</p>
+<h4 id="regex_tokenize" class="doc_header"><code>regex_tokenize</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L236" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>regex_tokenize</code>(<strong><code>input</code></strong>, <strong><code>regex</code></strong>)</p>
 </blockquote>
 <p>Uses <code>regex</code> to tokenize <code>input</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="tokenize_by_kmer" class="doc_header"><code>tokenize_by_kmer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L241" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_by_kmer</code>(<strong><code>input</code></strong>, <strong><code>kmer</code></strong>, <strong><code>stride</code></strong>)</p>
+</blockquote>
 
 </div>
 
@@ -241,7 +265,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vocab" class="doc_header"><code>class</code> <code>Vocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L152" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vocab</code>(<strong><code>itos</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="Vocab" class="doc_header"><code>class</code> <code>Vocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L249" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vocab</code>(<strong><code>itos</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Vocab - base vocabulary class</p>
 <p>Inputs:</p>
@@ -275,7 +299,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CharacterVocab" class="doc_header"><code>class</code> <code>CharacterVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L244" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterVocab</code>(<strong><code>itos</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
+<h2 id="CharacterVocab" class="doc_header"><code>class</code> <code>CharacterVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L341" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterVocab</code>(<strong><code>itos</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>CharacterVocab - tokenize by character</p>
 <p>Inputs:</p>
@@ -309,7 +333,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FuncVocab" class="doc_header"><code>class</code> <code>FuncVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L260" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FuncVocab</code>(<strong><code>itos</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
+<h2 id="FuncVocab" class="doc_header"><code>class</code> <code>FuncVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L357" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FuncVocab</code>(<strong><code>itos</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>FuncVocab - tokenize by <code>tok_func</code></p>
 <p>Inputs:</p>
@@ -345,7 +369,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesVocab" class="doc_header"><code>class</code> <code>SelfiesVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L284" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesVocab</code>(<strong><code>itos</code></strong>) :: <a href="/mrl/vocab.html#FuncVocab"><code>FuncVocab</code></a></p>
+<h2 id="SelfiesVocab" class="doc_header"><code>class</code> <code>SelfiesVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L381" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesVocab</code>(<strong><code>itos</code></strong>) :: <a href="/mrl/vocab.html#FuncVocab"><code>FuncVocab</code></a></p>
 </blockquote>
 <p>SelfiesVocab - converts smiles to selfies</p>
 <p>Inputs:</p>
@@ -374,7 +398,7 @@ tokenize_with_replacements('[Cl]CC[Br]', replacement_dict)
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CharacterReplaceVocab" class="doc_header"><code>class</code> <code>CharacterReplaceVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L296" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterReplaceVocab</code>(<strong><code>itos</code></strong>, <strong><code>replace_dict</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
+<h2 id="CharacterReplaceVocab" class="doc_header"><code>class</code> <code>CharacterReplaceVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L393" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CharacterReplaceVocab</code>(<strong><code>itos</code></strong>, <strong><code>replace_dict</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>CharacterReplaceVocab - tokenize by character with replacement</p>
 <p>Inputs:</p>
@@ -412,7 +436,7 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegexVocab" class="doc_header"><code>class</code> <code>RegexVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L344" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexVocab</code>(<strong><code>itos</code></strong>, <strong><code>pattern</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
+<h2 id="RegexVocab" class="doc_header"><code>class</code> <code>RegexVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L441" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexVocab</code>(<strong><code>itos</code></strong>, <strong><code>pattern</code></strong>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
 </blockquote>
 <p>RegexVocab - tokenize using <code>pattern</code></p>
 <p>Inputs:</p>
@@ -420,6 +444,46 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 <li><p><code>itos list</code>: list of tokens in vocabulary</p>
 </li>
 <li><p><code>pattern str</code>: regex string</p>
+</li>
+<li><p><code>prefunc Optional[Callable]</code>: function applied to <code>input</code> before tokenization</p>
+</li>
+<li><p><code>postfunc Optional[Callable]</code>: function applied to <code>input</code> after reconstruction</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="KmerVocab" class="doc_header"><code>class</code> <code>KmerVocab</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L467" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>KmerVocab</code>(<strong><code>itos</code></strong>, <strong><code>kmer</code></strong>, <strong><code>stride</code></strong>=<em><code>None</code></em>, <strong><code>prefunc</code></strong>=<em><code>None</code></em>, <strong><code>postfunc</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/vocab.html#Vocab"><code>Vocab</code></a></p>
+</blockquote>
+<p>KmerVocab - Kmer tokenization vocabulary</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>itos list</code>: list of tokens in vocabulary</p>
+</li>
+<li><p><code>kmer int</code>: kmer size</p>
+</li>
+<li><p><code>stride Optional[int]</code>: kmer stride. If not passed, stride
+will be the same as kmer. Using a stride value different from
+the kmer value will prevent proper reconstruction</p>
 </li>
 <li><p><code>prefunc Optional[Callable]</code>: function applied to <code>input</code> before tokenization</p>
 </li>
@@ -455,7 +519,7 @@ ie replace_dict={'Br':'R', 'Cl':'L'}</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="test_reconstruction" class="doc_header"><code>test_reconstruction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L371" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_reconstruction</code>(<strong><code>vocab</code></strong>, <strong><code>inputs</code></strong>)</p>
+<h4 id="test_reconstruction" class="doc_header"><code>test_reconstruction</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/vocab.py#L501" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_reconstruction</code>(<strong><code>vocab</code></strong>, <strong><code>inputs</code></strong>)</p>
 </blockquote>
 <p>Returns all items in <code>inputs</code> that can't be correctly reconstructed using <code>vocab</code></p>
 

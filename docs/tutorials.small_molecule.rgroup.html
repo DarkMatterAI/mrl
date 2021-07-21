@@ -43,6 +43,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.rgroup.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Performance-Notes">Performance Notes<a class="anchor-link" href="#Performance-Notes"> </a></h2><p>The workflow in this notebook is more CPU-constrained than GPU-constrained due to the need to evaluate samples on CPU. If you have a multi-core machine, it is recommended that you uncomment and run the <a href="/mrl/core.html#set_global_pool"><code>set_global_pool</code></a> cells in the notebook. This will trigger the use of multiprocessing, which will result in 2-4x speedups.</p>
 <p>This notebook may run slow on Collab due to CPU limitations.</p>
+<p>If running on Collab, remember to change the runtime to GPU</p>
 
 </div>
 </div>
@@ -328,7 +329,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.rgroup.ipynb"
                      <span class="n">RotChainFilter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
                     <span class="p">],</span>
                     <span class="p">[],</span> 
-                    <span class="n">fail_score</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_lookup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">fail_score</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_lookup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">RGroupBlockTemplate</span><span class="p">(</span><span class="n">scaffold</span><span class="p">,</span> <span class="n">r_template</span><span class="p">,</span> 
                                     <span class="n">full_molecule_template</span><span class="o">=</span><span class="n">full_template</span><span class="p">)</span>
@@ -592,7 +593,7 @@ Wall time: 4min 36s
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># screened = df2.smiles.values</span>
 <span class="n">agent</span><span class="o">.</span><span class="n">update_dataset_from_inputs</span><span class="p">(</span><span class="n">screened</span><span class="p">)</span>
-<span class="n">agent</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">)</span>
+<span class="n">agent</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mf">5e-5</span><span class="p">)</span>
 <span class="n">agent</span><span class="o">.</span><span class="n">base_to_model</span><span class="p">()</span>
 </pre></div>
 
@@ -757,7 +758,7 @@ Wall time: 4min 36s
 <ul>
 <li><code>sampler1 ModelSampler</code>: this samples from the main model. This sample will add 1000 compounds to the buffer each buffer build, and sample 40% of each batch on the fly from the main model.</li>
 <li><code>sampler2 ModelSampler</code>: this samples from the baseline model and is not sampled live on each batch</li>
-<li><code>sampler3 LogSampler</code>: this samples high scoring samples from the lig</li>
+<li><code>sampler3 LogSampler</code>: this samples high scoring samples from the log</li>
 <li><code>sampler4 TokenSwapSampler</code>: this uses SELFIES-style token swap comibichem to generate new samples from high scoring  samples</li>
 </ul>
 

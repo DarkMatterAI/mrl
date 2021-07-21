@@ -13,7 +13,7 @@ __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mo
            'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold', 'add_map_nums', 'check_ring_bonds',
            'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator',
            'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence',
-           'to_proteins', 'to_sequences']
+           'to_proteins', 'to_sequences', 'to_dna', 'to_dnas', 'to_rna', 'to_rnas']
 
 # Cell
 from .imports import *
@@ -1563,3 +1563,43 @@ def to_proteins(list_of_inputs):
 
 def to_sequences(list_of_inputs):
     return maybe_parallel(to_sequence, list_of_inputs)
+
+# Cell
+
+def to_dna(sequence_or_mol):
+    '''
+    Convert DNA nucleic acid sequence to Chem.Mol
+    '''
+    if (type(sequence_or_mol) == str) or (type(sequence_or_mol) == np.str_):
+        mol = Chem.MolFromFASTA(sequence_or_mol, flavor=6)
+        if mol is not None:
+            try:
+                Chem.SanitizeMol(mol)
+            except:
+                mol = None
+    else:
+        mol = sequence_or_mol
+
+    return mol
+
+def to_dnas(list_of_inputs):
+    return maybe_parallel(to_dna, list_of_inputs)
+
+def to_rna(sequence_or_mol):
+    '''
+    Convert RNA nucleic acid sequence to Chem.Mol
+    '''
+    if (type(sequence_or_mol) == str) or (type(sequence_or_mol) == np.str_):
+        mol = Chem.MolFromFASTA(sequence_or_mol, flavor=2)
+        if mol is not None:
+            try:
+                Chem.SanitizeMol(mol)
+            except:
+                mol = None
+    else:
+        mol = sequence_or_mol
+
+    return mol
+
+def to_rnas(list_of_inputs):
+    return maybe_parallel(to_rna, list_of_inputs)

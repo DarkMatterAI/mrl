@@ -683,8 +683,8 @@ class TokenSwapSampler(LogSampler):
             for idx, new_token in zip(swap_idxs, new_tokens):
                 tokens[idx] = new_token
 
-            sample = self.vocab.join_tokens(tokens)
-            sample = self.vocab.postprocess(sample)
+            sample = self.vocab.numericalize(tokens)
+            sample = self.vocab.reconstruct(sample)
             new_samples.append(sample)
 
         return new_samples

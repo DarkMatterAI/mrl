@@ -15,7 +15,8 @@
             "Generative Models" : {
                 "LSTM Language Model" : "tutorials.generative_models.lstm_lm.html",
                 "Conditional LSTM Language Model" : "tutorials.generative_models.conditional_lstm_lm.html",
-                "VAE" : "tutorials.generative_models.vae.html"
+                "VAE" : "tutorials.generative_models.vae.html",
+                "Deep Drug Decoder" : "tutorials.generative_models.deep_drug_decoder.html"
             },
             "Reinforcement Learning" : {
                 "Fit Cycle Overview" : "tutorials.rl.train_overview.html"
@@ -36,7 +37,15 @@
                 "MolDQN" : "tutorials.small_molecule.moldqn.html"
             },
             "Proteins" : {
-                "Antimicrobial Peptide Design" : "tutorials.proteins.amp.html"
+                "Antimicrobial Peptide Design" : "tutorials.proteins.amp.html",
+                "AAV Capsid Design" : "tutorials.proteins.capsid.html"
+            },
+            "Polymers" : {
+                "SA Score Optimization" : "tutorials.polymers.sa_score.html",
+                "Band Gap Optimization" : "tutorials.polymers.bandgap.html"
+            },
+            "DNA" : {
+                "Promoter Design" : "tutorials.dna.promoter.html"
             }
         }
     },
