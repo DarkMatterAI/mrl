@@ -78,16 +78,23 @@ class Agent(Callback):
         if self.training:
             self.opt.step()
 
-    def one_batch(self, batch):
+    def one_batch(self, batch, fp16=False):
         batch = to_device(batch)
         x,y = batch
         if not isinstance(x, (list, tuple)):
             x = [x]
-        output = self.model(*x)
-        loss = self.loss_function(output, y)
+
+        if fp16:
+            with torch.cuda.amp.autocast():
+                output = self.model(*x)
+                loss = self.loss_function(output, y)
+        else:
+            output = self.model(*x)
+            loss = self.loss_function(output, y)
         return loss
 
-    def train_supervised(self, bs, epochs, lr, percent_valid=0.05, silent=False):
+    def train_supervised(self, bs, epochs, lr, percent_valid=0.05,
+                         silent=False, fp16=False, opt_kwargs={}):
         '''
         train_supervised
 
@@ -102,7 +109,14 @@ class Agent(Callback):
         - `percent_valid float`: validation set percentage
 
         - `silent bool`: if training losses should be printed
+
+        - `fp16 bool`: if FP16 training should be used
+
+        - `opt_kwargs Optional[dict]`: keyword arguments passed to optimzier
         '''
+
+        if fp16:
+            scaler = torch.cuda.amp.GradScaler()
 
         train_ds, valid_ds = self.dataset.split(percent_valid)
 
@@ -113,7 +127,7 @@ class Agent(Callback):
 
         valid_dl = valid_ds.dataloader(bs)
 
-        opt = optim.Adam(self.model.parameters(), lr=lr)
+        opt = optim.Adam(self.model.parameters(), lr=lr, **opt_kwargs)
 
         scheduler = optim.lr_scheduler.OneCycleLR(opt, max_lr=lr,
                                         steps_per_epoch=len(train_dl), epochs=epochs)
@@ -135,11 +149,17 @@ class Agent(Callback):
 
             for batch in batch_iter:
 
-                loss = self.one_batch(batch)
-
+                loss = self.one_batch(batch, fp16=fp16)
                 opt.zero_grad()
-                loss.backward()
-                opt.step()
+
+                if fp16:
+                    scaler.scale(loss).backward()
+                    scaler.step(opt)
+                    scaler.update()
+                else:
+                    loss.backward()
+                    opt.step()
+
                 scheduler.step()
                 train_losses.append(loss.detach().cpu())
 

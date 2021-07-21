@@ -180,7 +180,8 @@ class Filter():
 
     - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-    - `mode str['smile', 'protein']`: determines how inputs are converted to Mol objects
+    - `mode str['smile', 'protein', 'dna', 'rna']`: determines
+    how inputs are converted to Mol objects
 
     '''
     def __init__(self, score=None, name=None, fail_score=0., mode='smile'):
@@ -210,18 +211,22 @@ class Filter():
             mol = to_mol(input)
         elif self.mode=='protein':
             mol = to_protein(input)
+        elif self.mode=='dna':
+            mol = to_dna(input)
+        elif self.mode=='rna':
+            mol = to_rna(input)
         else:
-            raise ValueError("`self.mode` must be one of `['smile', 'protein']`")
+            raise ValueError("`self.mode` must be one of `['smile', 'protein', 'dna', 'rna']`")
 
         return mol
 
     def to_string(self, input):
         if self.mode=='smile':
             string = to_smile(input)
-        elif self.mode=='protein':
+        elif self.mode in set(['protein', 'dna', 'rna']):
             string = to_sequence(input)
         else:
-            raise ValueError("`self.mode` must be one of `['smile', 'protein']`")
+            raise ValueError("`self.mode` must be one of `['smile', 'protein', 'dna', 'rna']`")
 
         return string
 
@@ -269,7 +274,8 @@ class ValidityFilter(Filter):
 
     - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str['smile', 'protein', 'dna', 'rna']`: determines
+    how inputs are converted to Mol objects
     '''
     def __init__(self, score=None, name=None, fail_score=0., mode='smile'):
         if name is None:
@@ -297,7 +303,8 @@ class SingleCompoundFilter(Filter):
 
     - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str['smile', 'protein', 'dna', 'rna']`: determines
+    how inputs are converted to Mol objects
     '''
     def __init__(self, score=None, name=None, fail_score=0., mode='smile'):
         if name is None:
@@ -337,7 +344,8 @@ class CharacterCountFilter(Filter):
 
     - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str['smile', 'protein', 'dna', 'rna']`: determines
+    how inputs are converted to Mol objects
     '''
     def __init__(self, chars, min_val=None, max_val=None, per_length=False,
                  score=None, name=None, fail_score=0., mode='smile'):
@@ -391,7 +399,8 @@ class AttachmentFilter(CharacterCountFilter):
 
     - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str['smile', 'protein', 'dna', 'rna']`: determines
+    how inputs are converted to Mol objects
     '''
     def __init__(self, min_val=None, max_val=None, per_length=False,
                  score=None, name=None, fail_score=0., mode='smile'):
@@ -427,7 +436,8 @@ class PropertyFilter(Filter):
 
     - `fail_score [float, int]`: used in `Filter.set_score` if `score_function` is (int, float)
 
-    - `mode str`: `smile` or `protein`, determines how inputs are converted to Mol objects
+    - `mode str['smile', 'protein', 'dna', 'rna']`: determines
+    how inputs are converted to Mol objects
     '''
     def __init__(self, mol_function, min_val=None, max_val=None, score=None,
                  fail_score=0., name=None, mode='smile'):

@@ -30,8 +30,8 @@ class Template():
 
     - `cpus Optional[int]`: number of CPUs to use. If None, defaults to `os.environ['ncpus']`
 
-    - `mode str['smile', 'protein']`: determines how inputs are converted to Mol objects
-
+    - `mode str['smile', 'protein', 'dna', 'rna']`: determines
+    how inputs are converted to Mol objects
     '''
     def __init__(self, hard_filters, soft_filters=None, log=False, use_lookup=False, fail_score=0.,
                 cpus=None, mode='smile'):
@@ -85,18 +85,22 @@ class Template():
             mol = to_mol(input)
         elif self.mode=='protein':
             mol = to_protein(input)
+        elif self.mode=='dna':
+            mol = to_dna(input)
+        elif self.mode=='rna':
+            mol = to_rna(input)
         else:
-            raise ValueError("`self.mode` must be one of `['smile', 'protein']`")
+            raise ValueError("`self.mode` must be one of `['smile', 'protein', 'dna', 'rna']`")
 
         return mol
 
     def to_string(self, input):
         if self.mode=='smile':
             string = to_smile(input)
-        elif self.mode=='protein':
+        elif self.mode in set(['protein', 'dna', 'rna']):
             string = to_sequence(input)
         else:
-            raise ValueError("`self.mode` must be one of `['smile', 'protein']`")
+            raise ValueError("`self.mode` must be one of `['smile', 'protein', 'dna', 'rna']`")
 
         return string
 

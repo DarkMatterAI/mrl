@@ -1289,7 +1289,7 @@ nb_path: "nbs/tutorials/tutorials.proteins.capsid.ipynb"
 <span class="n">r_agent</span> <span class="o">=</span> <span class="n">PredictiveAgent</span><span class="p">(</span><span class="n">reward_model</span><span class="p">,</span> <span class="n">MSELoss</span><span class="p">(),</span> <span class="n">r_ds</span><span class="p">,</span> <span class="n">opt_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span><span class="mf">1e-3</span><span class="p">})</span>
 
 <span class="n">r_agent</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="s1">&#39;untracked_files/virus_predictor.pt&#39;</span><span class="p">)</span>
-<span class="c1"># r_agent.load_state_dict(model_from_url(&#39;virus_predictor&#39;)) # optional - load exact weights</span>
+<span class="c1"># r_agent.load_state_dict(model_from_url(&#39;virus_predictor.pt&#39;)) # optional - load exact weights</span>
 
 <span class="n">reward_model</span><span class="o">.</span><span class="n">eval</span><span class="p">();</span>
 
