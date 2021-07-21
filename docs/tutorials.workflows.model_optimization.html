@@ -40,6 +40,7 @@ nb_path: "nbs/tutorials/tutorials.workflows.model_optimization.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Performance-Notes">Performance Notes<a class="anchor-link" href="#Performance-Notes"> </a></h2><p>The workflow in this notebook is more CPU-constrained than GPU-constrained due to the need to evaluate samples on CPU. If you have a multi-core machine, it is recommended that you uncomment and run the <a href="/mrl/core.html#set_global_pool"><code>set_global_pool</code></a> cells in the notebook. This will trigger the use of multiprocessing, which will result in 2-4x speedups.</p>
 <p>This notebook may run slow on Collab due to CPU limitations.</p>
+<p>If running on Collab, remember to change the runtime to GPU</p>
 
 </div>
 </div>

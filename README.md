@@ -16,7 +16,7 @@ MRL can be applied to:
 - [Small molecules](https://darkmatterai.github.io/mrl/tutorials.html#Small-Molecules)
 - [Proteins](https://darkmatterai.github.io/mrl/tutorials.html#Proteins)
 - [Polymers](https://darkmatterai.github.io/mrl/tutorials.html#Polymers)
-- DNA (coming soon)
+- [DNA](https://darkmatterai.github.io/mrl/tutorials.html#DNA)
 - Catalysts (coming soon)
 
 View our [tutorials](https://darkmatterai.github.io/mrl/tutorials.html) for more examples
@@ -118,7 +118,6 @@ Project Quality:
 - Enable google search on documentation page
 
 New modalities:
-- DNA
 - Catalysts
 
 Tutorials:

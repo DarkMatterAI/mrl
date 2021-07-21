@@ -42,6 +42,7 @@ nb_path: "nbs/tutorials/tutorials.proteins.capsid.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Performance-Notes">Performance Notes<a class="anchor-link" href="#Performance-Notes"> </a></h2><p>The workflow in this notebook is more CPU-constrained than GPU-constrained due to the need to evaluate samples on CPU. If you have a multi-core machine, it is recommended that you uncomment and run the <a href="/mrl/core.html#set_global_pool"><code>set_global_pool</code></a> cells in the notebook. This will trigger the use of multiprocessing, which will result in 2-4x speedups.</p>
 <p>This notebook may run slow on Collab due to CPU limitations.</p>
+<p>If running on Collab, remember to change the runtime to GPU</p>
 
 </div>
 </div>
@@ -1016,6 +1017,8 @@ nb_path: "nbs/tutorials/tutorials.proteins.capsid.ipynb"
 
 <span class="n">agent</span><span class="o">.</span><span class="n">update_dataset_from_inputs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">beats_wt</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">aa</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">agent</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">)</span>
+
+<span class="n">agent</span><span class="o">.</span><span class="n">base_to_model</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -1485,7 +1488,7 @@ nb_path: "nbs/tutorials/tutorials.proteins.capsid.ipynb"
 <li><code>sampler2 ModelSampler</code>: this samples from the baseline model and is not sampled live on each batch</li>
 <li><code>sampler3 LogSampler</code>: this samples high scoring samples from the lig</li>
 <li><code>sampler4 TokenSwapSampler</code>: this uses token swap comibichem to generate new samples from high scoring samples</li>
-<li><code>sampler5 DatasetSampler</code>: this sprinkles in a small amount of known actives into each buffer build. Note that we subset by peptide length to align with the generated length (75 amino acids)</li>
+<li><code>sampler5 DatasetSampler</code>: this sprinkles in a small amount of high scoring samples into each buffer build.</li>
 </ul>
 
 </div>

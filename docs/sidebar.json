@@ -43,6 +43,9 @@
             "Polymers" : {
                 "SA Score Optimization" : "tutorials.polymers.sa_score.html",
                 "Band Gap Optimization" : "tutorials.polymers.bandgap.html"
+            },
+            "DNA" : {
+                "Promoter Design" : "tutorials.dna.promoter.html"
             }
         }
     },

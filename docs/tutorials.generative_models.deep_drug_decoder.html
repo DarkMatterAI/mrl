@@ -37,6 +37,15 @@ nb_path: "nbs/tutorials/tutorials.generative_models.deep_drug_decoder.ipynb"
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Performance-Notes">Performance Notes<a class="anchor-link" href="#Performance-Notes"> </a></h2><p>Parts of this notebook aare CPU-constrained. If you have a multi-core machine, it is recommended that you uncomment and run the <a href="/mrl/core.html#set_global_pool"><code>set_global_pool</code></a> cells in the notebook. This will trigger the use of multiprocessing, which will result in 2-4x speedups.</p>
+<p>This notebook may run slow on Collab due to CPU limitations.</p>
+<p>If running on Collab, remember to change the runtime to GPU</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -133,7 +142,7 @@ nb_path: "nbs/tutorials/tutorials.generative_models.deep_drug_decoder.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">set_global_pool</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -193,8 +202,7 @@ nb_path: "nbs/tutorials/tutorials.generative_models.deep_drug_decoder.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">close_global_pool</span><span class="p">()</span>
-<span class="k">del</span> <span class="n">preds</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">del</span> <span class="n">preds</span>
 <span class="k">del</span> <span class="n">agent</span><span class="o">.</span><span class="n">model</span>
 <span class="k">del</span> <span class="n">agent</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>

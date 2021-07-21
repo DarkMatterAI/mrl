@@ -41,6 +41,7 @@ nb_path: "nbs/tutorials/tutorials.proteins.amp.ipynb"
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Performance-Notes">Performance Notes<a class="anchor-link" href="#Performance-Notes"> </a></h2><p>The workflow in this notebook is more CPU-constrained than GPU-constrained due to the need to evaluate samples on CPU. If you have a multi-core machine, it is recommended that you uncomment and run the <a href="/mrl/core.html#set_global_pool"><code>set_global_pool</code></a> cells in the notebook. This will trigger the use of multiprocessing, which will result in 2-4x speedups.</p>
 <p>This notebook may run slow on Collab due to CPU limitations.</p>
+<p>If running on Collab, remember to change the runtime to GPU</p>
 
 </div>
 </div>
@@ -767,7 +768,8 @@ nb_path: "nbs/tutorials/tutorials.proteins.amp.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">agent</span><span class="o">.</span><span class="n">update_dataset_from_inputs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">label</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-<span class="n">agent</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">)</span>
+<span class="n">agent</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">5e-5</span><span class="p">)</span>
+<span class="n">agent</span><span class="o">.</span><span class="n">base_to_model</span><span class="p">()</span>
 </pre></div>
 
     </div>
