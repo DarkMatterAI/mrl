@@ -1021,7 +1021,9 @@ Name: int_label, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d_vocab</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_vocab</span><span class="o">.</span><span class="n">itos</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_vocab</span> <span class="o">=</span> <span class="n">KmerVocab</span><span class="p">(</span><span class="n">DNA_TRIMERS</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">d_vocab</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_vocab</span><span class="o">.</span><span class="n">itos</span><span class="p">)</span>
 <span class="n">d_embedding</span> <span class="o">=</span> <span class="mi">256</span>
 <span class="n">d_latent</span> <span class="o">=</span> <span class="mi">512</span>
 <span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="mi">256</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">1024</span><span class="p">]</span>
