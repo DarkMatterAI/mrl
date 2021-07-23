@@ -6,7 +6,7 @@ from multiprocessing import Pool
 import time
 from functools import partial
 import itertools
-from collections import defaultdict
+from collections import defaultdict, Counter
 import pickle
 import gc
 import math

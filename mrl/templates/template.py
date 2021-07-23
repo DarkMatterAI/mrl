@@ -312,6 +312,8 @@ class Template():
         soft_filters = self.soft_filters + other.soft_filters
         soft_filters = sorted(soft_filters, key=lambda x: x.priority, reverse=True)
 
+        new_template = Template(hard_filters, soft_filters, use_lookup=self.use_lookup)
+
         if merge_data:
             soft_smiles = list(self.soft_log.smiles.values) + list(other.soft_log.smiles.values)
             soft_smiles = list(set(soft_smiles))
@@ -319,7 +321,7 @@ class Template():
             hard_smiles = list(self.hard_log.smiles.values) + list(other.hard_log.smiles.values)
             hard_smiles = list(set(hard_smiles))
 
-            new_template = Template(hard_filters, soft_filters, use_lookup=self.use_lookup)
+#             new_template = Template(hard_filters, soft_filters, use_lookup=self.use_lookup)
             _ = new_template(hard_smiles, filter_type='hard')
             _ = new_template(soft_smiles, filter_type='soft')
 

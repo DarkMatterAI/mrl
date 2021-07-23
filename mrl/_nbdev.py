@@ -377,7 +377,9 @@ index = {"is_container": "00_core.ipynb",
          "lstm_vae": "22_model_zoo.ipynb",
          "FP_VAE_ZINC": "22_model_zoo.ipynb",
          "FP_VAE_Chembl": "22_model_zoo.ipynb",
-         "FP_VAE_ZINC_Selfies": "22_model_zoo.ipynb"}
+         "FP_VAE_ZINC_Selfies": "22_model_zoo.ipynb",
+         "Crossover": "23_combichem.ipynb",
+         "FragmentCrossover": "23_combichem.ipynb"}
 
 modules = ["core.py",
            "chem.py",
@@ -401,7 +403,8 @@ modules = ["core.py",
            "train/sampler.py",
            "train/environment.py",
            "train/reward.py",
-           "model_zoo.py"]
+           "model_zoo.py",
+           "combichem.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 
