@@ -135,8 +135,12 @@ class Base_Dataset(Dataset):
 
     def split(self, percent_valid, seed=0):
 
-        torch.manual_seed(seed)
-        idxs = torch.randperm(self.__len__()).numpy()
+        idxs = np.arange(self.__len__())
+        np.random.seed(seed)
+        np.random.shuffle(idxs)
+
+#         torch.manual_seed(seed)
+#         idxs = torch.randperm(self.__len__()).numpy()
         train_length = int(self.__len__()*(1-percent_valid))
 
         train_idxs = idxs[:train_length]
@@ -381,7 +385,7 @@ class Vec_Prediction_Dataset(Vector_Dataset):
 
     def __getitem__(self, idx):
         fp = super().__getitem__(idx)
-        y_val = torch.FloatTensor([self.y_vals[idx]])
+        y_val = torch.FloatTensor([self.y_vals[idx]]).squeeze()
         return (fp, y_val)
 
     def new(self, sequences, y_vals):

@@ -923,12 +923,16 @@ def fuse_on_link(fragment_string, links):
 
 # Cell
 
-def murcko_scaffold(smile, generic=False):
+def murcko_scaffold(smile, generic=False, remove_stereochem=False):
     '''
     murcko_scaffold - convert smile to murcko scaffold.
 
     If generic, all atoms are converted to carbon
     '''
+    smile = to_smile(smile)
+    if remove_stereochem:
+        smile = remove_stereo(smile)
+
     mol = to_mol(smile)
     scaffold = MurckoScaffold.GetScaffoldForMol(mol)
 
