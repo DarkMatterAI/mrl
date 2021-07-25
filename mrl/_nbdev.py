@@ -396,6 +396,9 @@ index = {"is_container": "00_core.ipynb",
          "InsertAtom": "23_combichem.ipynb",
          "AddRing": "23_combichem.ipynb",
          "AllSmarts": "23_combichem.ipynb",
+         "EnumerateHeterocycleMutator": "23_combichem.ipynb",
+         "ShuffleNitrogen": "23_combichem.ipynb",
+         "ContractAtom": "23_combichem.ipynb",
          "MutatorCollection": "23_combichem.ipynb",
          "CombiChem": "23_combichem.ipynb"}
 

@@ -2,14 +2,16 @@
 
 __all__ = ['Crossover', 'FragmentCrossover', 'Mutator', 'SmartsMutator', 'ChangeAtom', 'AppendAtomSingle',
            'AppendAtomsDouble', 'AppendAtomsTriple', 'AppendAtom', 'DeleteAtom', 'ChangeBond', 'InsertAtomSingle',
-           'InsertAtomDouble', 'InsertAtomTriple', 'InsertAtom', 'AddRing', 'AllSmarts', 'MutatorCollection',
-           'CombiChem']
+           'InsertAtomDouble', 'InsertAtomTriple', 'InsertAtom', 'AddRing', 'AllSmarts', 'EnumerateHeterocycleMutator',
+           'ShuffleNitrogen', 'ContractAtom', 'MutatorCollection', 'CombiChem']
 
 # Cell
 
 from .imports import *
 from .core import *
 from .chem import *
+from rdkit import Chem
+from rdkit.Chem import EnumerateHeterocycles
 
 # Cell
 
@@ -268,6 +270,101 @@ class AllSmarts(SmartsMutator):
 
         super().__init__(smarts, name='Smarts Mutator')
 
+
+# Cell
+
+class EnumerateHeterocycleMutator(Mutator):
+    def __init__(self, depth=None, name='enum heteroatoms'):
+        super().__init__(name)
+        self.depth = depth
+
+    def mutate(self, mol):
+        new_mols = list(EnumerateHeterocycles.EnumerateHeterocycles(mol, depth=self.depth))
+        new_mols = [i for i in new_mols if i is not None]
+        smiles = [to_smile(i) for i in new_mols]
+        smiles = list(set(smiles))
+        return smiles
+
+# Cell
+
+class ShuffleNitrogen(Mutator):
+    def __init__(self, n_shuffles, name='shuffle nitrogen'):
+        super().__init__(name)
+        self.n_shuffles = n_shuffles
+        self.aromatic_cH = Chem.MolFromSmarts("[cH]")
+        self.aromatic_n = Chem.MolFromSmarts('[n]')
+        self.normal_c = Chem.MolFromSmarts("[C]")
+        self.normal_n = Chem.MolFromSmarts('[N]')
+
+    def mutate(self, mol):
+        cs = [i[0] for i in mol.GetSubstructMatches(self.aromatic_cH)]
+        cs += [i[0] for i in mol.GetSubstructMatches(self.normal_c)]
+        ns = [i[0] for i in mol.GetSubstructMatches(self.aromatic_n)]
+        ns += [i[0] for i in mol.GetSubstructMatches(self.normal_n)]
+
+        nums = [6]*len(cs) + [7]*len(ns)
+        atom_idxs = cs + ns
+        smile = to_smile(mol)
+        outputs = []
+
+        for i in range(self.n_shuffles):
+            mol = to_mol(smile)
+            idxs = np.random.choice(range(len(nums)), len(nums), replace=False)
+            shuffle_idxs = [atom_idxs[i] for i in idxs]
+            for i, aidx in enumerate(shuffle_idxs):
+                atom = mol.GetAtomWithIdx(aidx)
+                atom.SetAtomicNum(nums[i])
+
+            new_smile = to_smile(mol)
+            if new_smile:
+                outputs.append(new_smile)
+
+        return outputs
+
+# Cell
+
+class ContractAtom(Mutator):
+    def __init__(self, include_rings=True, name='contract'):
+        super().__init__(name)
+        self.include_rings = include_rings
+
+    def mutate(self, mol):
+        idxs = []
+        for atom in mol.GetAtoms():
+            if (atom.IsInRing() and self.include_rings) or (not atom.IsInRing()):
+                bonds = atom.GetBonds()
+                if len(bonds)==2:
+                    idxs.append(atom.GetIdx())
+
+        outputs = []
+        for idx in idxs:
+            outputs.append(self.contract(mol, idx))
+
+        outputs = [i for i in outputs if i is not None]
+        outputs = list(set(outputs))
+        return outputs
+
+    def contract(self, mol, idx):
+
+        new_mol = Chem.RWMol(mol)
+
+        atom = new_mol.GetAtomWithIdx(idx)
+        bonds = atom.GetBonds()
+
+        neighbors = atom.GetNeighbors()
+        n1 = neighbors[0].GetIdx()
+        n2 = neighbors[1].GetIdx()
+        new_mol.AddBond(n1, n2, order=Chem.rdchem.BondType.SINGLE)
+
+        new_mol.RemoveAtom(idx)
+
+        mol = new_mol.GetMol()
+        try:
+            Chem.SanitizeMol(mol)
+            output = to_smile(mol)
+        except:
+            output = None
+        return output
 
 # Cell
 
