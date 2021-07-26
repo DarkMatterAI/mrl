@@ -107,15 +107,11 @@ MRl is built using many open source libraries. We would especially like to thank
 ## Roadmap
 
 New Modules:
-- Combichem
 - Huggingface/transformers integration
 - Active learning
 - Chemprop integration
 - Docking integration
 - Pharmacophore
-
-Project Quality:
-- Enable google search on documentation page
 
 New modalities:
 - Catalysts
