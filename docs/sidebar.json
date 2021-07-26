@@ -10,7 +10,8 @@
                 "Templates (Beginner)" : "tutorials.template.beginner.html",
                 "Templates (Intermediate)" : "tutorials.template.intermediate.html",
                 "Templates (Advanced)" : "tutorials.template.advanced.html",
-                "Dataset Construction" : "tutorials.dataset_building.html"
+                "Dataset Construction" : "tutorials.dataset_building.html",
+                "Combichem" : "tutorials.combichem.html"
             },
             "Generative Models" : {
                 "LSTM Language Model" : "tutorials.generative_models.lstm_lm.html",
