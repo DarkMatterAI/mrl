@@ -229,9 +229,18 @@ class ChangeAtom(SmartsMutator):
     ChangeAtom - SMARTS-based mutator that
     changes atom type without changing
     molecular structure
+
+    Inputs:
+
+    `atom_types Optional[list[str]]`: list of
+    allowed atom types. Must be strings of
+    atomic weights, ie `['6', '7', '8']`
+
+    Default: `['6', '7', '8', '9', '15', '16', '17', '35']`
     '''
-    def __init__(self):
-        atom_types = ['6', '7', '8', '9', '15', '16', '17', '35']
+    def __init__(self, atom_types=None):
+        if atom_types is None:
+            atom_types = ['6', '7', '8', '9', '15', '16', '17', '35']
 
         smarts = []
         for a1 in atom_types:
@@ -249,9 +258,18 @@ class AppendAtomSingle(SmartsMutator):
     AppendAtomSingle - SMARTS-based mutator
     that appends an atom somewhere on the
     input structure with a single bond
+
+    Inputs:
+
+    `atom_types Optional[list[str]]`: list of
+    allowed atom types. Must be strings of
+    atomic symbols, ie `['C', 'N', 'O']`
+
+    Default: `['C', 'N', 'O', 'F', 'P', 'S', 'Cl', 'Br']`
     '''
-    def __init__(self):
-        atom_types = ['C', 'N', 'O', 'F', 'P', 'S', 'Cl', 'Br']
+    def __init__(self, atom_types=None):
+        if atom_types is None:
+            atom_types = ['C', 'N', 'O', 'F', 'P', 'S', 'Cl', 'Br']
         smarts = []
         for a in atom_types:
             smart = f'[*;!H0:1]>>[*:1]-{a}'
@@ -266,9 +284,20 @@ class AppendAtomsDouble(SmartsMutator):
     AppendAtomsDouble - SMARTS-based mutator
     that appends an atom somewhere on the
     input structure with a double bond
+
+    Inputs:
+
+    `atom_types Optional[list[str]]`: list of
+    allowed atom types. Must be strings of
+    atomic symbols, ie `['C', 'N', 'O']`.
+    Atom types must be compatible with
+    forming a double bond
+
+    Default: `['C', 'N', 'O', 'P', 'S']`
     '''
-    def __init__(self):
-        atom_types = ['C', 'N', 'O', 'P', 'S']
+    def __init__(self, atom_types=None):
+        if atom_types is None:
+            atom_types = ['C', 'N', 'O', 'P', 'S']
         smarts = []
         for a in atom_types:
             smart = f'[*;!H0;!H1:1]>>[*:1]={a}'
@@ -283,9 +312,20 @@ class AppendAtomsTriple(SmartsMutator):
     AppendAtomsTriple - SMARTS-based mutator
     that appends an atom somewhere on the
     input structure with a triple bond
+
+    Inputs:
+
+    `atom_types Optional[list[str]]`: list of
+    allowed atom types. Must be strings of
+    atomic symbols, ie `['C', 'N']`.
+    Atom types must be compatible with
+    forming a triple bond
+
+    Default: `['C', 'N']`
     '''
-    def __init__(self):
-        atom_types = ['C', 'N']
+    def __init__(self, atom_types=None):
+        if atom_types is None:
+            atom_types = ['C', 'N']
         smarts = []
         for a in atom_types:
             smart = f'[*;H3:1]>>[*:1]#{a}'
@@ -353,9 +393,18 @@ class InsertAtomSingle(SmartsMutator):
     InsertAtomSingle - SMARTS-based mutator
     that randomly inserts an atom into
     the input structure with single bonds
+
+    Inputs:
+
+    `atom_types Optional[list[str]]`: list of
+    allowed atom types. Must be strings of
+    atomic symbols, ie `['C', 'N', 'O']`
+
+    Default: `['C', 'N', 'O', 'P', 'S']`
     '''
-    def __init__(self):
-        atom_types = ['C', 'N', 'O', 'P', 'S']
+    def __init__(self, atom_types=None):
+        if atom_types is None:
+            atom_types = ['C', 'N', 'O', 'P', 'S']
         smarts = []
         for a in atom_types:
             smart = f'[*:1]~[*:2]>>[*:1]{a}[*:2]'
@@ -370,9 +419,20 @@ class InsertAtomDouble(SmartsMutator):
     InsertAtomDouble - SMARTS-based mutator
     that randomly inserts an atom into
     the input structure with a double bond
+
+    Inputs:
+
+    `atom_types Optional[list[str]]`: list of
+    allowed atom types. Must be strings of
+    atomic symbols, ie `['C', 'N', 'O']`.
+    Atom types must be compatible with
+    forming a double bond
+
+    Default: `['C', 'N', 'P', 'S']`
     '''
-    def __init__(self):
-        atom_types = ['C', 'N', 'P', 'S']
+    def __init__(self, atom_types=None):
+        if atom_types is None:
+            atom_types = ['C', 'N', 'P', 'S']
         smarts = []
         for a in atom_types:
             smart1 = f'[*;!H0:1]~[*:2]>>[*:1]={a}-[*:2]'

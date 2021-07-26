@@ -11,7 +11,8 @@
                 "Templates (Intermediate)" : "tutorials.template.intermediate.html",
                 "Templates (Advanced)" : "tutorials.template.advanced.html",
                 "Dataset Construction" : "tutorials.dataset_building.html",
-                "Combichem" : "tutorials.combichem.html"
+                "Combichem" : "tutorials.combichem.html",
+                "Model-Assisted Combichem" : "tutorials.model_combichem.html"
             },
             "Generative Models" : {
                 "LSTM Language Model" : "tutorials.generative_models.lstm_lm.html",
