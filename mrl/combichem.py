@@ -1009,6 +1009,15 @@ class CombiChem():
         end = time.time()
         self.timelog['prune_library'].append(start-end)
 
+    def reset_library(self):
+        if self.log:
+            self.old_library = pd.concat([self.old_library,
+                                          self.library[['smiles', 'score']]])
+            self.old_library.drop_duplicates(subset='smiles', inplace=True)
+            self.old_library.reset_index(inplace=True, drop=True)
+
+        self.library = pd.DataFrame([], columns=['smiles', 'mols', 'score'])
+
     def add_data(self, smiles):
         smiles = to_smiles(smiles)
         smiles = self.clean_library(smiles)

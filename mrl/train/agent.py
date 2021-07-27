@@ -460,6 +460,11 @@ class GenerativeAgent(BaselineAgent):
     def reconstruct(self, preds):
         return maybe_parallel(self.vocab.reconstruct, [i for i in preds.detach().cpu()])
 
+    def sample_and_reconstruct(self, bs, sl, **sample_kwargs):
+        preds, _ = self.model.sample_no_grad(bs, sl, **sample_kwargs)
+        recon = self.reconstruct(preds)
+        return recon
+
     def before_compute_reward(self):
         env = self.environment
         batch_state = env.batch_state
