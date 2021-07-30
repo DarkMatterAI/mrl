@@ -64,6 +64,7 @@ class Environment():
         self.rewards = rewards
         self.losses = losses
         self.cbs = []
+        self.verbose = False
 
         if buffer_p_batch is None:
             buffer_p_batch = 1.
@@ -82,6 +83,8 @@ class Environment():
         self('setup')
 
     def __call__(self, event):
+        if self.verbose:
+            print(event)
         for cb in self.cbs:
             cb(event)
 
@@ -129,7 +132,7 @@ class Environment():
         and `after_build_buffer` events
         '''
         start = time.time()
-        if (len(self.buffer) < self.bs):
+        if (len(self.buffer) < self.bs) or self.bs==-1:
             self('build_buffer')
             self('filter_buffer')
             self('after_build_buffer')
@@ -224,7 +227,7 @@ class Environment():
         end = time.time() - start
         self.log.timelog['after_batch'].append(end)
 
-    def fit(self, bs, sl, iters, report, cbs=None):
+    def fit(self, bs, sl, iters, report, cbs=None, verbose=False):
         '''
         fit - runs the fit cycle
 
@@ -240,8 +243,10 @@ class Environment():
 
         - `cbs Optional[list[Callback]]`: optional callbacks
         for the fit loop
-        '''
 
+        - `verbose Bool`: if True, prints event calls
+        '''
+        self.verbose = verbose
         if cbs is None:
             cbs = []
         self.register_cbs(cbs)
@@ -263,6 +268,7 @@ class Environment():
 
         self('after_train')
         self.remove_cbs(cbs)
+        self.verbose = False
 
     def plot_event_times(self, event):
         event_times = [i.event_timelog[event] for i in self.cbs]

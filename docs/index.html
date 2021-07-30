@@ -82,25 +82,25 @@ pip install -e .</code></pre>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="How-to-use">How to use<a class="anchor-link" href="#How-to-use"> </a></h2><p>Here's an example of using a MRL pre-trained model to generate compounds based on the <a href="https://www.ebi.ac.uk/chembl/">ChEMBL</a> library:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mrl.model_zoo</span> <span class="kn">import</span> <span class="n">LSTM_LM_Small_Chembl</span>
 
-<pre><code>from mrl.model_zoo import LSTM_LM_Small_Chembl
+<span class="n">agent</span> <span class="o">=</span> <span class="n">LSTM_LM_Small_Chembl</span><span class="p">()</span>
 
-agent = LSTM_LM_Small_Chembl()
+<span class="n">preds</span><span class="p">,</span> <span class="n">log_probs</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">sample_no_grad</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="n">smiles</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
 
-preds, log_probs = agent.model.sample_no_grad(512, 90)
-smiles = agent.reconstruct(preds)
-
-smiles[:10]
-&gt;['COC(=O)C1=C(Nc2ccc(Br)cc2)SCC1=O',
- 'Cc1nnc2n1CN(C(C)=O)CC2c1ccc2c(c1)OCO2',
- 'COc1ccc(C(=O)NNc2c(C#N)cnn2-c2ccccc2)c(OC)c1',
- 'COC(=O)C1(C)C=C(N2CC2)C(=O)C(C(C)=O)=C1',
- 'CC(O)(c1cccc(Cl)c1)c1nc(-c2cccc(-n3cncn3)c2)co1',
- 'Clc1cccc2ccc(-n3c(-c4ccccc4)nc4ccccc4c3=O)nc12',
- 'Cc1cccc(NC(=O)CSc2nnnn2-c2ccc3c(c2)OCCO3)c1',
- 'Nc1n[nH]c(=O)c2cc(NCc3ccc(C(=O)O)c(Cl)c3)ccc12',
- 'CCOc1ccc(NC(=O)c2oc3ccccc3c2NC(=O)c2ccccc2OC)cc1',
- 'Cc1ccc2c(N3CCN(CC(=O)Nc4ccc(N5CCCCC5=O)cc4)CC3)cccc2n1']</code></pre>
+<span class="n">smiles</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="o">&gt;</span><span class="p">[</span><span class="s1">&#39;COC(=O)C1=C(Nc2ccc(Br)cc2)SCC1=O&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Cc1nnc2n1CN(C(C)=O)CC2c1ccc2c(c1)OCO2&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;COc1ccc(C(=O)NNc2c(C#N)cnn2-c2ccccc2)c(OC)c1&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;COC(=O)C1(C)C=C(N2CC2)C(=O)C(C(C)=O)=C1&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;CC(O)(c1cccc(Cl)c1)c1nc(-c2cccc(-n3cncn3)c2)co1&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Clc1cccc2ccc(-n3c(-c4ccccc4)nc4ccccc4c3=O)nc12&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Cc1cccc(NC(=O)CSc2nnnn2-c2ccc3c(c2)OCCO3)c1&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Nc1n[nH]c(=O)c2cc(NCc3ccc(C(=O)O)c(Cl)c3)ccc12&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;CCOc1ccc(NC(=O)c2oc3ccccc3c2NC(=O)c2ccccc2OC)cc1&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Cc1ccc2c(N3CCN(CC(=O)Nc4ccc(N5CCCCC5=O)cc4)CC3)cccc2n1&#39;</span><span class="p">]</span>
+</pre></div>
 
 </div>
 </div>

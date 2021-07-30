@@ -76,6 +76,13 @@ class Buffer(Callback):
             sample, sources = self.sample(bs)
             batch_state.samples += sample
             batch_state.sources += sources
+        elif bs==-1:
+            sample = self.buffer
+            sources = self.buffer_sources
+            batch_state.samples += sample
+            batch_state.sources += sources
+            self.buffer = []
+            self.buffer_sources = []
 
     def filter_batch(self):
         env = self.environment

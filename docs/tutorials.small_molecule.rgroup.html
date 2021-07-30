@@ -795,7 +795,7 @@ Wall time: 4min 36s
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Callbacks">Callbacks<a class="anchor-link" href="#Callbacks"> </a></h3><p>Additional callbacks</p>
 <ul>
-<li><a href="/mrl/agent.html#SupevisedCB"><code>SupevisedCB</code></a>: runs supervised training on the top 3% of samples every 400 batches</li>
+<li><a href="/mrl/agent.html#SupervisedCB"><code>SupervisedCB</code></a>: runs supervised training on the top 3% of samples every 400 batches</li>
 <li><a href="/mrl/logging.html#MaxCallback"><code>MaxCallback</code></a>: prints the max reward for each batch</li>
 <li><a href="/mrl/logging.html#PercentileCallback"><code>PercentileCallback</code></a>: prints the 90th percentile score each batch</li>
 <li><a href="/mrl/agent.html#ResetAndRetrain"><code>ResetAndRetrain</code></a>: reloads the base model and retrained on the top 10% of samples every 2000 batches</li>
@@ -813,7 +813,7 @@ Wall time: 4min 36s
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">supervised_cb</span> <span class="o">=</span> <span class="n">SupevisedCB</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mf">5e-5</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">supervised_cb</span> <span class="o">=</span> <span class="n">SupervisedCB</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mf">5e-5</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
 <span class="n">live_max</span> <span class="o">=</span> <span class="n">MaxCallback</span><span class="p">(</span><span class="s1">&#39;rewards&#39;</span><span class="p">,</span> <span class="s1">&#39;live&#39;</span><span class="p">)</span>
 <span class="n">live_p90</span> <span class="o">=</span> <span class="n">PercentileCallback</span><span class="p">(</span><span class="s1">&#39;rewards&#39;</span><span class="p">,</span> <span class="s1">&#39;live&#39;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
 <span class="n">retrain_cb</span> <span class="o">=</span> <span class="n">ResetAndRetrain</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">agent</span><span class="o">.</span><span class="n">weight_filepath</span><span class="p">,</span>

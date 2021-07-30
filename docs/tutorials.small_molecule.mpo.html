@@ -282,7 +282,7 @@ nb_path: "nbs/tutorials/tutorials.small_molecule.mpo.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">supervised_cb</span> <span class="o">=</span> <span class="n">SupevisedCB</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mf">5e-5</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">supervised_cb</span> <span class="o">=</span> <span class="n">SupervisedCB</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mf">5e-5</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
 <span class="n">live_max</span> <span class="o">=</span> <span class="n">MaxCallback</span><span class="p">(</span><span class="s1">&#39;rewards&#39;</span><span class="p">,</span> <span class="s1">&#39;live&#39;</span><span class="p">)</span>
 <span class="n">live_p90</span> <span class="o">=</span> <span class="n">PercentileCallback</span><span class="p">(</span><span class="s1">&#39;rewards&#39;</span><span class="p">,</span> <span class="s1">&#39;live&#39;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
 
