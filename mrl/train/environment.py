@@ -38,10 +38,7 @@ class Environment():
     - `log Optional[Log]`: custom log. If None, standard `Log` is used
     '''
     def __init__(self, agent, template_cb=None, samplers=None, rewards=None, losses=None,
-                 cbs=None, buffer_p_batch=None, log=None):
-
-#         if template_cb is None:
-#             template_cb = TemplateCallback()
+                 cbs=None, buffer=None, log=None):
 
         if samplers is None:
             samplers = []
@@ -66,12 +63,14 @@ class Environment():
         self.cbs = []
         self.verbose = False
 
-        if buffer_p_batch is None:
+        if buffer is None:
             buffer_p_batch = 1.
             for samp in samplers:
                 buffer_p_batch -= samp.p_batch
 
-        self.buffer = Buffer(buffer_p_batch)
+            buffer = Buffer(buffer_p_batch)
+
+        self.buffer = buffer
         self.batch_state = BatchState()
         self.log = log
 

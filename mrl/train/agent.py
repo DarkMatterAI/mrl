@@ -596,10 +596,12 @@ class SupervisedCB(Callback):
 
     - `log_term str`: what term in the log to take the percentile of
 
+    - `epochs int`: number of training epochs
+
     - `silent bool`: if training losses should be printed
     '''
     def __init__(self, agent, frequency, base_update, percentile,
-                 lr, bs, log_term='rewards', silent=True):
+                 lr, bs, log_term='rewards', epochs=1, silent=True):
         super().__init__('supervised', order=1000)
         self.agent = agent
         self.frequency = frequency
@@ -608,6 +610,7 @@ class SupervisedCB(Callback):
         self.lr = lr
         self.bs = bs
         self.log_term = log_term
+        self.epochs = epochs
         self.silent = silent
 
     def after_batch(self):
@@ -624,7 +627,7 @@ class SupervisedCB(Callback):
         df = df[df[self.log_term]>np.percentile(df[self.log_term].values, self.percentile)]
 
         self.agent.update_dataset_from_inputs(df.samples.values)
-        self.agent.train_supervised(self.bs, 1, self.lr, silent=self.silent)
+        self.agent.train_supervised(self.bs, self.epochs, self.lr, silent=self.silent)
 
         if hasattr(self.agent, 'base_model'):
             if isinstance(self.agent.base_model, nn.Module):
