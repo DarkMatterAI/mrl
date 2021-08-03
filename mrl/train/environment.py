@@ -226,6 +226,17 @@ class Environment():
         end = time.time() - start
         self.log.timelog['after_batch'].append(end)
 
+    def step(self):
+        '''
+        One step
+        '''
+        self.build_buffer()
+        self.sample_batch()
+        self.compute_reward()
+        self.get_model_outputs()
+        self.compute_loss()
+        self.after_batch()
+
     def fit(self, bs, sl, iters, report, cbs=None, verbose=False):
         '''
         fit - runs the fit cycle
@@ -258,12 +269,13 @@ class Environment():
         self('before_train')
         for _ in mb:
             for step in progress_bar(range(iters), parent=mb):
-                self.build_buffer()
-                self.sample_batch()
-                self.compute_reward()
-                self.get_model_outputs()
-                self.compute_loss()
-                self.after_batch()
+                self.step()
+#                 self.build_buffer()
+#                 self.sample_batch()
+#                 self.compute_reward()
+#                 self.get_model_outputs()
+#                 self.compute_loss()
+#                 self.after_batch()
 
         self('after_train')
         self.remove_cbs(cbs)
