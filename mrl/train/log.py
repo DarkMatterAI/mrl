@@ -8,6 +8,7 @@ __all__ = ['Log', 'log_to_df', 'StatsCallback', 'MaxCallback', 'MinCallback', 'M
 from ..imports import *
 from ..core import *
 from ..torch_imports import *
+from ..torch_core import *
 from .callback import *
 
 # Cell
@@ -62,6 +63,7 @@ class Log(Callback):
         env = self.environment
         batch_state = env.batch_state
         samples = batch_state.samples
+        batch_state.rewards = to_device(torch.zeros(len(samples)))
 
         new = np.array([not i in self.unique_samples for i in samples])
 

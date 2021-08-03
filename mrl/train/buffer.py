@@ -109,24 +109,28 @@ class Buffer(Callback):
 # Cell
 
 class WeightedBuffer(Buffer):
-    def __init__(self, p_total, pct_argmax=0., track=True):
+    def __init__(self, p_total, refresh_predictions, pct_argmax=0.):
         super().__init__(p_total)
 
         self.weights = []
+        self.refresh_predictions = refresh_predictions
         self.pct_argmax = pct_argmax
-        self.track = track
         self.name = 'weighted_buffer'
 
-    def setup(self):
-        if self.track:
-            log = self.environment.log
-            log.add_metric(self.name)
+    def add(self, item, name=''):
 
-    def compute_weights(self):
+        if type(item)==list:
+            for i in item:
+                self.add(i, name=name)
+        else:
+            self.buffer.append(item)
+            self.buffer_sources.append(name+'_buffer')
+            self.weights.append(None)
+
+    def compute_weights(self, samples):
         raise NotImplementedError
 
     def sample(self, n):
-        print('weight_sampling')
         weights = np.array(self.weights)
 
         all_idxs = np.arange(len(self.buffer))
@@ -141,15 +145,14 @@ class WeightedBuffer(Buffer):
             all_idxs = idxs_sorted[:-n_argmax]
             weights = weights[all_idxs]
 
-        weights = weights - weights.min()
-        weights = weights / weights.sum()
+        if weights.shape[0]>0:
+            weights = weights - weights.min()
+            weights = weights / weights.sum()
 
-        sampled_idxs = np.random.choice(all_idxs, min(n, len(all_idxs)),
-                                        replace=False, p=weights)
-        idxs += list(sampled_idxs)
+            sampled_idxs = np.random.choice(all_idxs, min(n, len(all_idxs)),
+                                            replace=False, p=weights)
+            idxs += list(sampled_idxs)
 
-#         idxs = np.random.choice(np.arange(len(self.buffer)), min(n, len(self.buffer)),
-#                                 replace=False, p=weights)
         batch = [self.buffer[i] for i in idxs]
         sources = [self.buffer_sources[i] for i in idxs]
         weights = [self.weights[i] for i in idxs]
@@ -160,16 +163,21 @@ class WeightedBuffer(Buffer):
 
         return batch, sources, weights
 
-    def after_filter_buffer(self):
-        weights = self.compute_weights()
+    def before_batch(self):
+
+        weights = np.array(self.weights)
+
+        idxs = np.arange(weights.shape[0])
+        to_score = weights==None
+        to_score_idxs = idxs[to_score]
+        to_score_samples = [self.buffer[i] for i in to_score_idxs]
+
+        if to_score_samples:
+            scored_weights = self.compute_weights(to_score_samples)
+            weights[to_score_idxs] = scored_weights
+
         weights = list(weights)
         self.weights = weights
-
-#     def sample_batch(self):
-#         super().sample_batch()
-
-#         if self.environment.bs == -1:
-#             self.weights = []
 
     def sample_batch(self):
         env = self.environment
@@ -192,48 +200,78 @@ class WeightedBuffer(Buffer):
             self.buffer_sources = []
             self.weights = []
 
-        if self.track:
-            env.log.update_metric(self.name, loss.mean().detach().cpu().numpy())
+    def after_batch(self):
+        env = self.environment
+        iterations = env.log.iterations
 
+        if iterations>0 and iterations%self.refresh_predictions==0:
+            print('refresh')
+            weights = self.compute_weights(self.buffer)
+
+            self.weights = list(weights)
+
+# Cell
 
 class PredictiveBuffer(WeightedBuffer):
-    def __init__(self, p_total, predictive_agent, pred_bs, pct_argmax=0., track=True):
+    def __init__(self, p_total, refresh_predictions, predictive_agent, pred_bs,
+                 supervised_frequency, supervised_epochs,
+                 supervised_bs, supervised_lr, train_silent=True,
+                 pct_argmax=0., track=True):
         super().__init__(p_total=p_total,
-                         pct_argmax=pct_argmax,
-                         track=track)
+                         refresh_predictions=refresh_predictions,
+                         pct_argmax=pct_argmax)
 
         self.predictive_agent = predictive_agent
         unfreeze(self.predictive_agent.model)
         self.pred_bs = pred_bs
+
+        self.supervised_frequency = supervised_frequency
+        self.supervised_epochs = supervised_epochs
+        self.supervised_bs = supervised_bs
+        self.supervised_lr = supervised_lr
+        self.train_silent = train_silent
+
         self.track = track
         self.name = 'predictive_buffer'
 
     def setup(self):
         if self.track:
             log = self.environment.log
-            log.add_metric(self.name)
             log.add_metric(self.name+'_loss')
+            log.add_metric(self.name+'_preds')
+            log.add_log(self.name+'_preds')
 
-    def compute_weights(self):
-        if len(self.buffer) < self.pred_bs:
-            scores = self.predictive_agent.predict_data(self.buffer).squeeze()
-            scores = scores.detach().cpu().numpy()
-        else:
-            scores = []
-            chunks = chunk_list(self.buffer, self.pred_bs)
-            for chunk in chunks:
-                chunk_scores = self.predictive_agent.predict_data(chunk).squeeze()
-                chunk_scores = chunk_scores.detach().cpu().numpy()
-                scores.append(chunk_scores)
+    def compute_weights(self, samples):
+        with torch.no_grad():
+            if len(samples) < self.pred_bs:
+                scores = self.predictive_agent.predict_data(samples).squeeze()
+                scores = scores.detach().cpu().numpy()
+            else:
+                scores = self.predictive_agent.predict_data_batch(samples, self.pred_bs).squeeze()
+                scores = scores.detach().cpu().numpy()
+#             scores = []
+#             chunks = chunk_list(samples, self.pred_bs)
+#             for chunk in chunks:
+#                 chunk_scores = self.predictive_agent.predict_data(chunk).squeeze()
+#                 chunk_scores = chunk_scores.detach().cpu().numpy()
+#                 scores.append(chunk_scores)
 
-            scores = np.concatenate(scores)
+#             scores = np.concatenate(scores)
         return scores
+
+    def get_model_outputs(self):
+        env = self.environment
+        samples = env.batch_state.samples
+        preds = self.predictive_agent.predict_data(samples).squeeze()
+        env.batch_state[self.name+'_preds'] = preds
+
+        if self.track:
+            env.log.update_metric(self.name+'_preds', preds.mean().detach().cpu().numpy())
 
     def compute_loss(self):
         env = self.environment
         rewards = env.batch_state.rewards
-        samples = env.batch_state.samples
-        preds = self.predictive_agent.predict_data(samples)
+        preds = env.batch_state[self.name+'_preds']
         loss = self.predictive_agent.loss_function(preds, rewards)
 
         if self.track:
@@ -250,3 +288,22 @@ class PredictiveBuffer(WeightedBuffer):
     def step(self):
         self.predictive_agent.step()
 
+    def after_batch(self):
+        env = self.environment
+        iterations = self.environment.log.iterations
+
+        if iterations>0 and iterations%self.supervised_frequency==0 and self.supervised_frequency>0:
+            self.train_model()
+
+        if iterations>0 and iterations%self.refresh_predictions==0:
+            print('refresh')
+            weights = self.compute_weights(self.buffer)
+
+            self.weights = list(weights)
+
+    def train_model(self):
+        env = self.environment
+        df = env.log.df[['samples', 'rewards']]
+        self.predictive_agent.update_dataset_from_inputs(df.samples.values, df.rewards.values)
+        self.predictive_agent.train_supervised(self.supervised_bs, self.supervised_epochs,
+                                              self.supervised_lr, silent=self.train_silent)

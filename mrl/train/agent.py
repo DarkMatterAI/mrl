@@ -66,7 +66,7 @@ class Agent(Callback):
         batch_state.x = x
         batch_state.y = y
         batch_state.bs = bs
-        batch_state.rewards = to_device(torch.zeros(bs))
+#         batch_state.rewards = to_device(torch.zeros(bs))
 
     def zero_grad(self):
         self.opt.zero_grad()
@@ -171,18 +171,21 @@ class Agent(Callback):
                 self.model.eval()
                 valid_losses = []
 
-                if silent:
-                    batch_iter = iter(valid_dl)
+                if len(valid_ds)>0:
+                    if silent:
+                        batch_iter = iter(valid_dl)
+                    else:
+                        batch_iter = progress_bar(valid_dl, parent=mb)
+
+                    for batch in batch_iter:
+
+                        loss = self.one_batch(batch)
+                        valid_losses.append(loss.detach().cpu())
+
+                        if not silent:
+                            mb.child.comment = f"{valid_losses[-1]:.5f}"
                 else:
-                    batch_iter = progress_bar(valid_dl, parent=mb)
-
-                for batch in batch_iter:
-
-                    loss = self.one_batch(batch)
-                    valid_losses.append(loss.detach().cpu())
-
-                    if not silent:
-                        mb.child.comment = f"{valid_losses[-1]:.5f}"
+                    valid_losses = [torch.tensor(0.)]
                 self.model.train()
 
             train_loss = smooth_batches(train_losses)
@@ -251,6 +254,21 @@ class PredictiveAgent(Agent):
         batch = to_device(batch)
         x,y = batch
         return self.predict_tensor(x)
+
+    def predict_data_batch(self, data, bs):
+        ds = self.dataset.new(data, [0 for i in data])
+        dl = ds.dataloader(bs, shuffle=False)
+        preds = []
+        for i, batch in enumerate(dl):
+            x,y = batch
+            x = to_device(x)
+            if not isinstance(x, (list, tuple)):
+                x = [x]
+
+            p = self.model(*x)
+            preds.append(p)
+        preds = torch.cat(preds)
+        return preds
 
 # Cell
 
@@ -485,7 +503,7 @@ class GenerativeAgent(BaselineAgent):
         batch_state.mask = mask
         batch_state.lengths = mask.sum(-1)
         batch_state.sl = y.shape[-1]
-        batch_state.rewards = to_device(torch.zeros(bs))
+#         batch_state.rewards = to_device(torch.zeros(bs))
         batch_state.trajectory_rewards = to_device(torch.zeros(y.shape))
 
     def get_rl_tensors(self, model, x, y, latent_info, sources):
@@ -619,7 +637,6 @@ class SupervisedCB(Callback):
 
         if iterations>0 and iterations%self.frequency==0:
             self.train_model()
-
 
     def train_model(self):
         env = self.environment

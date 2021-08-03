@@ -19,7 +19,7 @@ class Environment():
 
     Inputs:
 
-    - `agent Agent`: agent to train
+    - `agent Optional[Agent]`: agent to train
 
     - `template_cb Optional[TemplateCallback]`: template callback
 
@@ -37,7 +37,7 @@ class Environment():
 
     - `log Optional[Log]`: custom log. If None, standard `Log` is used
     '''
-    def __init__(self, agent, template_cb=None, samplers=None, rewards=None, losses=None,
+    def __init__(self, agent=None, template_cb=None, samplers=None, rewards=None, losses=None,
                  cbs=None, buffer=None, log=None):
 
         if samplers is None:
@@ -74,9 +74,9 @@ class Environment():
         self.batch_state = BatchState()
         self.log = log
 
-        all_cbs = [self.agent] + [self.template_cb] + self.samplers + self.rewards
+        agent_cb = [self.agent] if self.agent is not None else []
+        all_cbs = agent_cb + [self.template_cb] + self.samplers + self.rewards
         all_cbs += self.losses + cbs + [self.buffer] + [self.log]
-#         all_cbs = sorted(all_cbs, key=lambda x: x.order)
 
         self.register_cbs(all_cbs)
         self('setup')
@@ -131,7 +131,7 @@ class Environment():
         and `after_build_buffer` events
         '''
         start = time.time()
-        if (len(self.buffer) < self.bs) or self.bs==-1:
+        if (len(self.buffer) < self.bs) or self.bs==-1 or self.log.iterations==0:
             self('build_buffer')
             self('filter_buffer')
             self('after_build_buffer')
