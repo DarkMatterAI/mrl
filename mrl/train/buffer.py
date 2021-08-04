@@ -109,6 +109,21 @@ class Buffer(Callback):
 # Cell
 
 class WeightedBuffer(Buffer):
+    '''
+    WeightedBuffer - base class for buffer with
+    weighted sampling
+
+    Inputs:
+
+    - `p_total float`: batch percentage for `sample_batch`
+
+    - `refresh_predictions int`: how often to generate
+    new prdictions for all items in the buffer
+
+    - `pct_argmax float[0., 1.]`: percent of samples to draw
+    with argmax over the calculated weight versus weighted
+    random sampling
+    '''
     def __init__(self, p_total, refresh_predictions, pct_argmax=0.):
         super().__init__(p_total)
 
@@ -205,7 +220,6 @@ class WeightedBuffer(Buffer):
         iterations = env.log.iterations
 
         if iterations>0 and iterations%self.refresh_predictions==0:
-            print('refresh')
             weights = self.compute_weights(self.buffer)
 
             self.weights = list(weights)
@@ -213,6 +227,44 @@ class WeightedBuffer(Buffer):
 # Cell
 
 class PredictiveBuffer(WeightedBuffer):
+    '''
+    PredictiveBuffer - buffer with active learning
+    score prediction
+
+    Inputs:
+
+    - `p_total float`: batch percentage for `sample_batch`
+
+    - `refresh_predictions int`: how often to generate
+    new prdictions for all items in the buffer
+
+    - `predictive_agent PredictiveAgent`: active learning
+    agent to train
+
+    - `pred_bs int`: prediction batch size for `predictive_agent`
+
+    - `supervised_frequency int`: how often to run
+    offline supervised training of the predictive agent
+
+    - `supervised_epochs int`: how many epochs to run
+    during offline supervised training
+
+    - `supervised_bs int`: batch size for offline
+    supervised training
+
+    - `supervised_lr float`: learning rate for
+    offline supervised training
+
+    - `train_silent bool`: if True, offline supervised training
+    results are printed
+
+    - `pct_argmax float[0., 1.]`: percent of samples to draw
+    with argmax over the calculated weight versus weighted
+    random sampling
+
+    - `track bool`: if True, predictive buffer metrics
+    are added to the environment printout
+    '''
     def __init__(self, p_total, refresh_predictions, predictive_agent, pred_bs,
                  supervised_frequency, supervised_epochs,
                  supervised_bs, supervised_lr, train_silent=True,
@@ -249,14 +301,6 @@ class PredictiveBuffer(WeightedBuffer):
             else:
                 scores = self.predictive_agent.predict_data_batch(samples, self.pred_bs).squeeze()
                 scores = scores.detach().cpu().numpy()
-#             scores = []
-#             chunks = chunk_list(samples, self.pred_bs)
-#             for chunk in chunks:
-#                 chunk_scores = self.predictive_agent.predict_data(chunk).squeeze()
-#                 chunk_scores = chunk_scores.detach().cpu().numpy()
-#                 scores.append(chunk_scores)
-
-#             scores = np.concatenate(scores)
         return scores
 
     def get_model_outputs(self):
@@ -296,7 +340,6 @@ class PredictiveBuffer(WeightedBuffer):
             self.train_model()
 
         if iterations>0 and iterations%self.refresh_predictions==0:
-            print('refresh')
             weights = self.compute_weights(self.buffer)
 
             self.weights = list(weights)

@@ -131,7 +131,12 @@ class Environment():
         and `after_build_buffer` events
         '''
         start = time.time()
-        if (len(self.buffer) < self.bs) or self.bs==-1 or self.log.iterations==0:
+        check1 = (len(self.buffer) < self.bs)
+        check2 = self.bs == -1
+        check3 = self.log.iterations==0
+        check4 = self.buffer_frequency is not None and self.log.iterations%self.buffer_frequency==0
+
+        if any([check1, check2, check3, check4]):
             self('build_buffer')
             self('filter_buffer')
             self('after_build_buffer')
@@ -237,7 +242,7 @@ class Environment():
         self.compute_loss()
         self.after_batch()
 
-    def fit(self, bs, sl, iters, report, cbs=None, verbose=False):
+    def fit(self, bs, sl, iters, report, cbs=None, verbose=False, buffer_frequency=None):
         '''
         fit - runs the fit cycle
 
@@ -255,8 +260,13 @@ class Environment():
         for the fit loop
 
         - `verbose Bool`: if True, prints event calls
+
+        - `buffer_frequency Optional[int]`: minimum buffer generation frequency.
+        If None, buffer is regenerated whenever the buffer size falls below the
+        current batch size
         '''
         self.verbose = verbose
+        self.buffer_frequency = buffer_frequency
         if cbs is None:
             cbs = []
         self.register_cbs(cbs)
