@@ -60,6 +60,9 @@ entries:
         - output: web,pdf
           title: Fit Cycle Overview
           url: tutorials.rl.train_overview.html
+        - output: web,pdf
+          title: Active Learning Basics
+          url: tutorials.rl.active_learning_basic.html
         title: Reinforcement Learning
       - output: web
         subfolderitems:
