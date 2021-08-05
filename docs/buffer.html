@@ -61,7 +61,7 @@ set([0., 0.])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Buffer" class="doc_header"><code>class</code> <code>Buffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/buffer.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Buffer</code>(<strong><code>p_total</code></strong>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
+<h2 id="Buffer" class="doc_header"><code>class</code> <code>Buffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/buffer.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Buffer</code>(<strong><code>p_total</code></strong>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Buffer - training buffer</p>
 <p>Inputs:</p>
@@ -97,12 +97,89 @@ set([0., 0.])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="WeightedBuffer" class="doc_header"><code>class</code> <code>WeightedBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/buffer.py#L108" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedBuffer</code>(<strong><code>p_total</code></strong>) :: <a href="/mrl/buffer.html#Buffer"><code>Buffer</code></a></p>
+<h2 id="WeightedBuffer" class="doc_header"><code>class</code> <code>WeightedBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/buffer.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WeightedBuffer</code>(<strong><code>p_total</code></strong>, <strong><code>refresh_predictions</code></strong>, <strong><code>pct_argmax</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/buffer.html#Buffer"><code>Buffer</code></a></p>
 </blockquote>
-<p>Buffer - training buffer</p>
+<p>WeightedBuffer - base class for buffer with
+weighted sampling</p>
 <p>Inputs:</p>
 <ul>
-<li><code>p_total float</code>: batch percentage for <code>sample_batch</code></li>
+<li><p><code>p_total float</code>: batch percentage for <code>sample_batch</code></p>
+</li>
+<li><p><code>refresh_predictions int</code>: how often to generate
+new prdictions for all items in the buffer</p>
+</li>
+<li><p><code>pct_argmax float[0., 1.]</code>: percent of samples to draw
+with argmax over the calculated weight versus weighted
+random sampling</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="PredictiveBuffer" class="doc_header"><code>class</code> <code>PredictiveBuffer</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/buffer.py#L229" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PredictiveBuffer</code>(<strong><code>p_total</code></strong>, <strong><code>refresh_predictions</code></strong>, <strong><code>predictive_agent</code></strong>, <strong><code>pred_bs</code></strong>, <strong><code>supervised_frequency</code></strong>, <strong><code>supervised_epochs</code></strong>, <strong><code>supervised_bs</code></strong>, <strong><code>supervised_lr</code></strong>, <strong><code>train_silent</code></strong>=<em><code>True</code></em>, <strong><code>pct_argmax</code></strong>=<em><code>0.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/buffer.html#WeightedBuffer"><code>WeightedBuffer</code></a></p>
+</blockquote>
+<p>PredictiveBuffer - buffer with active learning
+score prediction</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>p_total float</code>: batch percentage for <code>sample_batch</code></p>
+</li>
+<li><p><code>refresh_predictions int</code>: how often to generate
+new prdictions for all items in the buffer</p>
+</li>
+<li><p><code>predictive_agent PredictiveAgent</code>: active learning
+agent to train</p>
+</li>
+<li><p><code>pred_bs int</code>: prediction batch size for <code>predictive_agent</code></p>
+</li>
+<li><p><code>supervised_frequency int</code>: how often to run
+offline supervised training of the predictive agent</p>
+</li>
+<li><p><code>supervised_epochs int</code>: how many epochs to run
+during offline supervised training</p>
+</li>
+<li><p><code>supervised_bs int</code>: batch size for offline
+supervised training</p>
+</li>
+<li><p><code>supervised_lr float</code>: learning rate for
+offline supervised training</p>
+</li>
+<li><p><code>train_silent bool</code>: if True, offline supervised training
+results are printed</p>
+</li>
+<li><p><code>pct_argmax float[0., 1.]</code>: percent of samples to draw
+with argmax over the calculated weight versus weighted
+random sampling</p>
+</li>
+<li><p><code>track bool</code>: if True, predictive buffer metrics
+are added to the environment printout</p>
+</li>
 </ul>
 
 </div>
