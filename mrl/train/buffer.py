@@ -145,6 +145,13 @@ class WeightedBuffer(Buffer):
     def compute_weights(self, samples):
         raise NotImplementedError
 
+    def _filter_buffer(self, valids):
+
+        self.buffer = [self.buffer[i] for i in range(len(self.buffer)) if valids[i]]
+        self.buffer_sources = [self.buffer_sources[i]
+                               for i in range(len(self.buffer_sources)) if valids[i]]
+        self.weights = [self.weights[i] for i in range(len(self.weights)) if valids[i]]
+
     def sample(self, n):
         weights = np.array(self.weights)
 
