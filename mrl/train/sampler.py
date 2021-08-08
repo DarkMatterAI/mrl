@@ -169,7 +169,7 @@ class CombichemSampler(Sampler):
             best_above = above_pct[self.lookup_name].nlargest(min(n_exploit, above_pct.shape[0]))
             s1 = list(df.iloc[best_above.index].samples.values)
 
-            s2 = list(below_pct.sample(n=n_explore).samples.values)
+            s2 = list(below_pct.sample(n=min(n_explore, below_pct.shape[0])).samples.values)
 
             samples = s1 + s2
             self.cbc.reset_library()
