@@ -8,6 +8,7 @@ __all__ = ['Log', 'log_to_df', 'StatsCallback', 'MaxCallback', 'MinCallback', 'M
 from ..imports import *
 from ..core import *
 from ..torch_imports import *
+from ..torch_core import *
 from .callback import *
 
 # Cell
@@ -62,6 +63,7 @@ class Log(Callback):
         env = self.environment
         batch_state = env.batch_state
         samples = batch_state.samples
+        batch_state.rewards = to_device(torch.zeros(len(samples)))
 
         new = np.array([not i in self.unique_samples for i in samples])
 
@@ -321,9 +323,9 @@ class MeanCallback(StatsCallback):
     def __init__(self, batch_attribute, grabname, include_buffer=True):
 
         if grabname is None:
-            name = f'{batch_attribute}_max'
+            name = f'{batch_attribute}_mean'
         else:
-            name = f'{batch_attribute}_{grabname}_max'
+            name = f'{batch_attribute}_{grabname}_mean'
 
         super().__init__(batch_attribute, grabname,
                          include_buffer=include_buffer, name=name)

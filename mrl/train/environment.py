@@ -19,7 +19,7 @@ class Environment():
 
     Inputs:
 
-    - `agent Agent`: agent to train
+    - `agent Optional[Agent]`: agent to train
 
     - `template_cb Optional[TemplateCallback]`: template callback
 
@@ -37,11 +37,8 @@ class Environment():
 
     - `log Optional[Log]`: custom log. If None, standard `Log` is used
     '''
-    def __init__(self, agent, template_cb=None, samplers=None, rewards=None, losses=None,
-                 cbs=None, buffer_p_batch=None, log=None):
-
-#         if template_cb is None:
-#             template_cb = TemplateCallback()
+    def __init__(self, agent=None, template_cb=None, samplers=None, rewards=None, losses=None,
+                 cbs=None, buffer=None, log=None):
 
         if samplers is None:
             samplers = []
@@ -64,24 +61,29 @@ class Environment():
         self.rewards = rewards
         self.losses = losses
         self.cbs = []
+        self.verbose = False
 
-        if buffer_p_batch is None:
+        if buffer is None:
             buffer_p_batch = 1.
             for samp in samplers:
                 buffer_p_batch -= samp.p_batch
 
-        self.buffer = Buffer(buffer_p_batch)
+            buffer = Buffer(buffer_p_batch)
+
+        self.buffer = buffer
         self.batch_state = BatchState()
         self.log = log
 
-        all_cbs = [self.agent] + [self.template_cb] + self.samplers + self.rewards
+        agent_cb = [self.agent] if self.agent is not None else []
+        all_cbs = agent_cb + [self.template_cb] + self.samplers + self.rewards
         all_cbs += self.losses + cbs + [self.buffer] + [self.log]
-#         all_cbs = sorted(all_cbs, key=lambda x: x.order)
 
         self.register_cbs(all_cbs)
         self('setup')
 
     def __call__(self, event):
+        if self.verbose:
+            print(event)
         for cb in self.cbs:
             cb(event)
 
@@ -129,7 +131,12 @@ class Environment():
         and `after_build_buffer` events
         '''
         start = time.time()
-        if (len(self.buffer) < self.bs):
+        check1 = (len(self.buffer) < self.bs)
+        check2 = self.bs == -1
+        check3 = self.log.iterations==0
+        check4 = self.buffer_frequency is not None and self.log.iterations%self.buffer_frequency==0
+
+        if any([check1, check2, check3, check4]):
             self('build_buffer')
             self('filter_buffer')
             self('after_build_buffer')
@@ -224,7 +231,18 @@ class Environment():
         end = time.time() - start
         self.log.timelog['after_batch'].append(end)
 
-    def fit(self, bs, sl, iters, report, cbs=None):
+    def step(self):
+        '''
+        One step
+        '''
+        self.build_buffer()
+        self.sample_batch()
+        self.compute_reward()
+        self.get_model_outputs()
+        self.compute_loss()
+        self.after_batch()
+
+    def fit(self, bs, sl, iters, report, cbs=None, verbose=False, buffer_frequency=None):
         '''
         fit - runs the fit cycle
 
@@ -240,8 +258,15 @@ class Environment():
 
         - `cbs Optional[list[Callback]]`: optional callbacks
         for the fit loop
-        '''
 
+        - `verbose Bool`: if True, prints event calls
+
+        - `buffer_frequency Optional[int]`: minimum buffer generation frequency.
+        If None, buffer is regenerated whenever the buffer size falls below the
+        current batch size
+        '''
+        self.verbose = verbose
+        self.buffer_frequency = buffer_frequency
         if cbs is None:
             cbs = []
         self.register_cbs(cbs)
@@ -254,15 +279,17 @@ class Environment():
         self('before_train')
         for _ in mb:
             for step in progress_bar(range(iters), parent=mb):
-                self.build_buffer()
-                self.sample_batch()
-                self.compute_reward()
-                self.get_model_outputs()
-                self.compute_loss()
-                self.after_batch()
+                self.step()
+#                 self.build_buffer()
+#                 self.sample_batch()
+#                 self.compute_reward()
+#                 self.get_model_outputs()
+#                 self.compute_loss()
+#                 self.after_batch()
 
         self('after_train')
         self.remove_cbs(cbs)
+        self.verbose = False
 
     def plot_event_times(self, event):
         event_times = [i.event_timelog[event] for i in self.cbs]

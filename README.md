@@ -59,7 +59,7 @@ pip install -e .
 
 Here's an example of using a MRL pre-trained model to generate compounds based on the [ChEMBL](https://www.ebi.ac.uk/chembl/) library:
 
-```
+```python
 from mrl.model_zoo import LSTM_LM_Small_Chembl
 
 agent = LSTM_LM_Small_Chembl()
@@ -108,7 +108,6 @@ MRl is built using many open source libraries. We would especially like to thank
 
 New Modules:
 - Huggingface/transformers integration
-- Active learning
 - Chemprop integration
 - Docking integration
 - Pharmacophore

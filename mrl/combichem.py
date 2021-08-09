@@ -86,12 +86,15 @@ class FragmentCrossover(Crossover):
         self.full_crossover = full_crossover
 
     def crossover(self, mol_pair):
-        mol1, mol2 = mol_pair
-        cores1, rgroups1 = self.split_fragments(self.fragment(to_mol(mol1)))
-        cores2, rgroups2 = self.split_fragments(self.fragment(to_mol(mol2)))
+        try:
+            mol1, mol2 = mol_pair
+            cores1, rgroups1 = self.split_fragments(self.fragment(to_mol(mol1)))
+            cores2, rgroups2 = self.split_fragments(self.fragment(to_mol(mol2)))
 
-        outputs = self.merge_groups(cores1, rgroups2)
-        outputs += self.merge_groups(cores2, rgroups1)
+            outputs = self.merge_groups(cores1, rgroups2)
+            outputs += self.merge_groups(cores2, rgroups1)
+        except:
+            outputs = []
         return outputs
 
     def merge_groups(self, cores, rgroups):
@@ -929,8 +932,10 @@ class CombiChem():
     def clean_library(self, library):
         start = time.time()
         if self.template is not None:
-            library, _ = self.template.screen_mols(library)
-            library = [i[0] for i in library]
+            bools = self.template(library)
+            library = [library[i] for i in range(len(library)) if bools[i]]
+#             library, _ = self.template.screen_mols(library)
+#             library = [i[0] for i in library]
         library = maybe_parallel(canon_smile, library)
         library = list(set(library))
         end = time.time()
@@ -1008,6 +1013,15 @@ class CombiChem():
         gc.collect()
         end = time.time()
         self.timelog['prune_library'].append(start-end)
+
+    def reset_library(self):
+        if self.log:
+            self.old_library = pd.concat([self.old_library,
+                                          self.library[['smiles', 'score']]])
+            self.old_library.drop_duplicates(subset='smiles', inplace=True)
+            self.old_library.reset_index(inplace=True, drop=True)
+
+        self.library = pd.DataFrame([], columns=['smiles', 'mols', 'score'])
 
     def add_data(self, smiles):
         smiles = to_smiles(smiles)

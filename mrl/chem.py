@@ -126,8 +126,11 @@ def canon_smile(smile):
 def remove_stereo(smile):
     if '@' in smile:
         mol = to_mol(smile)
-        Chem.rdmolops.RemoveStereochemistry(mol)
-        smile = to_smile(mol)
+        if mol is not None:
+            Chem.rdmolops.RemoveStereochemistry(mol)
+            smile = to_smile(mol)
+        else:
+            smile = ''
     return smile
 
 # Cell

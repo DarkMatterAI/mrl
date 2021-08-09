@@ -21,7 +21,8 @@
                 "Deep Drug Decoder" : "tutorials.generative_models.deep_drug_decoder.html"
             },
             "Reinforcement Learning" : {
-                "Fit Cycle Overview" : "tutorials.rl.train_overview.html"
+                "Fit Cycle Overview" : "tutorials.rl.train_overview.html",
+                "Active Learning Basics" : "tutorials.rl.active_learning_basic.html"
             },
             "Workflows" : {
                 "Model Optimizaton" : "tutorials.workflows.model_optimization.html",

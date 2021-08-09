@@ -204,7 +204,7 @@ merged following <code>scaffold1 + rgroup2</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Mutator" class="doc_header"><code>class</code> <code>Mutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Mutator</code>(<strong><code>name</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="Mutator" class="doc_header"><code>class</code> <code>Mutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L139" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Mutator</code>(<strong><code>name</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Mutator - base class for mutations.
 To create custom mutations, subclass
@@ -238,7 +238,7 @@ To create custom mutations, subclass
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SmartsMutator" class="doc_header"><code>class</code> <code>SmartsMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L176" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsMutator</code>(<strong><code>smarts</code></strong>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="SmartsMutator" class="doc_header"><code>class</code> <code>SmartsMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L179" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SmartsMutator</code>(<strong><code>smarts</code></strong>, <strong><code>name</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>SmartsMutator - SMARTS reaction based
 mutator.</p>
@@ -274,7 +274,7 @@ mutator.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ChangeAtom" class="doc_header"><code>class</code> <code>ChangeAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L227" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ChangeAtom</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="ChangeAtom" class="doc_header"><code>class</code> <code>ChangeAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L230" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ChangeAtom</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>ChangeAtom - SMARTS-based mutator that
 changes atom type without changing
@@ -313,7 +313,7 @@ atomic weights, ie <code>['6', '7', '8']</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AppendAtomSingle" class="doc_header"><code>class</code> <code>AppendAtomSingle</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L256" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendAtomSingle</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="AppendAtomSingle" class="doc_header"><code>class</code> <code>AppendAtomSingle</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L259" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendAtomSingle</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>AppendAtomSingle - SMARTS-based mutator
 that appends an atom somewhere on the
@@ -352,7 +352,7 @@ atomic symbols, ie <code>['C', 'N', 'O']</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AppendAtomsDouble" class="doc_header"><code>class</code> <code>AppendAtomsDouble</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L282" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendAtomsDouble</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="AppendAtomsDouble" class="doc_header"><code>class</code> <code>AppendAtomsDouble</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L285" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendAtomsDouble</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>AppendAtomsDouble - SMARTS-based mutator
 that appends an atom somewhere on the
@@ -393,7 +393,7 @@ forming a double bond</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AppendAtomsTriple" class="doc_header"><code>class</code> <code>AppendAtomsTriple</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L310" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendAtomsTriple</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="AppendAtomsTriple" class="doc_header"><code>class</code> <code>AppendAtomsTriple</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L313" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendAtomsTriple</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>AppendAtomsTriple - SMARTS-based mutator
 that appends an atom somewhere on the
@@ -434,7 +434,7 @@ forming a triple bond</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AppendAtom" class="doc_header"><code>class</code> <code>AppendAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L338" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendAtom</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="AppendAtom" class="doc_header"><code>class</code> <code>AppendAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L341" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendAtom</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>AppendAtom - SMARTS-based mutator
 that appends an atom somewhere on the
@@ -470,7 +470,7 @@ input structure.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DeleteAtom" class="doc_header"><code>class</code> <code>DeleteAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L355" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DeleteAtom</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="DeleteAtom" class="doc_header"><code>class</code> <code>DeleteAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L358" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DeleteAtom</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>DeleteAtom - SMARTS-based mutator
 that randomly deletes an atom from
@@ -504,7 +504,7 @@ the input structure</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ChangeBond" class="doc_header"><code>class</code> <code>ChangeBond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L373" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ChangeBond</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="ChangeBond" class="doc_header"><code>class</code> <code>ChangeBond</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L376" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ChangeBond</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>ChangeBond - SMARTS-based mutator
 that randomly changes a bond in the
@@ -538,7 +538,7 @@ input structure</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InsertAtomSingle" class="doc_header"><code>class</code> <code>InsertAtomSingle</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L391" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InsertAtomSingle</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="InsertAtomSingle" class="doc_header"><code>class</code> <code>InsertAtomSingle</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L394" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InsertAtomSingle</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>InsertAtomSingle - SMARTS-based mutator
 that randomly inserts an atom into
@@ -577,7 +577,7 @@ atomic symbols, ie <code>['C', 'N', 'O']</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InsertAtomDouble" class="doc_header"><code>class</code> <code>InsertAtomDouble</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L417" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InsertAtomDouble</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="InsertAtomDouble" class="doc_header"><code>class</code> <code>InsertAtomDouble</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L420" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InsertAtomDouble</code>(<strong><code>atom_types</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>InsertAtomDouble - SMARTS-based mutator
 that randomly inserts an atom into
@@ -618,7 +618,7 @@ forming a double bond</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InsertAtomTriple" class="doc_header"><code>class</code> <code>InsertAtomTriple</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L447" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InsertAtomTriple</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="InsertAtomTriple" class="doc_header"><code>class</code> <code>InsertAtomTriple</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L450" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InsertAtomTriple</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>InsertAtomTriple - SMARTS-based mutator
 that randomly inserts an atom into
@@ -652,7 +652,7 @@ the input structure with a triple bond</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InsertAtom" class="doc_header"><code>class</code> <code>InsertAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L460" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InsertAtom</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="InsertAtom" class="doc_header"><code>class</code> <code>InsertAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L463" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InsertAtom</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>InsertAtom - SMARTS-based mutator
 that randomly inserts an atom into
@@ -688,7 +688,7 @@ the input structure.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AddRing" class="doc_header"><code>class</code> <code>AddRing</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L477" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AddRing</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="AddRing" class="doc_header"><code>class</code> <code>AddRing</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L480" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AddRing</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>AddRing - SMARTS-based mutator
 that randomly creates rings</p>
@@ -721,7 +721,7 @@ that randomly creates rings</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AllSmarts" class="doc_header"><code>class</code> <code>AllSmarts</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L493" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AllSmarts</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
+<h2 id="AllSmarts" class="doc_header"><code>class</code> <code>AllSmarts</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L496" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AllSmarts</code>() :: <a href="/mrl/combichem.html#SmartsMutator"><code>SmartsMutator</code></a></p>
 </blockquote>
 <p>AllSmarts - SMARTS-based mutator
 that combines <a href="/mrl/combichem.html#ChangeAtom"><code>ChangeAtom</code></a>,
@@ -757,7 +757,7 @@ and <a href="/mrl/combichem.html#AddRing"><code>AddRing</code></a></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AppendRgroupMutator" class="doc_header"><code>class</code> <code>AppendRgroupMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L513" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendRgroupMutator</code>(<strong><code>rgroups</code></strong>, <strong><code>name</code></strong>=<em><code>'Rgroup'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="AppendRgroupMutator" class="doc_header"><code>class</code> <code>AppendRgroupMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L516" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AppendRgroupMutator</code>(<strong><code>rgroups</code></strong>, <strong><code>name</code></strong>=<em><code>'Rgroup'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>AppendRgroupMutator - randomly
 appends r-groups to the input molecule</p>
@@ -794,7 +794,7 @@ rgroups should have a single wildcard (<code>*</code>) atom</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EnumerateHeterocycleMutator" class="doc_header"><code>class</code> <code>EnumerateHeterocycleMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L558" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EnumerateHeterocycleMutator</code>(<strong><code>depth</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>'enum heteroatoms'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="EnumerateHeterocycleMutator" class="doc_header"><code>class</code> <code>EnumerateHeterocycleMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L561" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EnumerateHeterocycleMutator</code>(<strong><code>depth</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>'enum heteroatoms'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>EnumerateHeterocycleMutator - mutates
 input molecule by enumerating nitrogens
@@ -865,7 +865,7 @@ on heterocycles</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShuffleNitrogen" class="doc_header"><code>class</code> <code>ShuffleNitrogen</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L583" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShuffleNitrogen</code>(<strong><code>n_shuffles</code></strong>, <strong><code>name</code></strong>=<em><code>'shuffle nitrogen'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="ShuffleNitrogen" class="doc_header"><code>class</code> <code>ShuffleNitrogen</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L586" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShuffleNitrogen</code>(<strong><code>n_shuffles</code></strong>, <strong><code>name</code></strong>=<em><code>'shuffle nitrogen'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>ShuffleNitrogen - mutates input molecule
 by shuffling the positions of carbon and nitrogen
@@ -903,7 +903,7 @@ generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ContractAtom" class="doc_header"><code>class</code> <code>ContractAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L631" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContractAtom</code>(<strong><code>include_rings</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'contract'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="ContractAtom" class="doc_header"><code>class</code> <code>ContractAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L634" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContractAtom</code>(<strong><code>include_rings</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'contract'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>ContractAtom - mutates input molecule by
 removing an atom with two bonds and joining
@@ -942,7 +942,7 @@ contracted</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesMutator" class="doc_header"><code>class</code> <code>SelfiesMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L690" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesMutator</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="SelfiesMutator" class="doc_header"><code>class</code> <code>SelfiesMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L693" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesMutator</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>SelfiesMutator - base class for SELFIES
 based mutation</p>
@@ -979,7 +979,7 @@ to generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesInsert" class="doc_header"><code>class</code> <code>SelfiesInsert</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L730" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesInsert</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies insert'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
+<h2 id="SelfiesInsert" class="doc_header"><code>class</code> <code>SelfiesInsert</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L733" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesInsert</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies insert'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
 </blockquote>
 <p>SelfiesInsert - SELFIES insertion mutator.
 Randomly inserts a SELFIES token into
@@ -1052,7 +1052,7 @@ to generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesReplace" class="doc_header"><code>class</code> <code>SelfiesReplace</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L754" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesReplace</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies replace'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
+<h2 id="SelfiesReplace" class="doc_header"><code>class</code> <code>SelfiesReplace</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L757" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesReplace</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies replace'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
 </blockquote>
 <p>SelfiesReplace - SELFIES replacement mutator.
 Randomly replaces a SELFIES token in
@@ -1125,7 +1125,7 @@ to generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesRemove" class="doc_header"><code>class</code> <code>SelfiesRemove</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L778" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesRemove</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies remove'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
+<h2 id="SelfiesRemove" class="doc_header"><code>class</code> <code>SelfiesRemove</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L781" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesRemove</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies remove'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
 </blockquote>
 <p>SelfiesRemove - SELFIES removal mutator.
 Randomly removes a SELFIES token in
@@ -1163,7 +1163,7 @@ to generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MutatorCollection" class="doc_header"><code>class</code> <code>MutatorCollection</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L801" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MutatorCollection</code>(<strong><code>mutators</code></strong>, <strong><code>p_mutators</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="MutatorCollection" class="doc_header"><code>class</code> <code>MutatorCollection</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L804" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MutatorCollection</code>(<strong><code>mutators</code></strong>, <strong><code>p_mutators</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>MutatorCollection - orchestrates a
 set of <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a> classes. When called,
@@ -1205,7 +1205,7 @@ is applied</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CombiChem" class="doc_header"><code>class</code> <code>CombiChem</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L844" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CombiChem</code>(<strong><code>mutator_collection</code></strong>=<em><code>None</code></em>, <strong><code>crossovers</code></strong>=<em><code>None</code></em>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>rewards</code></strong>=<em><code>None</code></em>, <strong><code>prune_percentile</code></strong>=<em><code>90</code></em>, <strong><code>max_library_size</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>False</code></em>, <strong><code>p_explore</code></strong>=<em><code>0.0</code></em>)</p>
+<h2 id="CombiChem" class="doc_header"><code>class</code> <code>CombiChem</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L847" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CombiChem</code>(<strong><code>mutator_collection</code></strong>=<em><code>None</code></em>, <strong><code>crossovers</code></strong>=<em><code>None</code></em>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>rewards</code></strong>=<em><code>None</code></em>, <strong><code>prune_percentile</code></strong>=<em><code>90</code></em>, <strong><code>max_library_size</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>False</code></em>, <strong><code>p_explore</code></strong>=<em><code>0.0</code></em>)</p>
 </blockquote>
 <p>CombiChem - class for running
 combichem operations</p>
