@@ -259,7 +259,10 @@ class MolBlock(Block):
         return '.'.join(fragment_list)
 
     def fuse_fragments(self, fragment_string):
-        new_smile = fuse_on_atom_mapping(fragment_string)
+        try:
+            new_smile = fuse_on_atom_mapping(fragment_string)
+        except:
+            new_smile = ''
         return new_smile
 
     def recurse_fragments(self, fragments, add_constant=True):

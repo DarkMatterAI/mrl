@@ -108,7 +108,6 @@ MRl is built using many open source libraries. We would especially like to thank
 
 New Modules:
 - Huggingface/transformers integration
-- Active learning
 - Chemprop integration
 - Docking integration
 - Pharmacophore
