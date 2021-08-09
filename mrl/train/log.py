@@ -323,9 +323,9 @@ class MeanCallback(StatsCallback):
     def __init__(self, batch_attribute, grabname, include_buffer=True):
 
         if grabname is None:
-            name = f'{batch_attribute}_max'
+            name = f'{batch_attribute}_mean'
         else:
-            name = f'{batch_attribute}_{grabname}_max'
+            name = f'{batch_attribute}_{grabname}_mean'
 
         super().__init__(batch_attribute, grabname,
                          include_buffer=include_buffer, name=name)
