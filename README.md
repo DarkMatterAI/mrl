@@ -17,7 +17,6 @@ MRL can be applied to:
 - [Proteins](https://darkmatterai.github.io/mrl/tutorials.html#Proteins)
 - [Polymers](https://darkmatterai.github.io/mrl/tutorials.html#Polymers)
 - [DNA](https://darkmatterai.github.io/mrl/tutorials.html#DNA)
-- Catalysts (coming soon)
 
 View our [tutorials](https://darkmatterai.github.io/mrl/tutorials.html) for more examples
 
