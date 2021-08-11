@@ -17,7 +17,6 @@ MRL can be applied to:
 - [Proteins](https://darkmatterai.github.io/mrl/tutorials.html#Proteins)
 - [Polymers](https://darkmatterai.github.io/mrl/tutorials.html#Polymers)
 - [DNA](https://darkmatterai.github.io/mrl/tutorials.html#DNA)
-- Catalysts (coming soon)
 
 View our [tutorials](https://darkmatterai.github.io/mrl/tutorials.html) for more examples
 
@@ -103,18 +102,3 @@ Before submitting a PR, run `nbdev_diff_nbs` to verify the notebooks and the lib
 ## Acknowledgements
 
 MRl is built using many open source libraries. We would especially like to thank the development teams behind [Pytorch](https://github.com/pytorch/pytorch), [RDKit](https://github.com/rdkit/rdkit) and [fastai](https://github.com/fastai)
-
-## Roadmap
-
-New Modules:
-- Huggingface/transformers integration
-- Chemprop integration
-- Docking integration
-- Pharmacophore
-
-New modalities:
-- Catalysts
-
-Tutorials:
-- In depth, multi-cycle affinity optimization
-- Generative screening primer
