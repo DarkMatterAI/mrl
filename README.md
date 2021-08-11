@@ -102,18 +102,3 @@ Before submitting a PR, run `nbdev_diff_nbs` to verify the notebooks and the lib
 ## Acknowledgements
 
 MRl is built using many open source libraries. We would especially like to thank the development teams behind [Pytorch](https://github.com/pytorch/pytorch), [RDKit](https://github.com/rdkit/rdkit) and [fastai](https://github.com/fastai)
-
-## Roadmap
-
-New Modules:
-- Huggingface/transformers integration
-- Chemprop integration
-- Docking integration
-- Pharmacophore
-
-New modalities:
-- Catalysts
-
-Tutorials:
-- In depth, multi-cycle affinity optimization
-- Generative screening primer
