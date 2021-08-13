@@ -668,73 +668,6 @@ hidden state</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">l5</span><span class="o">.</span><span class="n">get_new_hidden</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>2</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l5</span><span class="o">.</span><span class="n">get_new_hidden</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[(torch.Size([2, 5, 64]), torch.Size([2, 5, 64])),
- (torch.Size([2, 5, 32]), torch.Size([2, 5, 32]))]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -1032,7 +965,7 @@ d_latent attribute which is referenced by other modules</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MLP_Encoder" class="doc_header"><code>class</code> <code>MLP_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L812" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_Encoder</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
+<h2 id="MLP_Encoder" class="doc_header"><code>class</code> <code>MLP_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L812" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP_Encoder</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>dropouts</code></strong>, <strong><code>bn</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>MLP_Encoder - MLP-based encoder</p>
 <p>Inputs:</p>
@@ -1042,6 +975,8 @@ d_latent attribute which is referenced by other modules</p>
 <li><p><code>dims list[int]</code>: list of layer sizes ie <code>[1024, 512, 256]</code></p>
 </li>
 <li><p><code>dropouts list[float]</code>: list of dropout pobabilities ie <code>[0.2, 0.2, 0.3]</code></p>
+</li>
+<li><p><code>bn Optional[bool]</code>: if True, include batchnorm</p>
 </li>
 </ul>
 
@@ -1091,7 +1026,7 @@ d_latent attribute which is referenced by other modules</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Conv_Encoder" class="doc_header"><code>class</code> <code>Conv_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L843" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
+<h2 id="Conv_Encoder" class="doc_header"><code>class</code> <code>Conv_Encoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L845" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Conv_Encoder</code>(<strong><code>d_vocab</code></strong>, <strong><code>d_embedding</code></strong>, <strong><code>d_latent</code></strong>, <strong><code>filters</code></strong>, <strong><code>kernel_sizes</code></strong>, <strong><code>strides</code></strong>, <strong><code>dropouts</code></strong>) :: <a href="/mrl/layers.html#Encoder"><code>Encoder</code></a></p>
 </blockquote>
 <p>Conv_Encoder - 1D conv encoder</p>
 <p>Inputs:</p>
@@ -1158,7 +1093,51 @@ d_latent attribute which is referenced by other modules</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MLP" class="doc_header"><code>class</code> <code>MLP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L888" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_out</code></strong>, <strong><code>drops</code></strong>, <strong><code>outrange</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+<h2 id="ScaledEncoder" class="doc_header"><code>class</code> <code>ScaledEncoder</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L890" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaledEncoder</code>(<strong><code>encoder</code></strong>, <strong><code>head</code></strong>=<em><code>None</code></em>, <strong><code>outrange</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>ScaledEncoder - wrapper to scale
+outputs from encoder if desired</p>
+<p>Inputs:</p>
+<ul>
+<li><p><code>encoder nn.Module</code>: encoder model</p>
+</li>
+<li><p><code>head Optional[nn.Module]</code>: optional
+head model</p>
+</li>
+<li><p><code>outrange Optional[list[low, high]]</code>:
+optional range to scale outputs</p>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="MLP" class="doc_header"><code>class</code> <code>MLP</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/layers.py#L924" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MLP</code>(<strong><code>d_in</code></strong>, <strong><code>dims</code></strong>, <strong><code>d_out</code></strong>, <strong><code>drops</code></strong>, <strong><code>outrange</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/layers.html#ScaledEncoder"><code>ScaledEncoder</code></a></p>
 </blockquote>
 <p>MLP - multi-layer perceptron</p>
 <p>Inputs:</p>
@@ -1189,6 +1168,25 @@ and <code>outrange[1]</code></p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">active_model</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">outrange</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">])</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">active_model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">32</span><span class="p">,</span><span class="mi">128</span><span class="p">)))</span>
+<span class="k">assert</span> <span class="n">p</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">&lt;=</span><span class="mi">15</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
     {% endraw %}

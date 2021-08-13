@@ -37,11 +37,11 @@ class Crossover():
 
         Inputs:
 
-        `mols list[Chem.Mol]`: list of mol objects
+        - `mols list[Chem.Mol]`: list of mol objects
 
         Returns:
 
-        `list[str]`: list of smiles strings
+        - `list[str]`: list of smiles strings
         '''
         mols = to_mols(mols)
         shuffle_idxs = np.random.choice(range(len(mols)), len(mols), replace=False)
@@ -55,7 +55,7 @@ class Crossover():
 
         Inputs:
 
-        `mol_pair list[Chem.Mol, Chem.Mol]`: list of two
+        - `mol_pair list[Chem.Mol, Chem.Mol]`: list of two
         Mol objects
         '''
         raise NotImplementedError
@@ -76,10 +76,10 @@ class FragmentCrossover(Crossover):
 
     Inputs:
 
-    `full_crossover bool`: if True, all
+    - `full_crossover bool`: if True, all
     `scaffold, rgroup` combinations are generated
 
-    `name str`: crossover name
+    - `name str`: crossover name
     '''
     def __init__(self, full_crossover=False, name='fragment crossover'):
         super().__init__(name)
@@ -163,11 +163,11 @@ class Mutator():
 
         Inputs:
 
-        `mol Chem.Mol`: input mol
+        - `mol Chem.Mol`: input mol
 
         Returns:
 
-        `list[outputs]`
+        - `list[outputs]`
         '''
         raise NotImplementedError
 
@@ -183,9 +183,9 @@ class SmartsMutator(Mutator):
 
     Inputs:
 
-    `smarts list[str]`: list of SMARTS reaction strings
+    - `smarts list[str]`: list of SMARTS reaction strings
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, smarts, name=None):
         if name is None:
@@ -235,7 +235,7 @@ class ChangeAtom(SmartsMutator):
 
     Inputs:
 
-    `atom_types Optional[list[str]]`: list of
+    - `atom_types Optional[list[str]]`: list of
     allowed atom types. Must be strings of
     atomic weights, ie `['6', '7', '8']`
 
@@ -264,7 +264,7 @@ class AppendAtomSingle(SmartsMutator):
 
     Inputs:
 
-    `atom_types Optional[list[str]]`: list of
+    - `atom_types Optional[list[str]]`: list of
     allowed atom types. Must be strings of
     atomic symbols, ie `['C', 'N', 'O']`
 
@@ -290,7 +290,7 @@ class AppendAtomsDouble(SmartsMutator):
 
     Inputs:
 
-    `atom_types Optional[list[str]]`: list of
+    - `atom_types Optional[list[str]]`: list of
     allowed atom types. Must be strings of
     atomic symbols, ie `['C', 'N', 'O']`.
     Atom types must be compatible with
@@ -318,7 +318,7 @@ class AppendAtomsTriple(SmartsMutator):
 
     Inputs:
 
-    `atom_types Optional[list[str]]`: list of
+    - `atom_types Optional[list[str]]`: list of
     allowed atom types. Must be strings of
     atomic symbols, ie `['C', 'N']`.
     Atom types must be compatible with
@@ -399,7 +399,7 @@ class InsertAtomSingle(SmartsMutator):
 
     Inputs:
 
-    `atom_types Optional[list[str]]`: list of
+    - `atom_types Optional[list[str]]`: list of
     allowed atom types. Must be strings of
     atomic symbols, ie `['C', 'N', 'O']`
 
@@ -425,7 +425,7 @@ class InsertAtomDouble(SmartsMutator):
 
     Inputs:
 
-    `atom_types Optional[list[str]]`: list of
+    - `atom_types Optional[list[str]]`: list of
     allowed atom types. Must be strings of
     atomic symbols, ie `['C', 'N', 'O']`.
     Atom types must be compatible with
@@ -520,10 +520,10 @@ class AppendRgroupMutator(Mutator):
 
     Inputs:
 
-    `rgroups list[str]`: list of rgroups. All
+    - `rgroups list[str]`: list of rgroups. All
     rgroups should have a single wildcard (`*`) atom
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, rgroups, name='Rgroup'):
         super().__init__(name)
@@ -566,9 +566,9 @@ class EnumerateHeterocycleMutator(Mutator):
 
     Inputs:
 
-    `depth int`: number of recursive enumerations
+    - `depth int`: number of recursive enumerations
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, depth=None, name='enum heteroatoms'):
         super().__init__(name)
@@ -591,10 +591,10 @@ class ShuffleNitrogen(Mutator):
 
     Inputs:
 
-    `n_shuffles int`: number of shuffled variants to
+    - `n_shuffles int`: number of shuffled variants to
     generate
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, n_shuffles, name='shuffle nitrogen'):
         super().__init__(name)
@@ -641,10 +641,10 @@ class ContractAtom(Mutator):
 
     Inputs:
 
-    `include_rings bool`: if True, rings will be
+    - `include_rings bool`: if True, rings will be
     contracted
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, include_rings=True, name='contract'):
         super().__init__(name)
@@ -697,10 +697,10 @@ class SelfiesMutator(Mutator):
 
     Inputs:
 
-    `n_augs int`: number of mutated versions
+    - `n_augs int`: number of mutated versions
     to generate
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, n_augs, name='selfies'):
         super().__init__(name)
@@ -738,10 +738,10 @@ class SelfiesInsert(SelfiesMutator):
 
     Inputs:
 
-    `n_augs int`: number of mutated versions
+    - `n_augs int`: number of mutated versions
     to generate
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, n_augs, name='selfies insert'):
         super().__init__(n_augs, name)
@@ -762,10 +762,10 @@ class SelfiesReplace(SelfiesMutator):
 
     Inputs:
 
-    `n_augs int`: number of mutated versions
+    - `n_augs int`: number of mutated versions
     to generate
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, n_augs, name='selfies replace'):
         super().__init__(n_augs, name)
@@ -786,10 +786,10 @@ class SelfiesRemove(SelfiesMutator):
 
     Inputs:
 
-    `n_augs int`: number of mutated versions
+    - `n_augs int`: number of mutated versions
     to generate
 
-    `name str`: mutator name
+    - `name str`: mutator name
     '''
     def __init__(self, n_augs, name='selfies remove'):
         super().__init__(n_augs, name)
@@ -810,10 +810,10 @@ class MutatorCollection():
 
     Inputs:
 
-    `mutators list[Mutator]`: list of mutator
+    - `mutators list[Mutator]`: list of mutator
     objects
 
-    `p_mutators Optional[list[float]]`: Optional
+    - `p_mutators Optional[list[float]]`: Optional
     list of probabilities for selecting
     each mutator. If None, a uniform distribution
     is applied
@@ -851,28 +851,28 @@ class CombiChem():
 
     Inputs:
 
-    `mutator_collection Optional[MutatorCollection]`:
+    - `mutator_collection Optional[MutatorCollection]`:
     Collection of mutations to use
 
-    `crossovers Optional[list[Crossover]]`:
+    - `crossovers Optional[list[Crossover]]`:
     list of `Crossover` objects
 
-    `template Optional[Template]`: `Template` to
+    - `template Optional[Template]`: `Template` to
     control chemical space
 
-    `rewards Optional[Reward]`: Rewards to
+    - `rewards Optional[Reward]`: Rewards to
     score molecules
 
-    `prune_percentile int[0,100]`: Percentile
+    - `prune_percentile int[0,100]`: Percentile
     of compounds to keep during pruning
 
-    `max_library_size Optional[int]`: Maximum
+    - `max_library_size Optional[int]`: Maximum
     library size after pruning
 
-    `log bool`: If True, compounds generated by
+    - `log bool`: If True, compounds generated by
     combichem are logged
 
-    `p_explore float[0.,1.]`: Percentage of
+    - `p_explore float[0.,1.]`: Percentage of
     compounds below `prune_percentile` to keep
     '''
     def __init__(self,

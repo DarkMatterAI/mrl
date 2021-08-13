@@ -35,6 +35,7 @@
                 "Penalized LogP Optimization" : "tutorials.small_molecule.plogp.html",
                 "Multiparameter Property Optimization" : "tutorials.small_molecule.mpo.html",
                 "Affinity Optimization" : "tutorials.small_molecule.affinity.html",
+                "Affinity Optimization with Active Learning" : "tutorials.small_molecule.affinity_active.html",
                 "R-Group Optimization" : "tutorials.small_molecule.rgroup.html",
                 "Linker Optimization" : "tutorials.small_molecule.linker.html",
                 "MolDQN" : "tutorials.small_molecule.moldqn.html"

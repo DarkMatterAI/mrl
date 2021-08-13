@@ -172,18 +172,27 @@ samples should come from this sampler</p>
 <p>CombichemSampler - uses combichem to
 add samples to the buffer</p>
 <p>Inputs:</p>
-<p><code>cbc CombiChem</code>: Combichem module</p>
-<p><code>library_size int</code>: number of compounds
+<ul>
+<li><p><code>cbc CombiChem</code>: Combichem module</p>
+</li>
+<li><p><code>library_size int</code>: number of compounds
 to put into combichem</p>
-<p><code>percentile int[1,100]</code>: percentile
+</li>
+<li><p><code>percentile int[1,100]</code>: percentile
 of compounds to sample from</p>
-<p><code>p_explore float[0.,1.]</code>: percent of
+</li>
+<li><p><code>p_explore float[0.,1.]</code>: percent of
 compounds below percentile to sample</p>
-<p><code>start_iter int</code>: iteration to start
+</li>
+<li><p><code>start_iter int</code>: iteration to start
 combichem</p>
-<p><code>lookup_name str</code>: colum in Log to use
+</li>
+<li><p><code>lookup_name str</code>: colum in Log to use
 to calculate percentile</p>
-<p><code>name str</code>: callback name</p>
+</li>
+<li><p><code>name str</code>: callback name</p>
+</li>
+</ul>
 
 </div>
 

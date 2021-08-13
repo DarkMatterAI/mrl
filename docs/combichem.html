@@ -118,8 +118,10 @@ molecular pairs, and sends those pairs to <a href="/mrl/combichem.html#Crossover
 </blockquote>
 <p>crossover - performs crossover operation</p>
 <p>Inputs:</p>
-<p><code>mol_pair list[Chem.Mol, Chem.Mol]</code>: list of two
-Mol objects</p>
+<ul>
+<li><code>mol_pair list[Chem.Mol, Chem.Mol]</code>: list of two
+Mol objects</li>
+</ul>
 
 </div>
 
@@ -152,9 +154,13 @@ single bonds in the molecule.</p>
 <p>During crossover, molecular pairs are
 merged following <code>scaffold1 + rgroup2</code></p>
 <p>Inputs:</p>
-<p><code>full_crossover bool</code>: if True, all
+<ul>
+<li><p><code>full_crossover bool</code>: if True, all
 <code>scaffold, rgroup</code> combinations are generated</p>
-<p><code>name str</code>: crossover name</p>
+</li>
+<li><p><code>name str</code>: crossover name</p>
+</li>
+</ul>
 
 </div>
 
@@ -243,8 +249,12 @@ To create custom mutations, subclass
 <p>SmartsMutator - SMARTS reaction based
 mutator.</p>
 <p>Inputs:</p>
-<p><code>smarts list[str]</code>: list of SMARTS reaction strings</p>
-<p><code>name str</code>: mutator name</p>
+<ul>
+<li><p><code>smarts list[str]</code>: list of SMARTS reaction strings</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -280,9 +290,11 @@ mutator.</p>
 changes atom type without changing
 molecular structure</p>
 <p>Inputs:</p>
-<p><code>atom_types Optional[list[str]]</code>: list of
+<ul>
+<li><code>atom_types Optional[list[str]]</code>: list of
 allowed atom types. Must be strings of
-atomic weights, ie <code>['6', '7', '8']</code></p>
+atomic weights, ie <code>['6', '7', '8']</code></li>
+</ul>
 <p>Default: <code>['6', '7', '8', '9', '15', '16', '17', '35']</code></p>
 
 </div>
@@ -319,9 +331,11 @@ atomic weights, ie <code>['6', '7', '8']</code></p>
 that appends an atom somewhere on the
 input structure with a single bond</p>
 <p>Inputs:</p>
-<p><code>atom_types Optional[list[str]]</code>: list of
+<ul>
+<li><code>atom_types Optional[list[str]]</code>: list of
 allowed atom types. Must be strings of
-atomic symbols, ie <code>['C', 'N', 'O']</code></p>
+atomic symbols, ie <code>['C', 'N', 'O']</code></li>
+</ul>
 <p>Default: <code>['C', 'N', 'O', 'F', 'P', 'S', 'Cl', 'Br']</code></p>
 
 </div>
@@ -358,11 +372,13 @@ atomic symbols, ie <code>['C', 'N', 'O']</code></p>
 that appends an atom somewhere on the
 input structure with a double bond</p>
 <p>Inputs:</p>
-<p><code>atom_types Optional[list[str]]</code>: list of
+<ul>
+<li><code>atom_types Optional[list[str]]</code>: list of
 allowed atom types. Must be strings of
 atomic symbols, ie <code>['C', 'N', 'O']</code>.
 Atom types must be compatible with
-forming a double bond</p>
+forming a double bond</li>
+</ul>
 <p>Default: <code>['C', 'N', 'O', 'P', 'S']</code></p>
 
 </div>
@@ -399,11 +415,13 @@ forming a double bond</p>
 that appends an atom somewhere on the
 input structure with a triple bond</p>
 <p>Inputs:</p>
-<p><code>atom_types Optional[list[str]]</code>: list of
+<ul>
+<li><code>atom_types Optional[list[str]]</code>: list of
 allowed atom types. Must be strings of
 atomic symbols, ie <code>['C', 'N']</code>.
 Atom types must be compatible with
-forming a triple bond</p>
+forming a triple bond</li>
+</ul>
 <p>Default: <code>['C', 'N']</code></p>
 
 </div>
@@ -544,9 +562,11 @@ input structure</p>
 that randomly inserts an atom into
 the input structure with single bonds</p>
 <p>Inputs:</p>
-<p><code>atom_types Optional[list[str]]</code>: list of
+<ul>
+<li><code>atom_types Optional[list[str]]</code>: list of
 allowed atom types. Must be strings of
-atomic symbols, ie <code>['C', 'N', 'O']</code></p>
+atomic symbols, ie <code>['C', 'N', 'O']</code></li>
+</ul>
 <p>Default: <code>['C', 'N', 'O', 'P', 'S']</code></p>
 
 </div>
@@ -583,11 +603,13 @@ atomic symbols, ie <code>['C', 'N', 'O']</code></p>
 that randomly inserts an atom into
 the input structure with a double bond</p>
 <p>Inputs:</p>
-<p><code>atom_types Optional[list[str]]</code>: list of
+<ul>
+<li><code>atom_types Optional[list[str]]</code>: list of
 allowed atom types. Must be strings of
 atomic symbols, ie <code>['C', 'N', 'O']</code>.
 Atom types must be compatible with
-forming a double bond</p>
+forming a double bond</li>
+</ul>
 <p>Default: <code>['C', 'N', 'P', 'S']</code></p>
 
 </div>
@@ -762,9 +784,13 @@ and <a href="/mrl/combichem.html#AddRing"><code>AddRing</code></a></p>
 <p>AppendRgroupMutator - randomly
 appends r-groups to the input molecule</p>
 <p>Inputs:</p>
-<p><code>rgroups list[str]</code>: list of rgroups. All
+<ul>
+<li><p><code>rgroups list[str]</code>: list of rgroups. All
 rgroups should have a single wildcard (<code>*</code>) atom</p>
-<p><code>name str</code>: mutator name</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -800,8 +826,12 @@ rgroups should have a single wildcard (<code>*</code>) atom</p>
 input molecule by enumerating nitrogens
 on heterocycles</p>
 <p>Inputs:</p>
-<p><code>depth int</code>: number of recursive enumerations</p>
-<p><code>name str</code>: mutator name</p>
+<ul>
+<li><p><code>depth int</code>: number of recursive enumerations</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -871,9 +901,13 @@ on heterocycles</p>
 by shuffling the positions of carbon and nitrogen
 atoms in the molecule</p>
 <p>Inputs:</p>
-<p><code>n_shuffles int</code>: number of shuffled variants to
+<ul>
+<li><p><code>n_shuffles int</code>: number of shuffled variants to
 generate</p>
-<p><code>name str</code>: mutator name</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -910,9 +944,13 @@ removing an atom with two bonds and joining
 the removed atoms neighbors with a single bond.</p>
 <p>ie <code>a-b-c -&gt; a-c</code></p>
 <p>Inputs:</p>
-<p><code>include_rings bool</code>: if True, rings will be
+<ul>
+<li><p><code>include_rings bool</code>: if True, rings will be
 contracted</p>
-<p><code>name str</code>: mutator name</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -947,9 +985,13 @@ contracted</p>
 <p>SelfiesMutator - base class for SELFIES
 based mutation</p>
 <p>Inputs:</p>
-<p><code>n_augs int</code>: number of mutated versions
+<ul>
+<li><p><code>n_augs int</code>: number of mutated versions
 to generate</p>
-<p><code>name str</code>: mutator name</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -985,9 +1027,13 @@ to generate</p>
 Randomly inserts a SELFIES token into
 the input compound</p>
 <p>Inputs:</p>
-<p><code>n_augs int</code>: number of mutated versions
+<ul>
+<li><p><code>n_augs int</code>: number of mutated versions
 to generate</p>
-<p><code>name str</code>: mutator name</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -1058,9 +1104,13 @@ to generate</p>
 Randomly replaces a SELFIES token in
 the input compound</p>
 <p>Inputs:</p>
-<p><code>n_augs int</code>: number of mutated versions
+<ul>
+<li><p><code>n_augs int</code>: number of mutated versions
 to generate</p>
-<p><code>name str</code>: mutator name</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -1131,9 +1181,13 @@ to generate</p>
 Randomly removes a SELFIES token in
 the input compound</p>
 <p>Inputs:</p>
-<p><code>n_augs int</code>: number of mutated versions
+<ul>
+<li><p><code>n_augs int</code>: number of mutated versions
 to generate</p>
-<p><code>name str</code>: mutator name</p>
+</li>
+<li><p><code>name str</code>: mutator name</p>
+</li>
+</ul>
 
 </div>
 
@@ -1170,12 +1224,16 @@ set of <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a> classes. W
 randomly selects a mutator to apply
 to the input mol</p>
 <p>Inputs:</p>
-<p><code>mutators list[Mutator]</code>: list of mutator
+<ul>
+<li><p><code>mutators list[Mutator]</code>: list of mutator
 objects</p>
-<p><code>p_mutators Optional[list[float]]</code>: Optional
+</li>
+<li><p><code>p_mutators Optional[list[float]]</code>: Optional
 list of probabilities for selecting
 each mutator. If None, a uniform distribution
 is applied</p>
+</li>
+</ul>
 
 </div>
 
@@ -1210,22 +1268,32 @@ is applied</p>
 <p>CombiChem - class for running
 combichem operations</p>
 <p>Inputs:</p>
-<p><code>mutator_collection Optional[MutatorCollection]</code>:
+<ul>
+<li><p><code>mutator_collection Optional[MutatorCollection]</code>:
 Collection of mutations to use</p>
-<p><code>crossovers Optional[list[Crossover]]</code>:
+</li>
+<li><p><code>crossovers Optional[list[Crossover]]</code>:
 list of <a href="/mrl/combichem.html#Crossover"><code>Crossover</code></a> objects</p>
-<p><code>template Optional[Template]</code>: <a href="/mrl/template.template.html#Template"><code>Template</code></a> to
+</li>
+<li><p><code>template Optional[Template]</code>: <a href="/mrl/template.template.html#Template"><code>Template</code></a> to
 control chemical space</p>
-<p><code>rewards Optional[Reward]</code>: Rewards to
+</li>
+<li><p><code>rewards Optional[Reward]</code>: Rewards to
 score molecules</p>
-<p><code>prune_percentile int[0,100]</code>: Percentile
+</li>
+<li><p><code>prune_percentile int[0,100]</code>: Percentile
 of compounds to keep during pruning</p>
-<p><code>max_library_size Optional[int]</code>: Maximum
+</li>
+<li><p><code>max_library_size Optional[int]</code>: Maximum
 library size after pruning</p>
-<p><code>log bool</code>: If True, compounds generated by
+</li>
+<li><p><code>log bool</code>: If True, compounds generated by
 combichem are logged</p>
-<p><code>p_explore float[0.,1.]</code>: Percentage of
+</li>
+<li><p><code>p_explore float[0.,1.]</code>: Percentage of
 compounds below <code>prune_percentile</code> to keep</p>
+</li>
+</ul>
 
 </div>
 

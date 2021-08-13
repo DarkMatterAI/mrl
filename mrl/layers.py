@@ -2,7 +2,7 @@
 
 __all__ = ['LinearBlock', 'ValueHead', 'Conv', 'Conv1d', 'Conv2d', 'Conv3d', 'SphericalDistribution', 'Prior',
            'NormalPrior', 'SphericalPrior', 'SequenceDropout', 'Conditional_LSTM', 'LSTM', 'Conditional_LSTM_Block',
-           'LSTM_Block', 'Encoder', 'LSTM_Encoder', 'MLP_Encoder', 'Conv_Encoder', 'MLP']
+           'LSTM_Block', 'Encoder', 'LSTM_Encoder', 'MLP_Encoder', 'Conv_Encoder', 'ScaledEncoder', 'MLP']
 
 # Cell
 from .imports import *
@@ -820,14 +820,16 @@ class MLP_Encoder(Encoder):
     - `dims list[int]`: list of layer sizes ie `[1024, 512, 256]`
 
     - `dropouts list[float]`: list of dropout pobabilities ie `[0.2, 0.2, 0.3]`
+
+    - `bn Optional[bool]`: if True, include batchnorm
     '''
-    def __init__(self, d_in, dims, d_latent, dropouts):
+    def __init__(self, d_in, dims, d_latent, dropouts, bn=True):
         super().__init__(d_latent)
 
         dims = [d_in]+dims
 
         acts = [True]*(len(dims)-1)
-        bns = [True]*(len(dims)-1)
+        bns = [True]*(len(dims)-1) if bn else [False]*(len(dims)-1)
         layers = [LinearBlock(d_in, d_out, act=a, bn=b, dropout=p)
                  for d_in, d_out, a, b, p in zip(dims[:-1], dims[1:], acts, bns, dropouts)]
         layers.append(nn.Linear(dims[-1], d_latent))
@@ -885,7 +887,41 @@ class Conv_Encoder(Encoder):
 
 # Cell
 
-class MLP(nn.Module):
+class ScaledEncoder(nn.Module):
+    '''
+    ScaledEncoder - wrapper to scale
+    outputs from encoder if desired
+
+    Inputs:
+
+    - `encoder nn.Module`: encoder model
+
+    - `head Optional[nn.Module]`: optional
+    head model
+
+    - `outrange Optional[list[low, high]]`:
+    optional range to scale outputs
+    '''
+    def __init__(self, encoder, head=None, outrange=None):
+        super().__init__()
+        self.encoder = encoder
+        self.head = head
+        self.outrange = outrange
+
+    def forward(self, x):
+        x = self.encoder(x)
+
+        if self.head is not None:
+            x = self.head(x)
+
+        if self.outrange is not None:
+            x = torch.sigmoid(x) * (self.outrange[1]-self.outrange[0]) + self.outrange[0]
+
+        return x
+
+# Cell
+
+class MLP(ScaledEncoder):
     '''
     MLP - multi-layer perceptron
 
@@ -903,23 +939,5 @@ class MLP(nn.Module):
     and `outrange[1]`
     '''
     def __init__(self, d_in, dims, d_out, drops, outrange=None, bn=True):
-        super().__init__()
-
-        dims = [d_in]+dims
-
-        acts = [True]*(len(dims)-1)
-        bns = [True]*(len(dims)-1) if bn else [False]*(len(dims)-1)
-        layers = [LinearBlock(d_in, d_out, act=a, bn=b, dropout=p)
-                 for d_in, d_out, a, b, p in zip(dims[:-1], dims[1:], acts, bns, drops)]
-        layers.append(nn.Linear(dims[-1], d_out))
-
-        self.layers = nn.Sequential(*layers)
-        self.outrange = outrange
-
-    def forward(self, x):
-        x = self.layers(x)
-
-        if self.outrange is not None:
-            x = torch.sigmoid(x) * (self.outrange[1]-self.outrange[0]) + self.outrange[0]
-
-        return x
+        encoder = MLP_Encoder(d_in, dims, d_out, drops, bn=bn)
+        super().__init__(encoder, head=None, outrange=outrange)

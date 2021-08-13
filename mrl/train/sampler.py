@@ -109,24 +109,24 @@ class CombichemSampler(Sampler):
 
     Inputs:
 
-    `cbc CombiChem`: Combichem module
+    - `cbc CombiChem`: Combichem module
 
-    `library_size int`: number of compounds
+    - `library_size int`: number of compounds
     to put into combichem
 
-    `percentile int[1,100]`: percentile
+    - `percentile int[1,100]`: percentile
     of compounds to sample from
 
-    `p_explore float[0.,1.]`: percent of
+    - `p_explore float[0.,1.]`: percent of
     compounds below percentile to sample
 
-    `start_iter int`: iteration to start
+    - `start_iter int`: iteration to start
     combichem
 
-    `lookup_name str`: colum in Log to use
+    - `lookup_name str`: colum in Log to use
     to calculate percentile
 
-    `name str`: callback name
+    - `name str`: callback name
     '''
     def __init__(self,
                  cbc,

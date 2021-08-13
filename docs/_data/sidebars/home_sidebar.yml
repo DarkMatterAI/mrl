@@ -94,6 +94,9 @@ entries:
           title: Affinity Optimization
           url: tutorials.small_molecule.affinity.html
         - output: web,pdf
+          title: Affinity Optimization with Active Learning
+          url: tutorials.small_molecule.affinity_active.html
+        - output: web,pdf
           title: R-Group Optimization
           url: tutorials.small_molecule.rgroup.html
         - output: web,pdf
