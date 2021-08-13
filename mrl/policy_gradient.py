@@ -66,11 +66,22 @@ class PolicyGradient(BasePolicy):
 
     - `scale_rewards bool`: if True, rewards are mean-scaled before discounting.
     This can lead to quicker convergence
+
+    - `ratio_clip Optional[float]`: if not None, value passed will be
+    used to clamp log probability ratios to `[-ratio_clip, ratio_clip]`
+    to prevent extreme values
     '''
-    def __init__(self, discount=True, gamma=0.97, ratio=False, scale_rewards=True):
+    def __init__(self,
+                 discount=True,
+                 gamma=0.97,
+                 ratio=False,
+                 scale_rewards=True,
+                 ratio_clip=None
+                ):
         super().__init__(gamma)
         self.discount = discount
         self.ratio = ratio
+        self.ratio_clip = abs(ratio_clip)
         self.scale_rewards = scale_rewards
         self.mean_reward = None
 
@@ -94,6 +105,8 @@ class PolicyGradient(BasePolicy):
 
         if self.ratio:
             lps = (lps - base_lps.detach()).exp()
+            if self.ratio_clip is not None:
+                lps = lps.clamp(-self.ratio_clip, self.ratio_clip)
 
         if not self.discount:
             pg_loss = -((lps*mask).sum(-1)*rewards)/mask.sum(-1)
@@ -155,9 +168,21 @@ class TRPO(BasePolicy):
 
     - `scale_rewards bool`: if True, rewards are mean-scaled before discounting.
     This can lead to quicker convergence
+
+    - `ratio_clip Optional[float]`: if not None, value passed will be
+    used to clamp log probability ratios to `[-ratio_clip, ratio_clip]`
+    to prevent extreme values
     '''
-    def __init__(self, gamma, kl_target, beta=1., eta=50, lam=0.95,
-                 v_coef=0.5, scale_rewards=True):
+    def __init__(self,
+                 gamma,
+                 kl_target,
+                 beta=1.,
+                 eta=50,
+                 lam=0.95,
+                 v_coef=0.5,
+                 scale_rewards=True,
+                 ratio_clip=None
+                ):
         self.gamma = gamma
         self.beta = beta
         self.eta = eta
@@ -166,6 +191,7 @@ class TRPO(BasePolicy):
         self.v_coef = v_coef
         self.scale_rewards = scale_rewards
         self.mean_reward = None
+        self.ratio_clip = ratio_clip
 
     def __call__(self, lps_g, base_lps_g, lps, base_lps, mask,
                  rewards, values, traj_rewards=None):
@@ -200,6 +226,9 @@ class TRPO(BasePolicy):
         v_loss = self.value_loss(values, discounted_rewards)
 
         ratios = (lps_g - base_lps_g.detach()).exp()
+
+        if self.ratio_clip is not None:
+            ratios = ratios.clamp(-self.ratio_clip, self.ratio_clip)
 
         loss1 = -(ratios*advantages*mask).sum(-1)/mask.sum(-1)
 
@@ -303,9 +332,18 @@ class PPO(BasePolicy):
     - `scale_rewards bool`: if True, rewards are mean-scaled before discounting.
     This can lead to quicker convergence
     '''
-    def __init__(self, gamma, kl_coef, lam=0.95, v_coef=0.5, cliprange=0.2,
-                 v_cliprange=0.2, ent_coef=0.01, kl_target=None,
-                 kl_horizon=None, scale_rewards=True):
+    def __init__(self,
+                 gamma,
+                 kl_coef,
+                 lam=0.95,
+                 v_coef=0.5,
+                 cliprange=0.2,
+                 v_cliprange=0.2,
+                 ent_coef=0.01,
+                 kl_target=None,
+                 kl_horizon=None,
+                 scale_rewards=True,
+                ):
         self.gamma = gamma
         self.lam = lam
         self.ent_coef = ent_coef
