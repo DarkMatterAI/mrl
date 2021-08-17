@@ -152,7 +152,7 @@ $$ \nabla_\theta J(\theta) = \mathbb{E}_\pi [R(s,a) \nabla_\theta \ln \pi_\theta
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L50" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PolicyGradient" class="doc_header"><code>class</code> <code>PolicyGradient</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L50" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PolicyGradient</code>(<strong><code>discount</code></strong>=<em><code>True</code></em>, <strong><code>gamma</code></strong>=<em><code>0.97</code></em>, <strong><code>ratio</code></strong>=<em><code>False</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>, <strong><code>ratio_clip</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 <p>PolicyGradient - Basic policy gradient implementation</p>
 <p>papers.nips.cc/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html</p>
@@ -169,6 +169,10 @@ improve stability</p>
 </li>
 <li><p><code>scale_rewards bool</code>: if True, rewards are mean-scaled before discounting.
 This can lead to quicker convergence</p>
+</li>
+<li><p><code>ratio_clip Optional[float]</code>: if not None, value passed will be
+used to clamp log probability ratios to <code>[-ratio_clip, ratio_clip]</code>
+to prevent extreme values</p>
 </li>
 </ul>
 
@@ -200,7 +204,7 @@ This can lead to quicker convergence</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PolicyGradient.__call__" class="doc_header"><code>PolicyGradient.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L77" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PolicyGradient.__call__</code>(<strong><code>lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>base_lps</code></strong>=<em><code>None</code></em>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="PolicyGradient.__call__" class="doc_header"><code>PolicyGradient.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PolicyGradient.__call__</code>(<strong><code>lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>base_lps</code></strong>=<em><code>None</code></em>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Inputs:</p>
 <ul>
@@ -254,7 +258,7 @@ $$ \mathbb{E}_{s \sim \rho^{\pi_{\theta_\text{old}}}} [D_\text{KL}(\pi_{\theta_\
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="TRPO" class="doc_header"><code>class</code> <code>TRPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L151" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TRPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_target</code></strong>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>eta</code></strong>=<em><code>50</code></em>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>, <strong><code>ratio_clip</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 <p>TRPO - Trust Region Policy Optimization</p>
 <p>arxiv.org/pdf/1502.05477.pdf</p>
@@ -274,6 +278,10 @@ $$ \mathbb{E}_{s \sim \rho^{\pi_{\theta_\text{old}}}} [D_\text{KL}(\pi_{\theta_\
 </li>
 <li><p><code>scale_rewards bool</code>: if True, rewards are mean-scaled before discounting.
 This can lead to quicker convergence</p>
+</li>
+<li><p><code>ratio_clip Optional[float]</code>: if not None, value passed will be
+used to clamp log probability ratios to <code>[-ratio_clip, ratio_clip]</code>
+to prevent extreme values</p>
 </li>
 </ul>
 
@@ -305,7 +313,7 @@ This can lead to quicker convergence</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TRPO.__call__" class="doc_header"><code>TRPO.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L170" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TRPO.__call__</code>(<strong><code>lps_g</code></strong>, <strong><code>base_lps_g</code></strong>, <strong><code>lps</code></strong>, <strong><code>base_lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TRPO.__call__" class="doc_header"><code>TRPO.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L198" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TRPO.__call__</code>(<strong><code>lps_g</code></strong>, <strong><code>base_lps_g</code></strong>, <strong><code>lps</code></strong>, <strong><code>base_lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Inputs:</p>
 <ul>
@@ -368,7 +376,7 @@ $$ J^\text{CLIP} (\theta) = \mathbb{E} [ \min( r(\theta) \hat{A}_{\theta_\text{o
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L277" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
+<h2 id="PPO" class="doc_header"><code>class</code> <code>PPO</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L308" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PPO</code>(<strong><code>gamma</code></strong>, <strong><code>kl_coef</code></strong>, <strong><code>lam</code></strong>=<em><code>0.95</code></em>, <strong><code>v_coef</code></strong>=<em><code>0.5</code></em>, <strong><code>cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>v_cliprange</code></strong>=<em><code>0.2</code></em>, <strong><code>ent_coef</code></strong>=<em><code>0.01</code></em>, <strong><code>kl_target</code></strong>=<em><code>None</code></em>, <strong><code>kl_horizon</code></strong>=<em><code>None</code></em>, <strong><code>scale_rewards</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/policy_gradient.html#BasePolicy"><code>BasePolicy</code></a></p>
 </blockquote>
 <p>PPO - Proximal policy optimization</p>
 <p>arxiv.org/pdf/1707.06347.pdf</p>
@@ -425,7 +433,7 @@ This can lead to quicker convergence</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PPO.__call__" class="doc_header"><code>PPO.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L321" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PPO.__call__</code>(<strong><code>lps_g</code></strong>, <strong><code>base_lps_g</code></strong>, <strong><code>lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>ref_values</code></strong>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="PPO.__call__" class="doc_header"><code>PPO.__call__</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/policy_gradient.py#L361" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PPO.__call__</code>(<strong><code>lps_g</code></strong>, <strong><code>base_lps_g</code></strong>, <strong><code>lps</code></strong>, <strong><code>mask</code></strong>, <strong><code>rewards</code></strong>, <strong><code>values</code></strong>, <strong><code>ref_values</code></strong>, <strong><code>traj_rewards</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Inputs:</p>
 <ul>

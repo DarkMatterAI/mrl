@@ -6,21 +6,22 @@ __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mo
            'draw_mols', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond', 'loose_rotbond', 'rot_chain_length', 'fsp3', 'logp',
            'rings', 'max_ring_size', 'min_ring_size', 'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge',
            'molar_refractivity', 'aromaticrings', 'qed', 'sa_score', 'num_bridgeheads', 'num_spiro', 'chiral_centers',
-           'penalized_logp', 'Catalog', 'SmartsCatalog', 'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog',
-           'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6',
-           'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine',
-           'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities', 'fragment_mol', 'fragment_smile',
-           'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold', 'add_map_nums',
-           'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
-           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein',
-           'to_sequence', 'to_proteins', 'to_sequences', 'to_dna', 'to_dnas', 'to_rna', 'to_rnas']
+           'penalized_logp', 'conformer_generation', 'Catalog', 'SmartsCatalog', 'ParamsCatalog', 'PAINSCatalog',
+           'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog', 'NIHCatalog', 'morgan_fp',
+           'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice',
+           'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities', 'fragment_mol',
+           'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold',
+           'add_map_nums', 'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom',
+           'generate_spec_template', 'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi',
+           'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins', 'to_sequences', 'to_dna', 'to_dnas', 'to_rna',
+           'to_rnas']
 
 # Cell
 from .imports import *
 from .core import *
 import rdkit
 from rdkit import Chem, DataStructs
-from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDConfig, Draw
+from rdkit.Chem import AllChem, rdMolDescriptors, Descriptors, rdMMPA, QED, RDConfig, Draw, PropertyMol
 from rdkit.Chem.Lipinski import RotatableBondSmarts
 from rdkit.Chem.FilterCatalog import *
 from rdkit.Chem.Scaffolds import MurckoScaffold
@@ -396,6 +397,85 @@ def penalized_logp(mol):
     normalized_cycle = (cycle_score - cycle_mean) / cycle_std
 
     return normalized_log_p + normalized_SA + normalized_cycle
+
+# Cell
+
+def conformer_generation(mol,
+                         num_confs,
+                         max_iter=200,
+                         rms_thresh=0.2,
+                         use_torsion=True,
+                         use_basic=True,
+                         enforce_chirality=True,
+                         nthreads=12,
+                         minimize=True,
+                         align=True,
+                         seed=None,
+                         mmffVariant='MMFF94s'
+                        ):
+    '''
+    conformer_generation - generates conformers
+    for input mol
+
+    Inputs:
+
+    - `mol Chem.Mol`: Input mol
+
+    - `max_iter int`: maximum iterations for
+    conformer generation and minimization
+
+    - `rms_thresh float`: Retain only the conformers
+    that are at least this far apart from each other.
+
+    - `use_torsion bool`: if True, impose
+    experimental torsion angle preferences
+
+    - `use_basic bool`: if True, imposes basic
+    knowledge (ie flat rings)
+
+    - `enforce_chirality bool`: enforce chirality
+    if chiral centers are present
+
+    - `nthreads int`: number of threads to use.
+    If zero, all threads are used
+
+    - `minimize bool`: if True, MMFF force field
+    is used to minimize conformers
+
+    - `align bool`: if True, conformers are aligned
+
+    - `seed Optional[int]`: seed to use
+
+    - `mmffVariant str[MMFF94s, MMFF94]`: force field
+    to use if `minimize=True`
+    '''
+
+    if seed is None:
+        seed = np.random.randint(1,100000)
+
+    cids = AllChem.EmbedMultipleConfs(mol,
+                                     num_confs,
+                                     maxAttempts=max_iter,
+                                     pruneRmsThresh=rms_thresh,
+                                     useExpTorsionAnglePrefs=use_torsion,
+                                     useBasicKnowledge=use_basic,
+                                     enforceChirality=enforce_chirality,
+                                     numThreads=nthreads,
+                                     randomSeed=seed)
+
+    res = []
+    if minimize:
+        mp = AllChem.MMFFGetMoleculeProperties(mol, mmffVariant=mmffVariant)
+        res = AllChem.MMFFOptimizeMoleculeConfs(mol,
+                                                numThreads=nthreads,
+                                                mmffVariant=mmffVariant,
+                                                maxIters=max_iter)
+
+    rmslist = []
+    if align:
+        AllChem.AlignMolConformers(mol, confIds=cids, RMSlist=rmslist)
+
+    return [np.array(cids), res, rmslist]
 
 # Cell
 
