@@ -81,7 +81,9 @@ class PolicyGradient(BasePolicy):
         super().__init__(gamma)
         self.discount = discount
         self.ratio = ratio
-        self.ratio_clip = abs(ratio_clip)
+        if ratio_clip is not None:
+            ratio_clip = abs(ratio_clip)
+        self.ratio_clip = ratio_clip
         self.scale_rewards = scale_rewards
         self.mean_reward = None
 
