@@ -934,8 +934,6 @@ class CombiChem():
         if self.template is not None:
             bools = self.template(library)
             library = [library[i] for i in range(len(library)) if bools[i]]
-#             library, _ = self.template.screen_mols(library)
-#             library = [i[0] for i in library]
         library = maybe_parallel(canon_smile, library)
         library = list(set(library))
         end = time.time()

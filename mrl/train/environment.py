@@ -280,12 +280,6 @@ class Environment():
         for _ in mb:
             for step in progress_bar(range(iters), parent=mb):
                 self.step()
-#                 self.build_buffer()
-#                 self.sample_batch()
-#                 self.compute_reward()
-#                 self.get_model_outputs()
-#                 self.compute_loss()
-#                 self.after_batch()
 
         self('after_train')
         self.remove_cbs(cbs)
