@@ -353,8 +353,12 @@ class CrossEntropy():
 
         - `target torch.LongTensor[bs, sl]`: target integer values
         '''
-        output = output.view(-1, output.shape[-1])
-        target = target.view(-1).long()
+        if USE_CUDA:
+            output = output.view(-1, output.shape[-1])
+            target = target.view(-1).long()
+        else:
+            output = output.reshape(-1, output.shape[-1])
+            target = target.reshape(-1).long()
         return self.loss(output, target)
 
 class BinaryCrossEntropy():
@@ -362,8 +366,12 @@ class BinaryCrossEntropy():
         self.loss = nn.BCEWithLogitsLoss()
 
     def __call__(self, output, target):
-        output = output.view(-1)
-        target = target.view(-1)
+        if USE_CUDA:
+            output = output.view(-1)
+            target = target.view(-1)
+        else:
+            output = output.reshape(-1)
+            target = target.reshape(-1)
         return self.loss(output, target)
 
 
