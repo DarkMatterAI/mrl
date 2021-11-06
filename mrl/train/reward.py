@@ -100,6 +100,10 @@ class Reward():
 
         return rewards
 
+    def add_data_to_log(self, samples, rewards):
+        for i in range(len(samples)):
+            self.score_log[samples[i]] = rewards[i]
+
 
 # Cell
 

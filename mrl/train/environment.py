@@ -290,5 +290,5 @@ class Environment():
         labels = [i.name for i in self.cbs]
 
         fig, ax = plt.subplots(figsize=(8,6))
-        ax.stackplot(np.arange(len(event_times[0])), *event_times, labels=labels);
-        ax.legend(loc='upper left');
+        ax.stackplot(np.arange(len(event_times[0])), *event_times, labels=labels)
+        ax.legend(loc='upper left')
