@@ -140,15 +140,11 @@ def smile_to_selfie(smile, strict=True):
     return sf.encoder(smile, strict=strict)
 
 def selfie_to_smile(selfie):
-    smile = None
-    if selfie is not None:
+    try:
         smile = sf.decoder(selfie)
-
-    if smile is not None:
-        try:
-            smile = canon_smile(smile)
-        except:
-            smile = None
+        smile = canon_smile(smile)
+    except:
+        smile = None
 
     return smile
 
