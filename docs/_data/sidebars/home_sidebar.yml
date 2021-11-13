@@ -43,6 +43,9 @@ entries:
       - output: web
         subfolderitems:
         - output: web,pdf
+          title: Pretrained Models
+          url: tutorials.generative_models.model_zoo_pretrained.html
+        - output: web,pdf
           title: LSTM Language Model
           url: tutorials.generative_models.lstm_lm.html
         - output: web,pdf
