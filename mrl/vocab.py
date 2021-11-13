@@ -3,10 +3,10 @@
 __all__ = ['SMILES_CHAR_VOCAB', 'SPECIAL_TOKENS', 'MAPPING_TOKENS', 'HALOGEN_REPLACE', 'MAPPING_REPLACE',
            'AMINO_ACID_VOCAB', 'NUCLEIC_ACID_VOCAB', 'NUCLEIC_ACID_EXPANDED_VOCAB', 'NUCLEIC_ACID_DIMERS',
            'NUCLEIC_ACID_TRIMERS', 'NUCLEIC_ACID_TRIMERS', 'DNA_VOCAB', 'DNA_DIMERS', 'DNA_TRIMERS', 'SELFIES_VOCAB',
-           'SELFIES_EXPANDED_VOCAB', 'pad_vocab', 'SMILE_REGEX', 'MAPPING_REGEX', 'AA_MAPPING_REGEX',
-           'tokenize_by_character', 'tokenize_with_replacements', 'regex_tokenize', 'tokenize_by_kmer', 'Vocab',
-           'CharacterVocab', 'FuncVocab', 'SelfiesVocab', 'CharacterReplaceVocab', 'RegexVocab', 'KmerVocab',
-           'test_reconstruction']
+           'SELFIES_VOCAB_LEGACY', 'SELFIES_EXPANDED_VOCAB_LEGACY', 'SELFIES_EXPANDED_VOCAB_LEGACY', 'pad_vocab',
+           'SMILE_REGEX', 'MAPPING_REGEX', 'AA_MAPPING_REGEX', 'tokenize_by_character', 'tokenize_with_replacements',
+           'regex_tokenize', 'tokenize_by_kmer', 'Vocab', 'CharacterVocab', 'FuncVocab', 'SelfiesVocab',
+           'CharacterReplaceVocab', 'RegexVocab', 'KmerVocab', 'test_reconstruction']
 
 # Cell
 from .imports import *
@@ -133,7 +133,19 @@ DNA_TRIMERS = ['AAA', 'AAC', 'AAG', 'AAT',
  'TCG', 'TCT', 'TGA', 'TGC', 'TGG',
  'TGT', 'TTA', 'TTC', 'TTG', 'TTT']
 
-SELFIES_VOCAB = ['[C]', '[Ring1]', '[=C]', '[Branch1_1]',
+SELFIES_VOCAB = ['[O]', '[=C]', '[Branch1]', '[#C]', '[N]', '[C]',
+ '[Br]', '[Ring1]', '[#Branch1]', '[F]', '[=Branch1]', '[=O]',
+ '[#Branch2]', '[C@@H1]', '[Branch2]', '[=N]', '[=Branch2]', '[S]',
+ '[=Ring1]', '[Cl]', '[C@H1]', '[NH1]', '[Ring2]', '[C@]',
+ '[C@@]', '[P]', '[N+1]', '[O-1]', '[#N]', '[/C]', '[/C@@H1]',
+ '[=Ring2]', '[\\Cl]', '[=N+1]', '[/Cl]', '[/S]', '[\\C]',
+ '[=S]', '[S@@]', '[S@]', '[/N]', '[I]', '[/O]',
+ '[P@]', '[=S@]', '[\\S]', '[\\O]', '[Si]', '[\\N]',
+ '[=S@@]', '[/C@H1]', '[/F]', '[\\C@@H1]', '[B]', '[/C@]',
+ '[\\F]', '[\\C@@]', '[CH1]', '[\\C@]', '[\\C@H1]', '[CH0]',
+ '[=P]', '[/C@@]', '[P@@]']
+
+SELFIES_VOCAB_LEGACY = ['[C]', '[Ring1]', '[=C]', '[Branch1_1]',
              '[N]', '[Branch1_2]', '[=O]', '[O]', '[Branch2_1]',
              '[=N]', '[Ring2]', '[C@Hexpl]', '[C@@Hexpl]', '[F]',
              '[S]', '[Branch1_3]', '[Branch2_2]', '[Branch2_3]', '[#C]',
@@ -151,7 +163,33 @@ SELFIES_VOCAB = ['[C]', '[Ring1]', '[=C]', '[Branch1_1]',
              '[\\S-expl]']
 
 # includes tokens that appear <500 times in a dataset of 79 million compounds
-SELFIES_EXPANDED_VOCAB = ['[C]', '[Ring1]', '[=C]',
+SELFIES_EXPANDED_VOCAB_LEGACY = ['[O]', '[=C]', '[Branch1]', '[#C]', '[N]', '[C]',
+ '[Br]', '[Ring1]', '[#Branch1]', '[F]', '[=Branch1]', '[=O]',
+ '[#Branch2]', '[C@@H1]', '[Branch2]', '[=N]', '[=Branch2]', '[S]',
+ '[=Ring1]', '[Cl]', '[C@H1]', '[NH1]', '[Ring2]', '[C@]',
+ '[C@@]', '[P]', '[N+1]', '[O-1]', '[#N]', '[/C]',
+ '[/C@@H1]', '[=Ring2]', '[\\Cl]', '[=N+1]', '[/Cl]', '[/S]',
+ '[\\C]', '[=S]', '[S@@]', '[S@]', '[/N]', '[I]',
+ '[/O]', '[P@]', '[=S@]', '[\\S]', '[\\O]', '[Si]',
+ '[\\N]', '[=S@@]', '[/C@H1]', '[/F]', '[\\C@@H1]', '[B]',
+ '[/C@]', '[\\F]', '[\\C@@]', '[CH1]', '[=P@@]', '[\\NH1]',
+ '[\\C@]', '[\\C@H1]', '[CH2]', '[Sn]', '[/S@]', '[CH0]',
+ '[=P]', '[/C@@]', '[S+1]', '[/NH1]', '[=N-1]', '[/N+1]',
+ '[N-1]', '[\\Br]', '[P@@]', '[=S@+1]', '[N@@+1]', '[/Br]',
+ '[=P@]', '[/S@@]', '[=O+1]', '[\\N+1]', '[OH0]', '[\\S@]',
+ '[N@+1]', '[/B]', '[/I]', '[C-1]', '[CH1-1]', '[-/Ring2]',
+ '[\\O-1]', '[/S+1]', '[/OH0]', '[=17O]', '[#N+1]', '[SH1]',
+ '[=S+1]', '[B-1]', '[PH1]', '[P@@H1]', '[/O-1]', '[\\I]',
+ '[S@@+1]', '[=NH0]', '[I+1]', '[O+1]', '[=P@H1]', '[P+1]',
+ '[-/Ring1]', '[\\Sn]', '[-\\Ring2]', '[S@+1]', '[CH2-1]', '[NH0]',
+ '[\\S@@]', '[\\C-1]', '[B@-1]', '[\\P@@]', '[=SH1]', '[=S@@+1]',
+ '[\\Si]', '[SnH4+2]', '[B@@-1]', '[Sn+1]', '[/P@]', '[\\B]',
+ '[=Sn]', '[=P+1]', '[=P@@H1]', '[C+1]', '[\\P@]', '[N@@H1+1]',
+ '[/P@@]', '[Sn+3]', '[/Si]', '[/C-1]', '[/CH0]', '[BH3-1]',
+ '[\\CH1-1]', '[=B]', '[=Si]', '[/CH1]', '[/Sn]', '[BH2-1]',
+ '[\\CH0]', '[\\P]', '[=PH1]']
+
+SELFIES_EXPANDED_VOCAB_LEGACY = ['[C]', '[Ring1]', '[=C]',
              '[Branch1_1]', '[N]', '[Branch1_2]', '[=O]', '[O]', '[Branch2_1]',
              '[=N]', '[Ring2]', '[C@Hexpl]', '[C@@Hexpl]', '[F]', '[S]',
              '[Branch1_3]', '[Branch2_2]', '[Branch2_3]', '[#C]', '[Expl=Ring1]', '[P]',

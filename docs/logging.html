@@ -97,7 +97,7 @@ nb_path: "nbs/13_logging.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="log_to_df" class="doc_header"><code>log_to_df</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L162" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>log_to_df</code>(<strong><code>log</code></strong>, <strong><code>keys</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="log_to_df" class="doc_header"><code>log_to_df</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>log_to_df</code>(<strong><code>log</code></strong>, <strong><code>keys</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -123,33 +123,33 @@ nb_path: "nbs/13_logging.ipynb"
 <p>Use the <code>add_log</code> to add a new term to the batch log. At some point during the batch, add the values to be logged to the current <a href="/mrl/callback_core.html#BatchState"><code>BatchState</code></a> with an attribute name that matches the name added to the log. The batch log will automatically add the values to the batch log.</p>
 <p>Use <code>add_metric</code> to add a new term to the metric log. At some point during the batch, compute the metric you wish to log. Then use <a href="/mrl/logging.html#Log.update_metric"><code>Log.update_metric</code></a> to add the value to the metric log.</p>
 <p>Here's an outline implementation:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;my_callback&#39;</span><span class="p">)</span>
 
-<pre><code>class MyCallback(Callback):
-    def __init__(self):
-        super().__init__(name='my_callback')
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">log</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">add_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="c1"># adding new term to batch log</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="c1"># adding new term to metrics</span>
 
-    def setup(self):
-        log = self.environment.log
-        log.add_log(self.name) # adding new term to batch log
-        log.add_metric(self.name) # adding new term to metrics
+    <span class="k">def</span> <span class="nf">compute_reward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># make tensor of dummy rewards</span>
+        <span class="n">batch_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">batch_state</span>
+        <span class="n">bs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_state</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span>
+        <span class="n">rewards</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
 
-    def compute_reward(self):
-        # make tensor of dummy rewards
-        batch_state = self.environment.batch_state
-        bs = len(batch_state.samples)
-        rewards = to_device(torch.ones(bs).float())
+        <span class="n">batch_state</span><span class="o">.</span><span class="n">rewards</span> <span class="o">+=</span> <span class="n">rewards</span>
+        <span class="n">batch_state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">rewards</span> <span class="c1"># this is the value the batch log will pick up</span>
 
-        batch_state.rewards += rewards
-        batch_state[self.name] = rewards # this is the value the batch log will pick up
+    <span class="k">def</span> <span class="nf">after_compute_reward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">log</span>
+        <span class="n">batch_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">batch_state</span>
 
-    def after_compute_reward(self):
-        log = self.environment.log
-        batch_state = self.environment.batch_state
+        <span class="n">my_callback_rewards</span> <span class="o">=</span> <span class="n">batch_state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">my_metric</span> <span class="o">=</span> <span class="n">my_callback_rewards</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
-        my_callback_rewards = batch_state[self.name]
-        my_metric = my_callback_rewards.mean()
-
-        log.update_metric(self.name, my_metric.detach().cpu().numpy()) # update metric value</code></pre>
+        <span class="n">log</span><span class="o">.</span><span class="n">update_metric</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">my_metric</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span> <span class="c1"># update metric value</span>
+</pre></div>
 
 </div>
 </div>
@@ -172,7 +172,7 @@ nb_path: "nbs/13_logging.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StatsCallback" class="doc_header"><code>class</code> <code>StatsCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L181" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StatsCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>=<em><code>None</code></em>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'stats'</code></em>, <strong><code>order</code></strong>=<em><code>20</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
+<h2 id="StatsCallback" class="doc_header"><code>class</code> <code>StatsCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L187" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StatsCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>=<em><code>None</code></em>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'stats'</code></em>, <strong><code>order</code></strong>=<em><code>20</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>StatsCallback - base class for callbacks related to calculating
 stats from batches</p>
@@ -220,7 +220,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MaxCallback" class="doc_header"><code>class</code> <code>MaxCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L231" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaxCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging.html#StatsCallback"><code>StatsCallback</code></a></p>
+<h2 id="MaxCallback" class="doc_header"><code>class</code> <code>MaxCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L237" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MaxCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging.html#StatsCallback"><code>StatsCallback</code></a></p>
 </blockquote>
 <p>MaxCallback - adds a metric tracking the maximum of
 <code>batch_attribute</code>, subset by <code>grabname</code>, printed every
@@ -265,7 +265,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MinCallback" class="doc_header"><code>class</code> <code>MinCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L269" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MinCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging.html#StatsCallback"><code>StatsCallback</code></a></p>
+<h2 id="MinCallback" class="doc_header"><code>class</code> <code>MinCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L275" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MinCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging.html#StatsCallback"><code>StatsCallback</code></a></p>
 </blockquote>
 <p>MinCallback - adds a metric tracking the minimum of
 <code>batch_attribute</code>, subset by <code>grabname</code>, printed every
@@ -310,7 +310,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MeanCallback" class="doc_header"><code>class</code> <code>MeanCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L307" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MeanCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging.html#StatsCallback"><code>StatsCallback</code></a></p>
+<h2 id="MeanCallback" class="doc_header"><code>class</code> <code>MeanCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L313" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MeanCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging.html#StatsCallback"><code>StatsCallback</code></a></p>
 </blockquote>
 <p>MeanCallback - adds a metric tracking the mean of
 <code>batch_attribute</code>, subset by <code>grabname</code>, printed every
@@ -355,7 +355,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PercentileCallback" class="doc_header"><code>class</code> <code>PercentileCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L345" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PercentileCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>percentile</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging.html#StatsCallback"><code>StatsCallback</code></a></p>
+<h2 id="PercentileCallback" class="doc_header"><code>class</code> <code>PercentileCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L351" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PercentileCallback</code>(<strong><code>batch_attribute</code></strong>, <strong><code>grabname</code></strong>, <strong><code>percentile</code></strong>, <strong><code>include_buffer</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/logging.html#StatsCallback"><code>StatsCallback</code></a></p>
 </blockquote>
 <p>PercentileCallback - adds a metric tracking the <code>percentile</code>
 percentile value of <code>batch_attribute</code>, subset by <code>grabname</code>,
@@ -402,7 +402,7 @@ that match <code>grabname</code> will be included</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveLogDF" class="doc_header"><code>class</code> <code>SaveLogDF</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L386" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveLogDF</code>(<strong><code>frequency</code></strong>, <strong><code>save_path</code></strong>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
+<h2 id="SaveLogDF" class="doc_header"><code>class</code> <code>SaveLogDF</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/log.py#L392" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveLogDF</code>(<strong><code>frequency</code></strong>, <strong><code>save_path</code></strong>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>SaveLogDF - periodically saves the Log
 dataframe during training</p>

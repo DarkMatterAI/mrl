@@ -135,7 +135,7 @@ chunks of size <code>bs</code> and sent to <code>reward_function</code> as batch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RewardCallback" class="doc_header"><code>class</code> <code>RewardCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/reward.py#L106" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RewardCallback</code>(<strong><code>reward</code></strong>, <strong><code>name</code></strong>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>order</code></strong>=<em><code>10</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
+<h2 id="RewardCallback" class="doc_header"><code>class</code> <code>RewardCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/reward.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RewardCallback</code>(<strong><code>reward</code></strong>, <strong><code>name</code></strong>, <strong><code>sample_name</code></strong>=<em><code>'samples'</code></em>, <strong><code>order</code></strong>=<em><code>10</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>RewardCallback - callback wrapper for <a href="/mrl/reward.html#Reward"><code>Reward</code></a>
 used during <code>compute_reward</code> event</p>
@@ -190,7 +190,7 @@ from this callback</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GenericRewardCallback" class="doc_header"><code>class</code> <code>GenericRewardCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/reward.py#L157" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GenericRewardCallback</code>(<strong><code>reward</code></strong>, <strong><code>name</code></strong>, <strong><code>order</code></strong>=<em><code>10</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/reward.html#RewardCallback"><code>RewardCallback</code></a></p>
+<h2 id="GenericRewardCallback" class="doc_header"><code>class</code> <code>GenericRewardCallback</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/reward.py#L161" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GenericRewardCallback</code>(<strong><code>reward</code></strong>, <strong><code>name</code></strong>, <strong><code>order</code></strong>=<em><code>10</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/reward.html#RewardCallback"><code>RewardCallback</code></a></p>
 </blockquote>
 <p>GenericRewardCallback - generic reward
 wrapper</p>
@@ -289,7 +289,7 @@ applied to <code>self.environmemnt.batch_state.rewards</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NoveltyReward" class="doc_header"><code>class</code> <code>NoveltyReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/reward.py#L246" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoveltyReward</code>(<strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
+<h2 id="NoveltyReward" class="doc_header"><code>class</code> <code>NoveltyReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/reward.py#L250" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NoveltyReward</code>(<strong><code>weight</code></strong>=<em><code>1.0</code></em>, <strong><code>track</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/callback_core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>NoveltyReward - gives a reward bonus
 for new samples. Rewards are given a
@@ -340,7 +340,7 @@ from this callback</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ContrastiveReward" class="doc_header"><code>class</code> <code>ContrastiveReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/reward.py#L290" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveReward</code>(<strong><code>base_reward</code></strong>, <strong><code>max_score</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/reward.html#RewardCallback"><code>RewardCallback</code></a></p>
+<h2 id="ContrastiveReward" class="doc_header"><code>class</code> <code>ContrastiveReward</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/train/reward.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContrastiveReward</code>(<strong><code>base_reward</code></strong>, <strong><code>max_score</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/reward.html#RewardCallback"><code>RewardCallback</code></a></p>
 </blockquote>
 <p>ContrastiveReward - contrastive wrapper for
 reward callbacks</p>

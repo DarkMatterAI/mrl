@@ -488,9 +488,10 @@ class LSTM_LM_Small_ZINC_Selfies(PretrainedGenerativeAgent):
                 ):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
-                  prefunc=smile_to_selfie, postfunc=selfie_to_smile)
+                  prefunc=partial(smile_to_selfie, strict=False),
+                  postfunc=selfie_to_smile)
         model = lstm_lm_small(vocab, drop_scale=drop_scale)
-        weight_filename = 'lstmlm_small_zinc_selfies.pt'
+        weight_filename = 'lstmlm_small_zinc_selfies_2.pt'
 
         loss_function = CrossEntropy()
         dataset = Text_Dataset(['C'], vocab)
@@ -545,9 +546,10 @@ class LSTM_LM_Small_Chembl_Selfies(PretrainedGenerativeAgent):
                 ):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
-                  prefunc=smile_to_selfie, postfunc=selfie_to_smile)
+                  prefunc=partial(smile_to_selfie, strict=False),
+                  postfunc=selfie_to_smile)
         model = lstm_lm_small(vocab, drop_scale=drop_scale)
-        weight_filename = 'lstmlm_small_chembl_selfies.pt'
+        weight_filename = 'lstmlm_small_chembl_selfies_2.pt'
 
         loss_function = CrossEntropy()
         dataset = Text_Dataset(['C'], vocab)
@@ -1184,9 +1186,10 @@ class FP_Cond_LSTM_LM_Small_ZINC_Selfies(PretrainedGenerativeAgent):
                 ):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
-                    prefunc=smile_to_selfie, postfunc=selfie_to_smile)
+                    prefunc=partial(smile_to_selfie, strict=False),
+                    postfunc=selfie_to_smile)
         model = mlp_cond_lstm_small(vocab, drop_scale=drop_scale)
-        weight_filename = 'fp_cond_lstmlm_small_zinc_selfies.pt'
+        weight_filename = 'fp_cond_lstmlm_small_zinc_selfies_2.pt'
 
         loss_function = CrossEntropy()
         fp_function = partial(failsafe_fp, fp_function=ECFP6)
@@ -1543,10 +1546,11 @@ class FP_VAE_ZINC_Selfies(PretrainedGenerativeAgent):
                 ):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
-                    prefunc=smile_to_selfie, postfunc=selfie_to_smile)
+                    prefunc=partial(smile_to_selfie, strict=False),
+                    postfunc=selfie_to_smile)
 
         model = mlp_vae(vocab, drop_scale=drop_scale)
-        weight_filename = 'fp_vae_zinc_selfies.pt'
+        weight_filename = 'fp_vae_zinc_selfies_2.pt'
 
         loss_function = CrossEntropy()
         fp_function = partial(failsafe_fp, fp_function=ECFP6)

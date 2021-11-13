@@ -280,12 +280,6 @@ class Environment():
         for _ in mb:
             for step in progress_bar(range(iters), parent=mb):
                 self.step()
-#                 self.build_buffer()
-#                 self.sample_batch()
-#                 self.compute_reward()
-#                 self.get_model_outputs()
-#                 self.compute_loss()
-#                 self.after_batch()
 
         self('after_train')
         self.remove_cbs(cbs)
@@ -296,5 +290,5 @@ class Environment():
         labels = [i.name for i in self.cbs]
 
         fig, ax = plt.subplots(figsize=(8,6))
-        ax.stackplot(np.arange(len(event_times[0])), *event_times, labels=labels);
-        ax.legend(loc='upper left');
+        ax.stackplot(np.arange(len(event_times[0])), *event_times, labels=labels)
+        ax.legend(loc='upper left')

@@ -95,9 +95,9 @@ class Agent(Callback):
         return loss
 
     def train_supervised(self, bs, epochs, lr, percent_valid=0.05,
-                         silent=False, fp16=False, opt_kwargs={}):
+                         silent=False, fp16=False, save_every=None, opt_kwargs={}):
         '''
-        train_supervised
+        train_supervised - trains on data in `self.dataset`
 
         Inputs:
 
@@ -113,8 +113,14 @@ class Agent(Callback):
 
         - `fp16 bool`: if FP16 training should be used
 
+        - `save_every Optional[int]`: If an integer is given, model
+        weights are saved every `save_every` batches to
+        `{self.name}_weights_{batch}.pt`
+
         - `opt_kwargs Optional[dict]`: keyword arguments passed to optimzier
         '''
+
+        total_batches = 0
 
         if fp16:
             scaler = torch.cuda.amp.GradScaler()
@@ -167,6 +173,11 @@ class Agent(Callback):
                 if not silent:
                     mb.child.comment = f"{train_losses[-1]:.5f}"
 
+                total_batches += 1
+
+                if (save_every is not None) and (total_batches%save_every==0):
+                    self.save_weights(f'{self.name}_weights_{total_batches}.pt')
+
             with torch.no_grad():
                 self.model.eval()
                 valid_losses = []
@@ -209,10 +220,7 @@ class Agent(Callback):
         state_dict = torch.load(filename, map_location=get_model_device(self.model))
         self.load_state_dict(state_dict)
 
-#         self.model.load_state_dict(state_dict)
-
     def save_weights(self, filename):
-
         state_dict = self.model.state_dict()
         torch.save(state_dict, filename)
 
@@ -483,6 +491,13 @@ class GenerativeAgent(BaselineAgent):
     def sample_and_reconstruct(self, bs, sl, **sample_kwargs):
         preds, _ = self.model.sample_no_grad(bs, sl, **sample_kwargs)
         recon = self.reconstruct(preds)
+        return recon
+
+    def batch_sample_and_reconstruct(self, n_samples, sample_bs, sl, **sample_kwargs):
+        n_batches = n_samples//sample_bs
+        recon = []
+        for i in range(n_batches):
+            recon += self.sample_and_reconstruct(sample_bs, sl, **sample_kwargs)
         return recon
 
     def before_compute_reward(self):

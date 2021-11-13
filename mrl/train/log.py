@@ -112,13 +112,19 @@ class Log(Callback):
             update_dict[key] = items
 
         new_df = pd.DataFrame(update_dict)
-        repeats = new_df.samples.isin(self.df.samples)
-        new_df = new_df[~repeats]
+        self.add_data(new_df)
+#         repeats = new_df.samples.isin(self.df.samples)
+#         new_df = new_df[~repeats]
 
-        self.df = self.df.append(new_df, ignore_index=True)
+#         self.df = self.df.append(new_df, ignore_index=True)
 
         if self.iterations%10==0 and self.iterations>0:
             self.df.drop_duplicates(subset='samples', inplace=True)
+
+    def add_data(self, new_df):
+        repeats = new_df.samples.isin(self.df.samples)
+        new_df = new_df[~repeats]
+        self.df = self.df.append(new_df, ignore_index=True)
 
     def report_batch(self):
         outputs = [f'{self.iterations}']

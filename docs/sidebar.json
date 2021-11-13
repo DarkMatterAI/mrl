@@ -15,6 +15,7 @@
                 "Model-Assisted Combichem" : "tutorials.model_combichem.html"
             },
             "Generative Models" : {
+                "Pretrained Models" : "tutorials.generative_models.model_zoo_pretrained.html",
                 "LSTM Language Model" : "tutorials.generative_models.lstm_lm.html",
                 "Conditional LSTM Language Model" : "tutorials.generative_models.conditional_lstm_lm.html",
                 "VAE" : "tutorials.generative_models.vae.html",
