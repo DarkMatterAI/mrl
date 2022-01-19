@@ -353,7 +353,7 @@ class CrossEntropy():
 
         - `target torch.LongTensor[bs, sl]`: target integer values
         '''
-        if USE_CUDA:
+        if USE_CUDA and not os.environ['use_cuda']=='cpu':
             output = output.view(-1, output.shape[-1])
             target = target.view(-1).long()
         else:
@@ -366,7 +366,7 @@ class BinaryCrossEntropy():
         self.loss = nn.BCEWithLogitsLoss()
 
     def __call__(self, output, target):
-        if USE_CUDA:
+        if USE_CUDA and not os.environ['use_cuda']=='cpu':
             output = output.view(-1)
             target = target.view(-1)
         else:
