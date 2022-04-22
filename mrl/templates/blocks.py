@@ -308,9 +308,6 @@ class MolBlock(Block):
         if not is_container(fragments):
             fragments = [fragments]
 
-#         if type(fragments) == str:
-#             fragments = [fragments]
-
         valids = self.template.validate(fragments, cpus=0)
 
         if all(valids):

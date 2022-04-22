@@ -486,18 +486,27 @@ class GenerativeAgent(BaselineAgent):
         self.vocab = vocab
 
     def reconstruct(self, preds):
-        return maybe_parallel(self.vocab.reconstruct, [i for i in preds.detach().cpu()])
+        return maybe_parallel(self.vocab.reconstruct, [i for i in preds.detach().cpu().numpy()])
 
     def sample_and_reconstruct(self, bs, sl, **sample_kwargs):
         preds, _ = self.model.sample_no_grad(bs, sl, **sample_kwargs)
         recon = self.reconstruct(preds)
         return recon
 
-    def batch_sample_and_reconstruct(self, n_samples, sample_bs, sl, **sample_kwargs):
+    def batch_sample_and_reconstruct(self, n_samples, sample_bs, sl,
+                                     verbose=False, **sample_kwargs):
+        if sample_bs > n_samples:
+            sample_bs = n_samples
         n_batches = n_samples//sample_bs
+        remainder = n_samples - (n_batches * sample_bs)
         recon = []
         for i in range(n_batches):
+            if verbose:
+                print(f'batch {i}/{n_batches}')
             recon += self.sample_and_reconstruct(sample_bs, sl, **sample_kwargs)
+
+        if remainder > 0:
+            recon += self.sample_and_reconstruct(remainder, sl, **sample_kwargs)
         return recon
 
     def before_compute_reward(self):

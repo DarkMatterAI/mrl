@@ -238,7 +238,7 @@ class ModelSampler(Sampler):
 
                 preds, _ = self.model.sample_no_grad(current_bs, sl, multinomial=True,
                                                      temperature=self.temperature)
-                sequences = [self.vocab.reconstruct(i) for i in preds]
+                sequences = [self.vocab.reconstruct(i) for i in preds.detach().cpu().numpy()]
                 sequences = list(set(sequences))
                 outputs += sequences
                 outputs = list(set(outputs))
@@ -267,7 +267,7 @@ class ModelSampler(Sampler):
             preds, _ = self.model.sample_no_grad(bs, sl, z=None, multinomial=True,
                                                 temperature=self.temperature)
 
-            sequences = [self.vocab.reconstruct(i) for i in preds]
+            sequences = [self.vocab.reconstruct(i) for i in preds.detach().cpu().numpy()]
 
         return sequences
 
@@ -400,7 +400,7 @@ class PriorSampler(ModelSampler):
                 z = self.prior.sample(current_bs)
                 preds, _ = self.model.sample_no_grad(current_bs, sl, z=z, multinomial=True,
                                                      temperature=self.temperature)
-                sequences = [self.vocab.reconstruct(i) for i in preds]
+                sequences = [self.vocab.reconstruct(i) for i in preds.detach().cpu().numpy()]
                 sequences = list(set(sequences))
                 outputs += sequences
                 outputs = list(set(outputs))
@@ -432,7 +432,7 @@ class PriorSampler(ModelSampler):
 
             preds, _ = self.model.sample_no_grad(bs, sl, z=z, multinomial=True,
                                                 temperature=self.temperature)
-            sequences = [self.vocab.reconstruct(i) for i in preds]
+            sequences = [self.vocab.reconstruct(i) for i in preds.detach().cpu().numpy()]
 
         return sequences, z
 
@@ -552,7 +552,7 @@ class LatentSampler(ModelSampler):
 
             preds, _ = self.model.sample_no_grad(bs, sl, z=sample_latents, multinomial=True,
                                                 temperature=self.temperature)
-            sequences = [self.vocab.reconstruct(i) for i in preds]
+            sequences = [self.vocab.reconstruct(i) for i in preds.detach().cpu().numpy()]
 
         return sequences, sample_latents
 
@@ -625,7 +625,7 @@ class ContrastiveSampler(Sampler):
             x,_ = batch
             z = self.output_model.x_to_latent(x)
             preds, _ = self.output_model.sample_no_grad(z.shape[0], sl, z=z)
-            new_sequences = [self.vocab.reconstruct(i) for i in preds]
+            new_sequences = [self.vocab.reconstruct(i) for i in preds.detach().cpu().numpy()]
 
         else:
             batch_dl = batch_ds.dataloader(self.bs, shuffle=False)
@@ -637,7 +637,7 @@ class ContrastiveSampler(Sampler):
                 x,_ = batch
                 z = self.output_model.x_to_latent(x)
                 preds, _ = self.output_model.sample_no_grad(z.shape[0], sl, z=z)
-                new_sequences += [self.vocab.reconstruct(i) for i in preds]
+                new_sequences += [self.vocab.reconstruct(i) for i in preds.detach().cpu().numpy()]
 
         outputs = [(sequences[i], new_sequences[i]) for i in range(len(sequences))]
 

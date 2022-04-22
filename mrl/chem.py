@@ -3,18 +3,18 @@
 __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mols', 'to_smiles', 'to_smarts',
            'smart_to_rxn', 'canon_smile', 'remove_stereo', 'smile_to_selfie', 'selfie_to_smile', 'split_selfie',
            'neutralize_atoms', 'initialize_neutralisation_reactions', 'neutralize_charges', 'find_bond_groups',
-           'draw_mols', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond', 'loose_rotbond', 'rot_chain_length', 'fsp3', 'logp',
-           'rings', 'max_ring_size', 'min_ring_size', 'heteroatoms', 'all_atoms', 'heavy_atoms', 'formal_charge',
-           'molar_refractivity', 'aromaticrings', 'qed', 'sa_score', 'num_bridgeheads', 'num_spiro', 'chiral_centers',
-           'penalized_logp', 'conformer_generation', 'Catalog', 'SmartsCatalog', 'ParamsCatalog', 'PAINSCatalog',
-           'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog', 'BRENKCatalog', 'NIHCatalog', 'morgan_fp',
-           'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice',
-           'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint', 'fingerprint_similarities', 'fragment_mol',
-           'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold',
-           'add_map_nums', 'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom',
-           'generate_spec_template', 'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi',
-           'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins', 'to_sequences', 'to_dna', 'to_dnas', 'to_rna',
-           'to_rnas']
+           'draw_mols', 'add_hs', 'remove_hs', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond', 'loose_rotbond',
+           'rot_chain_length', 'fsp3', 'logp', 'rings', 'max_ring_size', 'min_ring_size', 'heteroatoms', 'all_atoms',
+           'heavy_atoms', 'formal_charge', 'molar_refractivity', 'aromaticrings', 'qed', 'sa_score', 'num_bridgeheads',
+           'num_spiro', 'chiral_centers', 'penalized_logp', 'conformer_generation', 'Catalog', 'SmartsCatalog',
+           'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog',
+           'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array',
+           'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint',
+           'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping',
+           'fuse_on_link', 'murcko_scaffold', 'add_map_nums', 'check_ring_bonds', 'decorate_smile', 'decorate_smiles',
+           'remove_atom', 'generate_spec_template', 'StructureEnumerator', 'add_one_atom', 'add_atom_combi',
+           'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins', 'to_sequences', 'to_dna',
+           'to_dnas', 'to_rna', 'to_rnas']
 
 # Cell
 from .imports import *
@@ -255,6 +255,12 @@ def draw_mols(mols, legends=None, mols_per_row=3, sub_img_size=(300,300)):
                                     subImgSize=sub_img_size, legends=legends)
 
 # Cell
+
+def add_hs(mol):
+    return Chem.AddHs(mol)
+
+def remove_hs(mol):
+    return Chem.RemoveHs(mol)
 
 def molwt(mol):
     'molecular weight'

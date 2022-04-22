@@ -34,6 +34,8 @@ index = {"is_container": "00_core.ipynb",
          "neutralize_charges": "01_chem.ipynb",
          "find_bond_groups": "01_chem.ipynb",
          "draw_mols": "01_chem.ipynb",
+         "add_hs": "01_chem.ipynb",
+         "remove_hs": "01_chem.ipynb",
          "molwt": "01_chem.ipynb",
          "hbd": "01_chem.ipynb",
          "hba": "01_chem.ipynb",
@@ -413,7 +415,11 @@ index = {"is_container": "00_core.ipynb",
          "SelfiesReplace": "23_combichem.ipynb",
          "SelfiesRemove": "23_combichem.ipynb",
          "MutatorCollection": "23_combichem.ipynb",
-         "CombiChem": "23_combichem.ipynb"}
+         "CombiChem": "23_combichem.ipynb",
+         "surface": "24_pharmacophore.ipynb",
+         "pharm_surface": "24_pharmacophore.ipynb",
+         "Pharmacophore": "24_pharmacophore.ipynb",
+         "MolPharmacophore": "24_pharmacophore.ipynb"}
 
 modules = ["core.py",
            "chem.py",
@@ -438,7 +444,8 @@ modules = ["core.py",
            "train/environment.py",
            "train/reward.py",
            "model_zoo.py",
-           "combichem.py"]
+           "combichem.py",
+           "pharmacophore.py"]
 
 doc_url = "https://DarkMatterAI.github.io/mrl/"
 

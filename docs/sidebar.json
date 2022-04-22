@@ -61,7 +61,8 @@
                 "Core" : "core.html"
             },
             "Chem" : {
-                "Chem" : "chem.html"
+                "Chem" : "chem.html",
+                "Combichem" : "combichem.html"
             },
             "Templates" : {
                 "Overview" : "template.overview.html",
