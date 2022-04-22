@@ -151,6 +151,9 @@ entries:
         - output: web,pdf
           title: Chem
           url: chem.html
+        - output: web,pdf
+          title: Combichem
+          url: combichem.html
         title: Chem
       - output: web
         subfolderitems:
