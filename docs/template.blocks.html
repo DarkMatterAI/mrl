@@ -255,7 +255,7 @@ templates and <code>fused</code> passed <code>self.template</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L375" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
+<h2 id="ConstantBlock" class="doc_header"><code>class</code> <code>ConstantBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L372" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantBlock</code>(<strong><code>constant</code></strong>, <strong><code>name</code></strong>)</p>
 </blockquote>
 <p>ConstantBlock - base block class for constant sequence</p>
 
@@ -280,7 +280,7 @@ templates and <code>fused</code> passed <code>self.template</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L405" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>, <strong><code>links</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
+<h2 id="ConstantMolBlock" class="doc_header"><code>class</code> <code>ConstantMolBlock</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L402" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConstantMolBlock</code>(<strong><code>smile</code></strong>, <strong><code>name</code></strong>, <strong><code>links</code></strong>=<em><code>None</code></em>) :: <a href="/mrl/template.blocks.html#ConstantBlock"><code>ConstantBlock</code></a></p>
 </blockquote>
 <p>ConstantMolBlock - constant block for SMILES sequence</p>
 
@@ -312,7 +312,7 @@ templates and <code>fused</code> passed <code>self.template</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BlockTemplate" class="doc_header"><code>class</code> <code>BlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L433" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTemplate</code>(<strong><code>head_block</code></strong>, <strong><code>lookup</code></strong>=<em><code>True</code></em>)</p>
+<h2 id="BlockTemplate" class="doc_header"><code>class</code> <code>BlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L430" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BlockTemplate</code>(<strong><code>head_block</code></strong>, <strong><code>lookup</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>BlockTemplate - base class for handling nested blocks. Takes care of running fragment strings and logging outputs</p>
 
@@ -344,7 +344,7 @@ templates and <code>fused</code> passed <code>self.template</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RGroupBlockTemplate" class="doc_header"><code>class</code> <code>RGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L631" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>replace_wildcard</code></strong>=<em><code>True</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="RGroupBlockTemplate" class="doc_header"><code>class</code> <code>RGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L628" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>rgroup_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>replace_wildcard</code></strong>=<em><code>True</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>RGroupBlockTemplate - block template for r-group screening</p>
 <p>Inputs:</p>
@@ -386,7 +386,7 @@ Should have a single unmapped wildcard atom, ie <code>*CCCC</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DoubleRGroupBlockTemplate" class="doc_header"><code>class</code> <code>DoubleRGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L694" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="DoubleRGroupBlockTemplate" class="doc_header"><code>class</code> <code>DoubleRGroupBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L691" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DoubleRGroupBlockTemplate</code>(<strong><code>base_smile</code></strong>, <strong><code>r1_template</code></strong>, <strong><code>r2_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>DoubleRGroupBlockTemplate - block template for screening two r-groups</p>
 <p>Inputs:</p>
@@ -432,7 +432,7 @@ will be fused to wildcard <code>1*:2</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LinkerBlockTemplate" class="doc_header"><code>class</code> <code>LinkerBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L740" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinkerBlockTemplate</code>(<strong><code>smile1</code></strong>, <strong><code>smile2</code></strong>, <strong><code>linker_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="LinkerBlockTemplate" class="doc_header"><code>class</code> <code>LinkerBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L737" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LinkerBlockTemplate</code>(<strong><code>smile1</code></strong>, <strong><code>smile2</code></strong>, <strong><code>linker_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>LinkerBlockTemplate - block template for screening linkers</p>
 <p>Inputs:</p>
@@ -477,7 +477,7 @@ Should have a single unmapped wildcard, ie <code>*CCCC</code></p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ScaffoldBlockTemplate" class="doc_header"><code>class</code> <code>ScaffoldBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L797" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaffoldBlockTemplate</code>(<strong><code>attachments</code></strong>, <strong><code>scaffold_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
+<h2 id="ScaffoldBlockTemplate" class="doc_header"><code>class</code> <code>ScaffoldBlockTemplate</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/blocks.py#L794" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ScaffoldBlockTemplate</code>(<strong><code>attachments</code></strong>, <strong><code>scaffold_template</code></strong>, <strong><code>full_molecule_template</code></strong>=<em><code>None</code></em>, <strong><code>lookup</code></strong>=<em><code>True</code></em>) :: <a href="/mrl/template.blocks.html#BlockTemplate"><code>BlockTemplate</code></a></p>
 </blockquote>
 <p>ScaffoldBlockTemplate - block template for screening scaffolds or rings with multiple attachments</p>
 <p>Inputs:</p>
