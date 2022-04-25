@@ -203,8 +203,8 @@ class Agent(Callback):
             valid_loss = smooth_batches(valid_losses)
             end = time.time() - start
             if not silent:
-                mb.write([epoch, f'{train_losses[-1]:.5f}',
-                      f'{valid_losses[-1]:.5f}', f'{format_time(end)}'], table=True)
+                mb.write([epoch, f'{train_loss:.5f}',
+                      f'{valid_loss:.5f}', f'{format_time(end)}'], table=True)
 
     def update_dataset(self, dataset):
         self.dataset = dataset
