@@ -11,7 +11,7 @@ jobs:
         architecture: 'x64'
     - name: Install the library
       run: |
-        pip install nbformat==5.3.0 nbconvert==5.6.1 nbdev==1.1.14 jupyter
+        pip install jinja2==3.0.3 nbdev==1.1.14 jupyter
         pip install -e .
     - name: Read all notebooks
       run: |
