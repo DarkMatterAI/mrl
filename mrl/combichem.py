@@ -975,7 +975,7 @@ class CombiChem():
 
         self.library['score'] = self.library.score.map(lambda x: float(x))
         end = time.time()
-        self.timelog['score_library'].append(start-end)
+        self.timelog['score_library'].append(end-start)
 
     def prune_library(self):
         start = time.time()
@@ -1010,7 +1010,7 @@ class CombiChem():
         self.library.reset_index(inplace=True, drop=True)
         gc.collect()
         end = time.time()
-        self.timelog['prune_library'].append(start-end)
+        self.timelog['prune_library'].append(end-start)
 
     def reset_library(self):
         if self.log:
@@ -1040,4 +1040,4 @@ class CombiChem():
         self.library.reset_index(inplace=True, drop=True)
         self.score_library()
         end = time.time()
-        self.timelog['append_data'].append(start-end)
+        self.timelog['append_data'].append(end-start)

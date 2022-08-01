@@ -110,15 +110,28 @@ class Base_Dataset(Dataset):
     Inputs:
 
     - `collate_function Callable`: batch collate function for the particular dataset class
+
+    - `cache Bool`: if True, cache dataset
     '''
-    def __init__(self, collate_function):
+    def __init__(self, collate_function, cache=False):
         self.collate_function = collate_function
+        self.do_cache = cache
+        self.cache = {}
 
     def __len__(self):
         raise NotImplementedError
 
     def __getitem__(self, idx):
         raise NotImplementedError
+
+    def maybe_cache(self, idx, items):
+        if self.do_cache:
+            self.cache[idx] = items
+
+    def check_cache(self, idx):
+        if idx in self.cache:
+            return self.cache[idx]
+        return None
 
     def dataloader(self, bs, num_workers=-1, **dl_kwargs):
         if num_workers==-1:
@@ -165,6 +178,8 @@ class Text_Dataset(Base_Dataset):
 
     - `collate_function Callable`: batch collate function. If None, defauts to `lm_collate`
 
+    - `cache Bool`: if True, cache dataset
+
     If `sequences` is a list of strings, `__getitem__` returns a tuple of `(sequence_ints, None)`.
     This is suitable for language modeling where the goal is to predict the input sequence.
 
@@ -172,13 +187,13 @@ class Text_Dataset(Base_Dataset):
     `(input_sequence_ints, output_sequence_ints)`. This is suitable for seq-to-seq tasks where
     the predicted sequence is different from the input sequence
     '''
-    def __init__(self, sequences, vocab, collate_function=None):
+    def __init__(self, sequences, vocab, collate_function=None, cache=False):
         self.sequences = sequences
         self.vocab = vocab
         if collate_function is None:
             collate_function = partial(lm_collate, pad_idx=self.vocab.stoi['pad'])
 
-        super().__init__(collate_function)
+        super().__init__(collate_function, cache)
 
     def __len__(self):
         return len(self.sequences)
@@ -190,6 +205,10 @@ class Text_Dataset(Base_Dataset):
         return ints
 
     def __getitem__(self, idx):
+        cached = self.check_cache(idx)
+        if cached is not None:
+            return cached
+
         sequence = self.sequences[idx]
 
         if type(sequence)==tuple:
@@ -198,10 +217,11 @@ class Text_Dataset(Base_Dataset):
         else:
             outputs = (self.numericalize(sequence), None)
 
+        self.maybe_cache(idx, outputs)
         return outputs
 
     def new(self, sequences):
-        return self.__class__(sequences, self.vocab, self.collate_function)
+        return self.__class__(sequences, self.vocab, self.collate_function, self.do_cache)
 
     def split_on_idxs(self, train_idxs, valid_idxs):
 
@@ -226,25 +246,33 @@ class Text_Prediction_Dataset(Text_Dataset):
 
     - `collate_function Callable`: batch collate function. If None, defauts to `sequence_prediction_collate`
 
+    - `cache Bool`: if True, cache dataset
+
     `__getitem__` returns a tuple of `(sequence_ints, y_vals)` suitable for predicting
     regressions or classifications from the sequence
     '''
-    def __init__(self, sequences, y_vals, vocab, collate_function=None):
+    def __init__(self, sequences, y_vals, vocab, collate_function=None, cache=False):
 
         if collate_function is None:
             collate_function = partial(sequence_prediction_collate, pad_idx=vocab.stoi['pad'])
 
-        super().__init__(sequences, vocab, collate_function)
+        super().__init__(sequences, vocab, collate_function, cache)
 
         self.y_vals = y_vals
 
     def __getitem__(self, idx):
+        cached = self.check_cache(idx)
+        if cached is not None:
+            return cached
+
         ints = super().__getitem__(idx)[0]
         y_val = torch.Tensor([self.y_vals[idx]]).float()
-        return (ints, y_val)
+        outputs = (ints, y_val)
+        self.maybe_cache(idx, outputs)
+        return outputs
 
     def new(self, sequences, y_vals):
-        return self.__class__(sequences, y_vals, self.vocab, self.collate_function)
+        return self.__class__(sequences, y_vals, self.vocab, self.collate_function, self.do_cache)
 
     def split_on_idxs(self, train_idxs, valid_idxs):
 
@@ -269,11 +297,13 @@ class Vector_Dataset(Base_Dataset):
     - `vec_function Callable`: function to convert sequence to a vector
 
     - `collate_function Callable`: batch collate function. If None, defauts to `vector_collate`
+
+    - `cache Bool`: if True, cache dataset
     '''
-    def __init__(self, sequences, vec_function, collate_function=None):
+    def __init__(self, sequences, vec_function, collate_function=None, cache=False):
         if collate_function is None:
             collate_function = vector_collate
-        super().__init__(collate_function)
+        super().__init__(collate_function, cache)
 
         self.sequences = sequences
         self.vec_function = vec_function
@@ -282,13 +312,18 @@ class Vector_Dataset(Base_Dataset):
         return len(self.sequences)
 
     def __getitem__(self, idx):
+        cached = self.check_cache(idx)
+        if cached is not None:
+            return cached
+
         sequence = self.sequences[idx]
         vec = self.vec_function(sequence)
         vec = torch.FloatTensor(vec)
+        self.maybe_cache(idx, vec)
         return vec
 
     def new(self, sequences):
-        return self.__class__(sequences, self.vec_function, self.collate_function)
+        return self.__class__(sequences, self.vec_function, self.collate_function, self.do_cache)
 
     def split_on_idxs(self, train_idxs, valid_idxs):
 
@@ -314,6 +349,8 @@ class Vec_To_Text_Dataset(Vector_Dataset):
 
     - `collate_function Callable`: batch collate function. If None, defauts to `vec_to_text_collate`
 
+    - `cache Bool`: if True, cache dataset
+
     `__getitem__` returns a tuple of `(sequence_vector, sequence_ints)`.
 
     If `sequences` is a list of strings, both `sequence_vector` and `sequence_ints`
@@ -322,15 +359,19 @@ class Vec_To_Text_Dataset(Vector_Dataset):
     If `sequences` is a list of tuples, `sequence_vector` will be derived from the first sequence
     and `sequence_ints` will be derived from the second sequence
     '''
-    def __init__(self, sequences, vocab, vec_function, collate_function=None):
+    def __init__(self, sequences, vocab, vec_function, collate_function=None, cache=False):
 
         if collate_function is None:
             collate_function = partial(vec_to_text_collate, pad_idx=vocab.stoi['pad'])
 
-        super().__init__(sequences, vec_function, collate_function)
+        super().__init__(sequences, vec_function, collate_function, cache)
         self.vocab = vocab
 
     def __getitem__(self, idx):
+        cached = self.check_cache(idx)
+        if cached is not None:
+            return cached
+
         sequence = self.sequences[idx]
 
         if type(sequence)==tuple:
@@ -346,11 +387,13 @@ class Vec_To_Text_Dataset(Vector_Dataset):
         tokens = self.vocab.tokenize(target_sequence)
         ints = self.vocab.numericalize(tokens)
         ints = torch.LongTensor(ints)
+        outputs = (vec, ints)
+        self.maybe_cache(idx, outputs)
 
-        return (vec, ints)
+        return outputs
 
     def new(self, sequences):
-        return self.__class__(sequences, self.vocab, self.vec_function, self.collate_function)
+        return self.__class__(sequences, self.vocab, self.vec_function, self.collate_function, self.do_cache)
 
     def split_on_idxs(self, train_idxs, valid_idxs):
 
@@ -375,21 +418,29 @@ class Vec_Prediction_Dataset(Vector_Dataset):
     - `vec_function Callable`: function to convert a sequence to a vector
 
     - `collate_function Callable`: batch collate function. If None, defauts to `vector_prediction_collate`
+
+    - `cache Bool`: if True, cache dataset
     '''
-    def __init__(self, sequences, y_vals, vec_function, collate_function=None):
+    def __init__(self, sequences, y_vals, vec_function, collate_function=None, cache=False):
         if collate_function is None:
             collate_function = vector_prediction_collate
-        super().__init__(sequences, vec_function, collate_function)
+        super().__init__(sequences, vec_function, collate_function, cache)
 
         self.y_vals = y_vals
 
     def __getitem__(self, idx):
+        cached = self.check_cache(idx)
+        if cached is not None:
+            return cached
+
         fp = super().__getitem__(idx)
         y_val = torch.FloatTensor([self.y_vals[idx]]).squeeze()
-        return (fp, y_val)
+        outputs = (fp, y_val)
+        self.maybe_cache(idx, outputs)
+        return outputs
 
     def new(self, sequences, y_vals):
-        return self.__class__(sequences, y_vals, self.vec_function, self.collate_function)
+        return self.__class__(sequences, y_vals, self.vec_function, self.collate_function, self.do_cache)
 
 
     def split_on_idxs(self, train_idxs, valid_idxs):

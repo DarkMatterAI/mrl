@@ -10,11 +10,11 @@ __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mo
            'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog',
            'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array',
            'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint',
-           'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping',
-           'fuse_on_link', 'murcko_scaffold', 'add_map_nums', 'check_ring_bonds', 'decorate_smile', 'decorate_smiles',
-           'remove_atom', 'generate_spec_template', 'StructureEnumerator', 'add_one_atom', 'add_atom_combi',
-           'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins', 'to_sequences', 'to_dna',
-           'to_dnas', 'to_rna', 'to_rnas']
+           'fingerprint_similarities', 'bulk_smiles_similarity', 'fragment_mol', 'fragment_smile', 'fragment_smiles',
+           'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold', 'add_map_nums', 'check_ring_bonds',
+           'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator',
+           'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence',
+           'to_proteins', 'to_sequences', 'to_dna', 'to_dnas', 'to_rna', 'to_rnas']
 
 # Cell
 from .imports import *
@@ -832,6 +832,20 @@ def get_fingerprint(mol, fp_type, output_type='rdkit'):
 def fingerprint_similarities(fps1, fps2, metric):
     fp = FP()
     return fp.fingerprint_similarity(fps1, fps2, metric)
+
+def bulk_smiles_similarity(smiles1, smiles2=None, fp_type='ECFP6', metric='tanimoto'):
+    fp = FP()
+    mols1 = to_mols(smiles1)
+    fps1 = fp.get_fingerprint(mols1, fp_type, output_type='rdkit')
+
+    if smiles2:
+        mols2 = to_mols(smiles2)
+        fps2 = fp.get_fingerprint(mols2, fp_type, output_type='rdkit')
+        sims = fp.fingerprint_similarity(fps1, fps2, metric)
+    else:
+        sims = fp.fingerprint_similarity(fps1, fps1, metric)
+
+    return sims
 
 # Cell
 
