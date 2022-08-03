@@ -307,7 +307,8 @@ class PredictiveAgent(Agent):
         batch = dataset.collate_function([dataset[i] for i in range(len(dataset))])
         batch = to_device(batch)
         x,y = batch
-        return self.predict_tensor(x)
+        preds = self.predict_tensor(x)
+        return preds.detach().cpu()
 
     def predict_dataset_batch(self, dataset, bs, **dl_kwargs):
         dl = dataset.dataloader(bs, shuffle=False, **dl_kwargs)
@@ -316,7 +317,7 @@ class PredictiveAgent(Agent):
             x,y = batch
             x = to_device(x)
             p = self.predict_tensor(x)
-            preds.append(p.detach())
+            preds.append(p.detach().cpu())
         preds = torch.cat(preds)
         return preds
 

@@ -1384,6 +1384,31 @@ how inputs are converted to Mol objects</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RadicalFilter" class="doc_header"><code>class</code> <code>RadicalFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L588" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RadicalFilter</code>(<strong><code>min_val</code></strong>, <strong><code>max_val</code></strong>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/mrl/template.filters.html#PropertyFilter"><code>PropertyFilter</code></a></p>
+</blockquote>
+<p>Number of radical electrons filter</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 </div>
     {% endraw %}
 
@@ -1447,7 +1472,7 @@ how inputs are converted to Mol objects</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="criteria_check" class="doc_header"><code>criteria_check</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L591" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>criteria_check</code>(<strong><code>criteria</code></strong>)</p>
+<h4 id="criteria_check" class="doc_header"><code>criteria_check</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L596" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>criteria_check</code>(<strong><code>criteria</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1471,7 +1496,7 @@ how inputs are converted to Mol objects</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StructureFilter" class="doc_header"><code>class</code> <code>StructureFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L598" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureFilter</code>(<strong><code>smarts</code></strong>, <strong><code>exclude</code></strong>=<em><code>True</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
+<h2 id="StructureFilter" class="doc_header"><code>class</code> <code>StructureFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L603" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StructureFilter</code>(<strong><code>smarts</code></strong>, <strong><code>exclude</code></strong>=<em><code>True</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>StructureFilter - filters mols based on structures in <code>smarts</code></p>
 <p>Inputs:</p>
@@ -1513,7 +1538,7 @@ match int number of filters)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ExclusionFilter" class="doc_header"><code>class</code> <code>ExclusionFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L657" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ExclusionFilter</code>(<strong><code>smarts</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#StructureFilter"><code>StructureFilter</code></a></p>
+<h2 id="ExclusionFilter" class="doc_header"><code>class</code> <code>ExclusionFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L662" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ExclusionFilter</code>(<strong><code>smarts</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#StructureFilter"><code>StructureFilter</code></a></p>
 </blockquote>
 <p>ExclusionFilter - excludes mols with substructure matches to <code>smarts</code></p>
 <p>Inputs:</p>
@@ -1553,7 +1578,7 @@ match int number of filters)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="KeepFilter" class="doc_header"><code>class</code> <code>KeepFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L683" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>KeepFilter</code>(<strong><code>smarts</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#StructureFilter"><code>StructureFilter</code></a></p>
+<h2 id="KeepFilter" class="doc_header"><code>class</code> <code>KeepFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L688" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>KeepFilter</code>(<strong><code>smarts</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#StructureFilter"><code>StructureFilter</code></a></p>
 </blockquote>
 <p>KeepFilter - keeps mols with substructure matches to <code>smarts</code></p>
 <p>Inputs:</p>
@@ -1681,7 +1706,7 @@ match int number of filters)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSFilter" class="doc_header"><code>class</code> <code>PAINSFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L711" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSFilter</code>(<strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ExclusionFilter"><code>ExclusionFilter</code></a></p>
+<h2 id="PAINSFilter" class="doc_header"><code>class</code> <code>PAINSFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L716" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSFilter</code>(<strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ExclusionFilter"><code>ExclusionFilter</code></a></p>
 </blockquote>
 <p>PAINSFilter - excludes mols with substructure matches to PAINS filters</p>
 <p>Inputs:</p>
@@ -1719,7 +1744,7 @@ match int number of filters)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSAFilter" class="doc_header"><code>class</code> <code>PAINSAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L731" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSAFilter</code>(<strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ExclusionFilter"><code>ExclusionFilter</code></a></p>
+<h2 id="PAINSAFilter" class="doc_header"><code>class</code> <code>PAINSAFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L736" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSAFilter</code>(<strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ExclusionFilter"><code>ExclusionFilter</code></a></p>
 </blockquote>
 <p>PAINSAFilter - excludes mols with substructure matches to PAINS_A filters</p>
 <p>Inputs:</p>
@@ -1757,7 +1782,7 @@ match int number of filters)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSBFilter" class="doc_header"><code>class</code> <code>PAINSBFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L750" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSBFilter</code>(<strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ExclusionFilter"><code>ExclusionFilter</code></a></p>
+<h2 id="PAINSBFilter" class="doc_header"><code>class</code> <code>PAINSBFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L755" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSBFilter</code>(<strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ExclusionFilter"><code>ExclusionFilter</code></a></p>
 </blockquote>
 <p>PAINSBFilter - excludes mols with substructure matches to PAINS_B filters</p>
 <p>Inputs:</p>
@@ -1795,7 +1820,7 @@ match int number of filters)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PAINSCFilter" class="doc_header"><code>class</code> <code>PAINSCFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L770" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCFilter</code>(<strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ExclusionFilter"><code>ExclusionFilter</code></a></p>
+<h2 id="PAINSCFilter" class="doc_header"><code>class</code> <code>PAINSCFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L775" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PAINSCFilter</code>(<strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#ExclusionFilter"><code>ExclusionFilter</code></a></p>
 </blockquote>
 <p>PAINSCFilter - excludes mols with substructure matches to PAINS_C filters</p>
 <p>Inputs:</p>
@@ -1866,7 +1891,7 @@ match int number of filters)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FPFilter" class="doc_header"><code>class</code> <code>FPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L793" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPFilter</code>(<strong><code>reference_fps</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>fp_metric</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
+<h2 id="FPFilter" class="doc_header"><code>class</code> <code>FPFilter</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L798" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FPFilter</code>(<strong><code>reference_fps</code></strong>, <strong><code>fp_type</code></strong>, <strong><code>fp_metric</code></strong>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0.0</code></em>) :: <a href="/mrl/template.filters.html#Filter"><code>Filter</code></a></p>
 </blockquote>
 <p>FPFilter - filters mols based on fingerprint similarity to <code>reference_smiles</code></p>
 <p>Inputs:</p>
@@ -1919,7 +1944,7 @@ match int number of filters)</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FPFilter.from_smiles" class="doc_header"><code>FPFilter.from_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L865" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FPFilter.from_smiles</code>(<strong><code>reference_smiles</code></strong>, <strong><code>fp_type</code></strong>=<em><code>'ECFP6'</code></em>, <strong><code>fp_metric</code></strong>=<em><code>'tanimoto'</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="FPFilter.from_smiles" class="doc_header"><code>FPFilter.from_smiles</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/templates/filters.py#L870" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FPFilter.from_smiles</code>(<strong><code>reference_smiles</code></strong>, <strong><code>fp_type</code></strong>=<em><code>'ECFP6'</code></em>, <strong><code>fp_metric</code></strong>=<em><code>'tanimoto'</code></em>, <strong><code>criteria</code></strong>=<em><code>'any'</code></em>, <strong><code>fp_thresh</code></strong>=<em><code>0.0</code></em>, <strong><code>score</code></strong>=<em><code>None</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>fail_score</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>creates FPFilter from <code>reference_smiles</code></p>
 <p><code>reference_smiles</code> can be a list of smiles or a list of <code>Mols</code></p>

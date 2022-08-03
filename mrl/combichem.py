@@ -931,14 +931,21 @@ class CombiChem():
 
     def clean_library(self, library):
         start = time.time()
+        df = pd.DataFrame(library, columns=['smiles'])
+        df.drop_duplicates(inplace=True)
+        df.reset_index(inplace=True, drop=True)
+
         if self.template is not None:
             bools = self.template(library)
-            library = [library[i] for i in range(len(library)) if bools[i]]
-        library = maybe_parallel(canon_smile, library)
-        library = list(set(library))
+            df = df[bools]
+            df.reset_index(inplace=True, drop=True)
+
+        df['smiles'] = maybe_parallel(canon_smile, df.smiles.values)
+        df.drop_duplicates(inplace=True)
+        df.reset_index(inplace=True, drop=True)
         end = time.time()
         self.timelog['clean_library'].append(end-start)
-        return library
+        return df.smiles.values
 
     def mutate(self, mols):
         if self.mutator_collection is not None:
@@ -1028,14 +1035,13 @@ class CombiChem():
 
     def append_data(self, smiles):
         start = time.time()
-        mols = to_mols(smiles)
-        bad_idxs = set([i for i in range(len(mols)) if mols[i] is None])
-        smiles = [smiles[i] for i in range(len(smiles)) if not i in bad_idxs]
-        mols = [mols[i] for i in range(len(mols)) if not i in bad_idxs]
-
-        df = pd.DataFrame([[smiles[i], mols[i], None] for i in range(len(smiles))],
-                          columns=['smiles', 'mols', 'score'])
+        df = pd.DataFrame(smiles, columns=['smiles'])
+        df['mols'] = to_mols(df.smiles.values)
+        df['score'] = None
+        df = df[df.mols.map(lambda x: x is not None)]
+        df.drop_duplicates(inplace=True)
         df = df[~df.smiles.isin(self.library.smiles)]
+
         self.library = pd.concat([self.library, df])
         self.library.reset_index(inplace=True, drop=True)
         self.score_library()

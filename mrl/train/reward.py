@@ -28,14 +28,18 @@ class Reward():
     - `bs Optional[int]`: if given, samples will be batched into
     chunks of size `bs` and sent to `reward_function` as batches
 
+    - `device Optional[bool]`: if True, reward function output is
+    mapped to device. see `to_device`
+
     - `log bool`: if True, keeps aa lookup table of
     `sample : reward` values to avoid repeat computation
     '''
-    def __init__(self, reward_function, weight=1, bs=None, log=True):
+    def __init__(self, reward_function, weight=1, bs=None, device=False, log=True):
 
         self.reward_function = reward_function
         self.weight = weight
         self.bs = bs
+        self.device = device
         self.score_log = {}
         self.log = log
 
@@ -43,7 +47,7 @@ class Reward():
         for i in range(len(samples)):
             self.score_log[samples[i]] = values[i]
 
-    def __call__(self, samples):
+    def __call__(self, samples, **reward_kwargs):
 
         rewards = np.array([0. for i in samples])
 
@@ -64,7 +68,7 @@ class Reward():
                 to_score_idxs.append(i)
 
         if to_score:
-            new_rewards = self.compute_batched_reward(to_score)
+            new_rewards = self.compute_batched_reward(to_score, **reward_kwargs)
 
             for i in range(len(to_score)):
                 batch_idx = to_score_idxs[i]
@@ -74,27 +78,30 @@ class Reward():
                 if self.log:
                     self.score_log[to_score[i]] = reward
 
-        rewards = to_device(torch.tensor(rewards).float()).squeeze()
+        rewards = torch.tensor(rewards).float().squeeze()
         rewards = rewards * self.weight
+
+        if self.device:
+            rewards = to_device(rewards)
 
         return rewards
 
-    def _compute_reward(self, samples):
-        return self.reward_function(samples)
+    def _compute_reward(self, samples, **reward_kwargs):
+        return self.reward_function(samples, **reward_kwargs)
 
-    def compute_batched_reward(self, samples):
+    def compute_batched_reward(self, samples, **reward_kwargs):
         if self.bs is not None:
             sample_chunks = chunk_list(samples, self.bs)
             rewards = []
             for chunk in sample_chunks:
-                rewards_iter = self._compute_reward(chunk)
+                rewards_iter = self._compute_reward(chunk, **reward_kwargs)
                 if isinstance(rewards_iter, torch.Tensor):
                     rewards_iter = rewards_iter.detach().cpu()
 
                 rewards += list(rewards_iter)
 
         else:
-            rewards = self._compute_reward(samples)
+            rewards = self._compute_reward(samples, **reward_kwargs)
             if isinstance(rewards, torch.Tensor):
                 rewards = rewards.detach().cpu()
 
