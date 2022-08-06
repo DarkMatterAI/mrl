@@ -11,10 +11,10 @@ __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mo
            'ZINCCatalog', 'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp',
            'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint',
            'fingerprint_similarities', 'bulk_smiles_similarity', 'fragment_mol', 'fragment_smile', 'fragment_smiles',
-           'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold', 'add_map_nums', 'check_ring_bonds',
-           'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template', 'StructureEnumerator',
-           'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence',
-           'to_proteins', 'to_sequences', 'to_dna', 'to_dnas', 'to_rna', 'to_rnas']
+           'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold', 'scaffold_split', 'add_map_nums',
+           'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
+           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein',
+           'to_sequence', 'to_proteins', 'to_sequences', 'to_dna', 'to_dnas', 'to_rna', 'to_rnas']
 
 # Cell
 from .imports import *
@@ -122,7 +122,10 @@ def smart_to_rxn(smart):
     return AllChem.ReactionFromSmarts(smart)
 
 def canon_smile(smile):
-    return Chem.CanonSmiles(smile)
+    try:
+        return Chem.CanonSmiles(smile)
+    except:
+        return ''
 
 def remove_stereo(smile):
     if '@' in smile:
@@ -136,8 +139,8 @@ def remove_stereo(smile):
 
 # Cell
 
-def smile_to_selfie(smile, strict=True):
-    return sf.encoder(smile, strict=strict)
+def smile_to_selfie(smile):
+    return sf.encoder(smile)
 
 def selfie_to_smile(selfie):
     try:
@@ -1043,6 +1046,64 @@ def murcko_scaffold(smile, generic=False, remove_stereochem=False):
         scaffold = MurckoScaffold.MakeScaffoldGeneric(scaffold)
 
     return to_smile(scaffold)
+
+# Cell
+
+def scaffold_split(smiles, percent_valid, percent_test=0., generic=False, remove_stereochem=False):
+    '''
+    scaffold_split - split `smiles` into train, valid, test sets by scaffold
+
+    Inputs:
+
+    - `smiles list[str]` - input smiles strings
+
+    - `percent_valid float`: percent for validation set
+
+    - `percent_test Optional[float]`: percent for test set
+
+    - `generic Bool`: if True, scaffolds are converted to all
+    saturated carbons with single bonds
+
+    - `remove_stereochem Bool`: if True, scaffolds have stereochemistry
+    removed
+    '''
+    n_smiles = len(smiles)
+    scaffold_func = partial(murcko_scaffold, generic=generic, remove_stereochem=remove_stereochem)
+    scaffolds = maybe_parallel(scaffold_func, smiles)
+
+    scaf_df = pd.DataFrame(zip(smiles, scaffolds), columns=['smiles', 'scaffolds'])
+    scaf_counts = scaf_df.scaffolds.value_counts().reset_index()
+    scaf_counts['assignment'] = None
+
+    train_size = int(len(smiles)*(1-percent_valid-percent_test))
+    train_count = 0
+    scaf_idx = 0
+
+    while train_count < train_size:
+        train_count += scaf_counts.scaffolds[scaf_idx]
+        scaf_counts.loc[scaf_idx, 'assignment'] = 'train'
+        scaf_idx += 1
+
+    if percent_test > 0:
+        valid_size = int(len(smiles)*percent_valid)
+        valid_count = 0
+
+        while valid_count < valid_size:
+            valid_count += scaf_counts.scaffolds[scaf_idx]
+            scaf_counts.loc[scaf_idx, 'assignment'] = 'valid'
+            scaf_idx += 1
+
+        scaf_counts.loc[scaf_counts.assignment.values==None, 'assignment'] = 'test'
+
+    else:
+        scaf_counts.loc[scaf_counts.assignment.values==None, 'assignment'] = 'valid'
+
+    scaf_mapping = {scaf_counts['index'][i]:scaf_counts['assignment'][i] for i in range(scaf_counts.shape[0])}
+
+    assignments = [scaf_mapping[i] for i in scaffolds]
+    scaf_df['assignment'] = assignments
+
+    return scaf_df
 
 # Cell
 

@@ -207,6 +207,7 @@ class Agent(Callback):
             with torch.no_grad():
                 self.model.eval()
                 valid_losses = []
+                valid_sizes = []
                 preds = []
                 targs = []
 
@@ -223,20 +224,29 @@ class Agent(Callback):
                         x,y = batch
                         preds.append(p.detach().cpu())
                         targs.append(y.detach().cpu())
+                        valid_sizes.append(x.shape[0])
 
                         if not silent:
                             mb.child.comment = f"{valid_losses[-1]:.5f}"
-                    preds = torch.cat(preds)
-                    targs = torch.cat(targs)
+#                     preds = torch.cat(preds)
+#                     targs = torch.cat(targs)
                 else:
                     valid_losses = [torch.tensor(0.)]
+                    valid_sizes = [1]
                 self.model.train()
 
             train_loss = smooth_batches(train_losses)
-            valid_loss = smooth_batches(valid_losses)
+
+            valid_sizes = torch.tensor(valid_sizes)
+            valid_sizes = valid_sizes/valid_sizes.sum()
+            valid_means = torch.tensor([i.mean() for i in valid_losses])
+            valid_loss = (valid_means * valid_sizes).sum()
+#             valid_loss = smooth_batches(valid_losses)
             end = time.time() - start
 
             if valid_metric is not None:
+                preds = torch.cat(preds)
+                targs = torch.cat(targs)
                 metric = valid_metric(preds, targs)
                 if metric < self.best_metric:
                     self.best_metric = metric

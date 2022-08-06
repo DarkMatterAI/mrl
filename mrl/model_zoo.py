@@ -488,7 +488,7 @@ class LSTM_LM_Small_ZINC_Selfies(PretrainedGenerativeAgent):
                 ):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
-                  prefunc=partial(smile_to_selfie, strict=False),
+                  prefunc=partial(smile_to_selfie),
                   postfunc=selfie_to_smile)
         model = lstm_lm_small(vocab, drop_scale=drop_scale)
         weight_filename = 'lstmlm_small_zinc_selfies_2.pt'
@@ -546,7 +546,7 @@ class LSTM_LM_Small_Chembl_Selfies(PretrainedGenerativeAgent):
                 ):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
-                  prefunc=partial(smile_to_selfie, strict=False),
+                  prefunc=partial(smile_to_selfie),
                   postfunc=selfie_to_smile)
         model = lstm_lm_small(vocab, drop_scale=drop_scale)
         weight_filename = 'lstmlm_small_chembl_selfies_2.pt'
@@ -1186,7 +1186,7 @@ class FP_Cond_LSTM_LM_Small_ZINC_Selfies(PretrainedGenerativeAgent):
                 ):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
-                    prefunc=partial(smile_to_selfie, strict=False),
+                    prefunc=partial(smile_to_selfie),
                     postfunc=selfie_to_smile)
         model = mlp_cond_lstm_small(vocab, drop_scale=drop_scale)
         weight_filename = 'fp_cond_lstmlm_small_zinc_selfies_2.pt'
@@ -1546,7 +1546,7 @@ class FP_VAE_ZINC_Selfies(PretrainedGenerativeAgent):
                 ):
 
         vocab = FuncVocab(SELFIES_VOCAB, split_selfie,
-                    prefunc=partial(smile_to_selfie, strict=False),
+                    prefunc=partial(smile_to_selfie),
                     postfunc=selfie_to_smile)
 
         model = mlp_vae(vocab, drop_scale=drop_scale)

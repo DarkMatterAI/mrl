@@ -936,7 +936,7 @@ class CombiChem():
         df.reset_index(inplace=True, drop=True)
 
         if self.template is not None:
-            bools = self.template(library)
+            bools = self.template(df.smiles.values)
             df = df[bools]
             df.reset_index(inplace=True, drop=True)
 
