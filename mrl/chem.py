@@ -6,15 +6,15 @@ __all__ = ['to_mol', 'smart_to_mol', 'to_smile', 'to_kekule', 'to_smart', 'to_mo
            'draw_mols', 'add_hs', 'remove_hs', 'molwt', 'hbd', 'hba', 'tpsa', 'rotbond', 'loose_rotbond',
            'rot_chain_length', 'fsp3', 'logp', 'rings', 'max_ring_size', 'min_ring_size', 'heteroatoms', 'all_atoms',
            'heavy_atoms', 'formal_charge', 'molar_refractivity', 'aromaticrings', 'qed', 'sa_score', 'num_bridgeheads',
-           'num_spiro', 'chiral_centers', 'penalized_logp', 'conformer_generation', 'Catalog', 'SmartsCatalog',
-           'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog', 'ZINCCatalog',
-           'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp', 'fp_to_array',
-           'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint',
-           'fingerprint_similarities', 'fragment_mol', 'fragment_smile', 'fragment_smiles', 'fuse_on_atom_mapping',
-           'fuse_on_link', 'murcko_scaffold', 'add_map_nums', 'check_ring_bonds', 'decorate_smile', 'decorate_smiles',
-           'remove_atom', 'generate_spec_template', 'StructureEnumerator', 'add_one_atom', 'add_atom_combi',
-           'add_bond_combi', 'add_one_bond', 'to_protein', 'to_sequence', 'to_proteins', 'to_sequences', 'to_dna',
-           'to_dnas', 'to_rna', 'to_rnas']
+           'num_spiro', 'chiral_centers', 'num_radicals', 'penalized_logp', 'conformer_generation', 'Catalog',
+           'SmartsCatalog', 'ParamsCatalog', 'PAINSCatalog', 'PAINSACatalog', 'PAINSBCatalog', 'PAINSCCatalog',
+           'ZINCCatalog', 'BRENKCatalog', 'NIHCatalog', 'morgan_fp', 'ECFP4', 'ECFP6', 'FCFP4', 'FCFP6', 'failsafe_fp',
+           'fp_to_array', 'tanimoto', 'tanimoto_rd', 'dice', 'dice_rd', 'cosine', 'cosine_rd', 'FP', 'get_fingerprint',
+           'fingerprint_similarities', 'bulk_smiles_similarity', 'fragment_mol', 'fragment_smile', 'fragment_smiles',
+           'fuse_on_atom_mapping', 'fuse_on_link', 'murcko_scaffold', 'scaffold_split', 'add_map_nums',
+           'check_ring_bonds', 'decorate_smile', 'decorate_smiles', 'remove_atom', 'generate_spec_template',
+           'StructureEnumerator', 'add_one_atom', 'add_atom_combi', 'add_bond_combi', 'add_one_bond', 'to_protein',
+           'to_sequence', 'to_proteins', 'to_sequences', 'to_dna', 'to_dnas', 'to_rna', 'to_rnas']
 
 # Cell
 from .imports import *
@@ -122,7 +122,10 @@ def smart_to_rxn(smart):
     return AllChem.ReactionFromSmarts(smart)
 
 def canon_smile(smile):
-    return Chem.CanonSmiles(smile)
+    try:
+        return Chem.CanonSmiles(smile)
+    except:
+        return ''
 
 def remove_stereo(smile):
     if '@' in smile:
@@ -136,8 +139,8 @@ def remove_stereo(smile):
 
 # Cell
 
-def smile_to_selfie(smile, strict=True):
-    return sf.encoder(smile, strict=strict)
+def smile_to_selfie(smile):
+    return sf.encoder(smile)
 
 def selfie_to_smile(selfie):
     try:
@@ -358,6 +361,10 @@ def num_spiro(mol):
 def chiral_centers(mol):
     'Number of chiral centers'
     return len(Chem.FindMolChiralCenters(mol))
+
+def num_radicals(mol):
+    'Number of radical electrons'
+    return Descriptors.NumRadicalElectrons(mol)
 
 
 # Modified from https://github.com/bowenliu16/rl_graph_generation
@@ -833,6 +840,20 @@ def fingerprint_similarities(fps1, fps2, metric):
     fp = FP()
     return fp.fingerprint_similarity(fps1, fps2, metric)
 
+def bulk_smiles_similarity(smiles1, smiles2=None, fp_type='ECFP6', metric='tanimoto'):
+    fp = FP()
+    mols1 = to_mols(smiles1)
+    fps1 = fp.get_fingerprint(mols1, fp_type, output_type='rdkit')
+
+    if smiles2:
+        mols2 = to_mols(smiles2)
+        fps2 = fp.get_fingerprint(mols2, fp_type, output_type='rdkit')
+        sims = fp.fingerprint_similarity(fps1, fps2, metric)
+    else:
+        sims = fp.fingerprint_similarity(fps1, fps1, metric)
+
+    return sims
+
 # Cell
 
 def fragment_mol(mol, max_cuts, return_mols=False):
@@ -1025,6 +1046,73 @@ def murcko_scaffold(smile, generic=False, remove_stereochem=False):
         scaffold = MurckoScaffold.MakeScaffoldGeneric(scaffold)
 
     return to_smile(scaffold)
+
+# Cell
+
+def scaffold_split(smiles, percent_valid, percent_test=0., remove_no_scaffold=True,
+                   generic=False, remove_stereochem=False):
+    '''
+    scaffold_split - split `smiles` into train, valid, test sets by scaffold
+
+    Inputs:
+
+    - `smiles list[str]` - input smiles strings
+
+    - `percent_valid float`: percent for validation set
+
+    - `percent_test Optional[float]`: percent for test set
+
+    - `remove_no_scaffold Bool`: if True, compounds with no murcko
+    scaffold are removed
+
+    - `generic Bool`: if True, scaffolds are converted to all
+    saturated carbons with single bonds
+
+    - `remove_stereochem Bool`: if True, scaffolds have stereochemistry
+    removed
+    '''
+    n_smiles = len(smiles)
+    scaffold_func = partial(murcko_scaffold, generic=generic, remove_stereochem=remove_stereochem)
+    scaffolds = maybe_parallel(scaffold_func, smiles)
+
+    scaf_df = pd.DataFrame(zip(smiles, scaffolds), columns=['smiles', 'scaffolds'])
+
+    if remove_no_scaffold:
+        scaf_df = scaf_df[scaf_df.scaffolds.map(lambda x: x!='')]
+        scaf_df.reset_index(inplace=True, drop=True)
+
+    scaf_counts = scaf_df.scaffolds.value_counts().reset_index()
+    scaf_counts['assignment'] = None
+
+    train_size = int(len(smiles)*(1-percent_valid-percent_test))
+    train_count = 0
+    scaf_idx = 0
+
+    while train_count < train_size:
+        train_count += scaf_counts.scaffolds[scaf_idx]
+        scaf_counts.loc[scaf_idx, 'assignment'] = 'train'
+        scaf_idx += 1
+
+    if percent_test > 0:
+        valid_size = int(len(smiles)*percent_valid)
+        valid_count = 0
+
+        while valid_count < valid_size:
+            valid_count += scaf_counts.scaffolds[scaf_idx]
+            scaf_counts.loc[scaf_idx, 'assignment'] = 'valid'
+            scaf_idx += 1
+
+        scaf_counts.loc[scaf_counts.assignment.values==None, 'assignment'] = 'test'
+
+    else:
+        scaf_counts.loc[scaf_counts.assignment.values==None, 'assignment'] = 'valid'
+
+    scaf_mapping = {scaf_counts['index'][i]:scaf_counts['assignment'][i] for i in range(scaf_counts.shape[0])}
+
+    assignments = [scaf_mapping[i] for i in scaf_df.scaffolds]
+    scaf_df['assignment'] = assignments
+
+    return scaf_df
 
 # Cell
 

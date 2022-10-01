@@ -573,9 +573,44 @@ class EnumerateHeterocycleMutator(Mutator):
     def __init__(self, depth=None, name='enum heteroatoms'):
         super().__init__(name)
         self.depth = depth
+        self.rxns = EnumerateHeterocycles.GetHeterocycleReactions()
+
+    def enumerate_heterocycles(self, mol, depth=None):
+        if depth is None:
+            depth = self.depth
+
+        stack = []
+        mol = to_mol(mol)
+        if mol is not None:
+            stack.append((mol, 0))
+
+        seen = set()
+
+        while stack:
+            mol, current_depth = stack.pop(0)
+
+            if depth and current_depth >= depth:
+                return
+
+            for rxn in self.rxns:
+                for newmol in rxn.RunReactants((mol,)):
+                    newmol = newmol[0]
+
+                    try:
+                        Chem.SanitizeMol(newmol)
+                        smile = Chem.MolToSmiles(newmol, isomericSmiles=True)
+                    except:
+                        continue
+
+                    if smile in seen:
+                        continue
+
+                    stack.append((newmol, current_depth+1))
+                    seen.add(smile)
+                    yield newmol
 
     def mutate(self, mol):
-        new_mols = list(EnumerateHeterocycles.EnumerateHeterocycles(mol, depth=self.depth))
+        new_mols = list(self.enumerate_heterocycles(mol))
         new_mols = [i for i in new_mols if i is not None]
         smiles = [to_smile(i) for i in new_mols]
         smiles = list(set(smiles))
@@ -710,18 +745,22 @@ class SelfiesMutator(Mutator):
     def mutate(self, mol):
         smile = to_smile(mol)
         selfie = smile_to_selfie(smile)
-        tokens = list(sf.split_selfies(selfie))
         outputs = []
 
-        for i in range(self.n_augs):
-            new_tokens = self.augment(list(tokens))
-            new_tokens = ''.join(new_tokens)
-            try:
-                smile = selfie_to_smile(new_tokens)
-                smile = canon_smile(smile)
-                outputs.append(smile)
-            except:
-                pass
+        if selfie:
+            tokens = list(sf.split_selfies(selfie))
+
+            for i in range(self.n_augs):
+                new_tokens = self.augment(list(tokens))
+                new_tokens = ''.join(new_tokens)
+                try:
+                    smile = selfie_to_smile(new_tokens)
+                    mol = to_mol(smile)
+                    mol = neutralize_atoms(mol)
+                    smile = to_smile(mol)
+                    outputs.append(smile)
+                except:
+                    pass
 
         return outputs
 
@@ -931,14 +970,21 @@ class CombiChem():
 
     def clean_library(self, library):
         start = time.time()
+        df = pd.DataFrame(library, columns=['smiles'])
+        df.drop_duplicates(inplace=True)
+        df.reset_index(inplace=True, drop=True)
+
         if self.template is not None:
-            bools = self.template(library)
-            library = [library[i] for i in range(len(library)) if bools[i]]
-        library = maybe_parallel(canon_smile, library)
-        library = list(set(library))
+            bools = self.template(df.smiles.values)
+            df = df[bools]
+            df.reset_index(inplace=True, drop=True)
+
+        df['smiles'] = maybe_parallel(canon_smile, df.smiles.values)
+        df.drop_duplicates(inplace=True)
+        df.reset_index(inplace=True, drop=True)
         end = time.time()
         self.timelog['clean_library'].append(end-start)
-        return library
+        return df.smiles.values
 
     def mutate(self, mols):
         if self.mutator_collection is not None:
@@ -975,7 +1021,7 @@ class CombiChem():
 
         self.library['score'] = self.library.score.map(lambda x: float(x))
         end = time.time()
-        self.timelog['score_library'].append(start-end)
+        self.timelog['score_library'].append(end-start)
 
     def prune_library(self):
         start = time.time()
@@ -1010,7 +1056,7 @@ class CombiChem():
         self.library.reset_index(inplace=True, drop=True)
         gc.collect()
         end = time.time()
-        self.timelog['prune_library'].append(start-end)
+        self.timelog['prune_library'].append(end-start)
 
     def reset_library(self):
         if self.log:
@@ -1028,16 +1074,15 @@ class CombiChem():
 
     def append_data(self, smiles):
         start = time.time()
-        mols = to_mols(smiles)
-        bad_idxs = set([i for i in range(len(mols)) if mols[i] is None])
-        smiles = [smiles[i] for i in range(len(smiles)) if not i in bad_idxs]
-        mols = [mols[i] for i in range(len(mols)) if not i in bad_idxs]
-
-        df = pd.DataFrame([[smiles[i], mols[i], None] for i in range(len(smiles))],
-                          columns=['smiles', 'mols', 'score'])
+        df = pd.DataFrame(smiles, columns=['smiles'])
+        df['mols'] = to_mols(df.smiles.values)
+        df['score'] = None
+        df = df[df.mols.map(lambda x: x is not None)]
+        df.drop_duplicates(inplace=True)
         df = df[~df.smiles.isin(self.library.smiles)]
+
         self.library = pd.concat([self.library, df])
         self.library.reset_index(inplace=True, drop=True)
         self.score_library()
         end = time.time()
-        self.timelog['append_data'].append(start-end)
+        self.timelog['append_data'].append(end-start)

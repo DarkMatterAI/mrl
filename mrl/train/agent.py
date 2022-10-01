@@ -45,6 +45,9 @@ class Agent(Callback):
         self.clip = clip
         self.training = True
         self.compute_outputs = True
+        self.best_weights = None
+        self.best_loss = float('inf')
+        self.best_metric = float('-inf')
 
     def get_opt(self, parameters, **optim_kwargs):
         return optim.Adam(parameters, **optim_kwargs)
@@ -79,7 +82,7 @@ class Agent(Callback):
         if self.training:
             self.opt.step()
 
-    def one_batch(self, batch, fp16=False):
+    def one_batch(self, batch, fp16=False, return_output=False):
         batch = to_device(batch)
         x,y = batch
         if not isinstance(x, (list, tuple)):
@@ -92,10 +95,20 @@ class Agent(Callback):
         else:
             output = self.model(*x)
             loss = self.loss_function(output, y)
-        return loss
 
-    def train_supervised(self, bs, epochs, lr, percent_valid=0.05,
-                         silent=False, fp16=False, save_every=None, opt_kwargs={}):
+        if return_output:
+            return loss, output
+        else:
+            return loss
+
+    def load_best(self):
+        if self.best_weights is not None:
+            self.load_state_dict(self.best_weights)
+
+    def train_supervised(self, bs, epochs, lr, valid_metric=None,
+                         percent_valid=0.05, silent=False,
+                         fp16=False, save_every=None,
+                         load_best_every=None, opt_kwargs={}):
         '''
         train_supervised - trains on data in `self.dataset`
 
@@ -107,6 +120,10 @@ class Agent(Callback):
 
         - `lr float`: learning rate passed to `optim.lr_scheduler.OneCycleLR`
 
+        - `valid_metric Optional[Callable]`: a callable validation metric
+        in the form of `valid_metric(predictions, targets)`. If given, will
+        be calculated for the validation set every epoch
+
         - `percent_valid float`: validation set percentage
 
         - `silent bool`: if training losses should be printed
@@ -116,6 +133,9 @@ class Agent(Callback):
         - `save_every Optional[int]`: If an integer is given, model
         weights are saved every `save_every` batches to
         `{self.name}_weights_{batch}.pt`
+
+        - `load_best_every Optional[int]`: if integer, the best model
+        weights by validation loss are loaded every `load_best_every` batches
 
         - `opt_kwargs Optional[dict]`: keyword arguments passed to optimzier
         '''
@@ -143,7 +163,10 @@ class Agent(Callback):
             mb = range(epochs)
         else:
             mb = master_bar(range(epochs))
-            mb.write(['Epoch', 'Train Loss', 'Valid  Loss', 'Time'], table=True)
+            cols = ['Epoch', 'Train Loss', 'Valid  Loss', 'Time']
+            if valid_metric is not None:
+                cols.append(valid_metric.__name__)
+            mb.write(cols, table=True)
 
         for epoch in mb:
             start = time.time()
@@ -175,12 +198,18 @@ class Agent(Callback):
 
                 total_batches += 1
 
+                if (load_best_every is not None) and (total_batches%load_best_every==0):
+                    self.load_best()
+
                 if (save_every is not None) and (total_batches%save_every==0):
                     self.save_weights(f'{self.name}_weights_{total_batches}.pt')
 
             with torch.no_grad():
                 self.model.eval()
                 valid_losses = []
+                valid_sizes = []
+                preds = []
+                targs = []
 
                 if len(valid_ds)>0:
                     if silent:
@@ -190,21 +219,48 @@ class Agent(Callback):
 
                     for batch in batch_iter:
 
-                        loss = self.one_batch(batch)
+                        loss, p = self.one_batch(batch, return_output=True)
                         valid_losses.append(loss.detach().cpu())
+                        x,y = batch
+                        preds.append(p.detach().cpu())
+                        targs.append(y.detach().cpu())
+                        valid_sizes.append(x.shape[0])
 
                         if not silent:
                             mb.child.comment = f"{valid_losses[-1]:.5f}"
+#                     preds = torch.cat(preds)
+#                     targs = torch.cat(targs)
                 else:
                     valid_losses = [torch.tensor(0.)]
+                    valid_sizes = [1]
                 self.model.train()
 
             train_loss = smooth_batches(train_losses)
-            valid_loss = smooth_batches(valid_losses)
+
+            valid_sizes = torch.tensor(valid_sizes)
+            valid_sizes = valid_sizes/valid_sizes.sum()
+            valid_means = torch.tensor([i.mean() for i in valid_losses])
+            valid_loss = (valid_means * valid_sizes).sum()
+#             valid_loss = smooth_batches(valid_losses)
             end = time.time() - start
+
+            if valid_metric is not None:
+                preds = torch.cat(preds)
+                targs = torch.cat(targs)
+                metric = valid_metric(preds, targs)
+                if metric < self.best_metric:
+                    self.best_metric = metric
+                    self.best_weights = copy.deepcopy(self.model).cpu().state_dict()
+            else:
+                if valid_loss < self.best_loss:
+                    self.best_loss = valid_loss
+                    self.best_weights = copy.deepcopy(self.model).cpu().state_dict()
+
             if not silent:
-                mb.write([epoch, f'{train_losses[-1]:.5f}',
-                      f'{valid_losses[-1]:.5f}', f'{format_time(end)}'], table=True)
+                epoch_data = [epoch, f'{train_loss:.5f}', f'{valid_loss:.5f}', f'{format_time(end)}']
+                if valid_metric is not None:
+                    epoch_data.append(f'{metric}:.5f')
+                mb.write(epoch_data, table=True)
 
     def update_dataset(self, dataset):
         self.dataset = dataset
@@ -251,32 +307,38 @@ class PredictiveAgent(Agent):
     '''
 
     def predict_tensor(self, x):
-        if not isinstance(x, (list, tuple)):
-            x = [x]
-        output = self.model(*x)
-        return output
+        with torch.no_grad():
+            if not isinstance(x, (list, tuple)):
+                x = [x]
+            output = self.model(*x)
+            return output
 
-    def predict_data(self, data):
-        ds = self.dataset.new(data, [0 for i in data])
-        batch = ds.collate_function([ds[i] for i in range(len(ds))])
+    def predict_dataset(self, dataset):
+        batch = dataset.collate_function([dataset[i] for i in range(len(dataset))])
         batch = to_device(batch)
         x,y = batch
-        return self.predict_tensor(x)
+        preds = self.predict_tensor(x)
+        return preds.detach().cpu()
 
-    def predict_data_batch(self, data, bs):
-        ds = self.dataset.new(data, [0 for i in data])
-        dl = ds.dataloader(bs, shuffle=False)
+    def predict_dataset_batch(self, dataset, bs, **dl_kwargs):
+        dl = dataset.dataloader(bs, shuffle=False, **dl_kwargs)
         preds = []
         for i, batch in enumerate(dl):
             x,y = batch
             x = to_device(x)
-            if not isinstance(x, (list, tuple)):
-                x = [x]
-
-            p = self.model(*x)
-            preds.append(p)
+            p = self.predict_tensor(x)
+            preds.append(p.detach().cpu())
         preds = torch.cat(preds)
         return preds
+
+    def predict_data(self, data):
+        ds = self.dataset.new(data, [0 for i in data])
+        return self.predict_dataset(ds)
+
+    def predict_data_batch(self, data, bs, **dl_kwargs):
+        ds = self.dataset.new(data, [0 for i in data])
+        return self.predict_dataset_batch(ds, bs, **dl_kwargs)
+
 
 # Cell
 

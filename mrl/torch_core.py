@@ -2,8 +2,8 @@
 
 __all__ = ['get_device', 'to_device', 'set_device', 'get_model_device', 'USE_CUDA', 'freeze', 'unfreeze', 'x_to_preds',
            'gather_lps', 'subset_tensor', 'merge_weights', 'merge_models', 'smooth_batches', 'discount_rewards',
-           'whiten', 'scatter_rewards', 'compute_advantages', 'CrossEntropy', 'BinaryCrossEntropy', 'HuberLoss',
-           'MSELoss', 'pca']
+           'whiten', 'scatter_rewards', 'compute_advantages', 'CrossEntropy', 'BinaryCrossEntropy', 'RegressionLoss',
+           'HuberLoss', 'MSELoss', 'MAELoss', 'pca']
 
 # Cell
 from .imports import *
@@ -374,23 +374,29 @@ class BinaryCrossEntropy():
             target = target.reshape(-1)
         return self.loss(output, target)
 
+class RegressionLoss():
+    def __init__(self, loss):
+        self.loss = loss
 
-class HuberLoss():
+    def __call__(self, output, target):
+        output = output.squeeze(-1)
+        return self.loss(output, target)
+
+class HuberLoss(RegressionLoss):
     def __init__(self, beta=1.):
-        self.loss = nn.SmoothL1Loss(beta=beta)
+        loss = nn.SmoothL1Loss(beta=beta)
+        super().__init__(loss)
 
-    def __call__(self, output, target):
-        output = output.squeeze(-1)
-        return self.loss(output, target)
-
-
-class MSELoss():
+class MSELoss(RegressionLoss):
     def __init__(self):
-        self.loss = F.mse_loss
+        loss = F.mse_loss
+        super().__init__(loss)
 
-    def __call__(self, output, target):
-        output = output.squeeze(-1)
-        return self.loss(output, target)
+class MAELoss(RegressionLoss):
+    def __init__(self):
+        loss = nn.L1Loss()
+        super().__init__(loss)
+
 
 # Cell
 
