@@ -573,9 +573,44 @@ class EnumerateHeterocycleMutator(Mutator):
     def __init__(self, depth=None, name='enum heteroatoms'):
         super().__init__(name)
         self.depth = depth
+        self.rxns = EnumerateHeterocycles.GetHeterocycleReactions()
+
+    def enumerate_heterocycles(self, mol, depth=None):
+        if depth is None:
+            depth = self.depth
+
+        stack = []
+        mol = to_mol(mol)
+        if mol is not None:
+            stack.append((mol, 0))
+
+        seen = set()
+
+        while stack:
+            mol, current_depth = stack.pop(0)
+
+            if depth and current_depth >= depth:
+                return
+
+            for rxn in self.rxns:
+                for newmol in rxn.RunReactants((mol,)):
+                    newmol = newmol[0]
+
+                    try:
+                        Chem.SanitizeMol(newmol)
+                        smile = Chem.MolToSmiles(newmol, isomericSmiles=True)
+                    except:
+                        continue
+
+                    if smile in seen:
+                        continue
+
+                    stack.append((newmol, current_depth+1))
+                    seen.add(smile)
+                    yield newmol
 
     def mutate(self, mol):
-        new_mols = list(EnumerateHeterocycles.EnumerateHeterocycles(mol, depth=self.depth))
+        new_mols = list(self.enumerate_heterocycles(mol))
         new_mols = [i for i in new_mols if i is not None]
         smiles = [to_smile(i) for i in new_mols]
         smiles = list(set(smiles))
@@ -710,18 +745,22 @@ class SelfiesMutator(Mutator):
     def mutate(self, mol):
         smile = to_smile(mol)
         selfie = smile_to_selfie(smile)
-        tokens = list(sf.split_selfies(selfie))
         outputs = []
 
-        for i in range(self.n_augs):
-            new_tokens = self.augment(list(tokens))
-            new_tokens = ''.join(new_tokens)
-            try:
-                smile = selfie_to_smile(new_tokens)
-                smile = canon_smile(smile)
-                outputs.append(smile)
-            except:
-                pass
+        if selfie:
+            tokens = list(sf.split_selfies(selfie))
+
+            for i in range(self.n_augs):
+                new_tokens = self.augment(list(tokens))
+                new_tokens = ''.join(new_tokens)
+                try:
+                    smile = selfie_to_smile(new_tokens)
+                    mol = to_mol(smile)
+                    mol = neutralize_atoms(mol)
+                    smile = to_smile(mol)
+                    outputs.append(smile)
+                except:
+                    pass
 
         return outputs
 

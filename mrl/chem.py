@@ -1049,7 +1049,8 @@ def murcko_scaffold(smile, generic=False, remove_stereochem=False):
 
 # Cell
 
-def scaffold_split(smiles, percent_valid, percent_test=0., generic=False, remove_stereochem=False):
+def scaffold_split(smiles, percent_valid, percent_test=0., remove_no_scaffold=True,
+                   generic=False, remove_stereochem=False):
     '''
     scaffold_split - split `smiles` into train, valid, test sets by scaffold
 
@@ -1060,6 +1061,9 @@ def scaffold_split(smiles, percent_valid, percent_test=0., generic=False, remove
     - `percent_valid float`: percent for validation set
 
     - `percent_test Optional[float]`: percent for test set
+
+    - `remove_no_scaffold Bool`: if True, compounds with no murcko
+    scaffold are removed
 
     - `generic Bool`: if True, scaffolds are converted to all
     saturated carbons with single bonds
@@ -1072,6 +1076,11 @@ def scaffold_split(smiles, percent_valid, percent_test=0., generic=False, remove
     scaffolds = maybe_parallel(scaffold_func, smiles)
 
     scaf_df = pd.DataFrame(zip(smiles, scaffolds), columns=['smiles', 'scaffolds'])
+
+    if remove_no_scaffold:
+        scaf_df = scaf_df[scaf_df.scaffolds.map(lambda x: x!='')]
+        scaf_df.reset_index(inplace=True, drop=True)
+
     scaf_counts = scaf_df.scaffolds.value_counts().reset_index()
     scaf_counts['assignment'] = None
 
@@ -1100,7 +1109,7 @@ def scaffold_split(smiles, percent_valid, percent_test=0., generic=False, remove
 
     scaf_mapping = {scaf_counts['index'][i]:scaf_counts['assignment'][i] for i in range(scaf_counts.shape[0])}
 
-    assignments = [scaf_mapping[i] for i in scaffolds]
+    assignments = [scaf_mapping[i] for i in scaf_df.scaffolds]
     scaf_df['assignment'] = assignments
 
     return scaf_df

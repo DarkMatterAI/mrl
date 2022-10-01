@@ -895,7 +895,7 @@ on heterocycles</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShuffleNitrogen" class="doc_header"><code>class</code> <code>ShuffleNitrogen</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L586" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShuffleNitrogen</code>(<strong><code>n_shuffles</code></strong>, <strong><code>name</code></strong>=<em><code>'shuffle nitrogen'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="ShuffleNitrogen" class="doc_header"><code>class</code> <code>ShuffleNitrogen</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L621" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShuffleNitrogen</code>(<strong><code>n_shuffles</code></strong>, <strong><code>name</code></strong>=<em><code>'shuffle nitrogen'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>ShuffleNitrogen - mutates input molecule
 by shuffling the positions of carbon and nitrogen
@@ -937,7 +937,7 @@ generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ContractAtom" class="doc_header"><code>class</code> <code>ContractAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L634" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContractAtom</code>(<strong><code>include_rings</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'contract'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="ContractAtom" class="doc_header"><code>class</code> <code>ContractAtom</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L669" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ContractAtom</code>(<strong><code>include_rings</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>'contract'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>ContractAtom - mutates input molecule by
 removing an atom with two bonds and joining
@@ -980,7 +980,7 @@ contracted</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesMutator" class="doc_header"><code>class</code> <code>SelfiesMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L693" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesMutator</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
+<h2 id="SelfiesMutator" class="doc_header"><code>class</code> <code>SelfiesMutator</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L728" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesMutator</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies'</code></em>) :: <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a></p>
 </blockquote>
 <p>SelfiesMutator - base class for SELFIES
 based mutation</p>
@@ -1021,7 +1021,7 @@ to generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesInsert" class="doc_header"><code>class</code> <code>SelfiesInsert</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L733" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesInsert</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies insert'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
+<h2 id="SelfiesInsert" class="doc_header"><code>class</code> <code>SelfiesInsert</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L772" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesInsert</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies insert'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
 </blockquote>
 <p>SelfiesInsert - SELFIES insertion mutator.
 Randomly inserts a SELFIES token into
@@ -1098,7 +1098,7 @@ to generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesReplace" class="doc_header"><code>class</code> <code>SelfiesReplace</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L757" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesReplace</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies replace'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
+<h2 id="SelfiesReplace" class="doc_header"><code>class</code> <code>SelfiesReplace</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L796" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesReplace</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies replace'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
 </blockquote>
 <p>SelfiesReplace - SELFIES replacement mutator.
 Randomly replaces a SELFIES token in
@@ -1175,7 +1175,7 @@ to generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SelfiesRemove" class="doc_header"><code>class</code> <code>SelfiesRemove</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L781" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesRemove</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies remove'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
+<h2 id="SelfiesRemove" class="doc_header"><code>class</code> <code>SelfiesRemove</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L820" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SelfiesRemove</code>(<strong><code>n_augs</code></strong>, <strong><code>name</code></strong>=<em><code>'selfies remove'</code></em>) :: <a href="/mrl/combichem.html#SelfiesMutator"><code>SelfiesMutator</code></a></p>
 </blockquote>
 <p>SelfiesRemove - SELFIES removal mutator.
 Randomly removes a SELFIES token in
@@ -1217,7 +1217,7 @@ to generate</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MutatorCollection" class="doc_header"><code>class</code> <code>MutatorCollection</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L804" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MutatorCollection</code>(<strong><code>mutators</code></strong>, <strong><code>p_mutators</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="MutatorCollection" class="doc_header"><code>class</code> <code>MutatorCollection</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L843" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MutatorCollection</code>(<strong><code>mutators</code></strong>, <strong><code>p_mutators</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>MutatorCollection - orchestrates a
 set of <a href="/mrl/combichem.html#Mutator"><code>Mutator</code></a> classes. When called,
@@ -1263,7 +1263,7 @@ is applied</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CombiChem" class="doc_header"><code>class</code> <code>CombiChem</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L847" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CombiChem</code>(<strong><code>mutator_collection</code></strong>=<em><code>None</code></em>, <strong><code>crossovers</code></strong>=<em><code>None</code></em>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>rewards</code></strong>=<em><code>None</code></em>, <strong><code>prune_percentile</code></strong>=<em><code>90</code></em>, <strong><code>max_library_size</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>False</code></em>, <strong><code>p_explore</code></strong>=<em><code>0.0</code></em>)</p>
+<h2 id="CombiChem" class="doc_header"><code>class</code> <code>CombiChem</code><a href="https://github.com/DarkMatterAI/mrl/tree/main/mrl/combichem.py#L886" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CombiChem</code>(<strong><code>mutator_collection</code></strong>=<em><code>None</code></em>, <strong><code>crossovers</code></strong>=<em><code>None</code></em>, <strong><code>template</code></strong>=<em><code>None</code></em>, <strong><code>rewards</code></strong>=<em><code>None</code></em>, <strong><code>prune_percentile</code></strong>=<em><code>90</code></em>, <strong><code>max_library_size</code></strong>=<em><code>None</code></em>, <strong><code>log</code></strong>=<em><code>False</code></em>, <strong><code>p_explore</code></strong>=<em><code>0.0</code></em>)</p>
 </blockquote>
 <p>CombiChem - class for running
 combichem operations</p>
