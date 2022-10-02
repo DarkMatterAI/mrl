@@ -74,6 +74,8 @@ class Callback():
             else:
                 ax.axis('off')
 
+        return fig
+
     def plot_time(self, cols=4, smooth=True):
         self.plot_dict(self.event_timelog, cols=cols, smooth=smooth)
 
