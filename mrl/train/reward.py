@@ -34,7 +34,7 @@ class Reward():
     - `log bool`: if True, keeps aa lookup table of
     `sample : reward` values to avoid repeat computation
     '''
-    def __init__(self, reward_function, weight=1, bs=None, device=False, log=True):
+    def __init__(self, reward_function, weight=1, bs=None, device=True, log=True):
 
         self.reward_function = reward_function
         self.weight = weight
@@ -154,6 +154,7 @@ class RewardCallback(Callback):
 
         if samples:
             rewards = self.reward(samples)
+            rewards = rewards.to(batch_state.rewards.device)
         else:
             rewards = to_device(torch.tensor(0.))
 

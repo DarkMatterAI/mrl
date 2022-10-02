@@ -157,10 +157,10 @@ class Log(Callback):
         return log_to_df(self.batch_log)
 
     def plot_metrics(self, cols=4, smooth=True):
-        self.plot_dict(self.metrics, cols=cols, smooth=smooth)
+        return self.plot_dict(self.metrics, cols=cols, smooth=smooth)
 
     def plot_timelog(self, cols=4, smooth=True):
-        self.plot_dict(self.timelog, cols=cols, smooth=smooth)
+        return self.plot_dict(self.timelog, cols=cols, smooth=smooth)
 
 
 # Cell

@@ -168,7 +168,7 @@ class WeightedBuffer(Buffer):
             weights = weights[all_idxs]
 
         if weights.shape[0]>0:
-            weights = weights - weights.min()
+            weights = weights - weights.min() + 1e-8
             weights = weights / weights.sum()
 
             sampled_idxs = np.random.choice(all_idxs, min(n, len(all_idxs)),
@@ -303,10 +303,10 @@ class PredictiveBuffer(WeightedBuffer):
     def compute_weights(self, samples):
         with torch.no_grad():
             if len(samples) < self.pred_bs:
-                scores = self.predictive_agent.predict_data(samples).squeeze()
+                scores = self.predictive_agent.predict_data(samples, detach=True).squeeze()
                 scores = scores.detach().cpu().numpy()
             else:
-                scores = self.predictive_agent.predict_data_batch(samples, self.pred_bs).squeeze()
+                scores = self.predictive_agent.predict_data_batch(samples, self.pred_bs, detach=True).squeeze()
                 scores = scores.detach().cpu().numpy()
         return scores
 
@@ -323,6 +323,7 @@ class PredictiveBuffer(WeightedBuffer):
         env = self.environment
         rewards = env.batch_state.rewards
         preds = env.batch_state[self.name+'_preds']
+#         preds = preds.to(rewards.device)
         loss = self.predictive_agent.loss_function(preds, rewards)
 
         if self.track:
