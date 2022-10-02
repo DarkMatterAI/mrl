@@ -33,6 +33,7 @@ MRL is available via Anaconda.
 ```
 conda create -n mrl python=3.7
 conda install -c dmai -c rdkit -c pytorch -c fastai -c conda-forge mrl
+pip install selfies>=2.0.0
 ```
 
 ### PyPi
