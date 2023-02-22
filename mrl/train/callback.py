@@ -478,5 +478,6 @@ class BatchState(SettrDict):
         self.samples = []
         self.sources = []
         self.rewards = to_device(torch.tensor(0.))
-        self.loss = to_device(torch.tensor(0., requires_grad=True))
+        self.loss = torch.tensor(0., requires_grad=True)
+        self.loss = to_device(self.loss.clone())
         self.latent_data = {}
