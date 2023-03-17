@@ -160,8 +160,6 @@ class Agent(Callback):
         else:
             mb = master_bar(range(epochs))
             cols = ['Epoch', 'Train Loss', 'Valid  Loss', 'Time']
-            if valid_metric is not None:
-                cols.append(valid_metric.__name__)
             mb.write(cols, table=True)
 
         for epoch in mb:
