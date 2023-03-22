@@ -105,7 +105,7 @@ class Agent(Callback):
         if self.best_weights is not None:
             self.load_state_dict(self.best_weights)
 
-    def train_supervised(self, bs, epochs, lr, valid_metric=None,
+    def train_supervised(self, bs, epochs, lr,
                          percent_valid=0.05, silent=False,
                          fp16=False, save_every=None,
                          load_best_every=None, opt_kwargs={}):
@@ -119,10 +119,6 @@ class Agent(Callback):
         - `epochs int`: number of epochs
 
         - `lr float`: learning rate passed to `optim.lr_scheduler.OneCycleLR`
-
-        - `valid_metric Optional[Callable]`: a callable validation metric
-        in the form of `valid_metric(predictions, targets)`. If given, will
-        be calculated for the validation set every epoch
 
         - `percent_valid float`: validation set percentage
 
@@ -164,8 +160,6 @@ class Agent(Callback):
         else:
             mb = master_bar(range(epochs))
             cols = ['Epoch', 'Train Loss', 'Valid  Loss', 'Time']
-            if valid_metric is not None:
-                cols.append(valid_metric.__name__)
             mb.write(cols, table=True)
 
         for epoch in mb:
@@ -207,9 +201,6 @@ class Agent(Callback):
             with torch.no_grad():
                 self.model.eval()
                 valid_losses = []
-                valid_sizes = []
-                preds = []
-                targs = []
 
                 if len(valid_ds)>0:
                     if silent:
@@ -219,45 +210,21 @@ class Agent(Callback):
 
                     for batch in batch_iter:
 
-                        loss, p = self.one_batch(batch, return_output=True)
+                        loss = self.one_batch(batch)
                         valid_losses.append(loss.detach().cpu())
-                        x,y = batch
-                        preds.append(p.detach().cpu())
-                        targs.append(y.detach().cpu())
-                        valid_sizes.append(x.shape[0])
 
                         if not silent:
                             mb.child.comment = f"{valid_losses[-1]:.5f}"
                 else:
                     valid_losses = [torch.tensor(0.)]
-                    valid_sizes = [1]
                 self.model.train()
 
             train_loss = smooth_batches(train_losses)
-
-            valid_sizes = torch.tensor(valid_sizes)
-            valid_sizes = valid_sizes/valid_sizes.sum()
-            valid_means = torch.tensor([i.mean() for i in valid_losses])
-            valid_loss = (valid_means * valid_sizes).sum()
+            valid_loss = smooth_batches(valid_losses)
             end = time.time() - start
-
-            if valid_metric is not None:
-                preds = torch.cat(preds)
-                targs = torch.cat(targs)
-                metric = valid_metric(preds, targs)
-                if metric < self.best_metric:
-                    self.best_metric = metric
-                    self.best_weights = copy.deepcopy(self.model).cpu().state_dict()
-            else:
-                if valid_loss < self.best_loss:
-                    self.best_loss = valid_loss
-                    self.best_weights = copy.deepcopy(self.model).cpu().state_dict()
-
             if not silent:
-                epoch_data = [epoch, f'{train_loss:.5f}', f'{valid_loss:.5f}', f'{format_time(end)}']
-                if valid_metric is not None:
-                    epoch_data.append(f'{metric}:.5f')
-                mb.write(epoch_data, table=True)
+                mb.write([epoch, f'{train_loss:.5f}',
+                      f'{valid_loss:.5f}', f'{format_time(end)}'], table=True)
 
     def update_dataset(self, dataset):
         self.dataset = dataset
